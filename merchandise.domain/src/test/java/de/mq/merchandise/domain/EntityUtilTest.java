@@ -1,10 +1,8 @@
 package de.mq.merchandise.domain;
 
 import java.io.IOException;
-import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Date;
@@ -14,7 +12,6 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -23,7 +20,6 @@ import org.springframework.util.ReflectionUtils;
 import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.contact.Contact;
 import de.mq.merchandise.contact.Coordinates;
-
 import de.mq.merchandise.contact.support.ContactBuilderFactoryImpl;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.EqualsBuilder;
