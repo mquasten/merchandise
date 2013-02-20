@@ -6,13 +6,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import de.mq.mapping.util.proxy.AOProxyFactory;
-import de.mq.mapping.util.proxy.ModelRepository;
-
 import de.mq.merchandise.customer.NaturalPerson;
-import de.mq.merchandise.customer.support.NaturalPersonAO;
-import de.mq.merchandise.customer.support.NaturalPersonFactoryImpl;
-import de.mq.merchandise.customer.support.NaturalPersonImpl;
 import de.mq.merchandise.model.support.WebProxyFactory;
 
 public class NaturalPersonFactoryTest {

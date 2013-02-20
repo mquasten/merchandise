@@ -1,13 +1,6 @@
 package de.mq.merchandise.controller;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
-
-import org.primefaces.context.RequestContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.stereotype.Component;
 
 import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.ExceptionTranslations;

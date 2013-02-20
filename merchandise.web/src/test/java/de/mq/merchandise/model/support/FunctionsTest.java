@@ -5,12 +5,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import com.sun.el.lang.FunctionMapperImpl.Function;
 
 import de.mq.merchandise.contact.support.AddressAO;
 import de.mq.merchandise.contact.support.EMailContactAO;
@@ -20,7 +17,6 @@ import de.mq.merchandise.contact.support.PostBoxAO;
 import de.mq.merchandise.customer.support.LegalPersonAO;
 import de.mq.merchandise.customer.support.NaturalPersonAO;
 import de.mq.merchandise.model.PersonTestConstants;
-import de.mq.merchandise.model.support.Functions;
 
 
 public class FunctionsTest {
