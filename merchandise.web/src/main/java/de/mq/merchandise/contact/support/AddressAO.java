@@ -16,6 +16,7 @@ import de.mq.merchandise.model.support.String2LongConverter;
 
 public abstract class AddressAO implements Serializable {
 
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Getter(clazz=AddressImpl.class, value = "id" , converter=Number2StringConverter.class)
