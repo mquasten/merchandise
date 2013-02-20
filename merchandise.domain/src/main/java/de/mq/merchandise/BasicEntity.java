@@ -25,5 +25,7 @@ public interface BasicEntity extends Serializable{
 	 * @return true if the entity is persistent, else false
 	 */
 	boolean hasId();
+	
+	
 
 }
