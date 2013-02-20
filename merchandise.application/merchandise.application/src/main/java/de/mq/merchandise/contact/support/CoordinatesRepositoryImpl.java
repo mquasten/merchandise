@@ -65,7 +65,6 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 		}
 
 		return new CoordinatesBuilderImpl().withLongitude(coordinates[0].doubleValue()).withLatitude(coordinates[1].doubleValue()).build();
-
 	}
 
 	@SuppressWarnings("unchecked")
