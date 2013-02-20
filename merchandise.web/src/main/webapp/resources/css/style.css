@@ -1,0 +1,22 @@
+
+
+.labelColumnStyle {
+	width: 200px;
+}
+
+.inputColumnStyle {
+	width: 300px;
+}
+
+.messageColumnStyle {
+	width: 150px;
+}
+
+.gridInputField {
+	width: 100%;
+}
+
+
+.positionCentered {
+   margin:0px auto; margin-top:100px;
+}

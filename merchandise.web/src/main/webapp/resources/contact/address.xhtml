@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:u="http://example.com/functions"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<head>
+
+<title>Input for a address</title>
+</head>
+<body>
+
+	<composite:interface>
+		<composite:attribute name="contactModel" required="true" />
+		<composite:attribute name="person" required="true" />
+		<composite:attribute name="message" required="true" />
+	</composite:interface>
+
+	<composite:implementation>
+
+		<p:dialog id="dialog"
+			header="#{cc.attrs.message.contact_dialog_headline}"
+			widgetVar="addressDlg" modal="true">
+			
+
+			<p:ajax event="close" update="@form"/>
+			<h:form id="addressForm">
+				<h1 style="text-align: center">
+					<h:outputText id="contact_headline"
+						value="#{cc.attrs.message.contact_dialog_address_headline}" />
+				</h1>
+
+				<p:messages id="message" errorClass="error" globalOnly="true"  />  
+				<p:panelGrid id="addressGrid" columns="3"
+					columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle">
+
+
+					<p:outputLabel for="country"
+						value="#{message.register_common_country}" />
+					<p:selectOneMenu id="country" value="#{cc.attrs.contactModel.address.country}"
+						style="width:100%">
+						<f:selectItem itemLabel="#{message.select_empty}" itemValue="" />
+						<f:selectItems
+							value="#{referenceController.countries(user.language)}" />
+						<f:validateBean />
+					</p:selectOneMenu>
+					<p:message for="country" display="text" />
+
+
+					<p:outputLabel for="zipcode"
+						value="#{cc.attrs.message.contact_dialog_address_zipcode}" />
+					<p:inputText id="zipcode" value="#{cc.attrs.contactModel.address.zipCode}"
+						styleClass="gridInputField">
+						<f:validateBean />
+					</p:inputText>
+					<p:message for="zipcode" display="text" />
+
+					<p:outputLabel for="city"
+						value="#{cc.attrs.message.contact_dialog_address_city}" />
+					<p:inputText id="city" value="#{cc.attrs.contactModel.address.city}"
+						styleClass="gridInputField">
+						<f:validateBean />
+					</p:inputText>
+					<p:message for="city" display="text" />
+
+
+					<p:outputLabel for="street" rendered="#{u:isAddress(cc.attrs.contactModel.address)}"
+						value="#{cc.attrs.message.contact_dialog_address_street}" />
+					<p:inputText id="street" value="#{cc.attrs.contactModel.address.street}" rendered="#{u:isAddress(cc.attrs.contactModel.address)}"
+						styleClass="gridInputField">
+						<f:validateBean />
+					</p:inputText>
+					<p:message for="street" display="text" rendered="#{u:isAddress(cc.attrs.contactModel.address)}"/>
+					
+					
+					
+					
+					
+					<p:outputLabel for="postBox" rendered="#{u:isPostBox(cc.attrs.contactModel.address)}"
+						value="#{cc.attrs.message.contact_dialog_address_postbox}" />
+					<p:inputText id="postBox" value="#{cc.attrs.contactModel.address.postBox}" rendered="#{u:isPostBox(cc.attrs.contactModel.address)}"
+						styleClass="gridInputField">
+						<f:validateBean />
+					</p:inputText>
+					<p:message for="postBox" display="text" rendered="#{u:isPostBox(cc.attrs.contactModel.address)}"/>
+					
+					
+					
+					
+					
+					
+
+					<p:outputLabel for="housenumber" rendered="#{u:isAddress(cc.attrs.contactModel.address)}"
+						value="#{cc.attrs.message.contact_dialog_address_housenumber}" />
+					<p:inputText id="housenumber" rendered="#{u:isAddress(cc.attrs.contactModel.address)}"
+						value="#{cc.attrs.contactModel.address.houseNumber}"
+						styleClass="gridInputField">
+						<f:validateBean />
+					</p:inputText>
+					<p:message for="housenumber" display="text" rendered="#{u:isAddress(cc.attrs.contactModel.address)}" />
+
+					<f:facet name="footer">
+						<p:commandButton value="#{cc.attrs.message.contact_dialog_submit}"
+							update="addressGrid message" process="addressGrid" 
+							action="#{personController.addAddress(cc.attrs.person.person, cc.attrs.contactModel.address.address )}"
+							oncomplete="handleAddressRequest(xhr, status, args)" style="float:right" />
+					</f:facet>
+
+					
+				</p:panelGrid>
+
+			</h:form>
+
+
+
+
+
+
+		</p:dialog>
+
+
+		<script type="text/javascript">  
+    		function handleAddressRequest(xhr, status, args) {  
+        		if(! args.validationFailed) {  
+            		addressDlg.hide(); 
+        		} 
+    		}  
+		</script>
+
+
+
+	</composite:implementation>
+</body>
+</html>

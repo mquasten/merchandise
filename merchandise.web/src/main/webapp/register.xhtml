@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+ xmlns:contact="http://java.sun.com/jsf/composite/contact"
+xmlns:pers="http://java.sun.com/jsf/composite/person" >
+    <h:head>
+   
+    </h:head>
+    <h:body>
+  
+   <f:view locale="#{user.language}" >
+  <f:metadata>
+      			<f:viewParam name="language" value="#{user.language}" /> 
+      			
+  </f:metadata>
+   	  <h:outputStylesheet library="css" name="style.css"  />
+  
+      <h1 style="text-align:center">  <h:outputText id="headline" value="#{message.headline}" /> </h1>  
+     
+      <h:form prependId="false" forceId="true" id="register" > 
+     
+      
+      <p:wizard widgetVar="wiz" flowListener="#{registrationWizardController.onFlowProcess}" nextLabel="#{message.register_next}" backLabel="#{message.register_back}"  styleClass="positionCentered" >  
+      
+        <p:tab id="generell" title="#{message.register_common_tab}">  
+  
+            <p:panel header="#{message.register_common_headline}" >  
+              
+                <p:messages errorClass="error" globalOnly="true" />  
+                  
+                <p:panelGrid columns="3" columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle" >  
+                    
+                    <p:outputLabel for="type" value="#{message.register_common_type}" />
+                    <p:selectOneRadio id="type" value="#{registration.kind}" layout="pageDirection" style="width:100%" >  
+            			<f:selectItem itemLabel="#{message.register_common_type_naturalperson}" itemValue="NaturalPerson" />  
+            			<f:selectItem itemLabel="#{message.register_common_type_legalperson}" itemValue="LegalPerson" />  
+            			<f:selectItem itemLabel="#{message.register_common_type_user}" itemValue="User" />  
+            			<p:ajax update="@this typeMessage"  process="@this"   />
+        			</p:selectOneRadio>  
+        			<p:message id="typeMessage"  for="type" display="text"  />
+                    
+                    <p:outputLabel for="country" value="#{message.register_common_country}" />
+                          <p:selectOneMenu  id="country" value="#{registration.person.country}"   style="width:100%">  
+            						 <f:selectItem itemLabel="#{message.select_empty}" itemValue="" />
+            						<f:selectItems value="#{referenceController.countries(user.language)}" />  
+            						 <p:ajax update="@this countryMessage"  process="@this"   />
+            						<f:validateBean />
+        				  </p:selectOneMenu >  
+                    <p:message id="countryMessage" for="country" display="text"  />  
+                    <p:outputLabel for="language" value="#{message.register_common_language}" />
+                     <p:selectOneMenu  id="language" value="#{registration.language}"  style="width:100%"  >  
+                      				 <f:selectItem itemLabel="#{message.select_empty}" itemValue="" />
+            						<f:selectItems value="#{referenceController.languages(user.language)}" />  
+            						
+            						 <p:ajax update="@form :headline"  process="@this"   />
+           							<f:validateBean />
+           							
+        		     </p:selectOneMenu >  
+                      <p:message id="languageMessage" for="language" display="text"  />  
+                    
+                </p:panelGrid>  
+                
+            </p:panel>  
+            
+            
+            
+            
+            
+           
+            </p:tab>
+             
+             <p:tab id="person" title="#{message.register_person_tab}">  
+           <p:messages errorClass="error" globalOnly="true" />  
+             <p:panel header="#{message.register_person_headline}" >  
+             
+               
+            
+                   <pers:person person="#{registration.person}"   customer="#{registration.customer}"  contactModel="#{contactModel}" user="#{registration.kind=='User'}"  message="#{message}"/>
+             </p:panel>
+             </p:tab>
+             
+               <p:tab id="overview" title="#{message.register_overview_tab}">  
+               <p:messages errorClass="error" globalOnly="true" />  
+             <p:panel header="#{message.register_overview_headline}">  
+                  <f:event listener="#{registrationWizardController.initCustomer(registration)}" type="preRenderView" />
+             		<pers:viewPerson person="#{registration.person}"  customer="#{registration.customer}"  user="#{registration.kind=='User'}" message="#{message}"/>
+             		
+             </p:panel>
+             <p:commandButton id="loginButton" value="#{message.register_overview_submit}"  
+						actionListener="#{registrationWizardController.register(registration.customer.customer, registration.person.person)}"   style="float:right" />
+             </p:tab>
+            
+        </p:wizard>
+   
+  </h:form>
+ 
+  
+</f:view>
+    </h:body>
+</html>
+
+

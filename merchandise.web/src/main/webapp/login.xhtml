@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+
+</h:head>
+<h:body>
+         
+         <f:view locale="#{user.language}">
+  			<f:metadata>
+      			<f:viewParam name="language" value="#{user.language}" /> 
+  		</f:metadata>
+		 <h:outputStylesheet library="css" name="style.css"  />
+		
+		<h1 style="text-align: center">
+			<h:outputText value="#{message.headline}" />
+		</h1>
+
+		<h:form id="form">
+			<p:messages globalOnly="true" autoUpdate="true" closable="true" />
+
+
+			<p:panelGrid id="loginPanel" columns="3"  styleClass="positionCentered">
+				<f:facet name="header">#{message.login_headline}</f:facet>
+
+				<p:outputLabel for="login" value="#{message.login_user}" />
+				
+				<p:inputText id="login" value="#{login.user}" label="login">
+					<f:validateBean />
+				</p:inputText>
+				
+				
+				<p:message for="login" display="text" />
+				
+				<p:outputLabel for="password" value="#{message.login_password}" />
+			
+				<p:password id="password" value="#{login.password}" label="password"
+					redisplay="true">
+					<f:validateBean />
+				</p:password>
+				
+				
+				<p:message for="password" display="text" />
+				
+
+				<f:facet name="footer">
+					<p:button id="registerButton" outcome="register" value="#{message.login_rgister_button}"  icon="ui-icon-person" style="float:left">
+						<f:param name="language" value="#{user.language}" />
+					</p:button>
+
+					<p:commandButton id="loginButton" value="#{message.login_login_button}"
+						icon="ui-icon-check"
+						actionListener="#{loginController.login(login)}"
+						update="loginPanel" style="float:right" />
+
+				</f:facet>
+			</p:panelGrid>
+			<p:tooltip for="login" value="#{message.login_user_tt}" showEffect="fade" hideEffect="fade" /> 
+			<p:tooltip for="password" value="#{message.login_password_tt}" showEffect="fade" hideEffect="fade" /> 
+			<p:tooltip for="registerButton" value="#{message.login_rgister_button_tt}" showEffect="fade" hideEffect="fade" /> 
+			<p:tooltip for="loginButton" value="#{message.login_login_button_tt}" showEffect="fade" hideEffect="fade" /> 
+		</h:form>
+</f:view>
+</h:body>
+
+</html>
+
+
