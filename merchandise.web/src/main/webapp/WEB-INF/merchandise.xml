@@ -12,7 +12,7 @@
 	
 	<!--  import resource="classpath:emf.xml"/-->
 	
-	<context:component-scan base-package="de.mq.merchandise" />
+	<context:component-scan base-package="de.mq.merchandise, de.mq.mapping.util.proxy" />
 	
 	<bean
 	        class="org.springframework.beans.factory.config.CustomScopeConfigurer">
@@ -41,8 +41,8 @@
  
  <bean id="facesContextFactory"  class="de.mq.merchandise.model.support.FacesContextFactoryImpl" />
     
-  <bean class="de.mq.mapping.util.proxy.support.BeanConventionCGLIBProxyFactory" /> 
-  <bean class="de.mq.mapping.util.proxy.support.SimpleReflectionBeanResolverImpl" />
+  <!--  bean class="de.mq.mapping.util.proxy.support.BeanConventionCGLIBProxyFactory" / --> 
+  <!--  bean class="de.mq.mapping.util.proxy.support.SimpleReflectionBeanResolverImpl" /-->
  
 <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
     <property name="messageConverters">

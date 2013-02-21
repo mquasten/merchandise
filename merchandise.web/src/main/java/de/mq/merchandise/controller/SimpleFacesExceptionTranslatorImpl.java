@@ -4,11 +4,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
+import org.springframework.stereotype.Component;
 
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.Action;
 import de.mq.mapping.util.proxy.ModelRepository;
 
+@Component
 public class SimpleFacesExceptionTranslatorImpl implements Action {
 
 	@Override

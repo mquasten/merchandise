@@ -15,7 +15,7 @@
 	
 	<context-param>
 		<param-name>spring.profiles.active</param-name>
-		<param-value>mock</param-value>
+		<param-value>mock,CGLib-Proxy</param-value>
 	</context-param> 
 	
 

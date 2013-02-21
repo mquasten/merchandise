@@ -26,6 +26,7 @@ xmlns:pers="http://java.sun.com/jsf/composite/person" >
       <p:wizard widgetVar="wiz" flowListener="#{registrationWizardController.onFlowProcess}" nextLabel="#{message.register_next}" backLabel="#{message.register_back}"  styleClass="positionCentered" >  
       
         <p:tab id="generell" title="#{message.register_common_tab}">  
+          <p:messages errorClass="error"  />  
   
             <p:panel header="#{message.register_common_headline}" >  
               
