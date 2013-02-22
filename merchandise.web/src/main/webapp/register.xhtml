@@ -10,13 +10,15 @@ xmlns:pers="http://java.sun.com/jsf/composite/person" >
    
     </h:head>
     <h:body>
-  
-   <f:view locale="#{user.language}" >
+ 
+   <f:view locale="#{user.language}" contentType="text/html" >
   <f:metadata>
       			<f:viewParam name="language" value="#{user.language}" /> 
       			
   </f:metadata>
    	  <h:outputStylesheet library="css" name="style.css"  />
+   	  <!--  important, without this shit, p:gmaps will not work -->
+   	  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
   
       <h1 style="text-align:center">  <h:outputText id="headline" value="#{message.headline}" /> </h1>  
      
@@ -26,11 +28,11 @@ xmlns:pers="http://java.sun.com/jsf/composite/person" >
       <p:wizard widgetVar="wiz" flowListener="#{registrationWizardController.onFlowProcess}" nextLabel="#{message.register_next}" backLabel="#{message.register_back}"  styleClass="positionCentered" >  
       
         <p:tab id="generell" title="#{message.register_common_tab}">  
-          <p:messages errorClass="error"  />  
+         
   
             <p:panel header="#{message.register_common_headline}" >  
               
-                <p:messages errorClass="error" globalOnly="true" />  
+                
                   
                 <p:panelGrid columns="3" columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle" >  
                     
@@ -83,7 +85,9 @@ xmlns:pers="http://java.sun.com/jsf/composite/person" >
              </p:panel>
              </p:tab>
              
-               <p:tab id="overview" title="#{message.register_overview_tab}">  
+            
+             
+               <p:tab   id="overview" title="#{message.register_overview_tab}" >  
                <p:messages errorClass="error" globalOnly="true" />  
              <p:panel header="#{message.register_overview_headline}">  
                   <f:event listener="#{registrationWizardController.initCustomer(registration)}" type="preRenderView" />
@@ -95,8 +99,13 @@ xmlns:pers="http://java.sun.com/jsf/composite/person" >
              </p:tab>
             
         </p:wizard>
+        
+        	 
+ 
    
   </h:form>
+  
+  	
  
   
 </f:view>

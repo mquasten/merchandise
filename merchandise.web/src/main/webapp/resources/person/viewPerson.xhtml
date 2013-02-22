@@ -49,9 +49,20 @@
 	  
 	   <h:outputText id="nativity" value="#{u:shortDate(cc.attrs.person.language, cc.attrs.person.nativity.birthDate)}&nbsp;#{cc.attrs.person.nativity.birthPlace}" rendered="#{!u:isLegalPerson(cc.attrs.person)}" /> 
    
+   
+   
+      
+   
 	 </p:panelGrid>
+	 
+	 <p:gmap center="36.879466, 30.667648" zoom="15" type="HYBRID"
+                                    style="width:600px;height:400px" model="#{mapsController.model(cc.attrs.person.addresses)}"/>
+
 	
+
 	 
 </composite:implementation>
 </body>
+
+
 </html>
