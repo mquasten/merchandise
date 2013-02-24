@@ -1,11 +1,15 @@
 package de.mq.merchandise.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
 import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.ExceptionTranslations;
 import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.contact.CityAddress;
+import de.mq.merchandise.contact.Contact;
 import de.mq.merchandise.contact.GeocodingService;
 import de.mq.merchandise.contact.LoginContact;
 import de.mq.merchandise.customer.Person;
@@ -68,6 +72,16 @@ public class PersonControllerImpl {
 	
 	public  void removeContact(final Person person, final LoginContact loginContact) {
 		person.remove(loginContact);
+	}
+	
+	// You have been a really bad el resolver, a very bad bad el resolver ... 
+	public List<String> contacts(final Person person) {
+		final List<String> results = new ArrayList<>();
+		for(final Contact contact : person.contacts()){
+			results.add(contact.contact());
+		}
+		return results;
+		
 	}
 
 }
