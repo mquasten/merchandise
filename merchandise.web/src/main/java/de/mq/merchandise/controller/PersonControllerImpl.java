@@ -44,7 +44,6 @@ public class PersonControllerImpl {
 		final CityAddress address = EntityUtil.copy(cityAddress);
 		if (address instanceof Address) {
 			((Address)address).assign(geocodingService.coordinates(cityAddress, 5));
-			System.out.println(((Address)address).coordinates().latitude()+ "," + ((Address)address).coordinates().longitude());
 		}
 
 		person.assign(address); 
