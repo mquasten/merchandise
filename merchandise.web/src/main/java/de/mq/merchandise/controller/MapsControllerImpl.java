@@ -1,13 +1,14 @@
 package de.mq.merchandise.controller;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
@@ -27,19 +28,19 @@ public class MapsControllerImpl {
 
 	private final CoordinatesBuilder  coordinatesBuilder = new ContactBuilderFactoryImpl().coordinatesBuilder(); 
 	
-	private final Comparator<Coordinates> longitudeComparator =  new Comparator<Coordinates>() {
+	private final Comparator<Entry<Coordinates,String>> longitudeComparator =  new Comparator<Entry<Coordinates,String>>() {
 
 		@Override
-		public int compare(Coordinates c1, Coordinates c2) {
-			return (int) Math.signum(c2.longitude() - c1.longitude());	
+		public int compare(final Entry<Coordinates,String> c1, final Entry<Coordinates,String> c2) {
+			return (int) Math.signum(c2.getKey().longitude() - c1.getKey().longitude());	
 		} 
 	};
 		
-	private final Comparator<Coordinates> latitudeComparator = new  Comparator<Coordinates>() {
+	private final Comparator<Entry<Coordinates,String>> latitudeComparator = new  Comparator<Entry<Coordinates,String>>() {
 
 		@Override
-		public int compare(Coordinates c1, Coordinates c2) {
-			return (int) Math.signum(c2.latitude() -  c1.latitude());
+		public int compare(final Entry<Coordinates,String> c1, final Entry<Coordinates,String> c2) {
+			return (int) Math.signum(c2.getKey().latitude() -  c1.getKey().latitude());
 			
 		} 
 	};
@@ -47,7 +48,7 @@ public class MapsControllerImpl {
 	public final MapModel  model(final Person person) {
 		final MapModel mapModel = new DefaultMapModel();
 		
-		for(final Entry<Coordinates, String> entry :  filter(person.contacts()).entrySet() ){
+		for(final Entry<Coordinates, String> entry :  filter(person.contacts()) ){
 			mapModel.addOverlay((new Marker( new LatLng(entry.getKey().latitude(), entry.getKey().longitude()), entry.getValue() )));
 		}
 		
@@ -57,24 +58,24 @@ public class MapsControllerImpl {
 	
 	
 	public final String  center(final Person person ) {
-		final List<Coordinates>  coordinates = new ArrayList<>(filter(person.contacts()).keySet());
+		
+		final List<Entry<Coordinates,String>>  coordinates = new ArrayList<>(filter(person.contacts()));
 		if( coordinates.size() < 1){
 			throw new IllegalArgumentException("At least one address, wirth geo coordinates should be given");
 		}
 		
-		final Coordinates result =  coordinatesBuilder.withLongitude((Collections.max(coordinates, longitudeComparator).longitude() +  Collections.min(coordinates, longitudeComparator).longitude()) /2).withLatitude((Collections.max(coordinates, latitudeComparator).latitude() +  Collections.min(coordinates, latitudeComparator).latitude()) /2).build();
+		final Coordinates result =  coordinatesBuilder.withLongitude((Collections.max(coordinates, longitudeComparator).getKey().longitude() +  Collections.min(coordinates, longitudeComparator).getKey().longitude()) /2).withLatitude((Collections.max(coordinates, latitudeComparator).getKey().latitude() +  Collections.min(coordinates, latitudeComparator).getKey().latitude()) /2).build();
 		return  result.latitude()+ ", "+ result.longitude();
 	}
 
 
-	private Map<Coordinates, String> filter(final Collection<? extends Contact> contacts) {
-		final HashMap<Coordinates, String> coordinates = new HashMap<>();
+	private Set<Entry<Coordinates, String>> filter(final Collection<? extends Contact> contacts) {
+		final Set<Entry<Coordinates, String>> coordinates = new HashSet<>();
 		for(final Contact contact :contacts){
 			if (!(contact instanceof Address)) {
 				continue;
 			}
-			coordinates.put(((Address)contact).coordinates(), contact.contact());
-			
+			coordinates.add(new AbstractMap.SimpleEntry<>(((Address)contact).coordinates(), contact.contact()));
 		}
 		return coordinates;
 	}
