@@ -15,7 +15,6 @@ import de.mq.merchandise.contact.LoginContact;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.util.EntityUtil;
 
-//@Component("personController")
 public class PersonControllerImpl {
 	
 	public PersonControllerImpl() {
@@ -24,11 +23,9 @@ public class PersonControllerImpl {
 	
 	private  GeocodingService geocodingService;
 	
-	//@Autowired
-	PersonControllerImpl(final GeocodingService geocodingService) {
 	
+	PersonControllerImpl(final GeocodingService geocodingService) {
 		this.geocodingService=geocodingService;
-		System.out.println(this.geocodingService);
 	}
 	
 	/*

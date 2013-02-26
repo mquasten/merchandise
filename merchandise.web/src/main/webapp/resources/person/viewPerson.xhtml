@@ -72,7 +72,7 @@
 	 
         <f:facet name="header">#{message.view_person_address_headline}</f:facet> 
 	 
-			 <p:gmap center="#{mapsController.center(cc.attrs.person.person)}"  type="HYBRID" style="width:600px;height:400px" model="#{mapsController.model(cc.attrs.person.person)}" fitBounds="true" />
+			 <p:gmap center="#{mapsController.center(cc.attrs.person.person)}" zoom="15"  type="HYBRID" style="width:600px;height:400px" model="#{mapsController.model(cc.attrs.person.person)}" fitBounds="true" fixedCenter="true" />
 
 	</p:panelGrid>
 

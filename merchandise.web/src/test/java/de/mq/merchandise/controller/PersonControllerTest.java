@@ -1,5 +1,10 @@
 package de.mq.merchandise.controller;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -9,6 +14,7 @@ import org.mockito.Mockito;
 
 import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.contact.CityAddress;
+import de.mq.merchandise.contact.Contact;
 import de.mq.merchandise.contact.Coordinates;
 import de.mq.merchandise.contact.GeocodingService;
 import de.mq.merchandise.contact.LoginContact;
@@ -16,6 +22,7 @@ import de.mq.merchandise.contact.PostBox;
 import de.mq.merchandise.contact.support.AddressTestConstants;
 import de.mq.merchandise.contact.support.ContactBuilderFactoryImpl;
 import de.mq.merchandise.customer.Person;
+import de.mq.merchandise.model.ContactTestConstants;
 
 public class PersonControllerTest {
 	
@@ -113,6 +120,27 @@ public class PersonControllerTest {
 		
 		Mockito.verify(person).remove(loginContact);
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public final void contacts() {
+		final PersonControllerImpl personController = new PersonControllerImpl(geocodingService);
+		final Person person = Mockito.mock(Person.class);
+		@SuppressWarnings("rawtypes")
+		final Set contacts= new HashSet<>();
+		final Contact contact = Mockito.mock(Contact.class);
+		contacts.add(contact);
+		Mockito.when(contact.contact()).thenReturn(ContactTestConstants.EMAIL);
+		Mockito.when(person.contacts()).thenReturn(Collections.unmodifiableSet(contacts));
+		final  List<String> results = personController.contacts(person);
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(ContactTestConstants.EMAIL, results.iterator().next());
+	}
+	
+	@Test
+	public final void defaultConstructor() {
+		Assert.assertNotNull(new PersonControllerImpl());
 	}
 
 }

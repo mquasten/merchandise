@@ -14,16 +14,21 @@ public class PersonControllerFactory {
 	
 	@Autowired
 	private GeocodingService geocodingService;
+	
+	protected PersonControllerFactory() {
+		
+	}
+	PersonControllerFactory(GeocodingService geocodingService, WebProxyFactory webProxyFactory) {
+		this.geocodingService = geocodingService;
+		this.webProxyFactory = webProxyFactory;
+	}
+
 	@Autowired
 	private WebProxyFactory webProxyFactory;
 	
 	@Bean()
-	
     @Scope("singleton")
 	public PersonControllerImpl  personController() {
-		
-		System.out.println(geocodingService);
-		
 		return webProxyFactory.webModell(PersonControllerImpl.class, new PersonControllerImpl(geocodingService));
 		
 	}
