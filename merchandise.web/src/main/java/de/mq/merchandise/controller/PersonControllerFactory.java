@@ -15,6 +15,9 @@ public class PersonControllerFactory {
 	@Autowired
 	private GeocodingService geocodingService;
 	
+	@Autowired
+	private WebProxyFactory webProxyFactory;
+	
 	protected PersonControllerFactory() {
 		
 	}
@@ -22,9 +25,6 @@ public class PersonControllerFactory {
 		this.geocodingService = geocodingService;
 		this.webProxyFactory = webProxyFactory;
 	}
-
-	@Autowired
-	private WebProxyFactory webProxyFactory;
 	
 	@Bean()
     @Scope("singleton")
