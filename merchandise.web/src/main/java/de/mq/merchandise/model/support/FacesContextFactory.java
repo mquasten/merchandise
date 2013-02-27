@@ -2,8 +2,11 @@ package de.mq.merchandise.model.support;
 
 import javax.faces.context.FacesContext;
 
+import org.primefaces.context.RequestContext;
+
 public interface FacesContextFactory {
 
-	public abstract FacesContext facesContext();
+	FacesContext facesContext();
+	RequestContext requestContext();
 
 }

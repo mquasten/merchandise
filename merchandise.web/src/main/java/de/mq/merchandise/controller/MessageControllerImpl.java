@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import de.mq.merchandise.model.User;
 
 @Component("message")
-public class MessageControllerImpl  extends HashMap<String,String> {
+public class MessageControllerImpl  extends HashMap<String,String> implements MessageSouceController {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -26,6 +26,9 @@ public class MessageControllerImpl  extends HashMap<String,String> {
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.controller.MessageSouceController#get(java.lang.Object)
+	 */
 	@Override
 	public final String get(final Object key) {
 		
