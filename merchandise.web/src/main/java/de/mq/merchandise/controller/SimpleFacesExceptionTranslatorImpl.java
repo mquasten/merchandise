@@ -25,19 +25,19 @@ public class SimpleFacesExceptionTranslatorImpl implements Action {
 
 	@Override
 	public Object execute(final Class<?> result, final String bundle, final ModelRepository modelRepository) throws Exception {
-		
+	
 		final FacesMessage facesMessage = new FacesMessage(messageSourceController.get(bundle));
 		facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
 		
 		facesContextFactory.facesContext().addMessage(null, facesMessage);
 		facesContextFactory.requestContext().addCallbackParam(VALIDATION_FAILED, true);
 		
-		
-		
 		if( result.equals(java.lang.Void.class)){
 			return null;
 		}
 		return modelRepository.beanResolver().getBeanOfType(AOProxyFactory.class).createProxy(result, modelRepository);
 	}
+	
+	
 
 }

@@ -1,75 +1,65 @@
 package de.mq.merchandise.controller;
 
-import javax.faces.application.FacesMessage;
+
 
 import org.primefaces.event.FlowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.stereotype.Component;
 
+import de.mq.mapping.util.proxy.ExceptionTranslation;
+import de.mq.mapping.util.proxy.ExceptionTranslations;
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.customer.CustomerBuilderFactory;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.model.RegistrationImpl;
 import de.mq.merchandise.model.RegistrationImpl.Kind;
-import de.mq.merchandise.model.support.FacesContextFactory;
 
-@Component("registrationWizardController")
-public class RegistrationWizardControllerImpl  {
+
+public class RegistrationWizardControllerImpl   {
 	
 	
 	
-	private final CustomerService customerService;
-	
-	private final FacesContextFactory facesContextFactory;
-	
-	private final CustomerBuilderFactory customerBuilderFactory;
+	protected  RegistrationWizardControllerImpl() {
+	}
 	
 	@Autowired
-	public  RegistrationWizardControllerImpl(final CustomerService customerService, final CustomerBuilderFactory customerBuilderFactory, final FacesContextFactory facesContextFactory){
+	private CustomerService customerService;
+	
+    @Autowired
+	private RegistrationImpl registration;
+	
+	RegistrationWizardControllerImpl(final CustomerService customerService, final RegistrationImpl registration){
 		this.customerService=customerService;
-		this.facesContextFactory=facesContextFactory;
-		this.customerBuilderFactory=customerBuilderFactory;
+		this.registration=registration;
 	}
 	
-	public final String onFlowProcess(final FlowEvent event) {  
+	public String onFlowProcess(final FlowEvent event) { 
 		
-			return event.getNewStep();
-    }  
+		if( event.getOldStep().equalsIgnoreCase("person")&&(event.getNewStep().equalsIgnoreCase("overview") ) &&  (registration.getKind().equals(Kind.User.name() ))) {
+			return customerForUser(event, registration);
+		}
+		return event.getNewStep();
+    }
+
+	String customerForUser(final FlowEvent event, final RegistrationImpl registration) {
+		
+		final Customer customer = initCustomer(registration);
+		if( customer == null) {
+			return event.getOldStep();
+		}
+		registration.getCustomer().setCustomer(customer);
+		return event.getNewStep();
+	}  
 	
 	
-	public final void register(final Customer customer, final Person person) {
+	public void register(final Customer customer, final Person person) {
 		customerService.register(customer, person);
-	}
+	} 
 
 	
-	
-	public final void initCustomer(final RegistrationImpl registration){
-		
-		
-		if(! registration.getKind().equals(Kind.User.name())) {
-			return;
-		}
-		
-		if ( ! registration.getCustomer().getCustomer().hasId()) {
-			return;
-		}
-		
-		try {
-		
-		
-		
-		     /* like a virgin, not a blessed one ... */
-		
-	         registration.getCustomer().setCustomer(customerService.customer( registration.getCustomer().getCustomer().id()));
-		} catch (final InvalidDataAccessApiUsageException ex) {
-			
-			facesContextFactory.facesContext().addMessage(null, new FacesMessage( FacesMessage.SEVERITY_ERROR, "Customer not Found",""+ registration.getCustomer().getCustomer().id()));
-		
-			registration.getCustomer().setCustomer(customerBuilderFactory.customerBuilder().withId(registration.getCustomer().getCustomer().id()).build());
-		}
-		
+	@ExceptionTranslations(value={@ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="customer_not_found" )}, clazz = RegistrationWizardControllerImpl.class)
+	public Customer  initCustomer(final RegistrationImpl registration){
+		return customerService.customer( registration.getCustomer().getCustomer().id());
 	}
 
 	

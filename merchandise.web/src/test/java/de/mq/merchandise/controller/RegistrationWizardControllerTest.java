@@ -29,7 +29,7 @@ public class RegistrationWizardControllerTest {
 
 	private static final long ID = 19680528L;
 	private static final String NEXT_STEP = "person";
-
+/*
 	
 	
 	@Test
@@ -144,7 +144,7 @@ public class RegistrationWizardControllerTest {
 	    Mockito.verifyZeroInteractions(customerService);
 	}
 	
-	
+	*/
 	
 
 }

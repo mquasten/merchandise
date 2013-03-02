@@ -39,7 +39,14 @@
     
  
  
- <bean id="facesContextFactory"  class="de.mq.merchandise.model.support.FacesContextFactoryImpl" />
+<bean id="facesContext" class="javax.faces.context.FacesContext"  factory-method="getCurrentInstance" scope="prototype" />  
+<bean id="facesContextFactory" class="de.mq.merchandise.model.support.FacesContextFactoryImpl">
+   <lookup-method name="facesContext" bean="facesContext" />
+</bean> 
+
+
+ 
+ <!--  bean id="facesContextFactory"  class="de.mq.merchandise.model.support.FacesContextFactoryImpl" /-->
     
   <!--  bean class="de.mq.mapping.util.proxy.support.BeanConventionCGLIBProxyFactory" / --> 
   <!--  bean class="de.mq.mapping.util.proxy.support.SimpleReflectionBeanResolverImpl" /-->
