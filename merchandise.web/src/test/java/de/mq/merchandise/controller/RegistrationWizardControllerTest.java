@@ -1,150 +1,103 @@
 package de.mq.merchandise.controller;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.primefaces.event.FlowEvent;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.context.ApplicationContext;
 
-import de.mq.merchandise.controller.RegistrationWizardControllerImpl;
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.customer.CustomerBuilder;
-import de.mq.merchandise.customer.CustomerBuilderFactory;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
-import de.mq.merchandise.customer.support.CustomerAO;
-import de.mq.merchandise.customer.support.LegalPersonAO;
-import de.mq.merchandise.customer.support.NaturalPersonAO;
-import de.mq.merchandise.model.RegistrationImpl;
-import de.mq.merchandise.model.User;
-import de.mq.merchandise.model.RegistrationImpl.Kind;
-import de.mq.merchandise.model.support.FacesContextFactory;
+import de.mq.merchandise.model.Registration;
+import de.mq.merchandise.model.Registration.Kind;
 
 public class RegistrationWizardControllerTest {
 
 	private static final long ID = 19680528L;
-	private static final String NEXT_STEP = "person";
-/*
+	private Customer customer = Mockito.mock(Customer.class);
+	private CustomerService customerService = Mockito.mock(CustomerService.class);
+    private  RegistrationWizardControllerImpl registrationWizardController;
+	private FlowEvent flowEvent;
+	private ApplicationContext applicationContext;
+	private Registration registration = Mockito.mock(Registration.class);
 	
+	@Before
+	public final void setup() {
+		customer = Mockito.mock(Customer.class);
+		Mockito.when(customer.id()).thenReturn(ID);
+		customerService = Mockito.mock(CustomerService.class);
+		
+		applicationContext = Mockito.mock(ApplicationContext.class);
+		registrationWizardController = new RegistrationWizardControllerImpl(customerService, applicationContext);
+		flowEvent = Mockito.mock(FlowEvent.class);
+		registration = Mockito.mock(Registration.class);
+		Mockito.when(registration.kind()).thenReturn(Registration.Kind.User);
+		Mockito.when(registration.customer()).thenReturn(customer);
+		Mockito.when(applicationContext.getBean(Registration.class)).thenReturn(registration);
+	}
 	
 	@Test
-	public final void onFlowProzess() {
-		final  RegistrationWizardControllerImpl registrationWizardController = new RegistrationWizardControllerImpl(Mockito.mock(CustomerService.class),Mockito.mock(CustomerBuilderFactory.class), Mockito.mock(FacesContextFactory.class));
+	public final void onFlowProzessNotUserRegistration() {
 		
-		final FlowEvent flowEvent = Mockito.mock(FlowEvent.class);
-		Mockito.when(flowEvent.getNewStep()).thenReturn(NEXT_STEP);
+		//registrationWizardController = new RegistrationWizardControllerImpl(Mockito.mock(CustomerService.class), Mockito.mock(ApplicationContext.class));
+		Mockito.when(flowEvent.getNewStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
+		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.GENERAL);
 		
-		Assert.assertEquals(NEXT_STEP, registrationWizardController.onFlowProcess(flowEvent));
+		Assert.assertEquals(RegistrationWizardControllerImpl.PERSON, registrationWizardController.onFlowProcess(flowEvent));
 		
+		Mockito.when(flowEvent.getNewStep()).thenReturn(RegistrationWizardControllerImpl.GENERAL);
+		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
+		Assert.assertEquals(RegistrationWizardControllerImpl.GENERAL, registrationWizardController.onFlowProcess(flowEvent));
+	} 
+	
+	@Test
+	public final void onFlowProzessUserRegistrationNewUser() {
+		Mockito.when(customerService.customer(ID)).thenReturn(customer);
+		
+		
+		Mockito.when(flowEvent.getNewStep()).thenReturn(RegistrationWizardControllerImpl.OVERVIEW);
+		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
+		
+		Assert.assertEquals(RegistrationWizardControllerImpl.OVERVIEW, registrationWizardController.onFlowProcess(flowEvent));
+	}
+	
+	@Test
+	public final void onFlowProzessNotUserRegistrationLastStep() {
+		//Mockito.when(customerService.customer(ID)).thenReturn(customer);
+		Mockito.when(registration.kind()).thenReturn(Kind.LegalPerson);
+		
+		Mockito.when(flowEvent.getNewStep()).thenReturn(RegistrationWizardControllerImpl.OVERVIEW);
+		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
+		
+		Assert.assertEquals(RegistrationWizardControllerImpl.OVERVIEW, registrationWizardController.onFlowProcess(flowEvent));
+		Mockito.verifyNoMoreInteractions(customerService);
+		
+	}
+	
+	@Test
+	public final void onFlowProzessUserRegistrationNewUserCustomerNotFound() {
+		Mockito.when(flowEvent.getNewStep()).thenReturn(RegistrationWizardControllerImpl.OVERVIEW);
+		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
+		
+		Assert.assertEquals(RegistrationWizardControllerImpl.PERSON, registrationWizardController.onFlowProcess(flowEvent));
 	}
 	
 	
 	@Test
 	public final void register(){
-		Customer customer = Mockito.mock(Customer.class);
-		Person person = Mockito.mock(Person.class);
-		final CustomerService customerService = Mockito.mock(CustomerService.class);
-		final  RegistrationWizardControllerImpl registrationWizardController = new RegistrationWizardControllerImpl(customerService, Mockito.mock(CustomerBuilderFactory.class), Mockito.mock(FacesContextFactory.class));
+		
+		final Person person = Mockito.mock(Person.class);
 		registrationWizardController.register(customer, person);
 		Mockito.verify(customerService).register(customer, person);
 	}
 	
-	
+
 	@Test
-	public final void initCustomer(){
-		
-		final CustomerService customerService = Mockito.mock(CustomerService.class);
-		final  RegistrationWizardControllerImpl registrationWizardController = new RegistrationWizardControllerImpl(customerService, Mockito.mock(CustomerBuilderFactory.class), Mockito.mock(FacesContextFactory.class));
-		final CustomerAO customerAO = Mockito.mock(CustomerAO.class);
-		
-		final Customer customer = Mockito.mock(Customer.class);
-		Mockito.when(customer.id()).thenReturn(ID);
-		final Customer result = Mockito.mock(Customer.class);
-		Mockito.when(customerAO.getCustomer()).thenReturn(customer);
-		Mockito.when(customer.hasId()).thenReturn(true);
-		Mockito.when(customerService.customer(ID)).thenReturn(result);
-		final RegistrationImpl registration = new RegistrationImpl(Mockito.mock(LegalPersonAO.class), Mockito.mock(NaturalPersonAO.class), Mockito.mock(User.class), customerAO);
-		registration.setKind(Kind.User.name());
-		
-		
-		registrationWizardController.initCustomer(registration);
-		
-		Mockito.verify(customerAO).setCustomer(result);
-		
+	public final void defaultConstructoer() {
+		Assert.assertNotNull(new RegistrationWizardControllerImpl());
 	}
-	
-	
-	@Test
-	public final void initCustomerNotFound(){
-	
-		final CustomerService customerService = Mockito.mock(CustomerService.class);
-		final FacesContextFactory facesContextFactory = Mockito.mock(FacesContextFactory.class);
-		final CustomerBuilderFactory customerBuilderFactory = Mockito.mock(CustomerBuilderFactory.class);
-		final CustomerBuilder customerBuilder = Mockito.mock(CustomerBuilder.class);
-		Mockito.when(customerBuilderFactory.customerBuilder()).thenReturn(customerBuilder);
-		Mockito.when(customerBuilder.withId(ID)).thenReturn(customerBuilder);
-		final Customer result = Mockito.mock(Customer.class);
-		Mockito.when(customerBuilder.build()).thenReturn(result);
-		Mockito.when(result.id()).thenReturn(ID);
-		
-		final  RegistrationWizardControllerImpl registrationWizardController = new RegistrationWizardControllerImpl(customerService,  customerBuilderFactory,  facesContextFactory);
-		final CustomerAO customerAO = Mockito.mock(CustomerAO.class);
-		
-		final Customer customer = Mockito.mock(Customer.class);
-		Mockito.when(customer.id()).thenReturn(ID);
-		final FacesContext facesContext = Mockito.mock(FacesContext.class);
-		Mockito.when(facesContextFactory.facesContext()).thenReturn(facesContext);
-		
-		Mockito.when(customerAO.getCustomer()).thenReturn(customer);
-		Mockito.when(customer.hasId()).thenReturn(true);
-		Mockito.when(customerService.customer(ID)).thenThrow(new InvalidDataAccessApiUsageException("Customer not found"));
-		final RegistrationImpl registration = new RegistrationImpl(Mockito.mock(LegalPersonAO.class), Mockito.mock(NaturalPersonAO.class), Mockito.mock(User.class), customerAO);
-		registration.setKind(Kind.User.name());
-		
-		
-		registrationWizardController.initCustomer(registration);
-		
-		Mockito.verify(facesContext).addMessage(Mockito.anyString(), Mockito.any(FacesMessage.class));
-		ArgumentCaptor<Customer> argumentCaptor = ArgumentCaptor.forClass(Customer.class);
-		Mockito.verify(customerAO).setCustomer(argumentCaptor.capture());
-		
-		Assert.assertEquals(ID, argumentCaptor.getValue().id());
-		
-	}
-	
-	@Test
-	public final void initCustomerNotUser(){
-		
-		final CustomerService customerService = Mockito.mock(CustomerService.class);
-		final  RegistrationWizardControllerImpl registrationWizardController = new RegistrationWizardControllerImpl( customerService, Mockito.mock(CustomerBuilderFactory.class),  Mockito.mock(FacesContextFactory.class));
-		final CustomerAO customerAO = Mockito.mock(CustomerAO.class);
-		final RegistrationImpl registration = new RegistrationImpl(Mockito.mock(LegalPersonAO.class), Mockito.mock(NaturalPersonAO.class), Mockito.mock(User.class), customerAO);
-	    registration.setKind(Kind.NaturalPerson.name());
-	    registrationWizardController.initCustomer(registration);
-	    
-	    Mockito.verifyZeroInteractions(customerAO, customerService);
-	   
-	}
-	
-	@Test
-	public final void initCustomerNewCustomer(){
-		final CustomerService customerService = Mockito.mock(CustomerService.class);
-		final  RegistrationWizardControllerImpl registrationWizardController = new RegistrationWizardControllerImpl( customerService,  Mockito.mock(CustomerBuilderFactory.class),  Mockito.mock(FacesContextFactory.class));
-		final CustomerAO customerAO = Mockito.mock(CustomerAO.class);
-		final RegistrationImpl registration = new RegistrationImpl(Mockito.mock(LegalPersonAO.class), Mockito.mock(NaturalPersonAO.class), Mockito.mock(User.class), customerAO);
-	    registration.setKind(Kind.User.name());
-	    final Customer customer = Mockito.mock(Customer.class);
-	    Mockito.when(customerAO.getCustomer()).thenReturn(customer);
-	    registrationWizardController.initCustomer(registration);
-	    Mockito.verifyZeroInteractions(customerService);
-	}
-	
-	*/
-	
 
 }

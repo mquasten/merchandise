@@ -32,7 +32,7 @@ public class RegistrationWizardControllerFactory {
 	
 	
 	@Bean()
-    @Scope("view")
+	@Scope("singleton")
 	public RegistrationWizardControllerImpl registrationWizardController() {
 		
 		  final RegistrationWizardControllerImpl controller = new RegistrationWizardControllerImpl();

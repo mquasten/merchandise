@@ -5,12 +5,13 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerAO;
 import de.mq.merchandise.customer.support.LegalPersonAO;
 import de.mq.merchandise.customer.support.NaturalPersonAO;
 import de.mq.merchandise.model.RegistrationImpl;
 import de.mq.merchandise.model.User;
-import de.mq.merchandise.model.RegistrationImpl.Kind;
+import de.mq.merchandise.model.Registration.Kind;
 
 public class RegistrationTest {
 	
@@ -33,7 +34,7 @@ public class RegistrationTest {
 	}
 	
 	@Test
-	public final void kind() {
+	public final void kindString() {
 		final LegalPersonAO  legalPersonAO = Mockito.mock(LegalPersonAO.class);
 		final User user = Mockito.mock(User.class);
 		final CustomerAO customer = Mockito.mock(CustomerAO.class);
@@ -103,6 +104,33 @@ public class RegistrationTest {
 		final CustomerAO customer = Mockito.mock(CustomerAO.class);
 		final RegistrationImpl registration= new RegistrationImpl(legalPersonAO, naturalPersonAO,user, customer);
 		Assert.assertEquals(customer, registration.getCustomer());
+	}
+	
+	@Test
+	public final void customerDomain() {
+		final CustomerAO customerAO = Mockito.mock(CustomerAO.class);
+		final Customer customer = Mockito.mock(Customer.class);
+		Mockito.when(customerAO.getCustomer()).thenReturn(customer);
+		final RegistrationImpl registration= new RegistrationImpl(Mockito.mock(LegalPersonAO.class), Mockito.mock(NaturalPersonAO.class),Mockito.mock(User.class), customerAO);
+		Assert.assertEquals(customer, registration.customer());
+	}
+	
+	@Test
+	public final void assignCustomer() {
+		final CustomerAO customerAO = Mockito.mock(CustomerAO.class);
+		final Customer customer = Mockito.mock(Customer.class);
+	
+		final RegistrationImpl registration= new RegistrationImpl(Mockito.mock(LegalPersonAO.class), Mockito.mock(NaturalPersonAO.class),Mockito.mock(User.class), customerAO);
+		
+		registration.assign(customer);
+		Mockito.verify(customerAO).setCustomer(customer);
+	}
+	
+	@Test
+	public final void kind() {
+		final RegistrationImpl registration= new RegistrationImpl(Mockito.mock(LegalPersonAO.class), Mockito.mock(NaturalPersonAO.class),Mockito.mock(User.class), Mockito.mock(CustomerAO.class));
+	    registration.setKind(Kind.User.name());
+	    Assert.assertEquals(Kind.User, registration.kind());
 	}
 	
 
