@@ -21,7 +21,11 @@
       <composite:attribute name="contactModel" required="true"/>
 </composite:interface>
 
+
+
 <composite:implementation>
+
+
 
      <p:panelGrid columns="2"  >
 
@@ -60,7 +64,7 @@
                 
                     <p:inputText id="name" label="name"  value="#{cc.attrs.person.name}" styleClass="gridInputField" >  
                     	<f:validateBean />
-                    	<p:ajax event="blur" update="@this nameLabel nameMessage"  process="@this"/>
+                    	<p:ajax event="change" update="@this nameLabel nameMessage"  process="@this"/>
                     </p:inputText>
                     <p:message id="nameMessage" for="name" display="text" />
                 
@@ -68,7 +72,7 @@
                     <p:outputLabel id="taxIdLabel"  for="taxId" value="#{cc.attrs.message.person_legalperson_taxId}" />  
                     <p:inputText id="taxId"  label="taxId"  value="#{cc.attrs.person.taxId}"  styleClass="gridInputField" >
                     	<f:validateBean />
-                    	<p:ajax event="blur" update="@this taxIdLabel taxIdMessage"  process="@this"/>
+                    	<p:ajax event="change" update="@this taxIdLabel taxIdMessage"  process="@this"/>
                     </p:inputText>  
                     <p:message id="taxIdMessage" for="taxId"  display="text" />
                     
@@ -76,7 +80,7 @@
                      <p:outputLabel id="foundationDateLabel"  for="foundationDate" value="#{cc.attrs.message.person_legalperson_foundation_date}" styleClass="gridInputField" />        
                      <p:calendar id="foundationDate" value="#{cc.attrs.person.foundationDate}"  showOn="button"   lable="foundationDate"  >
                      	<f:validateBean />
-                     	<p:ajax event="blur" update="@this foundationDateLabel foundationDateMessage" process="@this"/>
+                     	<p:ajax event="change" update="@this foundationDateLabel foundationDateMessage" process="@this"/>
                      </p:calendar> 
                      <p:message id="foundationDateMessage" for="foundationDate" display="text" />
                               
@@ -87,7 +91,7 @@
     	<p:outputLabel id="customerLabel"  for="customer" value="#{cc.attrs.message.person_naturalperson_customer}" />  
     	 <p:inputText id="customer"    value="#{cc.attrs.customer.id}" styleClass="gridInputField" >
     	 	<f:validateBean />
-    	 	<p:ajax event="blur" update="@this customerLabel customerMessage"  process="@this"/>
+    	 	<p:ajax event="change" update="@this customerLabel customerMessage"  process="@this"/>
     	 </p:inputText>  
     	  <p:message id="customerMessage" for="customer" display="text" />
     </p:panelGrid>     
@@ -98,7 +102,7 @@
    		  	
    		  </p:outputLabel>  
           <p:inputText id="firstname"    value="#{cc.attrs.person.firstName}" styleClass="gridInputField" >
-          	<p:ajax event="blur" update="@this firstnameLabel firstnameMessage"  process="@this"/>
+          	<p:ajax event="change" update="@this firstnameLabel firstnameMessage"  process="@this"/>
           	<f:validateBean />
           
           </p:inputText>  
@@ -107,7 +111,7 @@
           <p:outputLabel id="lastnameLabel" for="lastname" value="#{cc.attrs.message.person_naturalperson_lastname}" />  
           <p:inputText id="lastname"    value="#{cc.attrs.person.lastName}" styleClass="gridInputField" >
           		<f:validateBean />
-          		<p:ajax  event="blur" update="@this lastnameLabel lastnameMessage" process="@this"/>
+          		<p:ajax  event="change" update="@this lastnameLabel lastnameMessage" process="@this"/>
           </p:inputText> 
            <p:message id="lastnameMessage" for="lastname" display="text" />
            
@@ -115,7 +119,7 @@
           <p:outputLabel id="birthDateLabel" for="birthDate" value="#{cc.attrs.message.person_naturalperson_birthdate}" styleClass="gridInputField" />        
           <p:calendar id="birthDate" value="#{cc.attrs.person.nativity.birthDate}"  showOn="button"    >
           	<f:validateBean />
-          	<p:ajax event="blur" update="@this birthDateLabel birthDateMessage" process="@this"/>
+          	<p:ajax event="change" update="@this birthDateLabel birthDateMessage" process="@this"/>
           </p:calendar> 
            <p:message id="birthDateMessage" for="birthDate" display="text" />
           
@@ -123,7 +127,7 @@
           <p:outputLabel id="birthPlaceLabel"  for="birthPlace" value="#{cc.attrs.message.person_naturalperson_birthplace}" />  
           <p:inputText id="birthPlace"    value="#{cc.attrs.person.nativity.birthPlace}" styleClass="gridInputField" >
           	<f:validateBean />
-          	<p:ajax event="blur" update="@this birthPlaceLabel birthPlaceMessage"  process="@this"/>
+          	<p:ajax event="change" update="@this birthPlaceLabel birthPlaceMessage"  process="@this"/>
           </p:inputText> 
    	 	<p:message id="birthPlaceMessage"  for="birthPlace" display="text" />
    </p:panelGrid>
@@ -134,20 +138,20 @@
                  <p:outputLabel  id="tradeRegisterZipCodeLabel" for="tradeRegisterZipCode" value="#{cc.attrs.message.person_legalperson_tradeRegister_zipCode}" />        
                  <p:inputText id="tradeRegisterZipCode" label="tradeRegisterZipCode"  value="#{cc.attrs.person.tradeRegister.zipCode}"  styleClass="gridInputField"  >
                  		<f:validateBean />
-                 		<p:ajax event="blur" update="@this tradeRegisterZipCodeLabel tradeRegisterZipCodeMessage"  process="@this"/>
+                 		<p:ajax event="change" update="@this tradeRegisterZipCodeLabel tradeRegisterZipCodeMessage"  process="@this"/>
                  </p:inputText>
                <p:message id="tradeRegisterZipCodeMessage" for="tradeRegisterZipCode" display="text" />
                
                 <p:outputLabel id="tradeRegisterCityLabel" for="tradeRegisterCity" value="#{cc.attrs.message.person_legalperson_tradeRegister_city}"  />        
                      <p:inputText id="tradeRegisterCity"  label="tradeRegisterCity"    value="#{cc.attrs.person.tradeRegister.city}" styleClass="gridInputField"  >
                      	<f:validateBean />
-                     	<p:ajax event="blur" update="@this tradeRegisterZipCodeLabel tradeRegisterCityMessage"   process="@this"/>
+                     	<p:ajax event="change" update="@this tradeRegisterZipCodeLabel tradeRegisterCityMessage"   process="@this"/>
                      </p:inputText>
                 <p:message  id="tradeRegisterCityMessage" for="tradeRegisterCity" display="text" />
                 <p:outputLabel id="tradeRegisterReferenceLabel" for="tradeRegisterReference" value="#{cc.attrs.message.person_legalperson_tradeRegister_reference}" />        
                 <p:inputText id="tradeRegisterReference"   label="tradeRegisterReference"  value="#{cc.attrs.person.tradeRegister.reference}"  styleClass="gridInputField"  >
                 	<f:validateBean />
-                	<p:ajax event="blur" update="@this tradeRegisterReferenceLabel tradeRegisterReferenceMessage"  process="@this"/>
+                	<p:ajax event="change" update="@this tradeRegisterReferenceLabel tradeRegisterReferenceMessage"  process="@this"/>
                 </p:inputText>
                 <p:message id="tradeRegisterReferenceMessage" for="tradeRegisterReference" display="text" />
       </p:panelGrid>
@@ -157,14 +161,14 @@
             <p:outputLabel id="customerPasswordLabel" for="customerPassword" value="#{cc.attrs.message.person_password_password}" />          
             <p:password id="customerPassword" value="#{cc.attrs.person.password}" label="customerPassword" styleClass="gridInputField"    redisplay="true" >
             	<f:validateBean />
-            	<p:ajax event="blur" update="@this customerPasswordLabel customerPasswordMessage" process="@this"/>
+            	<p:ajax event="change" update="@this customerPasswordLabel customerPasswordMessage" process="@this"/>
             </p:password>
 			 <p:message id="customerPasswordMessage" for="customerPassword" display="text" />		
              <p:outputLabel id="customerPasswordConfirmedLabel"  for="customerPasswordConfirmed" value="#{cc.attrs.message.person_password_confirmation}"  />        
                   
              <p:password  id="customerPasswordConfirmed" value="#{cc.attrs.person.confirmedPassword}" label="customerPasswordConfirmed" styleClass="gridInputField"   redisplay="true">
              	<f:validateBean />
-             	<p:ajax event="blur" update="@this customerPasswordConfirmedLabel customerPasswordConfirmedMessage" process="@this"/>
+             	<p:ajax event="change" update="@this customerPasswordConfirmedLabel customerPasswordConfirmedMessage" process="@this"/>
              </p:password>
               <p:message id="customerPasswordConfirmedMessage" for="customerPasswordConfirmed" display="text" />	
                 
@@ -274,12 +278,13 @@
     </p:panel>
     
    </p:panelGrid>      
+  
    
-   <contact:address id="addressDialog"  contactModel="#{cc.attrs.contactModel}"  person="#{cc.attrs.person}" message="#{message}"/>
-   <contact:contact id="contactDialog"  contactModel="#{cc.attrs.contactModel}"  person="#{cc.attrs.person}" message="#{message}"/>
- 
+ <contact:address id="addressDialog"  contactModel="#{cc.attrs.contactModel}"  person="#{cc.attrs.person}" message="#{message}"/>
+<contact:contact id="contactDialog"  contactModel="#{cc.attrs.contactModel}"  person="#{cc.attrs.person}" message="#{message}"/>
      
 </composite:implementation>
 
 </body>
+
 </html>
