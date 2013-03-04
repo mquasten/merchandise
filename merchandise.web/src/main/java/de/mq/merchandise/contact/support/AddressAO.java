@@ -52,7 +52,7 @@ public abstract class AddressAO implements Serializable {
 	
 	@Setter(clazz=AddressImpl.class, value = "street")
 	public abstract void setStreet(final String street);
-	
+
 	@Size(min=1,  message="{mandatory_field}")
 	@Getter(clazz=AddressImpl.class, value = "houseNumber" )
 	public abstract String getHouseNumber();

@@ -19,13 +19,13 @@
 	</composite:interface>
 
 	<composite:implementation>
-
+	
 		<p:dialog
 			header="#{cc.attrs.message.contact_dialog_headline}"
 			widgetVar="contactDlg" modal="true">
 				
 			<p:ajax event="close" update="@form"  />
-			<h:form id="contactForm">
+			
 				<h1 style="text-align: center">
 					<h:outputText id="contact_headline"
 						value="#{cc.attrs.message.contact_dialog_contact_headline}" />
@@ -106,7 +106,7 @@
 				
 				
                
-			</h:form>
+			
 
 
 
@@ -127,5 +127,7 @@
 
 
 	</composite:implementation>
+	
+	
 </body>
 </html>

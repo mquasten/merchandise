@@ -41,7 +41,7 @@ public class RegistrationWizardControllerImpl   {
 	}
 	
 	public String onFlowProcess(final FlowEvent event) { 
-		final Registration registration = applicationContext.getBean(Registration.class);
+		final Registration registration = applicationContext.getBean(Registration.class);	
 		if( event.getOldStep().equalsIgnoreCase(PERSON)&&(event.getNewStep().equalsIgnoreCase(OVERVIEW) ) &&  (registration.kind().equals(Kind.User ))) {
 			return customerForUser(event, registration);
 		}

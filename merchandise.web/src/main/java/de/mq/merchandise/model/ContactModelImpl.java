@@ -37,9 +37,6 @@ public class ContactModelImpl implements Serializable {
 	private String contactType= Kind.Phone.name();
 	
 
-
-	
-
 	@Autowired
 	public ContactModelImpl(final AddressAO addressAO, final PostBoxAO cityAddressAO, final PhoneContactAO phoneContactAO, final EMailContactAO emailContactAO, final MessengerContactAO messengerContactAO) {
 		addressMap.put(Kind.Address.name(), addressAO);
