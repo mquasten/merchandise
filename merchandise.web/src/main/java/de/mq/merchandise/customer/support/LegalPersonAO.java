@@ -16,6 +16,8 @@ import de.mq.mapping.util.proxy.Setter;
 import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Enum2StringConverter;
 import de.mq.merchandise.contact.support.AddressSelector;
+import de.mq.merchandise.contact.support.CheckAddressWithCoordinatesAware;
+import de.mq.merchandise.contact.support.CheckLoginAware;
 import de.mq.merchandise.contact.support.ContactSelector;
 import de.mq.merchandise.customer.LegalPerson;
 import de.mq.merchandise.customer.support.LegalPersonImpl;
@@ -96,8 +98,10 @@ public  abstract class   LegalPersonAO   implements Serializable {
 	public abstract void setPerson(final LegalPerson domain);
 	
 	@GetterProxyCollection(clazz=LegalPersonImpl.class,collectionClass=ArrayList.class, name="addresses" , proxyClass = AddressSelector.class, converter=HibernateProxyConverter.class )
+	@CheckAddressWithCoordinatesAware()
 	public abstract List<Object> getAddresses();
 	
+    @CheckLoginAware()
 	@GetterProxyCollection(clazz=LegalPersonImpl.class,collectionClass=ArrayList.class, name="contacts" , proxyClass = ContactSelector.class, converter=HibernateProxyConverter.class )
 	public abstract List<Object> getContacts();
 

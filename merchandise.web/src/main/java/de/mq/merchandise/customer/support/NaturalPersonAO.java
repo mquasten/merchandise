@@ -14,6 +14,8 @@ import de.mq.mapping.util.proxy.GetterProxyCollection;
 import de.mq.mapping.util.proxy.Setter;
 import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.merchandise.contact.support.AddressSelector;
+import de.mq.merchandise.contact.support.CheckAddressWithCoordinatesAware;
+import de.mq.merchandise.contact.support.CheckLoginAware;
 import de.mq.merchandise.contact.support.ContactSelector;
 import de.mq.merchandise.customer.NaturalPerson;
 import de.mq.merchandise.customer.support.NaturalPersonImpl;
@@ -78,10 +80,12 @@ public abstract class NaturalPersonAO implements Serializable  {
 	
 
 	@GetterProxyCollection(clazz=NaturalPersonImpl.class,collectionClass=ArrayList.class, name="addresses" , proxyClass = AddressSelector.class, converter=HibernateProxyConverter.class )
+	@CheckAddressWithCoordinatesAware()
 	public abstract List<Object> getAddresses();
 	
 	
 	@GetterProxyCollection(clazz=NaturalPersonImpl.class,collectionClass=ArrayList.class, name="contacts" , proxyClass = ContactSelector.class, converter=HibernateProxyConverter.class )
+	@CheckLoginAware
 	public abstract List<Object> getContacts();
 	
 	

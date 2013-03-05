@@ -1,5 +1,7 @@
 package de.mq.merchandise.controller;
 
+import javax.validation.Validator;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -23,15 +25,17 @@ public class RegistrationWizardControllerTest {
 	private FlowEvent flowEvent;
 	private ApplicationContext applicationContext;
 	private Registration registration = Mockito.mock(Registration.class);
+	private Validator validator;
 	
 	@Before
 	public final void setup() {
+		validator=Mockito.mock(Validator.class);
 		customer = Mockito.mock(Customer.class);
 		Mockito.when(customer.id()).thenReturn(ID);
 		customerService = Mockito.mock(CustomerService.class);
 		
 		applicationContext = Mockito.mock(ApplicationContext.class);
-		registrationWizardController = new RegistrationWizardControllerImpl(customerService, applicationContext);
+		registrationWizardController = new RegistrationWizardControllerImpl(customerService, applicationContext, validator);
 		flowEvent = Mockito.mock(FlowEvent.class);
 		registration = Mockito.mock(Registration.class);
 		Mockito.when(registration.kind()).thenReturn(Registration.Kind.User);

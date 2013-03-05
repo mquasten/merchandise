@@ -15,4 +15,7 @@ public interface Registration {
 
 	void assign(final Customer customer);
 
+	Object getPerson();
+	
+
 }

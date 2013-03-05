@@ -62,4 +62,10 @@
     
     
    </bean>
+   
+   <bean id="validatorFactory" class="javax.validation.Validation"
+        factory-method="buildDefaultValidatorFactory" />
+
+    <bean id="validator" factory-bean="validatorFactory"
+        factory-method="getValidator" />
    </beans>
