@@ -98,10 +98,11 @@ public  abstract class   LegalPersonAO   implements Serializable {
 	public abstract void setPerson(final LegalPerson domain);
 	
 	@GetterProxyCollection(clazz=LegalPersonImpl.class,collectionClass=ArrayList.class, name="addresses" , proxyClass = AddressSelector.class, converter=HibernateProxyConverter.class )
-	@CheckAddressWithCoordinatesAware()
+	
+	@CheckAddressWithCoordinatesAware(message="{missing_address_coordinates}")
 	public abstract List<Object> getAddresses();
 	
-    @CheckLoginAware()
+	@CheckLoginAware(message="{missing_login_contact}")
 	@GetterProxyCollection(clazz=LegalPersonImpl.class,collectionClass=ArrayList.class, name="contacts" , proxyClass = ContactSelector.class, converter=HibernateProxyConverter.class )
 	public abstract List<Object> getContacts();
 

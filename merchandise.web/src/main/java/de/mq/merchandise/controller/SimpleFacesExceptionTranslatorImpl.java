@@ -1,12 +1,15 @@
 package de.mq.merchandise.controller;
 
 import javax.faces.application.FacesMessage;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.Action;
+import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.ModelRepository;
 import de.mq.merchandise.model.support.FacesContextFactory;
 
@@ -24,18 +27,36 @@ public class SimpleFacesExceptionTranslatorImpl implements Action {
 	}
 
 	@Override
-	public Object execute(final Class<?> result, final String bundle, final ModelRepository modelRepository) throws Exception {
-	
-		final FacesMessage facesMessage = new FacesMessage(messageSourceController.get(bundle));
-		facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+	public Object execute(final ExceptionTranslation exceptionTranslation, final ModelRepository modelRepository, final Throwable ex, final Object[] args ) throws Exception {
+		if (ex instanceof ConstraintViolationException) {
+			addConstraintViolations(ex);
+			
+		} else {
+			addFacesMessage(null, messageSourceController.get(exceptionTranslation.bundle()));
+		}
 		
-		facesContextFactory.facesContext().addMessage(null, facesMessage);
+		
 		facesContextFactory.requestContext().addCallbackParam(VALIDATION_FAILED, true);
 		
-		if( result.equals(java.lang.Void.class)){
+		if( exceptionTranslation.result().equals(java.lang.Void.class)){
 			return null;
 		}
-		return modelRepository.beanResolver().getBeanOfType(AOProxyFactory.class).createProxy(result, modelRepository);
+		return modelRepository.beanResolver().getBeanOfType(AOProxyFactory.class).createProxy(exceptionTranslation.result(), modelRepository);
+	}
+
+	private void addConstraintViolations(final Throwable ex) {
+		final ConstraintViolationException constraintViolationException = (ConstraintViolationException) ex ; 
+		
+		for(ConstraintViolation<?> constraintViolation : constraintViolationException.getConstraintViolations()){
+			addFacesMessage(null, constraintViolation.getMessage());
+		}
+	}
+
+	private void addFacesMessage(final String clientId, final String message) {
+		final FacesMessage facesMessage = new FacesMessage(message);
+		facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+		
+		facesContextFactory.facesContext().addMessage(clientId, facesMessage);
 	}
 	
 	

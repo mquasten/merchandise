@@ -4,6 +4,7 @@ package de.mq.merchandise.controller;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.faces.application.FacesMessage;
@@ -57,7 +58,7 @@ public class RegistrationWizardControllerImpl   {
 	
 	public String onFlowProcess(final FlowEvent event) { 
 		final Registration registration = applicationContext.getBean(Registration.class);	
-		if ((event.getNewStep().equalsIgnoreCase(OVERVIEW) ) && (! populateValidationExceptions(registration))) {
+		if ((event.getNewStep().equalsIgnoreCase(OVERVIEW) ) && (populateValidationExceptions(registration) == null)) {
 				return event.getOldStep();
 		}
 		
@@ -67,13 +68,20 @@ public class RegistrationWizardControllerImpl   {
 		return event.getNewStep();
     }
 
-	private boolean  populateValidationExceptions(final Registration registration) {
-		final Set<ConstraintViolation<Object>> errors = validator.validate(registration.getPerson());
-		for(ConstraintViolation<?> error : errors ){
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(error.getMessage()));
-		}
-		return errors.isEmpty();
+	
+	@ExceptionTranslations(value={@ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = ConstraintViolationException.class  )}, clazz = RegistrationWizardControllerImpl.class)
+	String  populateValidationExceptions(final Registration registration) {
+		validateBean(registration);
+		return "ok";
 	}
+
+	// :ToDo Service in application 
+	private void validateBean(final Registration registration) {
+		final Set<ConstraintViolation<Object>> errors = validator.validate(registration.getPerson());
+		if( ! errors.isEmpty()){
+			throw new ConstraintViolationException(new HashSet(errors));
+		}
+	} 
 
 	String customerForUser(final FlowEvent event, final Registration registration) {
 		

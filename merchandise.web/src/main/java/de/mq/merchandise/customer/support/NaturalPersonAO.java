@@ -80,12 +80,12 @@ public abstract class NaturalPersonAO implements Serializable  {
 	
 
 	@GetterProxyCollection(clazz=NaturalPersonImpl.class,collectionClass=ArrayList.class, name="addresses" , proxyClass = AddressSelector.class, converter=HibernateProxyConverter.class )
-	@CheckAddressWithCoordinatesAware()
+	@CheckAddressWithCoordinatesAware(message="{missing_address_coordinates}")
 	public abstract List<Object> getAddresses();
 	
 	
 	@GetterProxyCollection(clazz=NaturalPersonImpl.class,collectionClass=ArrayList.class, name="contacts" , proxyClass = ContactSelector.class, converter=HibernateProxyConverter.class )
-	@CheckLoginAware
+	@CheckLoginAware(message="{missing_login_contact}")
 	public abstract List<Object> getContacts();
 	
 	
