@@ -1,11 +1,16 @@
 package de.mq.merchandise.controller;
 
+
 import javax.faces.application.FacesMessage;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.Action;
@@ -38,10 +43,22 @@ public class SimpleFacesExceptionTranslatorImpl implements Action {
 		
 		facesContextFactory.requestContext().addCallbackParam(VALIDATION_FAILED, true);
 		
+		if(! exceptionTranslation.resultExpression().trim().isEmpty()) {
+			return parseEl(exceptionTranslation, args);
+		}
+		
+		
 		if( exceptionTranslation.result().equals(java.lang.Void.class)){
 			return null;
 		}
 		return modelRepository.beanResolver().getBeanOfType(AOProxyFactory.class).createProxy(exceptionTranslation.result(), modelRepository);
+	}
+
+	private Object parseEl(final ExceptionTranslation exceptionTranslation, final Object[] args) {
+		final ExpressionParser parser = new SpelExpressionParser();
+		final StandardEvaluationContext context = new StandardEvaluationContext();
+		context.setVariable("args", CollectionUtils.arrayToList(args));
+		return parser.parseExpression(exceptionTranslation.resultExpression()).getValue(context);
 	}
 
 	private void addConstraintViolations(final Throwable ex) {

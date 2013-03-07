@@ -57,6 +57,7 @@ public class FacesExceptionTranslatorTest {
 		throwThrowable = Mockito.mock(Throwable.class);
 		exceptionTranslation = Mockito.mock(ExceptionTranslation.class);
 		Mockito.when(exceptionTranslation.bundle()).thenReturn(MESSAGE_BUNDLE);
+		Mockito.when(exceptionTranslation.resultExpression()).thenReturn("");
 	}
 	
 

@@ -81,13 +81,7 @@ public class RegistrationWizardControllerTest {
 		
 	}
 	
-	@Test
-	public final void onFlowProzessUserRegistrationNewUserCustomerNotFound() {
-		Mockito.when(flowEvent.getNewStep()).thenReturn(RegistrationWizardControllerImpl.OVERVIEW);
-		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
-		
-		Assert.assertEquals(RegistrationWizardControllerImpl.PERSON, registrationWizardController.onFlowProcess(flowEvent));
-	}
+	
 	
 	
 	@Test
