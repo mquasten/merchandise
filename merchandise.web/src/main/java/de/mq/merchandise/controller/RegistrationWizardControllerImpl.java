@@ -2,12 +2,7 @@ package de.mq.merchandise.controller;
 
 
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 
 import org.primefaces.event.FlowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +16,7 @@ import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.model.Registration;
 import de.mq.merchandise.model.Registration.Kind;
+import de.mq.merchandise.util.ValidationService;
 
 
 public class RegistrationWizardControllerImpl   {
@@ -43,12 +39,12 @@ public class RegistrationWizardControllerImpl   {
 	private ApplicationContext applicationContext;
     
     @Autowired
-    private Validator validator;
+    private ValidationService validationService;
 	
-	RegistrationWizardControllerImpl(final CustomerService customerService, final ApplicationContext applicationContext, final Validator validator){
+	RegistrationWizardControllerImpl(final CustomerService customerService, final ApplicationContext applicationContext, final ValidationService validationService){
 		this.customerService=customerService;
 		this.applicationContext=applicationContext;
-		this.validator=validator;
+		this.validationService=validationService;
 	}
 	
 	@ExceptionTranslations(value={@ExceptionTranslation( resultExpression="#args[0].oldStep",  action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="customer_not_found" ) ,
@@ -57,7 +53,7 @@ public class RegistrationWizardControllerImpl   {
 		final Registration registration = applicationContext.getBean(Registration.class);	
 		
 		if (isGoToOverviewPage(event)) {
-			validateBean(registration.getPerson());
+			validationService.validate(registration.getPerson());
 		}
 		
 		if( isGoToOverViewPageForNewUserAndExistingCustomer(event, registration)) {
@@ -74,21 +70,6 @@ public class RegistrationWizardControllerImpl   {
 	private boolean isGoToOverviewPage(final FlowEvent event) {
 		return event.getNewStep().equalsIgnoreCase(OVERVIEW);
 	}
-
-	
-
-	// :ToDo Service in application 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void validateBean(final Object person) {
-		final Set<ConstraintViolation<Object>> errors = validator.validate(person);
-		if(errors.isEmpty()){
-		   return;	
-		}
-		throw new ConstraintViolationException(new HashSet(errors));
-	} 
-
-  
-	
 	
 	public void register(final Customer customer, final Person person) {
 		customerService.register(customer, person);

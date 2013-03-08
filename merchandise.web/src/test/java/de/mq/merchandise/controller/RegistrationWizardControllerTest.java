@@ -1,7 +1,5 @@
 package de.mq.merchandise.controller;
 
-import javax.validation.Validator;
-
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -15,6 +13,7 @@ import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.model.Registration;
 import de.mq.merchandise.model.Registration.Kind;
+import de.mq.merchandise.util.ValidationService;
 
 public class RegistrationWizardControllerTest {
 
@@ -25,22 +24,23 @@ public class RegistrationWizardControllerTest {
 	private FlowEvent flowEvent;
 	private ApplicationContext applicationContext;
 	private Registration registration = Mockito.mock(Registration.class);
-	private Validator validator;
+	private ValidationService validationService;
 	
 	@Before
 	public final void setup() {
-		validator=Mockito.mock(Validator.class);
+		validationService=Mockito.mock(ValidationService.class);
 		customer = Mockito.mock(Customer.class);
 		Mockito.when(customer.id()).thenReturn(ID);
 		customerService = Mockito.mock(CustomerService.class);
 		
 		applicationContext = Mockito.mock(ApplicationContext.class);
-		registrationWizardController = new RegistrationWizardControllerImpl(customerService, applicationContext, validator);
+		registrationWizardController = new RegistrationWizardControllerImpl(customerService, applicationContext, validationService);
 		flowEvent = Mockito.mock(FlowEvent.class);
 		registration = Mockito.mock(Registration.class);
 		Mockito.when(registration.kind()).thenReturn(Registration.Kind.User);
 		Mockito.when(registration.customer()).thenReturn(customer);
 		Mockito.when(applicationContext.getBean(Registration.class)).thenReturn(registration);
+		
 	}
 	
 	@Test
@@ -55,6 +55,7 @@ public class RegistrationWizardControllerTest {
 		Mockito.when(flowEvent.getNewStep()).thenReturn(RegistrationWizardControllerImpl.GENERAL);
 		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
 		Assert.assertEquals(RegistrationWizardControllerImpl.GENERAL, registrationWizardController.onFlowProcess(flowEvent));
+		Mockito.verify(validationService).validate(registration.getPerson());
 	} 
 	
 	@Test
@@ -66,6 +67,7 @@ public class RegistrationWizardControllerTest {
 		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
 		
 		Assert.assertEquals(RegistrationWizardControllerImpl.OVERVIEW, registrationWizardController.onFlowProcess(flowEvent));
+		Mockito.verify(validationService).validate(registration.getPerson());
 	}
 	
 	@Test
@@ -78,7 +80,7 @@ public class RegistrationWizardControllerTest {
 		
 		Assert.assertEquals(RegistrationWizardControllerImpl.OVERVIEW, registrationWizardController.onFlowProcess(flowEvent));
 		Mockito.verifyNoMoreInteractions(customerService);
-		
+		Mockito.verify(validationService).validate(registration.getPerson());
 	}
 	
 	
