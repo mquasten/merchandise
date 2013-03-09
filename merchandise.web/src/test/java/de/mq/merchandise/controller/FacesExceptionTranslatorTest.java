@@ -1,7 +1,12 @@
 package de.mq.merchandise.controller;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import junit.framework.Assert;
 
@@ -35,7 +40,7 @@ public class FacesExceptionTranslatorTest {
 	private ArgumentCaptor<String> clientIdArgumentCaptor ;
 	private ExceptionTranslation exceptionTranslation ;
 	
-	private final Object args[] = new Object[] { } ; 
+	private  Object args[] = new Object[] {  "Failure"} ; 
 	
 	private Throwable throwThrowable;
 	
@@ -107,6 +112,29 @@ public class FacesExceptionTranslatorTest {
 		Mockito.verify(beanResolver).getBeanOfType(AOProxyFactory.class);
 		
 		
+	}
+	
+	@Test
+	public final void translateValidationExceptions() throws Exception {
+		final Set<ConstraintViolation<?>> constraintViolations = new HashSet<>();
+		final ConstraintViolation<?> constraintViolation = Mockito.mock(ConstraintViolation.class);
+		Mockito.when(constraintViolation.getMessage()).thenReturn(ERROR_MESSAGE);
+		constraintViolations.add(constraintViolation);
+		
+		Mockito.when(exceptionTranslation.resultExpression()).thenReturn("#args[0]");
+		
+		throwThrowable=Mockito.mock(ConstraintViolationException.class);
+		Mockito.when(((ConstraintViolationException) throwThrowable).getConstraintViolations()).thenReturn(constraintViolations);
+		
+		Assert.assertEquals(args[0], action.execute(exceptionTranslation, modelRepository, throwThrowable, args));
+		
+		
+		Mockito.verify(facesContext).addMessage(clientIdArgumentCaptor.capture(), facesMessageArgumentCaptor.capture());
+		Mockito.verify(requestContext).addCallbackParam(SimpleFacesExceptionTranslatorImpl.VALIDATION_FAILED, true);
+		
+		Assert.assertNull(clientIdArgumentCaptor.getValue());
+		Assert.assertEquals(ERROR_MESSAGE, facesMessageArgumentCaptor.getValue().getSummary());
+		Assert.assertEquals(FacesMessage.SEVERITY_ERROR, facesMessageArgumentCaptor.getValue().getSeverity());
 	}
 
 }

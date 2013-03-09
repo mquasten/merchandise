@@ -21,6 +21,7 @@ import de.mq.merchandise.model.support.FacesContextFactory;
 @Component
 public class SimpleFacesExceptionTranslatorImpl implements Action {
 	
+	private static final String ARGS = "args";
 	static final String VALIDATION_FAILED = "validationFailed";
 	final private MessageSouceController messageSourceController;
 	final private FacesContextFactory facesContextFactory;
@@ -57,7 +58,7 @@ public class SimpleFacesExceptionTranslatorImpl implements Action {
 	private Object parseEl(final ExceptionTranslation exceptionTranslation, final Object[] args) {
 		final ExpressionParser parser = new SpelExpressionParser();
 		final StandardEvaluationContext context = new StandardEvaluationContext();
-		context.setVariable("args", CollectionUtils.arrayToList(args));
+		context.setVariable(ARGS, CollectionUtils.arrayToList(args));
 		return parser.parseExpression(exceptionTranslation.resultExpression()).getValue(context);
 	}
 

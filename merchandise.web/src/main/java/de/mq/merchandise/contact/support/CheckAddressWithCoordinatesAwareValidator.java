@@ -13,7 +13,7 @@ public class CheckAddressWithCoordinatesAwareValidator implements ConstraintVali
 	}
 
 	@Override
-	public boolean isValid(final Collection<?> contacts, final ConstraintValidatorContext context) {
+	public  boolean isValid(final Collection<?> contacts, final ConstraintValidatorContext context) {
 		for(final Object contact: contacts){
 			
 			if (contact instanceof AddressAO) {
@@ -22,5 +22,6 @@ public class CheckAddressWithCoordinatesAwareValidator implements ConstraintVali
 		}
 		return false;
 	}
+	
 
 }
