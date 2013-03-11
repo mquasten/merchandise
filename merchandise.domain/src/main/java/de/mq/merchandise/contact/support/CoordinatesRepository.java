@@ -14,9 +14,8 @@ interface CoordinatesRepository {
 	/**
 	 * Gets the Coordinates from the given address
 	 * @param cityAddress the address for witch the coordinates should be given
-	 * @param maxDeviation the maximum of deviation that is allowed. It's calculated from latLonBox, the diagonal, distance ball north ,west to south east
 	 * @return the longitude and latitude for the given address
 	 */
-	public abstract Coordinates forAddress(final CityAddress cityAddress, final double maxDeviation );
+	public abstract Coordinates forAddress(final CityAddress cityAddress);
 
 }
