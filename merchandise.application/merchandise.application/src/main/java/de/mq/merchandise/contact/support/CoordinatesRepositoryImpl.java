@@ -17,7 +17,10 @@ import de.mq.merchandise.contact.Coordinates;
 class CoordinatesRepositoryImpl implements CoordinatesRepository {
 
 	static final String ADDRESS_PARAM_KEY = "address";
-	static final String GOOGLE_URL = "http://maps.google.com/maps/geo?q={"+ADDRESS_PARAM_KEY+"}&output=json";
+	
+	private static final String SENSOR_PARAM_KEY = "sensor";
+	
+	static final String GOOGLE_URL = "http://maps.googleapis.com/maps/api/geocode/json?address={"+  ADDRESS_PARAM_KEY +"}&sensor={" +SENSOR_PARAM_KEY+ "}";
 	private final RestOperations restOperations;
 
 	@Autowired
@@ -35,36 +38,34 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 	@Override
 	public final Coordinates forAddress(final CityAddress cityAddress, final double maxDeviation) {
 
-		final Map<String, String> params = new HashMap<>();
+		final Map<String, Object> params = new HashMap<>();
 		params.put(ADDRESS_PARAM_KEY, cityAddress.contact());
-
+        params.put(SENSOR_PARAM_KEY  , false );
 	
 		final Map<String, ?> results = restOperations.getForObject(GOOGLE_URL,HashMap.class, params);
+		final String status = fromMap(String.class, results, "status");
 		
-
-		final Number status = fromMap(Number.class, results, "Status", "code");
-		if (status.intValue() != 200) {
-			throw new IllegalStateException("Unable to reverse geocode the  address, status: " + status.intValue());
+		if (! status.equalsIgnoreCase("ok") ) {
+			throw new IllegalStateException("Unable to reverse geocode the  address, status: " + status);
 		}
-
-		final List<?> placemarks = fromMap(List.class, results, "Placemark");
+		
+		
+		
+		final List<?>  placemarks = fromMap(List.class, results, "results");
 
 		DataAccessUtils.requiredSingleResult(placemarks);
-
-		final Number[] coordinates = (Number[]) fromMap(List.class,placemarks.get(0), "Point", "coordinates").toArray(new Number[3]);
-
-		final Map<String, ?> latLonBox = fromMap(Map.class, placemarks.get(0), "ExtendedData", "LatLonBox");
-
-		final Coordinates northEast = new CoordinatesBuilderImpl().withLatitude(fromMap(Number.class, latLonBox, "north").doubleValue()).withLongitude(fromMap(Number.class, latLonBox, "east").doubleValue()).build();
-		final Coordinates southWest = new CoordinatesBuilderImpl().withLatitude(fromMap(Number.class, latLonBox, "south").doubleValue()).withLongitude(fromMap(Number.class, latLonBox, "west").doubleValue()).build();
-
-		final double deviation = northEast.distance(southWest);
-
-		if (deviation > maxDeviation) {
-			throw new IllegalArgumentException("Deviation is to large: " + deviation + "km");
+		
+		final Map<String, ?> coordinates = fromMap(Map.class, placemarks.get(0), "geometry" , "location" );
+		final Number lat = fromMap(Number.class, coordinates, "lat");
+		final Number lng =  fromMap(Number.class, coordinates, "lng");
+		final List<String> types = fromMap(List.class, placemarks.get(0), "types");
+		
+		if( ! types.contains("street_address")) {
+			throw new IllegalArgumentException("Coordinates doesn't belong to a street");
 		}
 
-		return new CoordinatesBuilderImpl().withLongitude(coordinates[0].doubleValue()).withLatitude(coordinates[1].doubleValue()).build();
+
+		return new CoordinatesBuilderImpl().withLongitude(lng.doubleValue()).withLatitude(lat.doubleValue()).build();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -77,9 +78,11 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 			if (!((Map<?, ?>) current).containsKey(key)) {
 				throw new InvalidDataAccessApiUsageException("Node doesn't exists: " + key);
 			}
+			
 			current = ((Map<?, ?>) current).get(key);
 
 		}
+	
 		return (T) current;
 
 	}

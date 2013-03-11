@@ -23,8 +23,11 @@ public class CoordinatesRepositoryIntegrationTest {
 	@Test
 	public final void  forCityAddress() throws InterruptedException {
 		final Coordinates result = coordinatesRepository.forAddress(new AddressBuilderImpl().withCity("Wegberg").withZipCode("41844").withCountry(Locale.GERMANY).withHouseNumber("4").withStreet("Am Telt").withCoordinates(Mockito.mock(Coordinates.class)).build(), CoordinatesRepositoryTest.MAX_DEVIATION);
-		Assert.assertEquals(6.2829833D,result.longitude());
-		Assert.assertEquals(51.166913D,result.latitude());
+		
+		
+		Assert.assertTrue(Math.abs(6.2829833D - result.longitude()) < 1e-14 );
+		Assert.assertTrue(Math.abs(51.166913D - result.latitude()) < 1e-14);
+		
 	}
 	
 	
