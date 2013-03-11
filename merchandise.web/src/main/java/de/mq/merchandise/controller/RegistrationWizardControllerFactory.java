@@ -31,7 +31,7 @@ public class RegistrationWizardControllerFactory {
 	
 	
 	
-	@Bean()
+	@Bean(name="registrationWizardController")
 	@Scope("singleton")
 	public RegistrationWizardControllerImpl registrationWizardController() {
 		

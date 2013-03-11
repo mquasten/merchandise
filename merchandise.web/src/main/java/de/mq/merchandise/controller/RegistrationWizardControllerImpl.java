@@ -2,6 +2,11 @@ package de.mq.merchandise.controller;
 
 
 
+import java.util.Iterator;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.context.FacesContextFactory;
 import javax.validation.ConstraintViolationException;
 
 import org.primefaces.event.FlowEvent;
@@ -14,6 +19,7 @@ import de.mq.mapping.util.proxy.ExceptionTranslations;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
+import de.mq.merchandise.model.ContactModelImpl;
 import de.mq.merchandise.model.Registration;
 import de.mq.merchandise.model.Registration.Kind;
 import de.mq.merchandise.util.ValidationService;
@@ -51,7 +57,7 @@ public class RegistrationWizardControllerImpl   {
 			                      @ExceptionTranslation( resultExpression="#args[0].oldStep" , action = SimpleFacesExceptionTranslatorImpl.class, source = ConstraintViolationException.class  )}, clazz = RegistrationWizardControllerImpl.class)
 	public String onFlowProcess(final FlowEvent event) { 
 		final Registration registration = applicationContext.getBean(Registration.class);	
-		
+	
 		if (isGoToOverviewPage(event)) {
 			validationService.validate(registration.getPerson());
 		}
@@ -59,7 +65,6 @@ public class RegistrationWizardControllerImpl   {
 		if( isGoToOverViewPageForNewUserAndExistingCustomer(event, registration)) {
 			registration.assign(customerService.customer(registration.customer().id()));
 		}
-		
 		return event.getNewStep();
     }
 
@@ -72,6 +77,14 @@ public class RegistrationWizardControllerImpl   {
 	}
 	
 	public void register(final Customer customer, final Person person) {
+		System.out.println("****************************************");
+		
+		Iterator<String> it = FacesContext.getCurrentInstance().getClientIdsWithMessages();
+		while( it.hasNext()){
+			System.out.println(it.next());
+		}
+	   
+		
 		customerService.register(customer, person);
 	} 
 
