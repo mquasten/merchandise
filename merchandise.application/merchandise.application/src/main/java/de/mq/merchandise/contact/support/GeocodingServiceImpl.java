@@ -17,9 +17,11 @@ class GeocodingServiceImpl implements GeocodingService {
 		this.coordinatesRepository=coordinatesRepository;
 	}
 	
-	public final Coordinates coordinates(final CityAddress cityAddress, final double maxDeviation) {
-		return coordinatesRepository.forAddress(cityAddress, maxDeviation);
+	public final Coordinates coordinates(final CityAddress cityAddress) {
+		return coordinatesRepository.forAddress(cityAddress);
 	}
+
+	
 	
 
 }

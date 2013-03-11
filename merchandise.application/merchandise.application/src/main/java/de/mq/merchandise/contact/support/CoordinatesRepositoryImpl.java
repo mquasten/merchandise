@@ -18,7 +18,7 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 
 	static final String ADDRESS_PARAM_KEY = "address";
 	
-	private static final String SENSOR_PARAM_KEY = "sensor";
+	static final String SENSOR_PARAM_KEY = "sensor";
 	
 	static final String GOOGLE_URL = "http://maps.googleapis.com/maps/api/geocode/json?address={"+  ADDRESS_PARAM_KEY +"}&sensor={" +SENSOR_PARAM_KEY+ "}";
 	private final RestOperations restOperations;
@@ -36,7 +36,7 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public final Coordinates forAddress(final CityAddress cityAddress, final double maxDeviation) {
+	public final Coordinates forAddress(final CityAddress cityAddress) {
 
 		final Map<String, Object> params = new HashMap<>();
 		params.put(ADDRESS_PARAM_KEY, cityAddress.contact());
@@ -61,7 +61,7 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 		final List<String> types = fromMap(List.class, placemarks.get(0), "types");
 		
 		if( ! types.contains("street_address")) {
-			throw new IllegalArgumentException("Coordinates doesn't belong to a street");
+			throw new IllegalArgumentException("Coordinates doesn't belong to a street address");
 		}
 
 

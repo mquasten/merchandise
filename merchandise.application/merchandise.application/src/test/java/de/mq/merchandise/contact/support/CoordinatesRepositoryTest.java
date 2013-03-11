@@ -21,7 +21,6 @@ public class CoordinatesRepositoryTest {
 	static final String ADDRESS = "Magadan RU";
 	static final String KEY = "kylie";
 	
-	static final double MAX_DEVIATION = 1.0D;
 	
 	
 	private static final Coordinates COORDINATES = new CoordinatesBuilderImpl().withLatitude(59.5683240).withLongitude(150.8089180).build();
@@ -65,13 +64,13 @@ public class CoordinatesRepositoryTest {
 		final ArgumentCaptor<Class> classCaptor = ArgumentCaptor.forClass(Class.class);
 		final ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 		
-		final Map<String,String> params = new HashMap<>();
+		final Map<String,Object> params = new HashMap<>();
 		params.put("address", ADDRESS);
-		params.put("format", "json");
+		params.put(CoordinatesRepositoryImpl.SENSOR_PARAM_KEY, false);
 		
 		final CityAddress cityAddress = cityAddress();
 		
-		final Map<String, Object> jsonResult = createJsonMap(200, COORDINATES, 0,0 );
+		final Map<String, Object> jsonResult = createJsonMap("ok", COORDINATES, "street_address" );
 		
 		
 		final RestOperations restOperations = Mockito.mock(RestOperations.class);
@@ -80,15 +79,17 @@ public class CoordinatesRepositoryTest {
 		
 		final CoordinatesRepository coordinatesRepository = new CoordinatesRepositoryImpl(restOperations);
 		
-		final Coordinates result = coordinatesRepository.forAddress(cityAddress, MAX_DEVIATION);
+		final Coordinates result = coordinatesRepository.forAddress(cityAddress);
 		Assert.assertEquals(COORDINATES.longitude(), result.longitude());
 		Assert.assertEquals(COORDINATES.latitude(), result.latitude());
 		
 		Assert.assertEquals(CoordinatesRepositoryImpl.GOOGLE_URL, urlCaptor.getValue());
 		Assert.assertEquals(HashMap.class, classCaptor.getValue());
-		Assert.assertEquals(1, mapCaptor.getValue().size());
-		Assert.assertEquals(CoordinatesRepositoryImpl.ADDRESS_PARAM_KEY, mapCaptor.getValue().keySet().iterator().next());
-		Assert.assertEquals(cityAddress.contact(), mapCaptor.getValue().values().iterator().next());
+		
+		Assert.assertEquals(2, mapCaptor.getValue().size());
+		Assert.assertEquals(params, mapCaptor.getValue());
+		
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -96,9 +97,9 @@ public class CoordinatesRepositoryTest {
 	public final void forAddressWrongStatus() {
 		final RestOperations restOperations = Mockito.mock(RestOperations.class);
 		final CoordinatesRepository coordinatesRepository = new CoordinatesRepositoryImpl(restOperations);
-		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap(500, COORDINATES, 0,0 ));
+		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap("error", COORDINATES, "street_address" ));
 		
-		coordinatesRepository.forAddress(cityAddress(), MAX_DEVIATION);
+		coordinatesRepository.forAddress(cityAddress());
 	}
 
 	private CityAddress cityAddress() {
@@ -114,42 +115,44 @@ public class CoordinatesRepositoryTest {
 		final RestOperations restOperations = Mockito.mock(RestOperations.class);
 		
 		final CoordinatesRepository coordinatesRepository = new CoordinatesRepositoryImpl(restOperations);
-		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap(200, COORDINATES, 1.0,1.0 ));
-		coordinatesRepository.forAddress(cityAddress(), MAX_DEVIATION);
+		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap("ok", COORDINATES, "country" ));
+		coordinatesRepository.forAddress(cityAddress());
 	}
 
-	private Map<String, Object> createJsonMap(final Number status, final Coordinates coordinates, final double deltaLongitude, final double deltaLatitude) {
+	private Map<String, Object> createJsonMap(final String status, final Coordinates coordinates, final String type) {
 		final Map<String,Object> jsonResult = new HashMap<>();
-		final Map<String,Number> code = new HashMap<>();
-		code.put("code", status);
-		jsonResult.put("Status", code);
+		//final Map<String,Number> code = new HashMap<>();
+		//code.put("code", status);
+		jsonResult.put("status", status);
 		final List<Object> placemarks = new ArrayList<>();
 		
 		final Map<String,Object> placemark = new HashMap<>();
 		
 		final Map<String,Object> points = new HashMap<>();
-		placemark.put("Point", points);
-		List<Number> coordinatesList = new ArrayList<>();
-		coordinatesList.add(coordinates.longitude());
-		coordinatesList.add(coordinates.latitude());
-		coordinatesList.add(0D);;
-		points.put("coordinates", coordinatesList);
+		placemark.put("geometry", points);
+		Map<String,Number> coordinatesList = new HashMap<>();
+		coordinatesList.put("lng", coordinates.longitude());
+		coordinatesList.put("lat", coordinates.latitude());
+		
+		points.put("location", coordinatesList);
 		
 		placemarks.add(placemark);
+		
+		final List<String> types = new ArrayList<>();
+		types.add(type);
+		
+		placemark.put("types", types);
+		
 		
 		final Map<String,Object> extendedData = new HashMap<>();
 		placemark.put("ExtendedData", extendedData);
 		
 		
 		
-		final Map<String,Number>box = new HashMap<>();
-		box.put("north", coordinates.latitude() + deltaLatitude/2);
-		box.put("east", coordinates.longitude() + deltaLongitude/2);
-		box.put("south", coordinates.latitude() - deltaLatitude/2);
-		box.put("west", coordinates.longitude() - deltaLongitude/2);
-		extendedData.put("LatLonBox", box);
 		
-		jsonResult.put("Placemark", placemarks);
+		
+		
+		jsonResult.put("results", placemarks);
 		return jsonResult;
 	}
 

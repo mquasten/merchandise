@@ -18,10 +18,10 @@ public class GeocodingServiceTest {
 		final GeocodingService geocodingService = new GeocodingServiceImpl(coordinatesRepository);
 		final CityAddress cityAddress = Mockito.mock(CityAddress.class);
 		final Coordinates coordinates = Mockito.mock(Coordinates.class);
-		Mockito.when(coordinatesRepository.forAddress(cityAddress, CoordinatesRepositoryTest.MAX_DEVIATION)).thenReturn(coordinates);
+		Mockito.when(coordinatesRepository.forAddress(cityAddress)).thenReturn(coordinates);
 		
 		
-		Assert.assertEquals(coordinates, geocodingService.coordinates(cityAddress, CoordinatesRepositoryTest.MAX_DEVIATION));
+		Assert.assertEquals(coordinates, geocodingService.coordinates(cityAddress));
 	}
 
 }
