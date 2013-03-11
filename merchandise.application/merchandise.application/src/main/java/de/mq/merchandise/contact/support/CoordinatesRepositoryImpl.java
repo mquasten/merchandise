@@ -56,6 +56,10 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 		DataAccessUtils.requiredSingleResult(placemarks);
 		
 		final Map<String, ?> coordinates = fromMap(Map.class, placemarks.get(0), "geometry" , "location" );
+		
+		System.out.println(fromMap(Map.class, placemarks.get(0), "formatted_address" ));
+		System.out.println(cityAddress.contact());
+		
 		final Number lat = fromMap(Number.class, coordinates, "lat");
 		final Number lng =  fromMap(Number.class, coordinates, "lng");
 		final List<String> types = fromMap(List.class, placemarks.get(0), "types");

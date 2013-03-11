@@ -6,6 +6,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -25,8 +26,8 @@ public class GeocodingServiceIntegrationTest {
 	@Test
 	public final void geocoding() {
 		Assert.assertNotNull(geocodingService);
-		final CityAddress cityAddress = new ContactBuilderFactoryImpl().postBoxAddressBuilder().withCity("Magadan").withZipCode("12345").withBox(" ").withCountry(new Locale("ru", "RU")).build();
-		final Coordinates result = geocodingService.coordinates(cityAddress, 10);
+		final CityAddress cityAddress = new ContactBuilderFactoryImpl().addressBuilder().withCity("Magadan").withZipCode("12345").withStreet("Proletarskaya Street").withHouseNumber("8").withCoordinates(Mockito.mock(Coordinates.class)).withCountry(new Locale("ru", "RU")).build();
+		final Coordinates result = geocodingService.coordinates(cityAddress);
 		Assert.assertEquals(151, Math.round(result.longitude()));
 		Assert.assertEquals(60, Math.round(result.latitude()));
 	}

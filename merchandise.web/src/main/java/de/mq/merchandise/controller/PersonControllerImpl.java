@@ -40,7 +40,7 @@ public class PersonControllerImpl {
 	public  void addAddress(final Person person, final CityAddress cityAddress) {	
 		final CityAddress address = EntityUtil.copy(cityAddress);
 		if (address instanceof Address) {
-			((Address)address).assign(geocodingService.coordinates(cityAddress, 5));
+			((Address)address).assign(geocodingService.coordinates(cityAddress));
 		}
 
 		person.assign(address); 

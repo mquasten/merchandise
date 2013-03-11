@@ -38,7 +38,7 @@ public class PersonControllerTest {
 		geocodingService=Mockito.mock(GeocodingService.class);
 	    Mockito.when(coordinates.longitude()).thenReturn(151d);
 	    Mockito.when(coordinates.latitude()).thenReturn(60d);
-		Mockito.when(geocodingService.coordinates(Mockito.any(CityAddress.class), Mockito.anyDouble())).thenReturn(coordinates);
+		Mockito.when(geocodingService.coordinates(Mockito.any(CityAddress.class))).thenReturn(coordinates);
 	}
 
 	@Test
