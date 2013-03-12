@@ -68,7 +68,7 @@ public class AddressTest {
 		Assert.assertEquals(CITY, address.city());
 		Assert.assertEquals(STREET, address.street());
 		Assert.assertEquals(HOUSE_NUMBER, address.houseNumber());
-		Assert.assertEquals(STREET+ " " + HOUSE_NUMBER + ", "+ ZIP_CODE + " " + CITY + " DE", address.contact());
+		Assert.assertEquals(STREET+ " " + HOUSE_NUMBER + ", "+ ZIP_CODE + " " + CITY + ", DE", address.contact());
 		Assert.assertEquals(Locale.GERMANY, address.country());
 		Assert.assertEquals(COORDINATES, address.coordinates());
 	}

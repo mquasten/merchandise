@@ -65,7 +65,7 @@ class AddressImpl extends AbstractCityAddress implements Address {
 
 	@Override
 	protected  final String contactInfo() {
-		return street +" "+houseNumber+ ", "+  zipCode() + " " + city() + " " +country().getCountry() ;
+		return street +" "+houseNumber+ ", "+  zipCode() + " " + city() + ", " +country().getCountry() ;
 	}
 
 	
