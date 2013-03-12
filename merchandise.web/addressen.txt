@@ -24,3 +24,5 @@ Frankreich
 48.7422 44.5376002:Мамаев курган  ,   Wolgograd 
 30.82247 28.954309:Markaz Al Alamein  ,   El-Alamein 
 52.5155098 13.3847539:Reichstagsufer 7-14, 10117 Berlin 
+
+Stalingrad,ulitsa KIM, 13

@@ -57,8 +57,14 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 		
 		final Map<String, ?> coordinates = fromMap(Map.class, placemarks.get(0), "geometry" , "location" );
 		
-		System.out.println(fromMap(Map.class, placemarks.get(0), "formatted_address" ));
-		System.out.println(cityAddress.contact());
+		final String[] result  = fromMap(String.class, placemarks.get(0), "formatted_address" ).split(",");
+		if ( result.length < 2){
+			throw new IllegalStateException("Unable to get parse result, formatted address array size: "+  result.length);
+		}
+		
+		if( !result[1].replaceAll(" ", "").equalsIgnoreCase(cityAddress.zipCode()+ cityAddress.city())) {
+			throw new IllegalArgumentException("Coordinates doesn't belong to a street in the same city and or zipcode");
+		}
 		
 		final Number lat = fromMap(Number.class, coordinates, "lat");
 		final Number lng =  fromMap(Number.class, coordinates, "lng");
