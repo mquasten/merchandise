@@ -120,19 +120,21 @@ public class CoordinatesRepositoryTest {
 		coordinatesRepository.forAddress(cityAddress);
 	}
 	
-	@Test(expected=IllegalStateException.class)
+	
+	
+	@Test(expected=IllegalArgumentException.class)
 	@SuppressWarnings("unchecked")
-	public final void forAddressWrongFormattedAddressInResult() {
-		
-		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap("ok", COORDINATES, "country", "don'tLetMeGetMe" ));
+	public final void forAddressWrongCityCodeInResult() {
+	
+		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap("ok", COORDINATES, "country", "Eine Straße,12345 Stalingrad"  ));
 		coordinatesRepository.forAddress(cityAddress);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	@SuppressWarnings("unchecked")
-	public final void forAddressWrongCityInResult() {
+	public final void forAddressWrongZipCodeInResult() {
 	
-		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap("ok", COORDINATES, "country", "Eine Straße,12345 Stalingrad"  ));
+		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap("ok", COORDINATES, "country", "Eine Straße,99999 Magadan"  ));
 		coordinatesRepository.forAddress(cityAddress);
 	}
 

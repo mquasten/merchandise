@@ -79,10 +79,10 @@ public class RegistrationWizardControllerImpl   {
 	public void register(final Customer customer, final Person person) {
 		System.out.println("****************************************");
 		
-		Iterator<String> it = FacesContext.getCurrentInstance().getClientIdsWithMessages();
+	/*	Iterator<String> it = FacesContext.getCurrentInstance().getClientIdsWithMessages();
 		while( it.hasNext()){
 			System.out.println(it.next());
-		}
+		} */
 	   
 		
 		customerService.register(customer, person);

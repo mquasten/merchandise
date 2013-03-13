@@ -52,18 +52,15 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 		
 		
 		final List<?>  placemarks = fromMap(List.class, results, "results");
-
 		DataAccessUtils.requiredSingleResult(placemarks);
 		
 		final Map<String, ?> coordinates = fromMap(Map.class, placemarks.get(0), "geometry" , "location" );
 		
-		final String[] result  = fromMap(String.class, placemarks.get(0), "formatted_address" ).split(",");
-		if ( result.length < 2){
-			throw new IllegalStateException("Unable to get parse result, formatted address array size: "+  result.length);
-		}
+		final String result  = fromMap(String.class, placemarks.get(0), "formatted_address" );
 		
-		if( !result[1].replaceAll(" ", "").equalsIgnoreCase(cityAddress.zipCode()+ cityAddress.city())) {
-			throw new IllegalArgumentException("Coordinates doesn't belong to a street in the same city and or zipcode");
+		
+		if(! result.toLowerCase().contains(cityAddress.city().toLowerCase())|| ! result.toLowerCase().contains(cityAddress.zipCode().toLowerCase())) {
+			throw new IllegalArgumentException("Coordinates doesn't belong to a street with the city and or zipCode");
 		}
 		
 		final Number lat = fromMap(Number.class, coordinates, "lat");
