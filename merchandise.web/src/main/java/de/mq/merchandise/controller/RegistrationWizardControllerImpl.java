@@ -76,16 +76,12 @@ public class RegistrationWizardControllerImpl   {
 		return event.getNewStep().equalsIgnoreCase(OVERVIEW);
 	}
 	
-	public void register(final Customer customer, final Person person) {
-		System.out.println("****************************************");
-		
-	/*	Iterator<String> it = FacesContext.getCurrentInstance().getClientIdsWithMessages();
-		while( it.hasNext()){
-			System.out.println(it.next());
-		} */
-	   
+	public void  register(final Customer customer, final Person person) {
 		
 		customerService.register(customer, person);
+	
+	   System.out.println("saved");
+	  
 	} 
 
 	

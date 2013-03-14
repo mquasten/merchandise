@@ -13,6 +13,8 @@ import de.mq.merchandise.util.Equals;
 
 @Embeddable
 class NativityImpl implements Nativity {
+	
+	private static final long serialVersionUID = 1L;
 	@Equals
 	@Column(name="birth_place", length=50)
 	private final String birthPlace;
