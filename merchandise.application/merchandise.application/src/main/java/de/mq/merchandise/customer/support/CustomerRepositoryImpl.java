@@ -29,6 +29,7 @@ class CustomerRepositoryImpl implements CustomerRepository {
 	
 	public final Customer store(final Customer customer) {
 	    return this.entityManager.merge(customer);
+	   
 	}
 	
 	
