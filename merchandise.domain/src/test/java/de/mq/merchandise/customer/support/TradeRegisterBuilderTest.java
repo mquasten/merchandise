@@ -49,7 +49,6 @@ public class TradeRegisterBuilderTest {
 		Assert.assertEquals(CITY, tradeRegister.city());
 		Assert.assertEquals(ZIP_CODE, tradeRegister.zipCode());
 		Assert.assertEquals(REFERENCE, tradeRegister.reference());
-		Assert.assertEquals(DATE, tradeRegister.registrationDate());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -68,8 +67,5 @@ public class TradeRegisterBuilderTest {
 		new TradeRegisterBuilderImpl().withCity(CITY).withZipCode(ZIP_CODE).withRegistrationDate(DATE).build();
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public final void missingDate(){
-		new TradeRegisterBuilderImpl().withCity(CITY).withZipCode(ZIP_CODE).withReference(REFERENCE).build();
-	}
+	
 }

@@ -25,10 +25,6 @@ class TradeRegisterImpl implements Serializable, TradeRegister  {
 	@Column(length=50)
 	private final String city;
 	
-	@Column(name="registration_date")
-	@Temporal(TemporalType.DATE)
-	private final Date registrationDate;
-	
 	@Equals
 	@Column(length=25)
 	private final String reference;
@@ -36,13 +32,12 @@ class TradeRegisterImpl implements Serializable, TradeRegister  {
 	
 	@SuppressWarnings("unused")
 	private TradeRegisterImpl() {
-		this(null, null, null,null);
+		this(null, null, null);
 	}
 	
-	TradeRegisterImpl(final String zipCode, final String city, final String reference, final Date registrationDate) {
+	TradeRegisterImpl(final String zipCode, final String city, final String reference) {
 		this.zipCode = zipCode;
 		this.city = city;
-		this.registrationDate = registrationDate;
 		this.reference = reference;
 	} 
 	
@@ -65,10 +60,6 @@ class TradeRegisterImpl implements Serializable, TradeRegister  {
 	}
 	
 	
-	@Override
-	public final Date registrationDate() {
-		return this.registrationDate;
-	}
 	
 	
 	@Override

@@ -58,8 +58,7 @@ class TradeRegisterBuilderImpl implements TradeRegisterBuilder {
 		EntityUtil.mandatoryGuard(zipCode, "zipCode");
 		EntityUtil.mandatoryGuard(city, "city");
 		EntityUtil.mandatoryGuard(reference, "reference");
-		EntityUtil.notNullGuard(registrationDate, "registrationDate");
-		return new TradeRegisterImpl(zipCode, city, reference, registrationDate);
+		return new TradeRegisterImpl(zipCode, city, reference);
 	}
 	
 

@@ -45,7 +45,7 @@ public class CustomerMemoryMockRepositoryTest {
 	}
 
 	private CustomerImpl newCustomer() {
-		return new CustomerImpl(new LegalPersonImpl("Knowless-Music", "1234", new TradeRegisterImpl("41844", "Wegberg", "0815" , new Date()), LegalForm.AG, new Date()));
+		return new CustomerImpl(new LegalPersonImpl("Knowless-Music", "1234", new TradeRegisterImpl("41844", "Wegberg", "0815" ), LegalForm.AG, new Date()));
 	}
 	
 	@Test

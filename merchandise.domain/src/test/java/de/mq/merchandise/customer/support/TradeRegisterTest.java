@@ -20,11 +20,10 @@ public class TradeRegisterTest {
 
 	@Test
 	public final void create() {
-		final TradeRegister tradeRegister = new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE, REGISTRATION_DATE);
+		final TradeRegister tradeRegister = new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE);
 		Assert.assertEquals(ZIPCODE, tradeRegister.zipCode());
 		Assert.assertEquals(CITY, tradeRegister.city());
 		Assert.assertEquals(REFERENCE, tradeRegister.reference());
-		Assert.assertEquals(REGISTRATION_DATE, tradeRegister.registrationDate());
 	}
 	
 	@Test
@@ -33,7 +32,6 @@ public class TradeRegisterTest {
 		Assert.assertNull(tradeRegister.zipCode());
 		Assert.assertNull(tradeRegister.city());
 		Assert.assertNull(tradeRegister.reference());
-		Assert.assertNull(tradeRegister.registrationDate());
 	}
 
 	private TradeRegister newInvalidTradeRegister()  {
@@ -49,20 +47,20 @@ public class TradeRegisterTest {
 	
 	@Test
 	public final void hash() {
-		Assert.assertEquals(ZIPCODE.hashCode() + REFERENCE.hashCode(), new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE, REGISTRATION_DATE).hashCode());
-		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, null, REGISTRATION_DATE).hashCode() == new TradeRegisterImpl(ZIPCODE, CITY, null, REGISTRATION_DATE).hashCode());
-		Assert.assertFalse(new TradeRegisterImpl(null, CITY, REFERENCE, REGISTRATION_DATE).hashCode() == new TradeRegisterImpl(null, CITY, REFERENCE, REGISTRATION_DATE).hashCode());
+		Assert.assertEquals(ZIPCODE.hashCode() + REFERENCE.hashCode(), new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE).hashCode());
+		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, null).hashCode() == new TradeRegisterImpl(ZIPCODE, CITY, null).hashCode());
+		Assert.assertFalse(new TradeRegisterImpl(null, CITY, REFERENCE).hashCode() == new TradeRegisterImpl(null, CITY, REFERENCE).hashCode());
 	}
 	@Test
 	public final void equals() {
-		Assert.assertTrue(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE, REGISTRATION_DATE).equals(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE, REGISTRATION_DATE)));
-		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, "DontLetMeGetMe", REGISTRATION_DATE).equals(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE, REGISTRATION_DATE)));
-		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE, REGISTRATION_DATE).equals(new TradeRegisterImpl(ZIPCODE, CITY, "DontLetMeGetMe", REGISTRATION_DATE)));
-		Assert.assertFalse(new TradeRegisterImpl("DontLetMeGetMe", CITY, REFERENCE, REGISTRATION_DATE).equals(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE, REGISTRATION_DATE)));
-		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE, REGISTRATION_DATE).equals(new TradeRegisterImpl("DontLetMeGetMe", CITY, REFERENCE, REGISTRATION_DATE)));
-		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE, REGISTRATION_DATE).equals(new TradeRegisterImpl(null, CITY, REFERENCE, REGISTRATION_DATE)));
-		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, null, REGISTRATION_DATE).equals(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE, REGISTRATION_DATE)));
-		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE, REGISTRATION_DATE).equals("Kylie is nice"));
+		Assert.assertTrue(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE).equals(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE)));
+		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, "DontLetMeGetMe").equals(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE)));
+		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE).equals(new TradeRegisterImpl(ZIPCODE, CITY, "DontLetMeGetMe")));
+		Assert.assertFalse(new TradeRegisterImpl("DontLetMeGetMe", CITY, REFERENCE).equals(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE)));
+		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE).equals(new TradeRegisterImpl("DontLetMeGetMe", CITY, REFERENCE)));
+		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE).equals(new TradeRegisterImpl(null, CITY, REFERENCE)));
+		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, null).equals(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE)));
+		Assert.assertFalse(new TradeRegisterImpl(ZIPCODE, CITY, REFERENCE).equals("Kylie is nice"));
 	}
 	
 	

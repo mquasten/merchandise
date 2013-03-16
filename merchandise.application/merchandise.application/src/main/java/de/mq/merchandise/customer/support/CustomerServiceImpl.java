@@ -54,7 +54,9 @@ class CustomerServiceImpl implements CustomerService {
 	private void grantAndRegister(final Customer changedCustomer, final Person person, final boolean isActive, CustomerRole ... customerRoles) {
 		changedCustomer.grant(person, customerRoles);
 		if( isActive){
+			
 			changedCustomer.state(person).activate();	
+			
 		}
 		
 		customerRepository.store(changedCustomer);

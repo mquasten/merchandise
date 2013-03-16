@@ -130,15 +130,14 @@ public class PersonIntegrationTest {
 		Assert.assertEquals(register.zipCode(), result.tradeRegister().zipCode());
 		Assert.assertEquals(register.city(), result.tradeRegister().city());
 		Assert.assertEquals(register.reference(), result.tradeRegister().reference());
-		Assert.assertEquals(register.registrationDate(), result.tradeRegister().registrationDate());
 	
 	}
 	
 	private TradeRegister newTradeRegister() {
 		try {
-			final Constructor<? extends TradeRegister> constructor = TradeRegisterImpl.class.getDeclaredConstructor(String.class, String.class , String.class, Date.class);
+			final Constructor<? extends TradeRegister> constructor = TradeRegisterImpl.class.getDeclaredConstructor(String.class, String.class , String.class);
 			constructor.setAccessible(true);
-			return constructor.newInstance("41844","Wegberg", "12345/67890" , new GregorianCalendar(1968, 4, 28).getTime());
+			return constructor.newInstance("41844","Wegberg", "12345/67890");
 		} catch (final InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
 			ex.printStackTrace();
 			throw new IllegalStateException(ex);

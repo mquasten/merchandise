@@ -11,8 +11,6 @@ public interface TradeRegister extends Serializable {
 
 	String reference();
 
-	Date registrationDate();
-
 	int hashCode();
 
 	boolean equals(Object obj);

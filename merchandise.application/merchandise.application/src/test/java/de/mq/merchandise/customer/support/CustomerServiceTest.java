@@ -13,6 +13,7 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerRole;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
+import de.mq.merchandise.customer.State;
 import de.mq.merchandise.customer.support.CustomerRepository;
 import de.mq.merchandise.customer.support.CustomerServiceImpl;
 
@@ -23,28 +24,34 @@ public class CustomerServiceTest {
 
 	@Test
 	public final void registerUser() {
+		final State state = Mockito.mock(State.class);
 		final CustomerRepository customerRepository = Mockito.mock(CustomerRepository.class);
 		final Customer customer = Mockito.mock(Customer.class);
 		Mockito.when(customer.hasId()).thenReturn(true);
 		Mockito.when(customer.id()).thenReturn(ID);
 		Mockito.when(customerRepository.forId(ID)).thenReturn(customer);
 		
+		
 		final Person person = Mockito.mock(Person.class);
+		Mockito.when(person.state()).thenReturn(state);
 		
 		final CustomerService customerService = new CustomerServiceImpl(customerRepository);
 		customerService.register(customer, person);
 		
 		Mockito.verify(customer).grant(person, CustomerRole.Opportunities, CustomerRole.Bids, CustomerRole.Demands);
 		Mockito.verify(customerRepository).store(customer);
+		Mockito.verify(state).activate();
 		
 	}
 	
 	
 	@Test
 	public final void registerCustomer() {
+		final State personState = Mockito.mock(State.class);
+		
 		final CustomerRepository customerRepository = Mockito.mock(CustomerRepository.class);
 		final Customer customer = Mockito.mock(Customer.class);
-		 ArgumentCaptor<Customer> argument = ArgumentCaptor.forClass(Customer.class);
+		 ArgumentCaptor<Customer> newCustomer = ArgumentCaptor.forClass(Customer.class);
 		Mockito.when(customer.hasId()).thenReturn(false);
 		
 		
@@ -52,17 +59,21 @@ public class CustomerServiceTest {
 		final CustomerService customerService = new CustomerServiceImpl(customerRepository);
 		
 		final Person person = Mockito.mock(Person.class);
+		Mockito.when(person.state()).thenReturn(personState);
 		
 		customerService.register(customer, person);
 		
-		Mockito.verify(customerRepository).store(argument.capture());
-		Assert.assertEquals(person, argument.getValue().person());
+		Mockito.verify(customerRepository).store(newCustomer.capture());
+		Assert.assertEquals(person, newCustomer.getValue().person());
+		Assert.assertTrue(newCustomer.getValue().state().isActive());
 		
-	    final List<CustomerRole> roles = argument.getValue().roles(person);
-		Assert.assertEquals(3, roles.size());
+	    final List<CustomerRole> roles = newCustomer.getValue().roles(person);
+		Assert.assertEquals(4, roles.size());
 		Assert.assertTrue(roles.contains(CustomerRole.Opportunities));
 		Assert.assertTrue(roles.contains(CustomerRole.Bids));
 		Assert.assertTrue(roles.contains(CustomerRole.Demands));
+	    Mockito.verify(personState).activate();
+	    Assert.assertTrue(newCustomer.getValue().state(person).isActive());
 	}
 	
 	@Test
