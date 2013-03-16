@@ -1,7 +1,5 @@
 package de.mq.merchandise.customer.support;
 
-import java.util.Date;
-
 import de.mq.merchandise.customer.TradeRegister;
 import de.mq.merchandise.customer.TradeRegisterBuilder;
 import de.mq.merchandise.util.EntityUtil;
@@ -16,8 +14,6 @@ class TradeRegisterBuilderImpl implements TradeRegisterBuilder {
 	
 	private  String city;
 	
-	
-	private  Date registrationDate;
 	
 
 	private  String reference;
@@ -39,11 +35,7 @@ class TradeRegisterBuilderImpl implements TradeRegisterBuilder {
 	}
 	
 	
-	@Override
-	public final TradeRegisterBuilder withRegistrationDate(final Date registrationDate) {
-		this.registrationDate=registrationDate;
-		return this;
-	}
+	
 	
 	
 	@Override

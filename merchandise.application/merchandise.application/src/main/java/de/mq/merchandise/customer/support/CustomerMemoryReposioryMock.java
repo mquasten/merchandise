@@ -20,7 +20,7 @@ public class CustomerMemoryReposioryMock implements CustomerRepository{
 	private final Map<Long,Customer> index = new HashMap<>();
 	
 	public CustomerMemoryReposioryMock() {
-		final Person person = new LegalPersonImpl("Minogue-Music","12345",new TradeRegisterBuilderImpl().withCity("London").withRegistrationDate(new GregorianCalendar(1988,0, 21).getTime()).withZipCode("12345").withReference("0815").build(),LegalForm.GmbHCoKG ,new GregorianCalendar(1968,04, 28).getTime());
+		final Person person = new LegalPersonImpl("Minogue-Music","12345",new TradeRegisterBuilderImpl().withCity("London").withZipCode("12345").withReference("0815").build(),LegalForm.GmbHCoKG ,new GregorianCalendar(1968,04, 28).getTime());
 		final Customer customer = new CustomerImpl(person);
 		EntityUtil.setId(customer, DEFAULT_CUSTOMER_ID);
 		store(customer);

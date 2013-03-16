@@ -9,8 +9,6 @@ public interface TradeRegisterBuilder {
 
 	TradeRegisterBuilder withCity(String city);
 
-	TradeRegisterBuilder withRegistrationDate(Date registrationDate);
-
 	TradeRegisterBuilder withReference(String reference);
 
 	TradeRegister build();

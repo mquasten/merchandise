@@ -1,12 +1,9 @@
 package de.mq.merchandise.customer.support;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import de.mq.merchandise.customer.TradeRegister;
 import de.mq.merchandise.util.EntityUtil;

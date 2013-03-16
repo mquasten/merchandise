@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.ExceptionTranslations;
@@ -32,7 +33,8 @@ public class PersonControllerImpl {
 	 * Dirrrty   viewScope must be used for cityAddress, requestScope will not be enough
 	 * The address is empty after closing the dialog, why don't ask me, ask Ed ... 
 	 */
-	@ExceptionTranslations(clazz=PersonControllerImpl.class ,value={@ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class , bundle="geo_coding_error_deviation" ) ,
+	@ExceptionTranslations(clazz=PersonControllerImpl.class ,value={@ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="geo_coding_error_deviation" ) ,
+		@ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class , bundle="geo_coding_error_deviation" ) ,
 		                                                            @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalStateException.class , bundle="geo_coding_error_status" ) , 
 		                                                            @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = IncorrectResultSizeDataAccessException.class , bundle="geo_coding_error_multiple" ) 
 	

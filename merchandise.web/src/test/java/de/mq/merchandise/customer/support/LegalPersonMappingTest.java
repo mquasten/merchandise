@@ -43,7 +43,7 @@ public class LegalPersonMappingTest {
 	@Test
 	public final void toAO() {
 		
-		final TradeRegister tradeRegister =  new TradeRegisterBuilderFactoryImpl().tradeRegisterBuilder().withCity(PersonTestConstants.CITY).withZipCode(PersonTestConstants.ZIPCODE).withReference(PersonTestConstants.REFERENCE).withRegistrationDate(PersonTestConstants.REGISTRATION_DATE).build();
+		final TradeRegister tradeRegister =  new TradeRegisterBuilderFactoryImpl().tradeRegisterBuilder().withCity(PersonTestConstants.CITY).withZipCode(PersonTestConstants.ZIPCODE).withReference(PersonTestConstants.REFERENCE).build();
 		
 		
 		
@@ -65,7 +65,6 @@ public class LegalPersonMappingTest {
 		Assert.assertEquals(PersonTestConstants.PASSWORD, web.getPassword());
 		
 		Assert.assertEquals(tradeRegister.reference(), web.getTradeRegister().getReference());
-		Assert.assertEquals(tradeRegister.registrationDate(), web.getTradeRegister().getRegistrationDate());
 		Assert.assertEquals(tradeRegister.city(), web.getTradeRegister().getCity());
 		Assert.assertEquals(tradeRegister.zipCode(), web.getTradeRegister().getZipCode());
 		
@@ -93,7 +92,7 @@ public class LegalPersonMappingTest {
 		web.setLanguage(Locale.US.getLanguage());
 	
 		web.getTradeRegister().setReference(PersonTestConstants.REFERENCE);
-		web.getTradeRegister().setRegistrationDate(PersonTestConstants.REGISTRATION_DATE);
+		
 		web.getTradeRegister().setZipCode(PersonTestConstants.ZIPCODE);
 		web.getTradeRegister().setCity(PersonTestConstants.CITY);
 		
@@ -108,7 +107,7 @@ public class LegalPersonMappingTest {
 		
 		
 		Assert.assertEquals(PersonTestConstants.REFERENCE, web.getPerson().tradeRegister().reference());
-		Assert.assertEquals(PersonTestConstants.REGISTRATION_DATE, web.getPerson().tradeRegister().registrationDate());
+		
 		Assert.assertEquals(PersonTestConstants.ZIPCODE, web.getPerson().tradeRegister().zipCode());
 		Assert.assertEquals(PersonTestConstants.CITY, web.getPerson().tradeRegister().city());
 		

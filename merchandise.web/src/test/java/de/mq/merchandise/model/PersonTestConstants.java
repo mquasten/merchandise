@@ -21,7 +21,7 @@ public interface PersonTestConstants{
 	static final String BIRTH_PLACE = "Melborne";
 	static final Date BIRTH_DATE = new Date();
 	
-	static final Date REGISTRATION_DATE = new GregorianCalendar(1968, 4, 28).getTime();
+	
 	static final String ZIPCODE = "zipCode";
 	static final String REFERENCE = "reference";
 	static final String CITY = "city";
