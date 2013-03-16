@@ -73,7 +73,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
 
 
-<!--  -tx:annotation-driven transaction-manager="transactionManager"  /--> 
+<tx:annotation-driven transaction-manager="transactionManager"  /> 
 
 <!--  bean class="org.springframework.transaction.aspectj.AnnotationTransactionAspect" factory-method="aspectOf">
   <property name="transactionManager" ref="transactionManager" /> 
