@@ -19,6 +19,12 @@ class CustomerServiceImpl implements CustomerService {
 	
 	private final CustomerRepository customerRepository;
 	
+	private final boolean activateNewPersons=true;
+	
+	private final boolean activateNewRole=true;
+	
+	private final boolean activateNewCustomer=true;
+	
 	@Autowired
 	public CustomerServiceImpl(final CustomerRepository customerRepository) {
 		this.customerRepository=customerRepository;
@@ -27,16 +33,30 @@ class CustomerServiceImpl implements CustomerService {
 	
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public final void register(final Customer customer, final Person person) {
+		if( activateNewPersons){
+		  person.state().activate();
+		}
+		
 		if( customer.hasId() ) {
-		   grantAndRegister(customerRepository.forId(customer.id()), person);
+		   grantAndRegister(customerRepository.forId(customer.id()), person, false, CustomerRole.Opportunities, CustomerRole.Bids, CustomerRole.Demands);
 		   return;
 		}
-		grantAndRegister(new CustomerImpl(person), person);
+		final Customer newCustomer = new CustomerImpl(person);
+		
+		if( activateNewCustomer){
+		  newCustomer.state().activate();
+		}
+		
+		grantAndRegister(newCustomer, person, activateNewRole, CustomerRole.values());
 		
 	}
 
-	private void grantAndRegister(final Customer changedCustomer, final Person person) {
-		changedCustomer.grant(person,  CustomerRole.Opportunities, CustomerRole.Bids, CustomerRole.Demands);
+	private void grantAndRegister(final Customer changedCustomer, final Person person, final boolean isActive, CustomerRole ... customerRoles) {
+		changedCustomer.grant(person, customerRoles);
+		if( isActive){
+			changedCustomer.state(person).activate();	
+		}
+		
 		customerRepository.store(changedCustomer);
 	}
 	
