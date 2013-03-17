@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import de.mq.merchandise.contact.LoginContact;
 
 
-
-
 @Entity(name="EMailContact")
 class EMailContactImpl extends AbstractContact implements LoginContact {
 
@@ -35,7 +33,8 @@ class EMailContactImpl extends AbstractContact implements LoginContact {
 		
 		return account;
 	}
-
+	
+	
 	
 	
 

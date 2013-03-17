@@ -12,7 +12,6 @@ import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import de.mq.merchandise.contact.LoginContact;
@@ -34,7 +33,8 @@ public abstract  class AbstractContact implements LoginContact {
 	@Equals
 	protected final  String account;
 	
-	@Transient
+	
+	 //needed for hibernate, transient attributes are not present within callbacks, why? ask Gavin.
 	protected boolean isLogin;
 	
 	@Column(length=50)
@@ -71,6 +71,8 @@ public abstract  class AbstractContact implements LoginContact {
 	@PrePersist
 	@PreUpdate
 	void onStore() {
+		
+		System.out.println("???" + isLogin);
 		if(!isLogin){
 			return;
 		}

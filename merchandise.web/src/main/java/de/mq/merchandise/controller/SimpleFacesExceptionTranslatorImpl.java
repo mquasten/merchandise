@@ -44,6 +44,7 @@ public class SimpleFacesExceptionTranslatorImpl implements Action {
 		
 		facesContextFactory.requestContext().addCallbackParam(VALIDATION_FAILED, true);
 		
+		
 		if(! exceptionTranslation.resultExpression().trim().isEmpty()) {
 			return parseEl(exceptionTranslation, args);
 		}
