@@ -18,6 +18,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -34,6 +36,10 @@ import de.mq.merchandise.util.Equals;
 @Entity(name = "Customer")
 @Table(name="customer")
 @Cacheable(false)
+@NamedQueries({ @NamedQuery(name=CustomerRepository.PERSON_FOR_LOGIN, query = "select p from Person  p  where exists (select c from p.contacts c where c.login= :login  ) and p.state.active=true "), 
+                @NamedQuery(name=CustomerRepository.CUSTOMER_FOR_PERSON , query="Select r.customer from UserRelation r where r.person.id = :personId and r.state.active=true and r.customer.state.active=true")
+
+})
 class CustomerImpl implements Customer {
 	
 	private static final long serialVersionUID = 1L;

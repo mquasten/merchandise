@@ -31,7 +31,7 @@ import de.mq.merchandise.customer.State;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
-@Entity
+@Entity(name="UserRelation")
 @Table(name="user_relation")
 @Cacheable(false)
 class UserRelationImpl implements UserRelation  {

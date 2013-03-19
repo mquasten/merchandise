@@ -1,8 +1,10 @@
 package de.mq.merchandise.customer.support;
 
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
@@ -52,6 +54,12 @@ public class CustomerMemoryReposioryMock implements CustomerRepository{
 		
 		
 		return EntityUtil.copy(index.get(id));
+	}
+
+	@Override
+	public final  Collection<Entry<Customer,Person>> forLogin(String login) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

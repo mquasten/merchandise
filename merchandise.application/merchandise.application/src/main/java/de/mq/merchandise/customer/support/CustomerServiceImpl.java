@@ -10,8 +10,6 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerRole;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
-import de.mq.merchandise.customer.support.CustomerImpl;
-import de.mq.merchandise.customer.support.CustomerRepository;
 
 @Service
 @Transactional(propagation=Propagation.REQUIRED , readOnly=true)
@@ -71,5 +69,8 @@ class CustomerServiceImpl implements CustomerService {
 		return customer;
 		
 	}
+	
+	
+	
 
 }
