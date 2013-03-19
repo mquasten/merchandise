@@ -1,6 +1,6 @@
 package de.mq.merchandise.customer.support;
 
-import java.util.GregorianCalendar;
+
 
 import junit.framework.Assert;
 

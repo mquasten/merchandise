@@ -1,8 +1,7 @@
 package de.mq.merchandise.customer.support;
 
 import java.lang.reflect.Constructor;
-import java.util.Date;
-import java.util.GregorianCalendar;
+
 
 import junit.framework.Assert;
 
@@ -13,7 +12,7 @@ import de.mq.merchandise.customer.support.TradeRegisterImpl;
 
 public class TradeRegisterTest {
 	
-	private static final Date REGISTRATION_DATE = new GregorianCalendar(1968, 4, 28).getTime();
+	
 	private static final String REFERENCE = "Aktenzeichen";
 	private static final String CITY = "Wegberg";
 	private static final String ZIPCODE = "41844";
