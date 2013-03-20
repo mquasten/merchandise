@@ -50,6 +50,7 @@ class CustomerRepositoryImpl<K> implements CustomerRepository {
 	public final Collection<Entry<Customer,Person>> forLogin(final String login) {
 		final List<Entry<Customer,Person>> result = new ArrayList<>();
 		final List<Person> persons = entityManager.createNamedQuery(CustomerRepository.PERSON_FOR_LOGIN,Person.class).setParameter("login", login).getResultList();
+		
 		DataAccessUtils.requiredSingleResult(persons);
 		for(final Customer customer : entityManager.createNamedQuery(CustomerRepository.CUSTOMER_FOR_PERSON, Customer.class).setParameter("personId", persons.get(0).id()).getResultList()) {
 			result.add(new AbstractMap.SimpleImmutableEntry<>(customer,persons.get(0)));

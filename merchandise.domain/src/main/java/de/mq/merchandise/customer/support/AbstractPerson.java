@@ -72,6 +72,7 @@ abstract class AbstractPerson implements Person {
 	@Target(StateImpl.class)
 	private final State state = EntityUtil.create(StateImpl.class);
 	
+
 	
 	@OneToMany( orphanRemoval=true, targetEntity=AbstractContact.class, fetch=FetchType.LAZY , cascade={CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name="person_id")

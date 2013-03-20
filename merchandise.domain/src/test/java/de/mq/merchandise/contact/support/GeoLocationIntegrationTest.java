@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,10 +20,16 @@ import de.mq.merchandise.contact.support.GeoLocationImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
+@Ignore
 public class GeoLocationIntegrationTest {
 	
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	
+	
+	
+	
 	
 	@Test
 	@Transactional
