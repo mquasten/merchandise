@@ -12,6 +12,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;
@@ -61,7 +62,7 @@ public class CustomerRepositoryTest {
 	
 
 	@Test
-	public final void register() {
+	public final void login() {
 		final EntityManager entityManager = Mockito.mock(EntityManager.class);
 		@SuppressWarnings("unchecked")
 		final TypedQuery<Person> typedPersonQuery = Mockito.mock(TypedQuery.class);
@@ -97,5 +98,23 @@ public class CustomerRepositoryTest {
 		Mockito.verify(entityManager).createNamedQuery(CustomerRepository.CUSTOMER_FOR_PERSON, Customer.class);
 		Mockito.verify(typedCustomerQuery).setParameter(PERSON_ID_PARAMETER, BEYONCES_ID);
 		Mockito.verify(typedCustomerQuery).getResultList();
+	}
+	
+	@Test(expected=EmptyResultDataAccessException.class)
+	public final void loginNotFound() {
+		final EntityManager entityManager = Mockito.mock(EntityManager.class);
+		@SuppressWarnings("unchecked")
+		final TypedQuery<Person> typedPersonQuery = Mockito.mock(TypedQuery.class);
+		Mockito.when(entityManager.createNamedQuery(CustomerRepository.PERSON_FOR_LOGIN, Person.class)).thenReturn(typedPersonQuery);
+		Mockito.when(typedPersonQuery.setParameter(LOGIN_PARAMETER, BEYONCES_LOGIN)).thenReturn(typedPersonQuery);
+		@SuppressWarnings("unused")
+		final List<Person> logins = new ArrayList<>();
+		
+		
+		final CustomerRepository customerRepository = new  CustomerRepositoryImpl(entityManager);
+		customerRepository.forLogin(BEYONCES_LOGIN);
+		
+		
+		
 	}
 }

@@ -13,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import junit.framework.Assert;
 
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import de.mq.merchandise.customer.Person;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/repositories.xml"})
 @ActiveProfiles("db")
+
 public class LoginIntegrationTest {
 	
 	@Autowired()
