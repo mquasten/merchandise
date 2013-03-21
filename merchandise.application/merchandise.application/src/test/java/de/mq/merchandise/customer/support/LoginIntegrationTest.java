@@ -74,7 +74,7 @@ public class LoginIntegrationTest {
 	}
 
 	private Customer newCustomer() {
-		final Person person = new LegalPersonImpl("LadyGaga","12345", new TradeRegisterBuilderFactoryImpl().tradeRegisterBuilder().withCity("city").withZipCode("zip").withReference("0815").build(), LegalForm.eK, new Date(), Locale.US); 
+		final Person person = newPerson(); 
 		person.assign(new ContactBuilderFactoryImpl().instantMessengerContactBuilder().withAccount("pokerface").withLogin().withProvider(InstantMessenger.Skype).build());
 		person.state().activate();
 		final Customer customer = new CustomerImpl(person);	
@@ -83,6 +83,12 @@ public class LoginIntegrationTest {
 		customer.state(person).activate();
 		return customer;
 	}
+
+	private LegalPersonImpl newPerson() {
+		return new LegalPersonImpl("LadyGaga","12345", new TradeRegisterBuilderFactoryImpl().tradeRegisterBuilder().withCity("city").withZipCode("zip").withReference("0815").build(), LegalForm.eK, new Date(), Locale.US);
+	}
+	
+	
 	
 
 }

@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NamedQuery;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.support.DataAccessUtils;
@@ -17,13 +15,11 @@ import org.springframework.stereotype.Repository;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;
-import de.mq.merchandise.customer.support.CustomerImpl;
-import de.mq.merchandise.customer.support.CustomerRepository;
 
 
 @Repository
 @Profile("db")
-class CustomerRepositoryImpl<K> implements CustomerRepository {
+class CustomerRepositoryImpl implements CustomerRepository {
 	
 	@PersistenceContext
 	private  EntityManager entityManager;
