@@ -1,5 +1,6 @@
 package de.mq.merchandise.customer.support;
 
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
@@ -23,6 +24,9 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import org.hibernate.annotations.Target;
 
@@ -37,6 +41,8 @@ import de.mq.merchandise.customer.PersonRole;
 import de.mq.merchandise.customer.State;
 
 
+import de.mq.merchandise.util.DigestUtil.Algorithm;
+import de.mq.merchandise.util.DigestUtil;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
@@ -47,7 +53,12 @@ import de.mq.merchandise.util.Equals;
 @Cacheable(false)
 abstract class AbstractPerson implements Person {
 
+	
 	private static final long serialVersionUID = 1L;
+	
+	private static final Algorithm ALGORITHM = Algorithm.MD5;
+	private static final int PASSWORD_MAX_LEN = 20 ; 
+	
 
 	static final Locale DEFAULT_LOCALE = new Locale("", "");
 	
@@ -59,7 +70,7 @@ abstract class AbstractPerson implements Person {
 	@Equals
 	protected final String name;
 	
-	@Column(length=25)
+	@Column(length=50)
 	protected String password; 
 	
 	@Column(length=2)
@@ -102,6 +113,7 @@ abstract class AbstractPerson implements Person {
 	/*especially  for jpa, for what ever, without it will not work... */ 
 	AbstractPerson() {
 		this(null, DEFAULT_LOCALE);
+	
 	} 
 	
 	@Override
@@ -203,6 +215,27 @@ abstract class AbstractPerson implements Person {
 		return (id != null);
 	}
 	
+	public final void assignPassword(final String password) {
+		
+		if(password.length() > PASSWORD_MAX_LEN ) {
+			throw new IllegalArgumentException("Password should be less than " + PASSWORD_MAX_LEN +  " characters");
+		}
+		this.password=DigestUtil.digestAsHex(password, ALGORITHM);
+	}
+	
+	
+	@PrePersist
+	@PreUpdate
+	void digestPassword() {
+		if( password == null){
+			EntityUtil.mandatoryGuard(password, "password");
+		}
+		if(  password.length() <=  PASSWORD_MAX_LEN ) {
+			this.password=DigestUtil.digestAsHex(password, ALGORITHM);
+		}
+	}
+
+
 	
 	
 }

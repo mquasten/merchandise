@@ -101,6 +101,8 @@ public interface Person extends BasicEntity {
 	 * @return the locale (country and ldefault language)
 	 */
 	Locale locale(); 
+	
+	void assignPassword(final String password);
 
 
 }

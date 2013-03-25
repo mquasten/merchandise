@@ -69,6 +69,7 @@ public class CustomerIntegrationTest {
 				
 				
 		final Person person = new NaturalPersonImpl("Kylie", "Minogue", nativity);
+		person.assignPassword("kinkyKylie");
 		final Customer customer = new CustomerImpl(person);
 		entityManager.persist(customer);
 		waste.add(customer);
@@ -97,7 +98,9 @@ public class CustomerIntegrationTest {
 		
 		final Nativity nativity = newNativity();
 		final Person person = new NaturalPersonImpl("Kylie", "Minogue", nativity);
+		person.assignPassword("kinkyKylie");
 		final Person contactPerson = new NaturalPersonImpl("Dannii", "Minogue", nativity);
+		contactPerson.assignPassword("notSoKinkyDanii");
 		Customer customer = new CustomerImpl(person);
 		//entityManager.persist(customer);
 		//entityManager.persist(contactPerson);

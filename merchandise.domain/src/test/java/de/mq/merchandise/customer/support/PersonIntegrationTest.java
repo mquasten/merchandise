@@ -76,6 +76,7 @@ public class PersonIntegrationTest {
 		person.assign(address);
 		person.assign(PersonRole.Catalogs);
 		person.assign(PersonRole.States);
+		person.assignPassword("kinkyKylie");
 		
 		entityManager.persist(person);
 		waste.add(person);
@@ -118,6 +119,7 @@ public class PersonIntegrationTest {
 	    final String name = "Minogue-Music";
 		final String taxId = "taxId";
 		final LegalPerson person = new LegalPersonImpl(name, taxId, register, LegalForm.GbR, date);	
+		person.assignPassword("kinkyKylie");
 		entityManager.persist(person);
 		waste.add(person);
 		final LegalPerson result = entityManager.find(LegalPersonImpl.class, person.id());

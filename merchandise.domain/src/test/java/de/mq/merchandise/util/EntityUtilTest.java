@@ -1,4 +1,4 @@
-package de.mq.merchandise.domain;
+package de.mq.merchandise.util;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
