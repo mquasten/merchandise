@@ -1,5 +1,8 @@
 package de.mq.merchandise.customer;
 
+import java.util.Collection;
+import java.util.Map.Entry;
+
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,5 +34,12 @@ public interface CustomerService {
     * @return the customer, identified by the given id
     */
    Customer customer(final Long id);
+   
+   /**
+    * Returns a set of Entries, with customer as key and the related person user  as value, given by the login of the user
+    * @param login the login of the user
+    * @return a list of customers to that the user have access
+    */
+   Collection<Entry<Customer,Person>> login(final String login);
 
 }

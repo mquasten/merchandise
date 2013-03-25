@@ -1,5 +1,8 @@
 package de.mq.merchandise.customer.support;
 
+import java.util.Collection;
+import java.util.Map.Entry;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
@@ -70,6 +73,11 @@ class CustomerServiceImpl implements CustomerService {
 		
 	}
 	
+	
+	public final Collection<Entry<Customer,Person>> login(final String login) {
+		return   customerRepository.forLogin(login);
+		
+	}
 	
 	
 

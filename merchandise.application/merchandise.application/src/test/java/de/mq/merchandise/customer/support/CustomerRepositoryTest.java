@@ -100,6 +100,34 @@ public class CustomerRepositoryTest {
 		Mockito.verify(typedCustomerQuery).getResultList();
 	}
 	
+	
+	@Test(expected=EmptyResultDataAccessException.class)
+	public final void noActiveCustomer() {
+		final EntityManager entityManager = Mockito.mock(EntityManager.class);
+		@SuppressWarnings("unchecked")
+		final TypedQuery<Person> typedPersonQuery = Mockito.mock(TypedQuery.class);
+		Mockito.when(entityManager.createNamedQuery(CustomerRepository.PERSON_FOR_LOGIN, Person.class)).thenReturn(typedPersonQuery);
+		Mockito.when(typedPersonQuery.setParameter(LOGIN_PARAMETER, BEYONCES_LOGIN)).thenReturn(typedPersonQuery);
+		final List<Person> logins = new ArrayList<>();
+		final Person login = Mockito.mock(Person.class);
+		Mockito.when(login.id()).thenReturn(BEYONCES_ID);
+		logins.add(login);
+		Mockito.when(typedPersonQuery.getResultList()).thenReturn(logins);
+		@SuppressWarnings("unchecked")
+		final TypedQuery<Customer> typedCustomerQuery = Mockito.mock(TypedQuery.class);
+		Mockito.when(entityManager.createNamedQuery(CustomerRepository.CUSTOMER_FOR_PERSON, Customer.class)).thenReturn(typedCustomerQuery);
+		Mockito.when(typedCustomerQuery.setParameter(PERSON_ID_PARAMETER, BEYONCES_ID)).thenReturn(typedCustomerQuery);
+		final List<Customer> customers = new ArrayList<>();
+		
+		Mockito.when(typedCustomerQuery.getResultList()).thenReturn(customers);
+		
+		
+		final CustomerRepository customerRepository = new  CustomerRepositoryImpl(entityManager);
+		
+		customerRepository.forLogin(BEYONCES_LOGIN);
+		
+	}
+	
 	@Test(expected=EmptyResultDataAccessException.class)
 	public final void loginNotFound() {
 		final EntityManager entityManager = Mockito.mock(EntityManager.class);

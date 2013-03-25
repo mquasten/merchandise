@@ -3,6 +3,7 @@ package de.mq.merchandise.customer.support;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -10,8 +11,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;
@@ -52,8 +55,15 @@ class CustomerRepositoryImpl implements CustomerRepository {
 			result.add(new AbstractMap.SimpleImmutableEntry<>(customer,persons.get(0)));
 		}
 		
-		return result;
+		emptyResultGuard(result);
+		return Collections.unmodifiableList(result);
 		
+	}
+
+	private void emptyResultGuard(final List<Entry<Customer, Person>> result) {
+		if( result.size() < 1){
+			throw new EmptyResultDataAccessException(1);
+		}
 	}
 
 }

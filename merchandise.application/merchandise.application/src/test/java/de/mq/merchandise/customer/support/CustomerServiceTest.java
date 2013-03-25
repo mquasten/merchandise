@@ -1,6 +1,9 @@
 package de.mq.merchandise.customer.support;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 
 import junit.framework.Assert;
 
@@ -20,6 +23,7 @@ import de.mq.merchandise.customer.support.CustomerServiceImpl;
 
 public class CustomerServiceTest {
 
+	private static final String LOGIN = "skype:singleLadies";
 	private static final long ID = 19680528L;
 
 	@Test
@@ -91,6 +95,19 @@ public class CustomerServiceTest {
 		final CustomerRepository customerRepository = Mockito.mock(CustomerRepository.class);
 		final CustomerService customerService = new CustomerServiceImpl(customerRepository);
 		customerService.customer(ID);
+	}
+	
+	@Test
+	public final void login() {
+		final CustomerRepository customerRepository = Mockito.mock(CustomerRepository.class);
+		final CustomerService customerService = new CustomerServiceImpl(customerRepository);
+		@SuppressWarnings("unchecked")
+		final Entry<Customer,Person> entry = Mockito.mock(Entry.class);
+		final Collection<Entry<Customer,Person>> entries = new ArrayList<>();
+		entries.add(entry);
+		Mockito.when(customerRepository.forLogin(LOGIN)).thenReturn(entries);
+	    Assert.assertEquals(entries, customerService.login(LOGIN));
+		
 	}
 	
 	
