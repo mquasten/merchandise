@@ -77,6 +77,7 @@ public class LoginIntegrationTest {
 	private Customer newCustomer() {
 		final Person person = newPerson(); 
 		person.assign(new ContactBuilderFactoryImpl().instantMessengerContactBuilder().withAccount("pokerface").withLogin().withProvider(InstantMessenger.Skype).build());
+		person.assignPassword("bornThisWay");
 		person.state().activate();
 		final Customer customer = new CustomerImpl(person);	
 		customer.state().activate();
