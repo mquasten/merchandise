@@ -51,5 +51,13 @@ public class DigestTest {
 		Assert.assertTrue(digest.check(TEXT));
 		Assert.assertFalse(digest.check("pokerface"));
 	}
+	
+	@Test
+	public  final void Algorithm() {
+		Assert.assertEquals(3, Algorithm.values().length);
+		for(final Algorithm algorithm : Algorithm.values()){
+			Assert.assertEquals(algorithm, Algorithm.valueOf(algorithm.name()));
+		}
+	}
 
 }
