@@ -23,11 +23,16 @@ public class DigestImpl implements Digest {
 		EntityUtil.notNullGuard(algorithm, "algorithm");
 		EntityUtil.mandatoryGuard(text, "text");
 		this.algorithm=algorithm;
+		if( algorithm == Algorithm.UNCRYPTED){
+			digest=(char)0+text;
+			return;
+		}
+		
 		if( algorithm== Algorithm.NON){
 			digest=hex(text.getBytes());
 			return;
 		}
-		digest=digestAsHex(text, algorithm.name());
+		digest=digestAsHex(text, algorithm.algorithm());
 	}
 	
 	@Override
@@ -47,7 +52,7 @@ public class DigestImpl implements Digest {
 	}
 
 	private String hex(final byte[] text) {
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer(""+ (char)0);
 		for(byte b : text ){
 			buffer.append(toHexString(b));
 		}
@@ -63,11 +68,26 @@ public class DigestImpl implements Digest {
 	public boolean check(final String text) {
 		EntityUtil.mandatoryGuard(text, "text");
 		EntityUtil.mandatoryGuard(digest, "digest");
+		if(! digest.startsWith(""+ (char)0 )) {
+			return digest.equals(text);
+		}
 		EntityUtil.notNullGuard(algorithm, "algorithm");
+		if( algorithm == Algorithm.UNCRYPTED) {
+			return digest.equals((char) 0 + text);
+		}
+		
 		return this.digest.equalsIgnoreCase(digestAsHex(text, algorithm.name()));
 	}
 	
 	
+	void toHexString() {
+		EntityUtil.notNullGuard(digest, "digest");
+		if( digest.startsWith(""+(char)0)) {
+		    return; 	
+		}
+		assignDigest(digest, algorithm);
+		
+	}
 	
 	
 
