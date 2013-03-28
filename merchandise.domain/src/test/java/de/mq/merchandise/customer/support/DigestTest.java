@@ -3,6 +3,7 @@ package de.mq.merchandise.customer.support;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.GregorianCalendar;
 
 import junit.framework.Assert;
 
@@ -10,6 +11,7 @@ import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.DigestUtils;
 
+import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.customer.support.Digest.Algorithm;
 
 public class DigestTest {
@@ -20,7 +22,9 @@ public class DigestTest {
 	public final void assignMd5() {
 		final  Digest digest = new DigestImpl();
 	    digest.assignDigest(TEXT, Algorithm.MD5);
-	    Assert.assertEquals((char)0+ DigestUtils.md5DigestAsHex(TEXT.getBytes()).toUpperCase(), ReflectionTestUtils.getField(digest, "digest"));
+	    Assert.assertEquals( DigestUtils.md5DigestAsHex(TEXT.getBytes()).toUpperCase(), ReflectionTestUtils.getField(digest, "digest"));
+	    Assert.assertTrue((boolean) ReflectionTestUtils.getField(digest, "crypted"));
+	    Assert.assertEquals(Algorithm.MD5, ReflectionTestUtils.getField(digest, "algorithm"));
 	}
 	
 	@Test
@@ -28,7 +32,9 @@ public class DigestTest {
 		final  Digest digest = new DigestImpl();
 	    digest.assignDigest(TEXT);
 		
-	    Assert.assertEquals( (char)0 +DigestUtils.md5DigestAsHex(TEXT.getBytes()).toUpperCase(), ReflectionTestUtils.getField(digest, "digest"));
+	    Assert.assertEquals( DigestUtils.md5DigestAsHex(TEXT.getBytes()).toUpperCase(), ReflectionTestUtils.getField(digest, "digest"));
+	    Assert.assertTrue( (boolean) ReflectionTestUtils.getField(digest, "crypted"));
+	    Assert.assertEquals(Algorithm.MD5, ReflectionTestUtils.getField(digest, "algorithm"));
 		
 	}
 	
@@ -41,7 +47,9 @@ public class DigestTest {
 	public final void assignNon() {
 		final  Digest digest = new DigestImpl();
 		digest.assignDigest(TEXT, Algorithm.NON);
-		Assert.assertEquals((char)0 +new BigInteger(TEXT.getBytes()).toString(16).toUpperCase(), ReflectionTestUtils.getField(digest, "digest"));
+		Assert.assertEquals(new BigInteger(TEXT.getBytes()).toString(16).toUpperCase(), ReflectionTestUtils.getField(digest, "digest"));
+		Assert.assertTrue((boolean) ReflectionTestUtils.getField(digest, "crypted"));
+		Assert.assertEquals(Algorithm.NON, ReflectionTestUtils.getField(digest, "algorithm"));
 		
 	}
 	
@@ -49,14 +57,17 @@ public class DigestTest {
 	public final void assignUncrypted() {
 		final  Digest digest = new DigestImpl();
 		digest.assignDigest(TEXT, Algorithm.UNCRYPTED);
-		Assert.assertEquals((char)0 +TEXT, ReflectionTestUtils.getField(digest, "digest") );
+		Assert.assertEquals(TEXT, ReflectionTestUtils.getField(digest, "digest") );
+		Assert.assertTrue((boolean) ReflectionTestUtils.getField(digest, "crypted"));
+		Assert.assertEquals(Algorithm.UNCRYPTED, ReflectionTestUtils.getField(digest, "algorithm") );
 	}
 	
 	@Test
-	public final void check() {
+	public final void checkDigest() {
 		final  Digest digest = new DigestImpl();
-		ReflectionTestUtils.setField(digest, "digest",(char)0+  DigestUtils.md5DigestAsHex(TEXT.getBytes()));
+		ReflectionTestUtils.setField(digest, "digest", DigestUtils.md5DigestAsHex(TEXT.getBytes()));
 		ReflectionTestUtils.setField(digest, "algorithm", Algorithm.MD5);
+		ReflectionTestUtils.setField(digest, "crypted", true);
 		Assert.assertTrue(digest.check(TEXT));
 		Assert.assertFalse(digest.check("pokerface"));
 	}
@@ -72,7 +83,7 @@ public class DigestTest {
 	@Test
 	public final void checkUncrypted() {
 		final  Digest digest = new DigestImpl();
-		ReflectionTestUtils.setField(digest, "digest", (char) 0 +  TEXT);
+		ReflectionTestUtils.setField(digest, "digest", TEXT);
 		ReflectionTestUtils.setField(digest, "algorithm", Algorithm.UNCRYPTED);
 		Assert.assertTrue(digest.check(TEXT));
 		Assert.assertFalse(digest.check("dontLetMeGetMe"));
@@ -92,16 +103,17 @@ public class DigestTest {
 		ReflectionTestUtils.setField(digest, "algorithm", Algorithm.MD5);
 		digest.toHexString();
 		
-		Assert.assertEquals( (char)0 +DigestUtils.md5DigestAsHex(TEXT.getBytes()).toUpperCase(), ReflectionTestUtils.getField(digest, "digest"));
+		Assert.assertEquals( DigestUtils.md5DigestAsHex(TEXT.getBytes()).toUpperCase(), ReflectionTestUtils.getField(digest, "digest"));
 	}
 	
 	@Test
 	public final void toHexStringAlreadyDigest() {
 		final  DigestImpl digest = new DigestImpl();
-		ReflectionTestUtils.setField(digest, "digest",(char) 0 +DigestUtils.md5DigestAsHex(TEXT.getBytes()).toUpperCase());
+		ReflectionTestUtils.setField(digest, "digest", DigestUtils.md5DigestAsHex(TEXT.getBytes()).toUpperCase());
 		ReflectionTestUtils.setField(digest, "algorithm", Algorithm.MD5);
+		ReflectionTestUtils.setField(digest, "crypted", true);
 		digest.toHexString();
-		Assert.assertEquals( (char)0 +DigestUtils.md5DigestAsHex(TEXT.getBytes()).toUpperCase(), ReflectionTestUtils.getField(digest, "digest"));
+		Assert.assertEquals( DigestUtils.md5DigestAsHex(TEXT.getBytes()).toUpperCase(), ReflectionTestUtils.getField(digest, "digest"));
 	}
 	
 	@Test
@@ -112,7 +124,14 @@ public class DigestTest {
 		}
 	}
 	
-	
+	@Test
+	public  final void test() {
+		final Digest digest = new DigestImpl();
+		final Person person = new NaturalPersonImpl("Katy", "Perry", new NativityImpl("Santa Barbara" , new GregorianCalendar(1985, 9, 25).getTime())	);
+		person.digest.assignDigest("lesbe", Algorithm.MD5);
+		System.out.println(ReflectionTestUtils.getField(digest, "digest"));
+		
+	}
 	
 
 }

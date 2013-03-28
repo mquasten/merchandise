@@ -3,6 +3,7 @@ package de.mq.merchandise.customer.support;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -12,10 +13,16 @@ import de.mq.merchandise.util.EntityUtil;
 public class DigestImpl implements Digest {
 	
 	@Column(length=3)
+	@Basic(optional=false)
 	private Digest.Algorithm algorithm;
 	
 	@Column(length=50)
+	@Basic(optional=false)
 	private String digest;
+	
+	@Column()
+	@Basic(optional=false)
+	private boolean crypted;
 	
 	
 	@Override
@@ -24,12 +31,14 @@ public class DigestImpl implements Digest {
 		EntityUtil.mandatoryGuard(text, "text");
 		this.algorithm=algorithm;
 		if( algorithm == Algorithm.UNCRYPTED){
-			digest=(char)0+text;
+			digest=text;
+			crypted=true;
 			return;
 		}
 		
 		if( algorithm== Algorithm.NON){
 			digest=hex(text.getBytes());
+			crypted=true;
 			return;
 		}
 		digest=digestAsHex(text, algorithm.algorithm());
@@ -44,6 +53,7 @@ public class DigestImpl implements Digest {
 		try {
 			final MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
 			messageDigest.update(text.getBytes());
+			this.crypted=true;
 		    return hex(messageDigest.digest());
 		} catch (NoSuchAlgorithmException ex) {
 			
@@ -52,7 +62,7 @@ public class DigestImpl implements Digest {
 	}
 
 	private String hex(final byte[] text) {
-		final StringBuffer buffer = new StringBuffer(""+ (char)0);
+		final StringBuffer buffer = new StringBuffer();
 		for(byte b : text ){
 			buffer.append(toHexString(b));
 		}
@@ -68,12 +78,12 @@ public class DigestImpl implements Digest {
 	public boolean check(final String text) {
 		EntityUtil.mandatoryGuard(text, "text");
 		EntityUtil.mandatoryGuard(digest, "digest");
-		if(! digest.startsWith(""+ (char)0 )) {
+		if(! crypted ) {
 			return digest.equals(text);
 		}
 		EntityUtil.notNullGuard(algorithm, "algorithm");
 		if( algorithm == Algorithm.UNCRYPTED) {
-			return digest.equals((char) 0 + text);
+			return digest.equals( text);
 		}
 		
 		return this.digest.equalsIgnoreCase(digestAsHex(text, algorithm.name()));
@@ -82,7 +92,7 @@ public class DigestImpl implements Digest {
 	
 	void toHexString() {
 		EntityUtil.notNullGuard(digest, "digest");
-		if( digest.startsWith(""+(char)0)) {
+		if( crypted) {
 		    return; 	
 		}
 		assignDigest(digest, algorithm);
