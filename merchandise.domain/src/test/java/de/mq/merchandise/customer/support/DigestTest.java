@@ -1,9 +1,7 @@
 package de.mq.merchandise.customer.support;
 
 import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.GregorianCalendar;
 
 import junit.framework.Assert;
 
@@ -11,7 +9,6 @@ import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.DigestUtils;
 
-import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.customer.support.Digest.Algorithm;
 
 public class DigestTest {
@@ -124,14 +121,7 @@ public class DigestTest {
 		}
 	}
 	
-	@Test
-	public  final void test() {
-		final Digest digest = new DigestImpl();
-		final Person person = new NaturalPersonImpl("Katy", "Perry", new NativityImpl("Santa Barbara" , new GregorianCalendar(1985, 9, 25).getTime())	);
-		person.digest.assignDigest("lesbe", Algorithm.MD5);
-		System.out.println(ReflectionTestUtils.getField(digest, "digest"));
-		
-	}
+	
 	
 
 }
