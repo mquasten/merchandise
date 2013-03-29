@@ -14,7 +14,7 @@ public class DigestImpl implements Digest {
 	
 	@Column(length=3)
 	@Basic(optional=false)
-	private Digest.Algorithm algorithm;
+	private Digest.Algorithm algorithm=Algorithm.MD5;
 	
 	@Column(length=50)
 	@Basic(optional=false)
@@ -22,8 +22,11 @@ public class DigestImpl implements Digest {
 	
 	@Column()
 	@Basic(optional=false)
-	private boolean crypted;
+	private boolean crypted=false;
 	
+	DigestImpl() {
+		
+	}
 	
 	@Override
 	public void   assignDigest(final String text, final Algorithm algorithm) {
@@ -78,12 +81,14 @@ public class DigestImpl implements Digest {
 	public boolean check(final String text) {
 		EntityUtil.mandatoryGuard(text, "text");
 		EntityUtil.mandatoryGuard(digest, "digest");
+		
 		if(! crypted ) {
+			
 			return digest.equals(text);
 		}
 		EntityUtil.notNullGuard(algorithm, "algorithm");
 		if( algorithm == Algorithm.UNCRYPTED) {
-			return digest.equals( text);
+			return digest.equals(text);
 		}
 		
 		return this.digest.equalsIgnoreCase(digestAsHex(text, algorithm.name()));

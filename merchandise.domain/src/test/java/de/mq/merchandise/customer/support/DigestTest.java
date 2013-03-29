@@ -82,6 +82,8 @@ public class DigestTest {
 		final  Digest digest = new DigestImpl();
 		ReflectionTestUtils.setField(digest, "digest", TEXT);
 		ReflectionTestUtils.setField(digest, "algorithm", Algorithm.UNCRYPTED);
+		ReflectionTestUtils.setField(digest, "crypted", true);
+		
 		Assert.assertTrue(digest.check(TEXT));
 		Assert.assertFalse(digest.check("dontLetMeGetMe"));
 	}
@@ -120,7 +122,6 @@ public class DigestTest {
 			digest.assignDigest(TEXT, algorithm);
 		}
 	}
-	
 	
 	
 

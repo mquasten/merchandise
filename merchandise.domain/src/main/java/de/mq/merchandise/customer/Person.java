@@ -7,6 +7,7 @@ import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.contact.CityAddress;
 import de.mq.merchandise.contact.Contact;
 import de.mq.merchandise.contact.LoginContact;
+import de.mq.merchandise.customer.support.Digest;
 
 /**
  * A Person can be a natural or a legalPerson.
@@ -102,7 +103,11 @@ public interface Person extends BasicEntity {
 	 */
 	Locale locale(); 
 	
-	void assignPassword(final String password);
+	/**
+	 * Get digest implementation to handle, passwords, its message digest algorithm and so on
+	 * @return, the digest implementation to create message digest for password
+	 */
+	Digest digest();
 
 
 }

@@ -29,6 +29,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import org.hibernate.annotations.Target;
+import org.hibernate.annotations.common.reflection.ReflectionUtil;
+import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.contact.CityAddress;
 import de.mq.merchandise.contact.Contact;
@@ -70,8 +72,11 @@ abstract class AbstractPerson implements Person {
 	@Equals
 	protected final String name;
 	
-	@Column(length=50)
-	protected String password; 
+	//@Column(length=50)
+	//protected String password; 
+	
+	@Target(DigestImpl.class)
+	private Digest digest = EntityUtil.create(DigestImpl.class);
 	
 	@Column(length=2)
 	protected String language;
@@ -215,24 +220,16 @@ abstract class AbstractPerson implements Person {
 		return (id != null);
 	}
 	
-	public final void assignPassword(final String password) {
-		
-		if(password.length() > PASSWORD_MAX_LEN ) {
-			throw new IllegalArgumentException("Password should be less than " + PASSWORD_MAX_LEN +  " characters");
-		}
-		this.password=DigestUtil.digestAsHex(password, ALGORITHM);
-	}
 	
+	public final Digest digest() {
+		return this.digest;
+	}
 	
 	@PrePersist
 	@PreUpdate
+	//nasty, ugly, dirrty 
 	void digestPassword() {
-		if( password == null){
-			EntityUtil.mandatoryGuard(password, "password");
-		}
-		if(  password.length() <=  PASSWORD_MAX_LEN ) {
-			this.password=DigestUtil.digestAsHex(password, ALGORITHM);
-		}
+		((DigestImpl)digest).toHexString();
 	}
 
 

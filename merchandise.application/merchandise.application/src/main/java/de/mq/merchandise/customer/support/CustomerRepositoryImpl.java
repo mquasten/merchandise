@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;

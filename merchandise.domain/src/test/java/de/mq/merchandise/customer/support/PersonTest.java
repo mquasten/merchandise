@@ -13,6 +13,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.DigestUtils;
 
 import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.contact.Contact;
@@ -40,6 +41,7 @@ public class PersonTest {
 	private static final String NAME = "Minogue";
 	private static final Date DATE =  new GregorianCalendar(1968, 04, 28).getTime();
 	private static final Nativity NATIVITY = Mockito.mock(Nativity.class);
+	private static final String PASSWORD = "kinkyKylie";
 			
 			
 
@@ -327,5 +329,23 @@ public class PersonTest {
 		} catch (final Exception ex) {
 			throw new IllegalStateException(ex);
 		} 
+	}
+	
+	
+	@Test
+	public final void digest() {
+		final NaturalPerson person = new NaturalPersonImpl(FIRSTNAME, NAME, NATIVITY);
+		final Digest digest = Mockito.mock(Digest.class);
+		ReflectionTestUtils.setField(person, "digest", digest);
+		Assert.assertEquals(digest, person.digest());
+	}
+	
+	@Test
+	public final void digestEntityCallback() {
+		final NaturalPerson person = new NaturalPersonImpl(FIRSTNAME, NAME, NATIVITY);
+		ReflectionTestUtils.setField(person.digest(), "digest", PASSWORD);
+		Assert.assertEquals(PASSWORD, ReflectionTestUtils.getField(person.digest(), "digest"));
+		((AbstractPerson)person).digestPassword();
+		Assert.assertEquals(DigestUtils.md5DigestAsHex(PASSWORD.getBytes()).toUpperCase(), ReflectionTestUtils.getField(person.digest(), "digest"));
 	}
 }
