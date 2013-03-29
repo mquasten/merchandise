@@ -61,20 +61,9 @@ public  abstract class   LegalPersonAO   implements Serializable {
 	@Setter(clazz=LegalPersonImpl.class, value="legalForm" , converter=String2LegalFormConverter.class)
 	public abstract void setLegalForm(String legalForm);
 
-	@Size(min=4, max=8 , message="{wrong_password}")
-	@Getter(clazz=LegalPersonImpl.class, value="password")
-	public abstract String getPassword(); 
-
-	@Setter(clazz=LegalPersonImpl.class, value="password")
-	public abstract  void setPassword(String password);
+	@GetterProxy(clazz=LegalPersonImpl.class ,proxyClass=DigestAO.class, name="digest")
+	public abstract DigestAO getDigest();
 	
-	
-	@Size(min=4, max=8 , message="{wrong_password}")
-	@Getter(value="confirmedPassword")
-	public abstract String getConfirmedPassword();
-	
-	@Setter(value="confirmedPassword")
-	public abstract void setConfirmedPassword(final String password);
 	
 	@NotNull( message="{mandatory_field}")
 	@Getter(clazz=LegalPersonImpl.class, value="country")

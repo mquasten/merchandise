@@ -42,19 +42,10 @@ public abstract class NaturalPersonAO implements Serializable  {
 	@Setter( clazz=NaturalPersonImpl.class, value = "name")
 	public abstract void setLastName(String lastName);
 	
-	@Size(min=4, max=8 , message="{wrong_password}")
-	@Getter(clazz=NaturalPersonImpl.class, value="password")
-	public abstract String getPassword(); 
-
-	@Setter(clazz=NaturalPersonImpl.class, value="password")
-	public abstract  void setPassword(String password);
 	
-	@Size(min=4, max=8 , message="{wrong_password}")
-	@Getter(value="confirmedPassword")
-	public abstract String getConfirmedPassword();
+	@GetterProxy(clazz=NaturalPersonImpl.class ,proxyClass=DigestAO.class, name="digest" )
+	public abstract DigestAO getDigest();
 	
-	@Setter(value="confirmedPassword")
-	public abstract void setConfirmedPassword(final String password);
 	
 
 	@GetterProxy(clazz=NaturalPersonImpl.class ,proxyClass=NativityAO.class, name="nativity")

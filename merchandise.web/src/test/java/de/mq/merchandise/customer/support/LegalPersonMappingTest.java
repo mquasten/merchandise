@@ -22,6 +22,7 @@ import de.mq.merchandise.contact.support.AddressTestConstants;
 import de.mq.merchandise.customer.LegalForm;
 import de.mq.merchandise.customer.LegalPerson;
 import de.mq.merchandise.customer.TradeRegister;
+import de.mq.merchandise.customer.support.Digest.Algorithm;
 import de.mq.merchandise.customer.support.LegalPersonAO;
 import de.mq.merchandise.customer.support.LegalPersonImpl;
 import de.mq.merchandise.customer.support.TradeRegisterBuilderFactoryImpl;
@@ -49,12 +50,12 @@ public class LegalPersonMappingTest {
 		
 		final LegalPerson legalPerson = new LegalPersonImpl(PersonTestConstants.NAME,PersonTestConstants.TAX_ID,tradeRegister,LegalForm.AG, FOUNDATION_DATE, Locale.US);
 		
-		ReflectionTestUtils.setField(legalPerson, "password", PersonTestConstants.PASSWORD);
+		//ReflectionTestUtils.setField(legalPerson, "password", PersonTestConstants.PASSWORD);
 		final CityAddress address = EntityUtil.create(AddressImpl.class);
 		ReflectionTestUtils.setField(address, "id", Long.valueOf(AddressTestConstants.ADDRESS_ID));
 		legalPerson.assign(address);
 		
-		
+		legalPerson.digest().assignDigest(PersonTestConstants.PASSWORD, Algorithm.UNCRYPTED);
 		
 		final LegalPersonAO web = proxyFactory.createProxy(LegalPersonAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(legalPerson).build());
 		
@@ -62,7 +63,10 @@ public class LegalPersonMappingTest {
 		Assert.assertEquals(PersonTestConstants.TAX_ID, web.getTaxId());
 		Assert.assertEquals(FOUNDATION_DATE, web.getFoundationDate());
 		Assert.assertEquals(LegalForm.AG.name(), web.getLegalForm());
-		Assert.assertEquals(PersonTestConstants.PASSWORD, web.getPassword());
+		//Assert.assertEquals(PersonTestConstants.PASSWORD, web.getPassword());
+		
+		Assert.assertEquals(PersonTestConstants.PASSWORD, web.getDigest().getDigest());
+		
 		
 		Assert.assertEquals(tradeRegister.reference(), web.getTradeRegister().getReference());
 		Assert.assertEquals(tradeRegister.city(), web.getTradeRegister().getCity());
@@ -86,8 +90,8 @@ public class LegalPersonMappingTest {
 		web.setFoundationDate(FOUNDATION_DATE);
 		web.setLegalForm(LegalForm.AG.name());
 		web.setTaxId(PersonTestConstants.TAX_ID);
-		web.setPassword(PersonTestConstants.PASSWORD);
-		web.setConfirmedPassword(PersonTestConstants.CONFIRMED_PASSWORD);
+	    web.getDigest().setDigest(PersonTestConstants.PASSWORD);
+		web.getDigest().setConfirmedDigest(PersonTestConstants.CONFIRMED_PASSWORD);
 		web.setCountry(Locale.US.getCountry());
 		web.setLanguage(Locale.US.getLanguage());
 	
@@ -96,13 +100,13 @@ public class LegalPersonMappingTest {
 		web.getTradeRegister().setZipCode(PersonTestConstants.ZIPCODE);
 		web.getTradeRegister().setCity(PersonTestConstants.CITY);
 		
-		Assert.assertEquals(PersonTestConstants.CONFIRMED_PASSWORD, web.getConfirmedPassword());
+		Assert.assertEquals(PersonTestConstants.CONFIRMED_PASSWORD, web.getDigest().getConfirmedDigest());
 		
 		Assert.assertEquals(PersonTestConstants.NAME, web.getPerson().name());
 		Assert.assertEquals(PersonTestConstants.TAX_ID,  web.getPerson().taxId());
 		Assert.assertEquals(FOUNDATION_DATE,  web.getPerson().foundationDate());
 		Assert.assertEquals(LegalForm.AG,  web.getPerson().legalForm());
-		Assert.assertEquals(PersonTestConstants.PASSWORD, ReflectionTestUtils.getField(web.getPerson(), "password"));
+		Assert.assertEquals(PersonTestConstants.PASSWORD, ReflectionTestUtils.getField(web.getPerson().digest(), "digest"));
 		Assert.assertEquals(Locale.US, web.getPerson().locale());
 		
 		
