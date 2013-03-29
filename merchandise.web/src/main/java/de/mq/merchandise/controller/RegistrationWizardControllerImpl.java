@@ -2,6 +2,8 @@ package de.mq.merchandise.controller;
 
 
 
+import javax.validation.ConstraintViolationException;
+
 import org.primefaces.event.FlowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -46,7 +48,10 @@ public class RegistrationWizardControllerImpl   {
 		this.validationService=validationService;
 	}
 	
-	@ExceptionTranslations(value={@ExceptionTranslation( resultExpression="#args[0].oldStep",  action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="customer_not_found" ) ,}, clazz = RegistrationWizardControllerImpl.class)
+	@ExceptionTranslations(value={@ExceptionTranslation( resultExpression="#args[0].oldStep",  action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="customer_not_found" ), 
+	 @ExceptionTranslation(   resultExpression="#args[0].oldStep" , action = SimpleFacesExceptionTranslatorImpl.class, source = ConstraintViolationException.class  )}
+	
+	, clazz = RegistrationWizardControllerImpl.class)
 	public String onFlowProcess(final FlowEvent event) { 
 		final Registration registration = applicationContext.getBean(Registration.class);	
 	
@@ -70,9 +75,10 @@ public class RegistrationWizardControllerImpl   {
 	
 	
 	@ExceptionTranslations(value={
-            @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = DataIntegrityViolationException.class  , bundle="register_dupplicate_login_contact" )}, clazz = RegistrationWizardControllerImpl.class)
+            @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = DataIntegrityViolationException.class  , bundle="register_dupplicate_login_contact" )},  clazz = RegistrationWizardControllerImpl.class)
 	public String  register(final Customer customer, final Person person) {
 	   customerService.register(customer, person);
+	  
 	  return "login?faces-redirect=true";
 	  
 	} 

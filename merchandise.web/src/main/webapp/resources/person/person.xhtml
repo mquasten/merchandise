@@ -159,14 +159,14 @@
       <p:panelGrid  id="passwordGrid" columns="3"  columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"  >  
             <f:facet name="header">#{cc.attrs.message.person_passord_headline}</f:facet>
             <p:outputLabel id="customerPasswordLabel" for="customerPassword" value="#{cc.attrs.message.person_password_password}" />          
-            <p:password id="customerPassword" value="#{cc.attrs.person.password}" label="customerPassword" styleClass="gridInputField"    redisplay="true" >
+            <p:password id="customerPassword" value="#{cc.attrs.person.digest.digest}" label="customerPassword" styleClass="gridInputField"    redisplay="true" >
             	<f:validateBean />
             	<p:ajax event="change" update="@this customerPasswordLabel customerPasswordMessage" process="@this"/>
             </p:password>
 			 <p:message id="customerPasswordMessage" for="customerPassword" display="text" />		
              <p:outputLabel id="customerPasswordConfirmedLabel"  for="customerPasswordConfirmed" value="#{cc.attrs.message.person_password_confirmation}"  />        
                   
-             <p:password  id="customerPasswordConfirmed" value="#{cc.attrs.person.confirmedPassword}" label="customerPasswordConfirmed" styleClass="gridInputField"   redisplay="true">
+             <p:password  id="customerPasswordConfirmed" value="#{cc.attrs.person.digest.confirmedDigest}" label="customerPasswordConfirmed" styleClass="gridInputField"   redisplay="true">
              	<f:validateBean />
              	<p:ajax event="change" update="@this customerPasswordConfirmedLabel customerPasswordConfirmedMessage" process="@this"/>
              </p:password>

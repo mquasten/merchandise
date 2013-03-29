@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
@@ -15,9 +17,10 @@ public class DigestImpl implements Digest {
 	
 	private static final long serialVersionUID = 1L;
 
-	@Column(length=3)
+	@Column(length=10)
 	@Basic(optional=false)
 	@Equals
+	@Enumerated(EnumType.STRING)
 	private Digest.Algorithm algorithm=Algorithm.MD5;
 	
 	@Column(length=50)
