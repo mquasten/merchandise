@@ -8,16 +8,21 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import de.mq.merchandise.util.EntityUtil;
+import de.mq.merchandise.util.Equals;
 
 @Embeddable
 public class DigestImpl implements Digest {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Column(length=3)
 	@Basic(optional=false)
+	@Equals
 	private Digest.Algorithm algorithm=Algorithm.MD5;
 	
 	@Column(length=50)
 	@Basic(optional=false)
+	@Equals
 	private String digest;
 	
 	@Column()
@@ -26,6 +31,10 @@ public class DigestImpl implements Digest {
 	
 	DigestImpl() {
 		
+	}
+	
+	DigestImpl(final String text, final Algorithm algorithm) {
+		assignDigest(text,algorithm);
 	}
 	
 	@Override
@@ -102,6 +111,16 @@ public class DigestImpl implements Digest {
 		}
 		assignDigest(digest, algorithm);
 		
+	}
+
+	@Override
+	public int hashCode() {
+		return EntityUtil.equalsBuilder().withSource(this).buildHashCode();
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(getClass()).isEquals();
 	}
 	
 	

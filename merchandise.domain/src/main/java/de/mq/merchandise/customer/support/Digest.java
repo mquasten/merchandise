@@ -1,6 +1,8 @@
 package de.mq.merchandise.customer.support;
 
-public interface Digest {
+import java.io.Serializable;
+
+public interface Digest extends Serializable{
 
 	enum  Algorithm {
 		SHA_1("SHA-1"),    //Produces 20-byte digests; suitable for documents of less than 264 bits; recently compromised.

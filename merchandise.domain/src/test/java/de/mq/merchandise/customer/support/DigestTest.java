@@ -123,6 +123,32 @@ public class DigestTest {
 		}
 	}
 	
+	@Test
+	public final void digestHashCode() {
+		final Digest digest = new DigestImpl();
+		Assert.assertEquals(System.identityHashCode(digest), digest.hashCode());
+		digest.assignDigest(TEXT, Algorithm.UNCRYPTED);
+		Assert.assertEquals(TEXT.hashCode() + Algorithm.UNCRYPTED.hashCode(), digest.hashCode());
+	}
+	
+	@Test
+	public final void equals() {
+		final Digest digest = new DigestImpl();
+		Assert.assertTrue(digest.equals(digest));
+		Assert.assertFalse(digest.equals(new DigestImpl()));
+		
+		
+		Assert.assertTrue(new DigestImpl(TEXT, Algorithm.MD5).equals(new DigestImpl(TEXT, Algorithm.MD5)));
+		Assert.assertFalse(new DigestImpl(TEXT, Algorithm.MD5).equals(new DigestImpl(TEXT, Algorithm.MD2)));
+	}
+	
+	@Test
+	public final void constructor() {
+		final Digest digest = new DigestImpl(TEXT, Algorithm.MD5);
+		Assert.assertEquals(DigestUtils.md5DigestAsHex(TEXT.getBytes()).toUpperCase(), ReflectionTestUtils.getField(digest, "digest"));
+		Assert.assertEquals(true, ReflectionTestUtils.getField(digest, "crypted"));
+		Assert.assertEquals(Algorithm.MD5, ReflectionTestUtils.getField(digest, "algorithm"));
+	}
 	
 
 }

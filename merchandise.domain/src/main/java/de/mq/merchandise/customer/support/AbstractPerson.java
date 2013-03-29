@@ -24,13 +24,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.Target;
-import org.hibernate.annotations.common.reflection.ReflectionUtil;
-import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.contact.CityAddress;
 import de.mq.merchandise.contact.Contact;
@@ -41,10 +39,6 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.customer.PersonRole;
 import de.mq.merchandise.customer.State;
-
-
-import de.mq.merchandise.util.DigestUtil.Algorithm;
-import de.mq.merchandise.util.DigestUtil;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
@@ -58,8 +52,7 @@ abstract class AbstractPerson implements Person {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final Algorithm ALGORITHM = Algorithm.MD5;
-	private static final int PASSWORD_MAX_LEN = 20 ; 
+	
 	
 
 	static final Locale DEFAULT_LOCALE = new Locale("", "");

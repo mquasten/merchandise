@@ -13,7 +13,6 @@ import javax.persistence.PersistenceContext;
 import junit.framework.Assert;
 
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -33,12 +32,7 @@ import de.mq.merchandise.customer.Nativity;
 import de.mq.merchandise.customer.NaturalPerson;
 import de.mq.merchandise.customer.PersonRole;
 import de.mq.merchandise.customer.TradeRegister;
-import de.mq.merchandise.customer.support.LegalPersonImpl;
-import de.mq.merchandise.customer.support.NativityImpl;
-import de.mq.merchandise.customer.support.NaturalPersonImpl;
-import de.mq.merchandise.customer.support.TradeRegisterImpl;
 
-@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
 public class PersonIntegrationTest {
