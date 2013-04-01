@@ -39,7 +39,9 @@ class CustomerServiceImpl implements CustomerService {
 		}
 		
 		if( customer.hasId() ) {
-		   grantAndRegister(customerRepository.forId(customer.id()), person, false, CustomerRole.Opportunities, CustomerRole.Bids, CustomerRole.Demands);
+		   final Customer existingCustomer = customerRepository.forId(customer.id());
+		   userExistsGuard(person, existingCustomer);
+		   grantAndRegister(existingCustomer, person, false, CustomerRole.Opportunities, CustomerRole.Bids, CustomerRole.Demands);
 		   return;
 		}
 		final Customer newCustomer = new CustomerImpl(person);
@@ -50,6 +52,14 @@ class CustomerServiceImpl implements CustomerService {
 		
 		grantAndRegister(newCustomer, person, activateNewRole, CustomerRole.values());
 		
+	}
+
+
+	private void userExistsGuard(final Person person, final Customer existingCustomer) {
+		
+		if ( existingCustomer.hasUser(person)) {
+				  throw new IllegalArgumentException("Person already assigned to the customer");
+		}
 	}
 
 	private void grantAndRegister(final Customer changedCustomer, final Person person, final boolean isActive, CustomerRole ... customerRoles) {

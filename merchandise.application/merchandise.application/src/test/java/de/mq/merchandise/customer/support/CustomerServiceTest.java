@@ -80,6 +80,27 @@ public class CustomerServiceTest {
 	    Assert.assertTrue(newCustomer.getValue().state(person).isActive());
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public final void registerCustomerUserAlreadyAssigned(){
+
+		final State personState = Mockito.mock(State.class);
+		final CustomerRepository customerRepository = Mockito.mock(CustomerRepository.class);
+		final Customer customer = Mockito.mock(Customer.class);
+		
+		Mockito.when(customer.hasId()).thenReturn(true);
+		Mockito.when(customer.id()).thenReturn(ID);
+		
+		
+		final CustomerService customerService = new CustomerServiceImpl(customerRepository);
+		
+		final Person person = Mockito.mock(Person.class);
+		Mockito.when(customer.hasUser(person)).thenReturn(true);
+		Mockito.when(person.state()).thenReturn(personState);
+		Mockito.when(customerRepository.forId(ID)).thenReturn(customer);
+		
+		customerService.register(customer, person);
+	}
+	
 	@Test
 	public final void customerExists() {
 		final CustomerRepository customerRepository = Mockito.mock(CustomerRepository.class);
