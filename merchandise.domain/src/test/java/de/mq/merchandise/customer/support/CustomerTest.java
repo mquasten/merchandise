@@ -66,7 +66,7 @@ public class CustomerTest {
 	public final void stateNull() {
 		final Customer customer = newInvalidCustomer();
 		ReflectionTestUtils.setField(customer, "state", null);
-		customer.state();
+	    customer.state();
 	}
 	
 	@Test
@@ -330,6 +330,26 @@ public class CustomerTest {
 		Mockito.when(state.isActive()).thenReturn(true);
 		customer.state(person).activate();
 		Assert.assertFalse(customer.activePersons().isEmpty());
+	}
+	
+	@Test
+	public final void hasUser(){
+		final Customer customer = newInvalidCustomer();
+		final State state = Mockito.mock(State.class);
+		final Person person = Mockito.mock(Person.class);
+		final UserRelation userRelation = Mockito.mock(UserRelation.class);
+		Mockito.when(userRelation.person()).thenReturn(person);
+		Mockito.when(userRelation.state()).thenReturn(state);
+		Mockito.when(userRelation.isOwner(person)).thenReturn(true);
+		
+		Assert.assertFalse(customer.hasUser(person));
+		
+		customer.grant(person);
+		
+		Assert.assertTrue(customer.hasUser(person));
+		
+		
+		
 	}
 	
 	@Test
