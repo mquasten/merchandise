@@ -1,18 +1,10 @@
 package de.mq.merchandise.contact.support;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.MethodCallback;
-
-import de.mq.mapping.util.proxy.GetterDomain;
 import de.mq.mapping.util.proxy.ProxyUtil;
 import de.mq.merchandise.contact.LoginContact;
 

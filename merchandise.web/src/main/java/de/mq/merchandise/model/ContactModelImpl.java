@@ -30,6 +30,7 @@ public class ContactModelImpl implements Serializable {
 		Messenger
 	}
 	
+	
 	private final Map<String,Object> addressMap = new HashMap<>();
 	
 	private String addressType= Kind.Address.name();
@@ -38,7 +39,7 @@ public class ContactModelImpl implements Serializable {
 	
 
 	@Autowired
-	public ContactModelImpl(final AddressAO addressAO, final PostBoxAO cityAddressAO, final PhoneContactAO phoneContactAO, final EMailContactAO emailContactAO, final MessengerContactAO messengerContactAO) {
+	public ContactModelImpl(final AddressAO addressAO, final PostBoxAO cityAddressAO, final PhoneContactAO phoneContactAO, final EMailContactAO emailContactAO, final MessengerContactAO messengerContactAO) {	
 		addressMap.put(Kind.Address.name(), addressAO);
 		addressMap.put(Kind.PostBox.name(), cityAddressAO);
 		addressMap.put(Kind.Phone.name(), phoneContactAO);

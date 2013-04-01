@@ -14,8 +14,6 @@ public class CustomerProxyFactoryImpl {
 	@Autowired
 	private  WebProxyFactory webProxyFactory;
 	
-	
-	
 	@Bean(name="customer")
 	@Scope("view")
 	public CustomerAO customer() {

@@ -60,6 +60,7 @@ public class RegistrationWizardControllerImpl   {
 		}
 		
 		if( isGoToOverViewPageForNewUserAndExistingCustomer(event, registration)) {
+			
 			registration.assign(customerService.customer(registration.customer().id()));
 		}
 		return event.getNewStep();
@@ -75,10 +76,15 @@ public class RegistrationWizardControllerImpl   {
 	
 	
 	@ExceptionTranslations(value={
-            @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = DataIntegrityViolationException.class  , bundle="register_dupplicate_login_contact" )},  clazz = RegistrationWizardControllerImpl.class)
+            @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = DataIntegrityViolationException.class  , bundle="register_dupplicate_login_contact" ),
+            @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class  , bundle="register_person_already_assigned" )
+	
+	
+	},  clazz = RegistrationWizardControllerImpl.class)
+	
 	public String  register(final Customer customer, final Person person) {
-	   customerService.register(customer, person);
-	  
+	
+	  customerService.register(customer, person);
 	  return "login?faces-redirect=true";
 	  
 	} 
