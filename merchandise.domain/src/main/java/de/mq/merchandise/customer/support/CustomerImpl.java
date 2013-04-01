@@ -121,6 +121,13 @@ class CustomerImpl implements Customer {
 	}
 	
 	
+	public final boolean hasUser(final Person person) {
+		if ( relation(person) != null) {
+			return true;
+		}
+		return false;
+	}
+	
 	public final void revoke(final Person person, final CustomerRole ... roles){
 		UserRelation existing = relation(person);
 		if (existing==null){

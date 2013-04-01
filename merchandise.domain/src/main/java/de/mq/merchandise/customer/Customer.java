@@ -74,7 +74,7 @@ public interface Customer extends BasicEntity {
 	List<Person> inActivePersons();
 	
 	/**
-	 * Returns a map with person as key and the state of the person for the customer as valus
+	 * Returns a map with person as key and the state of the person for the customer as values
 	 * @return map of persons and their states for the customer
 	 */
 	Map<Person,State> persons();
@@ -95,5 +95,12 @@ public interface Customer extends BasicEntity {
 	 * @return the state of the userRelation for the given person
 	 */
 	State state(final Person person);
+	
+	/**
+	 * Check if a person is already assigned with a customer with an active or inactive user role
+	 * @param person the person for that the check should be done
+	 * @return true if the person have a role, false if not
+	 */
+    boolean hasUser(final Person person);
 
 }
