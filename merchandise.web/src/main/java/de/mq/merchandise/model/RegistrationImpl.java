@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,11 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerAO;
 import de.mq.merchandise.customer.support.LegalPersonAO;
 import de.mq.merchandise.customer.support.NaturalPersonAO;
+import de.mq.merchandise.model.support.Conversation;
 
 @Component("registration")
-@Scope( value = "view")
+//@Scope( value = "view")
+@Scope("conversation")
 public class RegistrationImpl implements Serializable, Registration {
 	private static final long serialVersionUID = 3894850127039962986L;
 
@@ -30,17 +33,23 @@ public class RegistrationImpl implements Serializable, Registration {
 	
 	private final CustomerAO customer;
 	
+	private final Conversation conversation;
 
 	@Autowired
-	public RegistrationImpl(final LegalPersonAO legalPersonAO, final NaturalPersonAO naturalPersonAO, final User user, final CustomerAO customer) {
+	public RegistrationImpl(final LegalPersonAO legalPersonAO, final NaturalPersonAO naturalPersonAO, final User user, final CustomerAO customer, final Conversation conversation) {
 		persons.put(Kind.NaturalPerson, naturalPersonAO);
 		persons.put(Kind.LegalPerson, legalPersonAO);
 		persons.put(Kind.User, naturalPersonAO);
 		this.user=user;
 		this.customer=customer;
+		this.conversation=conversation;
 	}
 	
-	
+	@PostConstruct
+	void preConstruct() {
+		System.out.println("begin");
+		conversation.begin();
+	}
 	
 
 	Object person(final Kind kind) {

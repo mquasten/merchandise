@@ -17,6 +17,7 @@ import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.model.Registration;
 import de.mq.merchandise.model.Registration.Kind;
+import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.util.ValidationService;
 
 
@@ -41,6 +42,9 @@ public class RegistrationWizardControllerImpl   {
     
     @Autowired
     private ValidationService validationService;
+    
+    @Autowired
+    private Conversation conversation;
 	
 	RegistrationWizardControllerImpl(final CustomerService customerService, final ApplicationContext applicationContext, final ValidationService validationService){
 		this.customerService=customerService;
@@ -85,6 +89,7 @@ public class RegistrationWizardControllerImpl   {
 	public String  register(final Customer customer, final Person person) {
 	
 	  customerService.register(customer, person);
+	  conversation.end();
 	  return "login?faces-redirect=true";
 	  
 	} 

@@ -23,11 +23,18 @@
 	                    	<constructor-arg ref="facesContextFactory" />
 	                    </bean>
 	                </entry>
+	                <entry key="conversation">
+	                    <bean class="de.mq.merchandise.model.support.SimpleConversationScopeImpl" >
+	                    	<constructor-arg ref="facesContextFactory" />
+	                    </bean>
+	                </entry>
 	            </map>
 	        </property>
    </bean>
    
-   
+   <bean class="de.mq.merchandise.model.support.SimpleConversationImpl" >
+   		<constructor-arg ref="facesContextFactory" />
+   </bean>
 
 
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">  
