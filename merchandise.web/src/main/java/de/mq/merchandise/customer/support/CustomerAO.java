@@ -18,7 +18,6 @@ import de.mq.merchandise.model.support.String2LongConverter;
 public abstract class CustomerAO  implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-
 	
 	@Pattern(regexp="[1-9]{1,1}[0-9]{0,17}",  message="{positiv_number}")
 	@Getter(clazz=CustomerImpl.class, value="id", converter=Number2StringConverter.class)
