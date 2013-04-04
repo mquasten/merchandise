@@ -20,11 +20,6 @@ public class LoginControllerFactoryImpl {
 	private CustomerService customerService;
 	
 	
-	
-	
-	
-	
-	
 	@Bean(name="loginController")
 	@Scope("singleton")
 	public LoginControllerImpl loginController() {
