@@ -20,10 +20,12 @@
 		</h1>
 
 		<h:form id="form">
-			<p:messages globalOnly="true" autoUpdate="true" closable="true" />
+			
 
-
-			<p:panelGrid id="loginPanel" columns="3"  styleClass="positionCentered">
+			
+			<h:panelGrid columns="1" styleClass="positionCentered">
+			<p:messages globalOnly="true" autoUpdate="true" closable="true" styleClass="positionCentered" />
+			<p:panelGrid id="loginPanel" columns="3"  >
 				<f:facet name="header">#{message.login_headline}</f:facet>
 
 				<p:outputLabel for="login" value="#{message.login_user}" />
@@ -54,15 +56,21 @@
 					<p:commandButton id="loginButton" value="#{message.login_login_button}"
 						icon="ui-icon-check"
 						actionListener="#{loginController.login(login)}"
-						update="loginPanel" style="float:right" />
+						style="float:right"  action="overview"/>
 
+					
+				</f:facet>
+				<f:facet name="footer">
+				
 				</f:facet>
 			</p:panelGrid>
+			</h:panelGrid>
 			<p:tooltip for="login" value="#{message.login_user_tt}" showEffect="fade" hideEffect="fade" /> 
 			<p:tooltip for="password" value="#{message.login_password_tt}" showEffect="fade" hideEffect="fade" /> 
 			<p:tooltip for="registerButton" value="#{message.login_rgister_button_tt}" showEffect="fade" hideEffect="fade" /> 
 			<p:tooltip for="loginButton" value="#{message.login_login_button_tt}" showEffect="fade" hideEffect="fade" /> 
 		</h:form>
+		
 </f:view>
 </h:body>
 

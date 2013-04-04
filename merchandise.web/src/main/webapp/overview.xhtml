@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+ xmlns:contact="http://java.sun.com/jsf/composite/contact"
+xmlns:pers="http://java.sun.com/jsf/composite/person" >
+    <h:head>
+   
+    </h:head>
+    <h:body>
+ 
+   <f:view locale="#{user.language}" contentType="text/html" >
+  <f:metadata>
+      			<f:viewParam name="language" value="#{user.language}" /> 
+      			
+  </f:metadata>
+   	  <h:outputStylesheet library="css" name="style.css"  />
+   	 
+   	  
+   	  
+	 
+	
+  
+      <h1 style="text-align:center">  <h:outputText id="headline" value="#{message.headline}" /> </h1>  
+     
+     <h2 style="text-align:center" > Übersicht </h2>
+     
+     
+      <h:form prependId="false" forceId="true" id="register" > 
+     
+       
+          <p:graphicImage url="/kylie.jpg" />
+         
+     
+        
+        
+  </h:form>
+ 
+  	
+ 
+  
+</f:view>
+
+ 
+    </h:body>
+</html>
+
+
