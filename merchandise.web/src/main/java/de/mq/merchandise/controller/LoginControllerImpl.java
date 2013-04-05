@@ -35,20 +35,13 @@ public class LoginControllerImpl {
 	},  clazz = LoginControllerImpl.class)
 	
 	public String login(final LoginAO login ) {
-		System.out.println(login);
 		final Collection<Entry<Customer,Person>> customerEntries = customerService.login(login.getUser().toLowerCase());
-		System.out.println(customerEntries.size());
 		final Person person = customerEntries.iterator().next().getValue();
 		if(!person.digest().check(login.getPassword())) {
 			throw new SecurityException("Wrong password, login  failed");
 		}
 		
-		final List<Customer> customers = new ArrayList<>();
-		for(Entry<Customer,Person> entry : customerEntries){
-			customers.add(entry.getKey());
-		}
-		
-		login.setCustomers(customers);
+		login.setCustomers(customerAsList(customerEntries));
 		login.setPerson(person);
 		
 		if( customerEntries.size() > 1){
@@ -56,7 +49,14 @@ public class LoginControllerImpl {
 		}
 		
 		return "overview" ;
-		
+	}
+
+	private List<Customer> customerAsList(final Collection<Entry<Customer, Person>> customerEntries) {
+		final List<Customer> customers = new ArrayList<>();
+		for(final Entry<Customer,Person> entry : customerEntries){
+			customers.add(entry.getKey());
+		}
+		return customers;
 	}
 	
 
