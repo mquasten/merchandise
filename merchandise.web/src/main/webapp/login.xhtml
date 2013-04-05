@@ -55,8 +55,8 @@
 
 					<p:commandButton id="loginButton" value="#{message.login_login_button}"
 						icon="ui-icon-check"
-						actionListener="#{loginController.login(login)}"
-						style="float:right"  action="overview"/>
+						action="#{loginController.login(login)}"
+						style="float:right"   update="@form"/>
 
 					
 				</f:facet>

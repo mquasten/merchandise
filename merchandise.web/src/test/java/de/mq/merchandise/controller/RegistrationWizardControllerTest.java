@@ -4,6 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.primefaces.event.FlowEvent;
 import org.springframework.context.ApplicationContext;
@@ -13,6 +14,7 @@ import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.model.Registration;
 import de.mq.merchandise.model.Registration.Kind;
+import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.util.ValidationService;
 
 public class RegistrationWizardControllerTest {
@@ -25,6 +27,7 @@ public class RegistrationWizardControllerTest {
 	private ApplicationContext applicationContext;
 	private Registration registration = Mockito.mock(Registration.class);
 	private ValidationService validationService;
+	private Conversation conversation=Mockito.mock(Conversation.class);
 	
 	@Before
 	public final void setup() {
@@ -34,7 +37,7 @@ public class RegistrationWizardControllerTest {
 		customerService = Mockito.mock(CustomerService.class);
 		
 		applicationContext = Mockito.mock(ApplicationContext.class);
-		registrationWizardController = new RegistrationWizardControllerImpl(customerService, applicationContext, validationService);
+		registrationWizardController = new RegistrationWizardControllerImpl(customerService, applicationContext, validationService, conversation);
 		flowEvent = Mockito.mock(FlowEvent.class);
 		registration = Mockito.mock(Registration.class);
 		Mockito.when(registration.kind()).thenReturn(Registration.Kind.User);
@@ -92,6 +95,7 @@ public class RegistrationWizardControllerTest {
 		final Person person = Mockito.mock(Person.class);
 		registrationWizardController.register(customer, person);
 		Mockito.verify(customerService).register(customer, person);
+		Mockito.verify(conversation).end();
 	}
 	
 

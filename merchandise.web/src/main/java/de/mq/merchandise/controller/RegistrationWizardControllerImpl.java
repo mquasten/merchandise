@@ -46,10 +46,11 @@ public class RegistrationWizardControllerImpl   {
     @Autowired
     private Conversation conversation;
 	
-	RegistrationWizardControllerImpl(final CustomerService customerService, final ApplicationContext applicationContext, final ValidationService validationService){
+	RegistrationWizardControllerImpl(final CustomerService customerService, final ApplicationContext applicationContext, final ValidationService validationService, final Conversation conversation){
 		this.customerService=customerService;
 		this.applicationContext=applicationContext;
 		this.validationService=validationService;
+		this.conversation=conversation;
 	}
 	
 	@ExceptionTranslations(value={@ExceptionTranslation( resultExpression="#args[0].oldStep",  action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="customer_not_found" ), 
