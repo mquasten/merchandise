@@ -1,10 +1,12 @@
 package de.mq.merchandise.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import de.mq.mapping.util.proxy.ExceptionTranslation;
@@ -12,19 +14,27 @@ import de.mq.mapping.util.proxy.ExceptionTranslations;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
+import de.mq.merchandise.customer.support.CustomerBuilderFactoryImpl;
 import de.mq.merchandise.customer.support.LoginAO;
+import de.mq.merchandise.model.support.FacesContextFactory;
 
 
 public class LoginControllerImpl {
 	
 	
-	
+	@Autowired
 	private   CustomerService customerService;
+	@Autowired
+	private  FacesContextFactory facesContextFactory;
+	
 	protected  LoginControllerImpl() {
 	}
 	
-	public LoginControllerImpl(final CustomerService customerService){
+	
+	
+	public LoginControllerImpl(final CustomerService customerService, final FacesContextFactory facesContextFactory){
 		this.customerService=customerService;
+		this.facesContextFactory=facesContextFactory;
 	}
 	
 	@ExceptionTranslations(value={
@@ -45,10 +55,22 @@ public class LoginControllerImpl {
 		login.setPerson(person);
 		
 		if( customerEntries.size() > 1){
+			login.setCustomer(new CustomerBuilderFactoryImpl().customerBuilder().build());
 			return null;
 		}
-		
+		login.setCustomer(customerEntries.iterator().next().getKey());
 		return "overview" ;
+	}
+	
+	public void assignCustomer(final LoginAO login, final Customer customer ) {
+		System.out.println(customer);
+		login.setCustomer(customer);
+		
+	}
+	
+	public void abort(final String language) throws IOException {
+		facesContextFactory.facesContext().getExternalContext().invalidateSession();
+		facesContextFactory.facesContext().getExternalContext().redirect("login.jsf?language=" + language);
 	}
 
 	private List<Customer> customerAsList(final Collection<Entry<Customer, Person>> customerEntries) {
