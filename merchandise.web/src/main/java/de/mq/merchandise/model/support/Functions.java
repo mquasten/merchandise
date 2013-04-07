@@ -2,6 +2,7 @@ package de.mq.merchandise.model.support;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import de.mq.merchandise.contact.support.EMailContactAO;
 import de.mq.merchandise.contact.support.MessengerContactAO;
 import de.mq.merchandise.contact.support.PhoneContactAO;
 import de.mq.merchandise.contact.support.PostBoxAO;
+import de.mq.merchandise.customer.support.CustomerAO;
 import de.mq.merchandise.customer.support.LegalPersonAO;
 import de.mq.merchandise.customer.support.NaturalPersonAO;
 
@@ -123,4 +125,9 @@ public final  class Functions {
 	}
 	
 
+	@SuppressWarnings("unchecked")
+	public final static IdTableMapModel model(List<?> values) {
+		return new IdTableMapModel((List<CustomerAO>) values);
+	}
+	
 }

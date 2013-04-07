@@ -66,18 +66,25 @@
 				</f:facet>
 			</p:panelGrid>
 			
-			 <p:dataTable id="customers" var="customerVar" paginator="#{login.customers.size() > 10}" rows="10"   value="#{login.customers}" rendered="#{login.customers.size() gt 1}" >  
-               
+			
+		
+			 <p:dataTable id="customers" var="customerVar" paginator="#{login.customers.size() > 10}" rows="10"   value="#{u:model(login.customers)}" rendered="#{login.customers.size() gt 1}"  selection="#{login.customer}">  
+             
        		<f:facet name="header">
        		    #{message.login_customer_select}
        		</f:facet>
    			
         
-   		<p:column>
+               <p:column selectionMode="single" style="width:2%" />  
+  
+       
+  
+        <p:column id="dataColumn" >  
+           #{u:person2String(customerVar.person, message, user.language)}
+        </p:column>  
         
-      		 <p:commandLink  value="#{u:person2String(customerVar.person, message, user.language)}" actionListener="#{loginController.assignCustomer(login, customerVar.customer)}" action="overview" />
-						 
-       </p:column>
+        
+   		
   
        <f:facet name="footer">
        		<p:commandButton id="abort" value="#{message.login_logoff}"
@@ -88,6 +95,13 @@
 						
 						 </p:commandButton>
 						  <p:tooltip for="abort" value="#{message.login_abort_tt}" showEffect="fade" hideEffect="fade" /> 
+						  
+		  <p:commandButton id="selectCustomer" value="#{message.login_login_button}"
+						icon="ui-icon-check"
+						action="#{loginController.assignCustomer(login, login.customer.customer)}" 
+						style="float:right"   update="@form"   process="@form" />
+						 <p:tooltip for="selectCustomer" value="#{message.login_select_customer_button_tt}" showEffect="fade" hideEffect="fade" />  
+						  
        </f:facet>
     </p:dataTable>  
     
@@ -102,7 +116,7 @@
 			<p:tooltip for="password" value="#{message.login_password_tt}" showEffect="fade" hideEffect="fade" /> 
 			<p:tooltip for="registerButton" value="#{message.login_rgister_button_tt}" showEffect="fade" hideEffect="fade" /> 
 			<p:tooltip for="loginButton" value="#{message.login_login_button_tt}" showEffect="fade" hideEffect="fade" /> 
-			<p:tooltip for="customers" value="#{message.login_customers_tt}" showEffect="fade" hideEffect="fade" /> 
+			
 			
 		</h:form>
 		

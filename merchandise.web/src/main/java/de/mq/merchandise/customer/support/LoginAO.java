@@ -12,7 +12,6 @@ import de.mq.mapping.util.proxy.GetterProxyCollection;
 import de.mq.mapping.util.proxy.Setter;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;
-
 import de.mq.merchandise.model.support.HibernateProxyConverter;
 
 
@@ -53,6 +52,9 @@ public abstract  class LoginAO  implements Serializable{
 	public abstract CustomerAO getCustomer(); 
 	@Setter( value="customer")
 	public abstract void setCustomer(final Customer customer);
+	
+	@Setter( value="customer" , converter=CustomerAO2DomainConverter.class)
+	public abstract void setCustomer(final CustomerAO customer); 
 	
 	
 	

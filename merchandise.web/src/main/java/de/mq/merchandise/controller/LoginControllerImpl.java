@@ -62,10 +62,19 @@ public class LoginControllerImpl {
 		return "overview" ;
 	}
 	
-	public void assignCustomer(final LoginAO login, final Customer customer ) {
-		System.out.println(customer);
-		login.setCustomer(customer);
+	@ExceptionTranslations(value={
+          
+            @ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class  , bundle="login_customer_mandatory" )
+	
+	
+	},  clazz = LoginControllerImpl.class)
+	public String assignCustomer(final LoginAO login, final Customer customer ) {
+		if ( customer == null){
+			throw new IllegalArgumentException("Customer is mandatory");
+		}
 		
+		login.setCustomer(customer);
+		return "overview";
 	}
 	
 	public void abort(final String language) throws IOException {
