@@ -69,10 +69,12 @@ public class LoginControllerImpl {
 	
 	},  clazz = LoginControllerImpl.class)
 	public String assignCustomer(final LoginAO login, final Customer customer ) {
+		
+		
 		if ( customer == null){
 			throw new IllegalArgumentException("Customer is mandatory");
 		}
-		
+		System.out.println(customer.id());
 		login.setCustomer(customer);
 		return "overview";
 	}

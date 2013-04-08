@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.primefaces.model.SelectableDataModel;
+
 import de.mq.merchandise.contact.support.AddressAO;
 import de.mq.merchandise.contact.support.EMailContactAO;
 import de.mq.merchandise.contact.support.MessengerContactAO;
@@ -125,9 +127,11 @@ public final  class Functions {
 	}
 	
 
-	@SuppressWarnings("unchecked")
-	public final static IdTableMapModel model(List<?> values) {
-		return new IdTableMapModel((List<CustomerAO>) values);
+	
+	public final static SelectableDataModel<?> model(List<?> values) {
+		 final SimpleMapDataModel<Object> model = new SimpleMapDataModel<>();
+		 model.addAll(values);
+		 return model;
 	}
 	
 }
