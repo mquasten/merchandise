@@ -19,8 +19,8 @@ import org.springframework.util.ReflectionUtils;
 
 public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDataModel<T> , List<T> {
 
-	private Map<String,T> map = new HashMap<>();; 
-	private List<T> rows = new ArrayList<>();
+	private final Map<String,T> map = new HashMap<>();; 
+	private final List<T> rows = new ArrayList<>();
 	
 	int index = -1;
 	
