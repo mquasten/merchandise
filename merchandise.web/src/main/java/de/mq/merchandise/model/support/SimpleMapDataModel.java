@@ -4,10 +4,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.faces.model.DataModel;
@@ -19,7 +22,7 @@ import org.springframework.util.ReflectionUtils;
 
 public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDataModel<T> , List<T> {
 
-	private final Map<String,T> map = new HashMap<>();; 
+	private final Map<UUID,T> map = new HashMap<>();; 
 	private final List<T> rows = new ArrayList<>();
 	
 	int index = -1;
@@ -34,7 +37,7 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 	}
 	
 	@Override
-	public final String getRowKey(T object) {
+	public final UUID getRowKey(T object) {
 		try {
 			return id(object);
 			
@@ -44,12 +47,12 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 		
 	}
 
-	private String id(T object) throws IllegalAccessException, InvocationTargetException {
+	private UUID id(T object) throws IllegalAccessException, InvocationTargetException {
 		final Object id = ReflectionUtils.findMethod(object.getClass(), "getId" ).invoke(object);
 		if ( id != null){
-		   return UUID.nameUUIDFromBytes(id.toString().getBytes()).toString();
+		   return UUID.nameUUIDFromBytes(id.toString().getBytes());
 		}
-		return UUID.nameUUIDFromBytes(object.toString().getBytes()).toString();
+		return UUID.nameUUIDFromBytes(Long.valueOf(System.identityHashCode(object)).toString().getBytes());
 	}
 
 	@Override
@@ -59,17 +62,23 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 
 	@Override
 	public final int size() {
-		return map.size();
+		return rows.size();
 	}
 
 	@Override
 	public final boolean isEmpty() {
-		return map.isEmpty();
+		return rows.isEmpty();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean contains(Object o) {
-		return map.values().contains(o);
+	public boolean contains(final Object o) {
+		try {
+	      return map.containsKey(getRowKey((T)o));
+		} catch (ClassCastException| IllegalArgumentException ex){
+			return false;
+		}
+		
 	}
 
 	@Override
@@ -90,86 +99,112 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 
 	@Override
 	public boolean add(T row) {
-		String id =  getRowKey(row);
-		keyExistsGuard(row, id);
+		UUID id =  getRowKey(row);
+		idExistsGuard(id, map);
 		
-		rowExistsGuard(row);
-		rows.add(row);
-		map.put(id, row);
-		return true;
+		if( rows.add(row)) {
+			map.put(id, row);
+            return true;
+		}
+		
+		return false;
 	}
 
-	private void rowExistsGuard(T row) {
-		if( rows.contains(row)){
-			throw new IllegalArgumentException("Dupplicate row: " + row );
+	private void idExistsGuard(UUID id, Map<UUID,T> map) {
+		if( map.containsKey(id)){
+			throw new IllegalArgumentException("Key " + id + " already exists");
 		}
 	}
 
-	private void keyExistsGuard(T row, String id) {
-		if( map.containsKey(id)) {
-			throw new IllegalArgumentException("Dupplicate row id: " + row );
-		}
-	}
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
-	// :fixMe SchadCode
 	public boolean remove(Object o) {
-		map.remove( getRowKey((T) o));
 		
-		return rows.remove(o);
+		if ( ! contains(o)) {
+			return false;
+		}
+		
+		return rows.remove(map.get(getRowKey((T) o)));
 		
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		return rows.containsAll(c);
+		for(final Object row : c) {
+			if( ! contains(row)){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends T> rows) {
-		
+		map.putAll(itemMap(rows));
+		return this.rows.addAll(rows);
+	}
+
+	private Map<UUID, T> itemMap(Collection<? extends T> rows) {
+		final Map<UUID,T> newItems = new HashMap<>();
 		for(final T row : rows){
-			this.add(row);
+			final UUID id = getRowKey(row);
+			idExistsGuard(id, newItems);
+			idExistsGuard(id, map);
 		}
-		return true;
+		return newItems;
 	}
 
 	@Override
 	public boolean addAll(int index, Collection<? extends T> rows) {
-		final Map<String,T> newMap = new HashMap<>();
-		for(final T row : rows){
-			final String id = (String) getRowKey(row);
-			keyExistsGuard(row, id);
-			rowExistsGuard(row);
-			newMap.put(id, row);
-		}
-		this.rows.addAll(index, rows);
-		map.putAll(newMap);
-		return true;
+		map.putAll(itemMap(rows));
+		return this.rows.addAll(index, rows);
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	// :fixMe SchadCode
 	public boolean removeAll(Collection<?> rows) {
-		
-		for(Object row : rows){
-			final String key = getRowKey((T) row).toString();
-			map.remove(key);
+		boolean touched =false;
+		for(final Object row :rows ){
+			if(! contains(row)){
+				continue;
+			}
+			touched=true;
+			final UUID id  = getRowKey((T) row);
+			map.remove(id);
+			this.rows.remove(row);
+			
 		}
-		
-		return this.rows.removeAll(rows);
+		return touched;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean retainAll(Collection<?> rows) {
-		return this.rows.retainAll(rows);
+		final Set<UUID> ids = new HashSet<>();
+		for(final Object row : rows){
+			if( ! contains(row)) {
+				continue;
+			}
+			ids.add(getRowKey((T) row)); 
+		}
+		boolean touched =false;
+		for(final Entry<UUID, T> entry : map.entrySet()){
+			if(ids.contains(entry.getKey())){
+				continue;
+			}
+			touched=true;
+			map.remove(entry.getKey());
+			this.rows.remove(entry.getValue());
+		}
+		return touched;
 	}
 
 	@Override
 	public void clear() {
 		map.clear();
-		rows.clear();
+		this.rows.clear();
 	}
 
 	@Override
@@ -179,27 +214,32 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 
 	@Override
 	public T set(int index, T element) {
-		throw new UnsupportedOperationException();
+		
+		if ( ! contains(element) ) {
+			throw new IllegalArgumentException("Element not found in list");
+		}
+		map.put(getRowKey(element), element);
+		return this.rows.set(index, element);
 	}
 
 	@Override
 	public void add(int index, T row) {
-		rowExistsGuard(row);
-		final String id = getRowKey(row);
-		keyExistsGuard(row, id);
-		map.put(id, row);
+		final UUID id = getRowKey(row);
+		this.idExistsGuard(id, map);
+		this.map.put(id, row);
 		this.rows.add(index, row);
 		
 	}
 
 	@Override
 	public T remove(int index) {
-	    T toBeRemoved = rows.remove(index);
-	    if( toBeRemoved == null){
-	    	return toBeRemoved; 
+	    final T row = this.rows.get(index);
+	    if( ! contains(row) ) {
+	    	throw new IllegalArgumentException("DataModel not consistent, id of the row is not in Map");
 	    }
-	    map.remove(getRowKey(toBeRemoved));
-		return toBeRemoved;
+	    map.remove(getRowKey(row));
+	    return rows.remove(index);
+	   
 	}
 
 	@Override
@@ -241,7 +281,7 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 
 	@Override
 	public int getRowCount() {
-		return map.size();
+		return size();
 	}
 
 	@Override

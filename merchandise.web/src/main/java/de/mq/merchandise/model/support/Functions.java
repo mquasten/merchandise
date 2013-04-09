@@ -13,7 +13,6 @@ import de.mq.merchandise.contact.support.EMailContactAO;
 import de.mq.merchandise.contact.support.MessengerContactAO;
 import de.mq.merchandise.contact.support.PhoneContactAO;
 import de.mq.merchandise.contact.support.PostBoxAO;
-import de.mq.merchandise.customer.support.CustomerAO;
 import de.mq.merchandise.customer.support.LegalPersonAO;
 import de.mq.merchandise.customer.support.NaturalPersonAO;
 
