@@ -128,7 +128,7 @@ public final  class Functions {
 
 	
 	public final static SelectableDataModel<?> model(List<?> values) {
-		 final SimpleMapDataModel<Object> model = new SimpleMapDataModel<>();
+		 final SimpleMapDataModel<Object> model =  new SimpleMapDataModel<>();
 		 model.addAll(values);
 		 return model;
 	}

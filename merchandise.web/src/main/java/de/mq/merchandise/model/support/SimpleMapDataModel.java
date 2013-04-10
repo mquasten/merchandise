@@ -32,7 +32,7 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 		
 	}
 	
-	public SimpleMapDataModel(final Collection<T> rows) {
+	public SimpleMapDataModel(final Collection<? extends T> rows) {
 		setWrappedData(rows);
 	}
 	
@@ -57,7 +57,7 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 
 	@Override
 	public final T getRowData(String rowKey) {
-		return map.get(rowKey);
+		return map.get(UUID.fromString(rowKey));
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 	public boolean contains(final Object o) {
 		try {
 	      return map.containsKey(getRowKey((T)o));
-		} catch (ClassCastException| IllegalArgumentException ex){
+		} catch (final Exception ex){
 			return false;
 		}
 		
@@ -151,6 +151,7 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 			final UUID id = getRowKey(row);
 			idExistsGuard(id, newItems);
 			idExistsGuard(id, map);
+			newItems.put(id, row);
 		}
 		return newItems;
 	}
