@@ -156,4 +156,121 @@ public class SimpleMapDataModelTest {
 		Mockito.verify(rows).toArray(result);
 		
 	}
+	
+	
+	@Test
+	public final void add() {
+		
+		@SuppressWarnings("unchecked")
+		final List<CustomerAO> rows = Mockito.mock(List.class);
+		@SuppressWarnings("unchecked")
+		final Map<UUID,Object> map = Mockito.mock(Map.class);
+		final List<CustomerAO> model = new SimpleMapDataModel<>();
+		final CustomerAO customer = prepareMocksWithID(rows, map, model);
+		Mockito.when(rows.add(customer)).thenReturn(true);
+		Assert.assertTrue(model.add(customer));
+		Mockito.verify(rows).add(customer);
+		Mockito.verify(map).containsKey(UUID.nameUUIDFromBytes(ID.getBytes()));
+		Mockito.verify(map).put(UUID.nameUUIDFromBytes(ID.getBytes()), customer);
+		
+	}
+	
+	
+	
+	
+
+	private CustomerAO prepareMocksWithID(final List<CustomerAO> rows, final Map<UUID, Object> map, final List<CustomerAO> model) {
+		ReflectionTestUtils.setField(model, "rows", rows);
+		ReflectionTestUtils.setField(model, "map", map);
+		
+		
+		final CustomerAO customer = Mockito.mock(CustomerAO.class);
+		Mockito.when(customer.getId()).thenReturn(ID);
+		
+		return customer;
+	}
+	
+	@Test
+	public final void addExists(){
+		@SuppressWarnings("unchecked")
+		final List<CustomerAO> rows = Mockito.mock(List.class);
+		@SuppressWarnings("unchecked")
+		final Map<UUID,Object> map = Mockito.mock(Map.class);
+		final List<CustomerAO> model = new SimpleMapDataModel<>();
+		final CustomerAO customer = prepareMocksWithID(rows, map, model);
+		
+		Assert.assertFalse(model.add(customer));
+		Mockito.verify(rows).add(customer);
+		Mockito.verify(map).containsKey(UUID.nameUUIDFromBytes(ID.getBytes()));
+		Mockito.verifyNoMoreInteractions(map);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void addDupplicateKey() {
+		@SuppressWarnings("unchecked")
+		final List<CustomerAO> rows = Mockito.mock(List.class);
+		@SuppressWarnings("unchecked")
+		final Map<UUID,Object> map = Mockito.mock(Map.class);
+		final List<CustomerAO> model = new SimpleMapDataModel<>();
+		final CustomerAO customer = prepareMocksWithID(rows, map, model);
+		Mockito.when(rows.add(customer)).thenReturn(true);
+		Mockito.when(map.containsKey(UUID.nameUUIDFromBytes(ID.getBytes()))).thenReturn(true);
+		model.add(customer);
+		
+	}
+	
+	@Test
+	public final void remove() {
+		@SuppressWarnings("unchecked")
+		final List<CustomerAO> rows = Mockito.mock(List.class);
+		@SuppressWarnings("unchecked")
+		final Map<UUID,Object> map = Mockito.mock(Map.class);
+		final List<CustomerAO> model = new SimpleMapDataModel<>();
+		final CustomerAO customer = prepareMocksWithID(rows, map, model);
+		Mockito.when(map.containsKey(UUID.nameUUIDFromBytes(ID.getBytes()))).thenReturn(true);
+		Mockito.when(rows.remove(customer)).thenReturn(true);
+		Mockito.when(map.get(UUID.nameUUIDFromBytes(ID.getBytes()))).thenReturn(customer);
+		Assert.assertTrue(model.remove(customer));
+		
+		Mockito.verify(map).containsKey(UUID.nameUUIDFromBytes(ID.getBytes()));
+		Mockito.verify(map).get(UUID.nameUUIDFromBytes(ID.getBytes()));
+		Mockito.verify(rows).remove(customer);
+		
+		
+	}
+	
+	@Test
+	public final void removeNotExists() {
+		@SuppressWarnings("unchecked")
+		final List<CustomerAO> rows = Mockito.mock(List.class);
+		@SuppressWarnings("unchecked")
+		final Map<UUID,Object> map = Mockito.mock(Map.class);
+		final List<CustomerAO> model = new SimpleMapDataModel<>();
+		final CustomerAO customer = prepareMocksWithID(rows, map, model);
+		
+		
+		Assert.assertFalse(model.remove(customer));
+		
+		Mockito.verify(map).containsKey(UUID.nameUUIDFromBytes(ID.getBytes()));
+		Mockito.verifyNoMoreInteractions(map);
+		Mockito.verifyNoMoreInteractions(rows);
+		
+	}
+	
+	@Test
+	public final void containsAll() {
+		@SuppressWarnings("unchecked")
+		final List<CustomerAO> rows = Mockito.mock(List.class);
+		@SuppressWarnings("unchecked")
+		final Map<UUID,Object> map = Mockito.mock(Map.class);
+		final List<CustomerAO> model = new SimpleMapDataModel<>();
+		final CustomerAO customer = prepareMocksWithID(rows, map, model);
+		Mockito.when(map.containsKey(UUID.nameUUIDFromBytes(ID.getBytes()))).thenReturn(true, false);
+		Collection<CustomerAO> customers = new ArrayList<>();
+		customers.add(customer);
+		
+	   Assert.assertTrue(model.containsAll(customers));
+	   Assert.assertFalse(model.containsAll(customers));
+	   Mockito.verify(map, Mockito.times(2)).containsKey(UUID.nameUUIDFromBytes(ID.getBytes()));
+	}
 }

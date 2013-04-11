@@ -99,10 +99,10 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 
 	@Override
 	public boolean add(T row) {
-		UUID id =  getRowKey(row);
+		final UUID id =  getRowKey(row);
 		idExistsGuard(id, map);
 		
-		if( rows.add(row)) {
+		if( this.rows.add(row)) {
 			map.put(id, row);
             return true;
 		}
@@ -124,8 +124,10 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 		if ( ! contains(o)) {
 			return false;
 		}
-		
-		return rows.remove(map.get(getRowKey((T) o)));
+		final UUID id = getRowKey((T) o);
+		final boolean result = rows.remove(map.get(id));
+		map.remove(id);
+		return result;
 		
 	}
 
