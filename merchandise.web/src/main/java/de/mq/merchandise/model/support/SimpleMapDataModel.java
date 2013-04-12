@@ -3,6 +3,7 @@ package de.mq.merchandise.model.support;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -193,7 +194,7 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 			ids.add(getRowKey((T) row)); 
 		}
 		boolean touched =false;
-		for(final Entry<UUID, T> entry : map.entrySet()){
+		for(final Entry<UUID, T> entry :map.entrySet().toArray(new Entry[map.size()]) ){
 			if(ids.contains(entry.getKey())){
 				continue;
 			}
@@ -252,7 +253,7 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 
 	@Override
 	public int lastIndexOf(Object o) {
-		return lastIndexOf(o);
+		return rows.lastIndexOf(o);
 	}
 
 	@Override
@@ -305,8 +306,7 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 
 	@Override
 	public Object getWrappedData() {
-		
-		return rows;
+		return Collections.unmodifiableList(rows);
 	}
 
 	@SuppressWarnings("unchecked")
