@@ -1,5 +1,5 @@
 
-package de.mq.merchandise.model;
+package de.mq.merchandise.customer.support;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Scope;
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
-import de.mq.merchandise.customer.support.LoginAO;
 
 @Configuration
 public class LoginFactoryImpl {

@@ -6,10 +6,10 @@ import javax.validation.ConstraintViolationException;
 
 import org.primefaces.event.FlowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
+import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.ExceptionTranslations;
 import de.mq.merchandise.customer.Customer;
@@ -38,17 +38,19 @@ public class RegistrationWizardControllerImpl   {
 	private CustomerService customerService;
 	
     @Autowired
-	private ApplicationContext applicationContext;
-    
+	private BeanResolver beanResolver;
+	
+	
     @Autowired
     private ValidationService validationService;
     
     @Autowired
     private Conversation conversation;
 	
-	RegistrationWizardControllerImpl(final CustomerService customerService, final ApplicationContext applicationContext, final ValidationService validationService, final Conversation conversation){
+   
+	RegistrationWizardControllerImpl(final CustomerService customerService, final BeanResolver beanResolver, final ValidationService validationService, final Conversation conversation){
 		this.customerService=customerService;
-		this.applicationContext=applicationContext;
+		this.beanResolver=beanResolver;
 		this.validationService=validationService;
 		this.conversation=conversation;
 	}
@@ -58,7 +60,8 @@ public class RegistrationWizardControllerImpl   {
 	
 	, clazz = RegistrationWizardControllerImpl.class)
 	public String onFlowProcess(final FlowEvent event) { 
-		final Registration registration = applicationContext.getBean(Registration.class);	
+		final Registration registration = beanResolver.getBeanOfType(Registration.class);	
+		
 	
 		if (isGoToOverviewPage(event)) {
 			validationService.validate(registration.getPerson());

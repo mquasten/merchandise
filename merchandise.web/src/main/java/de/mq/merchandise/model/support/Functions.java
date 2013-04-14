@@ -125,12 +125,5 @@ public final  class Functions {
 		return CONTACT_NOT_KNOWN_STRING; 
 	}
 	
-
-	
-	public final static SelectableDataModel<?> model(List<?> values) {
-		 final SimpleMapDataModel<Object> model =  new SimpleMapDataModel<>();
-		 model.addAll(values);
-		 return model;
-	}
 	
 }

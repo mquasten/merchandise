@@ -1,7 +1,6 @@
 package de.mq.merchandise.customer.support;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.Size;
@@ -13,6 +12,7 @@ import de.mq.mapping.util.proxy.Setter;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.model.support.HibernateProxyConverter;
+import de.mq.merchandise.model.support.SimpleMapDataModel;
 
 
 public abstract  class LoginAO  implements Serializable{
@@ -39,7 +39,7 @@ public abstract  class LoginAO  implements Serializable{
 	public abstract void setCustomers(final List<Customer> custmers);
 	
 	
-	@GetterProxyCollection(collectionClass=ArrayList.class, name="customers" , proxyClass = CustomerAO.class, converter=HibernateProxyConverter.class )
+	@GetterProxyCollection(collectionClass=SimpleMapDataModel.class, name="customers" , proxyClass = CustomerAO.class, converter=HibernateProxyConverter.class )
 	public abstract List<CustomerAO> getCustomers(); 
 	
 	@GetterProxy( proxyClass=PersonSelector.class, name = "person", converter=HibernateProxyConverter.class  )

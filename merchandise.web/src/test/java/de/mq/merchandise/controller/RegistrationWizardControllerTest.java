@@ -4,11 +4,10 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.primefaces.event.FlowEvent;
-import org.springframework.context.ApplicationContext;
 
+import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
@@ -24,7 +23,7 @@ public class RegistrationWizardControllerTest {
 	private CustomerService customerService = Mockito.mock(CustomerService.class);
     private  RegistrationWizardControllerImpl registrationWizardController;
 	private FlowEvent flowEvent;
-	private ApplicationContext applicationContext;
+	private BeanResolver beanResolver;
 	private Registration registration = Mockito.mock(Registration.class);
 	private ValidationService validationService;
 	private Conversation conversation=Mockito.mock(Conversation.class);
@@ -36,13 +35,13 @@ public class RegistrationWizardControllerTest {
 		Mockito.when(customer.id()).thenReturn(ID);
 		customerService = Mockito.mock(CustomerService.class);
 		
-		applicationContext = Mockito.mock(ApplicationContext.class);
-		registrationWizardController = new RegistrationWizardControllerImpl(customerService, applicationContext, validationService, conversation);
+		beanResolver = Mockito.mock(BeanResolver.class);
+		registrationWizardController = new RegistrationWizardControllerImpl(customerService, beanResolver, validationService, conversation);
 		flowEvent = Mockito.mock(FlowEvent.class);
 		registration = Mockito.mock(Registration.class);
 		Mockito.when(registration.kind()).thenReturn(Registration.Kind.User);
 		Mockito.when(registration.customer()).thenReturn(customer);
-		Mockito.when(applicationContext.getBean(Registration.class)).thenReturn(registration);
+		Mockito.when(beanResolver.getBeanOfType(Registration.class)).thenReturn(registration);
 		
 	}
 	

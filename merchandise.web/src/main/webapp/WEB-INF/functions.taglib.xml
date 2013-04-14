@@ -76,11 +76,7 @@
         <function-signature>java.lang.String translate(java.lang.Object, java.util.Map)</function-signature>
     </function>
     
-    <function>
-        <function-name>model</function-name>
-        <function-class>de.mq.merchandise.model.support.Functions</function-class>
-        <function-signature>de.mq.merchandise.model.support.IdTableMapModel model(java.util.List)</function-signature>
-    </function>
+    
      
     
 </facelet-taglib>

@@ -8,8 +8,11 @@ import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.merchandise.customer.CustomerService;
+import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.model.support.WebProxyFactory;
+import de.mq.merchandise.util.ValidationService;
 
 public class RegistrationWizardControllerFactoryTest {
 	
@@ -19,8 +22,9 @@ public class RegistrationWizardControllerFactoryTest {
 	public final void registrationWizardController() {
 		
 		final CustomerService customerService = Mockito.mock(CustomerService.class);
-		final ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
-		Mockito.when(applicationContext.getBean(CustomerService.class)).thenReturn(customerService);
+		final BeanResolver beanResolver = Mockito.mock(BeanResolver.class);
+		final ValidationService validationService = Mockito.mock(ValidationService.class);
+		final Conversation conversation = Mockito.mock(Conversation.class);
 		
 		final RegistrationWizardControllerFactory registrationWizardController = new RegistrationWizardControllerFactory();
 		final WebProxyFactory webProxyFactory = Mockito.mock(WebProxyFactory.class);
@@ -32,9 +36,10 @@ public class RegistrationWizardControllerFactoryTest {
 		
 		
 		ReflectionTestUtils.setField(registrationWizardController, "webProxyFactory", webProxyFactory);
-		ReflectionTestUtils.setField(registrationWizardController, "applicationContext", applicationContext);
-		
-		
+		ReflectionTestUtils.setField(registrationWizardController, "beanResolver", beanResolver);
+		ReflectionTestUtils.setField(registrationWizardController, "customerService", customerService);
+		ReflectionTestUtils.setField(registrationWizardController, "validationService", validationService);
+		ReflectionTestUtils.setField(registrationWizardController, "conversation", conversation);
 		
 		Assert.assertEquals(proxy, registrationWizardController.registrationWizardController());
 		Assert.assertEquals(RegistrationWizardControllerImpl.class, clazzCaptor.getValue());
@@ -42,11 +47,11 @@ public class RegistrationWizardControllerFactoryTest {
 		
 		final RegistrationWizardControllerImpl model = registrationWizadControllerArgumentCaptor.getValue();
 		Assert.assertEquals(customerService, ReflectionTestUtils.getField(model, "customerService"));
-		Assert.assertEquals(applicationContext, ReflectionTestUtils.getField(model, "applicationContext"));
+		Assert.assertEquals(beanResolver, ReflectionTestUtils.getField(model, "beanResolver"));
+		Assert.assertEquals(validationService, ReflectionTestUtils.getField(model, "validationService"));
+		Assert.assertEquals(conversation, ReflectionTestUtils.getField(model, "conversation"));
+	
 		
-		Assert.assertEquals(customerService, ReflectionTestUtils.getField(proxy, "customerService"));
-		Assert.assertEquals(applicationContext, ReflectionTestUtils.getField(proxy, "applicationContext"));
 		
 	}
-
 }

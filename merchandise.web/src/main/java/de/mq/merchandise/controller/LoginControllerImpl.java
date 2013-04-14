@@ -14,7 +14,6 @@ import de.mq.mapping.util.proxy.ExceptionTranslations;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
-import de.mq.merchandise.customer.support.CustomerBuilderFactoryImpl;
 import de.mq.merchandise.customer.support.LoginAO;
 import de.mq.merchandise.model.support.FacesContextFactory;
 
@@ -45,7 +44,9 @@ public class LoginControllerImpl {
 	},  clazz = LoginControllerImpl.class)
 	
 	public String login(final LoginAO login ) {
+		
 		final Collection<Entry<Customer,Person>> customerEntries = customerService.login(login.getUser().toLowerCase());
+        
 		final Person person = customerEntries.iterator().next().getValue();
 		if(!person.digest().check(login.getPassword())) {
 			throw new SecurityException("Wrong password, login  failed");
@@ -55,7 +56,7 @@ public class LoginControllerImpl {
 		login.setPerson(person);
 		
 		if( customerEntries.size() > 1){
-			login.setCustomer(new CustomerBuilderFactoryImpl().customerBuilder().build());
+			//login.setCustomer(new CustomerBuilderFactoryImpl().customerBuilder().build());
 			return null;
 		}
 		login.setCustomer(customerEntries.iterator().next().getKey());
@@ -70,12 +71,12 @@ public class LoginControllerImpl {
 	},  clazz = LoginControllerImpl.class)
 	public String assignCustomer(final LoginAO login, final Customer customer ) {
 		
-		
 		if ( customer == null){
 			throw new IllegalArgumentException("Customer is mandatory");
 		}
-		System.out.println(customer.id());
+		
 		login.setCustomer(customer);
+		
 		return "overview";
 	}
 	
@@ -83,6 +84,8 @@ public class LoginControllerImpl {
 		facesContextFactory.facesContext().getExternalContext().invalidateSession();
 		facesContextFactory.facesContext().getExternalContext().redirect("login.jsf?language=" + language);
 	}
+	
+	
 
 	private List<Customer> customerAsList(final Collection<Entry<Customer, Person>> customerEntries) {
 		final List<Customer> customers = new ArrayList<>();

@@ -68,7 +68,7 @@
 			
 			
 		
-			 <p:dataTable id="customers" var="customerVar" paginator="#{login.customers.size() > 10}" rows="10"   value="#{u:model(login.customers)}" rendered="#{login.customers.size() gt 1}"  selection="#{login.customer}">  
+			 <p:dataTable id="customers" var="customerVar" paginator="#{login.customers.size() > 10}" rows="10"   value="#{login.customers}" rendered="#{login.customers.size() gt 1}"  selection="#{login.customer}">  
              
        		<f:facet name="header">
        		    #{message.login_customer_select}

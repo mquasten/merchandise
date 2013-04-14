@@ -1,17 +1,16 @@
 
 package de.mq.merchandise.controller;
 
-import java.lang.reflect.Field;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.FieldCallback;
 
+import de.mq.mapping.util.proxy.BeanResolver;
+import de.mq.merchandise.customer.CustomerService;
+import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.model.support.WebProxyFactory;
+import de.mq.merchandise.util.ValidationService;
 
 @Configuration
 public class RegistrationWizardControllerFactory {
@@ -21,53 +20,27 @@ public class RegistrationWizardControllerFactory {
 	private WebProxyFactory webProxyFactory;
 	
 	@Autowired
-	private ApplicationContext applicationContext;
+	private CustomerService customerService;
+	
+    @Autowired
+	private BeanResolver beanResolver;
+	
+	
+    @Autowired
+    private ValidationService validationService;
+    
+    @Autowired
+    private Conversation conversation;
 	
 	
 	protected RegistrationWizardControllerFactory() {
 		
 	}
-	
-	
-	
-	
+		
 	@Bean(name="registrationWizardController")
 	@Scope("singleton")
 	public RegistrationWizardControllerImpl registrationWizardController() {
-		
-		  final RegistrationWizardControllerImpl controller = new RegistrationWizardControllerImpl();
-		  inject(controller);
-		  
-		  final RegistrationWizardControllerImpl result =  webProxyFactory.webModell(RegistrationWizardControllerImpl.class, controller);
-	      inject(result);
-			
-			
-	       
-		  return result;
-	}
-
-
-
-
-	private void inject(final Object result) {
-		ReflectionUtils.doWithFields(result.getClass(), new FieldCallback(){
-
-			@Override
-			public void doWith(final Field field) throws IllegalArgumentException, IllegalAccessException {
-			
-				if(! field.isAnnotationPresent(Autowired.class)) {
-					return;
-				}
-				
-				
-				field.setAccessible(true);
-				
-				if (field.getType().isInstance(applicationContext)){
-					field.set(result, applicationContext);
-					return;
-				}
-				field.set(result, applicationContext.getBean(field.getType()));
-			}});
+		  return webProxyFactory.webModell(RegistrationWizardControllerImpl.class, new RegistrationWizardControllerImpl(customerService, beanResolver, validationService, conversation));
 	}
 
 }
