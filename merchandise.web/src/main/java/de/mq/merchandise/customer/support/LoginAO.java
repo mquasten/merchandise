@@ -1,6 +1,7 @@
 package de.mq.merchandise.customer.support;
 
 import java.io.Serializable;
+
 import java.util.List;
 
 import javax.validation.constraints.Size;
