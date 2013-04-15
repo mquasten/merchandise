@@ -23,6 +23,7 @@ public class CustomerAO2DomainConverterTest {
 	public final void convertNull() {
 		final CustomerAO2DomainConverter converter = new CustomerAO2DomainConverter();
 		Assert.assertNull(converter.convert(null));
+		
 	}
 
 }
