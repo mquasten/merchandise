@@ -38,5 +38,11 @@ abstract class AbstractConversation {
 		}
 		return result;
 	}
+	
+	
+	public String getId() {
+		return (String) createOrGetModelRepositoryFromSession(facesContextFactory.facesContext()).get(AbstractConversation.KEY_CONVERSATION_ID);
+		
+	}
 
 }

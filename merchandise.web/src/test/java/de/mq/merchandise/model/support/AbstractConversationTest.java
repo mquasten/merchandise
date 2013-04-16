@@ -16,6 +16,7 @@ import de.mq.merchandise.customer.Customer;
 
 public class AbstractConversationTest {
 	
+	private static final String CONVERSATION_ID = "Conversation-ID-0815";
 	private final FacesContextFactory facesContextFactory = Mockito.mock(FacesContextFactory.class);
 	private final FacesContext facesContext = Mockito.mock(FacesContext.class);
 	
@@ -65,6 +66,19 @@ public class AbstractConversationTest {
 		beans.put(AbstractConversation.KEY_TRANSIENT, Boolean.FALSE);
 		sessionMap.put(AbstractConversation.KEY_CONVERSATION_IN_SESSION_MAP,beans);
 		Assert.assertFalse(conversation.isTransient(facesContext));
+		
+	}
+	
+	@Test
+	public final void id() {
+		Assert.assertNull(conversation.getId());
+		
+		final Map<String, Object> map = new HashMap<>();
+		map.put(AbstractConversation.KEY_TRANSIENT, false);
+		map.put(AbstractConversation.KEY_CONVERSATION_ID, CONVERSATION_ID);
+		sessionMap.put(AbstractConversation.KEY_CONVERSATION_IN_SESSION_MAP, map);
+		
+		Assert.assertEquals(CONVERSATION_ID, conversation.getId());
 		
 	}
 	

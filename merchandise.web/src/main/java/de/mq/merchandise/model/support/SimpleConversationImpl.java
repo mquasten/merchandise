@@ -6,7 +6,7 @@ import javax.faces.context.FacesContext;
 
 
 
-public class SimpleConversationImpl extends AbstractConversation implements Conversation {
+public  class SimpleConversationImpl extends AbstractConversation implements Conversation {
 
 	public SimpleConversationImpl(final FacesContextFactory facesContextFactory) {
 		super(facesContextFactory);
@@ -36,10 +36,6 @@ public class SimpleConversationImpl extends AbstractConversation implements Conv
 		
 	}
 
-	@Override
-	public String getId() {
-		return getConversationId(facesContextFactory.facesContext());
-	}
 
 	@Override
 	public long getTimeout() {
@@ -65,11 +61,12 @@ public class SimpleConversationImpl extends AbstractConversation implements Conv
 		return isTransient(facesContextFactory.facesContext());
 		
 	}
+
+
+
 	
-	private  String getConversationId(FacesContext facesContext) {
-		final Map<String,Object> modelRepository = createOrGetModelRepositoryFromSession(facesContext);
-		return (String) modelRepository.get(KEY_CONVERSATION_ID);
-	}
+	
+	
 	
 
 }

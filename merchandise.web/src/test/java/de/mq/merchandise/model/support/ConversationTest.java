@@ -76,19 +76,7 @@ public class ConversationTest {
 	}
 	
 	
-	@Test
-	public final void id() {
-		Assert.assertNull(conversation.getId());
-		
-		final Map<String, Object> map = new HashMap<>();
-		map.put(AbstractConversation.KEY_TRANSIENT, false);
-		map.put(AbstractConversation.KEY_CONVERSATION_ID, CONVERSATION_ID);
-		sessionMap.put(AbstractConversation.KEY_CONVERSATION_IN_SESSION_MAP, map);
-		
-		Assert.assertEquals(CONVERSATION_ID, conversation.getId());
-		conversation.end();
-		Assert.assertNull(conversation.getId());
-	}
+	
 	
 	@Test
 	public final void timeout() {

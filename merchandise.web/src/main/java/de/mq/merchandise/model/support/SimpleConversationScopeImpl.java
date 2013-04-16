@@ -1,7 +1,5 @@
 package de.mq.merchandise.model.support;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.Scope;
 
@@ -26,11 +24,11 @@ public class SimpleConversationScopeImpl extends AbstractConversation implements
 		}
 		
 		
-		if (! getMap().containsKey(name )){
-			getMap().put(name, objectFactory.getObject());
+		if (! createOrGetModelRepositoryFromSession(facesContextFactory.facesContext()).containsKey(name )){
+			createOrGetModelRepositoryFromSession(facesContextFactory.facesContext()).put(name, objectFactory.getObject());
 			
 		}
-		return getMap().get(name);
+		return createOrGetModelRepositoryFromSession(facesContextFactory.facesContext()).get(name);
 	}
 
 	@Override
@@ -39,7 +37,7 @@ public class SimpleConversationScopeImpl extends AbstractConversation implements
 			return facesContextFactory.facesContext().getExternalContext().getRequestMap().remove(name);
 		}
 		
-	    return getMap().remove(name);
+	    return createOrGetModelRepositoryFromSession(facesContextFactory.facesContext()).remove(name);
 	  
 	   
 	}
@@ -56,14 +54,11 @@ public class SimpleConversationScopeImpl extends AbstractConversation implements
 		return null;
 	}
 
+	
+
 	@Override
 	public String getConversationId() {
-		return (String) getMap().get(AbstractConversation.KEY_CONVERSATION_ID);
-		
-	}
-
-	private Map<String,Object> getMap() {
-		return createOrGetModelRepositoryFromSession(facesContextFactory.facesContext());
+		return super.getId();
 	} 
 
 }
