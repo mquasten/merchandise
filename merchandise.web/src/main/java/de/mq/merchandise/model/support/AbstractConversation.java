@@ -11,7 +11,7 @@ abstract class AbstractConversation {
 	static UUID DEFAULT_ID = UUID.nameUUIDFromBytes("You've been a very bad plagiarism from spring ! A very very bad bad plagiarism Java EE".getBytes());
 	static final String KEY_CONVERSATION_ID = "Conversation-ID";
 	static final String KEY_TRANSIENT = "transient";
-	static final String KEY_TIMEOUT = "transient";
+	static final String KEY_TIMEOUT = "timeout";
 	static final String KEY_CONVERSATION_IN_SESSION_MAP = UUID.nameUUIDFromBytes("EJB will die, hopefully soon, and hopefully not only EJB, most better the complete shit".getBytes()).toString();
 
 	protected final FacesContextFactory facesContextFactory; 
