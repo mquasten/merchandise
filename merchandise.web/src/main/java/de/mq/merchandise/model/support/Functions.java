@@ -2,11 +2,8 @@ package de.mq.merchandise.model.support;
 
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import org.primefaces.model.SelectableDataModel;
 
 import de.mq.merchandise.contact.support.AddressAO;
 import de.mq.merchandise.contact.support.EMailContactAO;

@@ -8,7 +8,7 @@ import javax.faces.context.FacesContext;
 
 abstract class AbstractConversation {
 
-	static UUID DEFAULT_ID = UUID.nameUUIDFromBytes("You've been a very bad plagiarism from spring ! A very very bad bad plagiarism Java EE".getBytes());
+	static String DEFAULT_ID = UUID.nameUUIDFromBytes("You've been a very bad plagiarism from spring ! A very very bad bad plagiarism Java EE".getBytes()).toString();
 	static final String KEY_CONVERSATION_ID = "Conversation-ID";
 	static final String KEY_TRANSIENT = "transient";
 	static final String KEY_TIMEOUT = "timeout";
@@ -20,13 +20,12 @@ abstract class AbstractConversation {
 		this.facesContextFactory = facesContextFactory;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected Map<String,Object> createOrGetModelRepositoryFromSession(final FacesContext facesContext) {
 		if( ! facesContext.getExternalContext().getSessionMap().containsKey(KEY_CONVERSATION_IN_SESSION_MAP)) {
 			facesContext.getExternalContext().getSessionMap().put(KEY_CONVERSATION_IN_SESSION_MAP, new HashMap<>());
 		}
-		@SuppressWarnings("unchecked")
-		final  Map<String,Object>  map =  (Map<String, Object>) facesContext.getExternalContext().getSessionMap().get(KEY_CONVERSATION_IN_SESSION_MAP);
-		return map;
+		return (Map<String, Object>) facesContext.getExternalContext().getSessionMap().get(KEY_CONVERSATION_IN_SESSION_MAP);
 	}
 
 

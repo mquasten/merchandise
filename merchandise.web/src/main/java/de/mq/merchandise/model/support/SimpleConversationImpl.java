@@ -2,8 +2,6 @@ package de.mq.merchandise.model.support;
 
 import java.util.Map;
 
-import javax.faces.context.FacesContext;
-
 
 
 public  class SimpleConversationImpl extends AbstractConversation implements Conversation {
@@ -18,7 +16,7 @@ public  class SimpleConversationImpl extends AbstractConversation implements Con
 	public void begin() {
 		final  Map<String,Object> map = createOrGetModelRepositoryFromSession(facesContextFactory.facesContext());
 		map.put(KEY_TRANSIENT , false);
-		map.put(KEY_CONVERSATION_ID , DEFAULT_ID);
+		map.put(KEY_CONVERSATION_ID , DEFAULT_ID.toString());
 		
 	}
 

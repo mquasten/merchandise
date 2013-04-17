@@ -17,18 +17,22 @@ public class SimpleConversationScopeImpl extends AbstractConversation implements
 	@Override
 	public Object get(String name, ObjectFactory<?> objectFactory) {
 		if ( isTransient(facesContextFactory.facesContext()) ) {
-			if ( ! facesContextFactory.facesContext().getExternalContext().getRequestMap().containsKey(name) ) {
-				facesContextFactory.facesContext().getExternalContext().getRequestMap().put(name, objectFactory.getObject());
-			}
+			addToRequestMapIfNotExists(name, objectFactory);
 			return facesContextFactory.facesContext().getExternalContext().getRequestMap().get(name);
 		}
 		
-		
 		if (! createOrGetModelRepositoryFromSession(facesContextFactory.facesContext()).containsKey(name )){
-			createOrGetModelRepositoryFromSession(facesContextFactory.facesContext()).put(name, objectFactory.getObject());
-			
+			createOrGetModelRepositoryFromSession(facesContextFactory.facesContext()).put(name, objectFactory.getObject());	
 		}
 		return createOrGetModelRepositoryFromSession(facesContextFactory.facesContext()).get(name);
+	}
+
+
+
+	private void addToRequestMapIfNotExists(String name, ObjectFactory<?> objectFactory) {
+		if ( ! facesContextFactory.facesContext().getExternalContext().getRequestMap().containsKey(name) ) {
+			facesContextFactory.facesContext().getExternalContext().getRequestMap().put(name, objectFactory.getObject());
+		}
 	}
 
 	@Override
