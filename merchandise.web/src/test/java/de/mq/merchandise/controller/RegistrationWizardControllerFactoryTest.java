@@ -5,7 +5,6 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.mapping.util.proxy.BeanResolver;

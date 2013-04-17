@@ -36,6 +36,7 @@ public class LoginControllerTest {
     final private ArgumentCaptor<List> customerListCaptor = ArgumentCaptor.forClass(List.class);
 	
 	private final Set<Entry<Customer,Person>> customers = new HashSet<>();
+	@SuppressWarnings("unchecked")
 	private final Entry<Customer, Person> entry = Mockito.mock(Entry.class);
 	private final Person person = Mockito.mock(Person.class);
 	private final Digest digest = Mockito.mock(Digest.class);
