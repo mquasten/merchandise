@@ -10,14 +10,12 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
-
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.NoConverter;
 import de.mq.mapping.util.proxy.support.BeanConventionCGLIBProxyFactory;
 import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
 import de.mq.mapping.util.proxy.support.Number2StringConverter;
-import de.mq.mapping.util.proxy.support.SimpleReflectionBeanResolverImpl;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.model.PersonTestConstants;
@@ -30,6 +28,8 @@ public class LoginMappingTest {
 	private static final String PASSWORD = "fever";
 	private final AOProxyFactory proxyFactory  = new  BeanConventionCGLIBProxyFactory();
 	private final BeanResolver beanResolver = Mockito.mock(BeanResolver.class);
+	final Person person = new NaturalPersonImpl(PersonTestConstants.FIRSTNAME,PersonTestConstants.LASTNAME, new NativityImpl(PersonTestConstants.BIRTH_PLACE, PersonTestConstants.BIRTH_DATE));
+	final Customer customer = new CustomerImpl(person);
 	
 	
 	@Before
@@ -39,16 +39,36 @@ public class LoginMappingTest {
 	    Mockito.when(beanResolver.getBeanOfType(AOProxyFactory.class)).thenReturn(proxyFactory);
 		Mockito.when(beanResolver.getBeanOfType(NoConverter.class)).thenReturn(new NoConverter());
 		Mockito.when(beanResolver.getBeanOfType(Number2StringConverter.class)).thenReturn(new Number2StringConverter());
+		ReflectionTestUtils.setField(customer, "id", CUSTOMER_ID);
 	}
+	
+
+	@Test
+	public final void toDomain() {
+		final LoginAO login = proxyFactory.createProxy(LoginAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).build() );
+	    login.setPassword(PASSWORD) ;
+	    login.setUser(LOGIN);
+	    login.setCustomer(customer);
+	    final List<Customer> customers = new ArrayList<>();
+	    customers.add(customer);
+	    login.setCustomers(customers);
+	    login.setPerson(person);
+	    Assert.assertEquals(PASSWORD, login.getMap().get("password"));
+	    Assert.assertEquals(LOGIN, login.getMap().get("user"));
+	    Customer  resultCustomer = (Customer) login.getMap().get("customer");
+	    Assert.assertEquals(CUSTOMER_ID, resultCustomer.id() );
+	    Assert.assertEquals(person, resultCustomer.person() );
+		@SuppressWarnings("unchecked")
+	    final List<Customer> resultCustomers = (List<Customer>) login.getMap().get("customers");
+	    Assert.assertEquals(1, resultCustomers.size());
+	    Assert.assertEquals(customer, resultCustomers.get(0));
+	    Assert.assertEquals(person, login.getMap().get("person"));
+	}
+	
+	
 	
 	@Test
 	public final void toWeb() {
-		
-		
-		final Person person = new NaturalPersonImpl(PersonTestConstants.FIRSTNAME,PersonTestConstants.LASTNAME, new NativityImpl(PersonTestConstants.BIRTH_PLACE, PersonTestConstants.BIRTH_DATE));
-		final Customer customer = new CustomerImpl(person);
-		ReflectionTestUtils.setField(customer, "id", CUSTOMER_ID);
-		
 		final List<Customer> customers = new ArrayList<>();
 		customers.add(customer);
 		

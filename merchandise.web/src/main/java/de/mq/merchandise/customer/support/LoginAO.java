@@ -3,10 +3,12 @@ package de.mq.merchandise.customer.support;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.Size;
 
 import de.mq.mapping.util.proxy.Getter;
+import de.mq.mapping.util.proxy.GetterDomain;
 import de.mq.mapping.util.proxy.GetterProxy;
 import de.mq.mapping.util.proxy.GetterProxyCollection;
 import de.mq.mapping.util.proxy.Setter;
@@ -57,8 +59,8 @@ public abstract  class LoginAO  implements Serializable{
 	@Setter( value="customer" , converter=CustomerAO2DomainConverter.class)
 	public abstract void setCustomer(final CustomerAO customer); 
 	
-	
-	
+	@GetterDomain
+	public abstract Map<String,Object> getMap() ;
 	
 
 }
