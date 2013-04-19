@@ -102,5 +102,15 @@ public class RegistrationWizardControllerTest {
 	public final void defaultConstructoer() {
 		Assert.assertNotNull(new RegistrationWizardControllerImpl());
 	}
+	
+	@Test
+	public final void startConversation() {
+		Mockito.when(conversation.isTransient()).thenReturn(true, false);
+		for(int i=0; i < 10; i++) {
+		    registrationWizardController.startConversation();
+		}
+		Mockito.verify(conversation, Mockito.times(1)).begin();
+		Mockito.verify(conversation, Mockito.times(10)).isTransient();
+	}
 
 }

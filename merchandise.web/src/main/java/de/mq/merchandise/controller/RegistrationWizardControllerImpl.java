@@ -99,7 +99,12 @@ public class RegistrationWizardControllerImpl   {
 	} 
 
 	
-
+	public void startConversation() {
+		if( ! conversation.isTransient()) {
+			return;
+		}
+		conversation.begin();
+	}
 
 	
 
