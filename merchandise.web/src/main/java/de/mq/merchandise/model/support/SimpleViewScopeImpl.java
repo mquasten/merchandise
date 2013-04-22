@@ -15,6 +15,7 @@ public class SimpleViewScopeImpl implements Scope {
 	}
 
 	public final Object get(final String name, final ObjectFactory<?> objectFactory) {
+	
 		if (facesContextFactory.facesContext().getViewRoot() == null) {
 			return null;
 		}

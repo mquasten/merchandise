@@ -50,6 +50,9 @@ public abstract  class LoginAO  implements Serializable{
 	@Setter( value="person")
 	public abstract void setPerson(Person person);
 	
+	@Getter(value = "person")
+	public abstract Person getPersonDomain();
+	
 	
 	@GetterProxy( proxyClass=CustomerAO.class, name = "customer", converter=HibernateProxyConverter.class  )
 	public abstract CustomerAO getCustomer(); 
