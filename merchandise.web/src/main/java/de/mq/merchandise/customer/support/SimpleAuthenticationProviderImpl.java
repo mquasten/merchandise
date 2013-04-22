@@ -37,7 +37,6 @@ public class SimpleAuthenticationProviderImpl  implements AuthenticationProvider
 		for(final CustomerRole role : entry.getKey().roles(entry.getValue())){
 			roles.add(new SimpleGrantedAuthority(role.name()));
 		}
-		
 		final AbstractAuthenticationToken  result = new  UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), roles);
 		result.setDetails(entry);
 		return result;
