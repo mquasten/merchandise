@@ -90,7 +90,7 @@ public class LoginControllerImpl {
 			throw new IllegalArgumentException("Customer is mandatory");
 		}
 		
-		
+		login.setCustomer(customer);
 		
 		final AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("skype:kinkykylie" , "fever" );
 		authentication.setDetails(new AbstractMap.SimpleEntry<>(customer, login.getPersonDomain()));

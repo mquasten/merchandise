@@ -110,7 +110,7 @@ public class LoginControllerTest {
 	@Test
 	public final void assignCustomer() {
 		final Customer customer = Mockito.mock(Customer.class);
-		Assert.assertEquals("overview", loginController.assignCustomer(loginAO, customer));
+		Assert.assertEquals("overview?faces-redirect=true", loginController.assignCustomer(loginAO, customer));
 		Mockito.verify(loginAO).setCustomer(customer);
 	}
 	
