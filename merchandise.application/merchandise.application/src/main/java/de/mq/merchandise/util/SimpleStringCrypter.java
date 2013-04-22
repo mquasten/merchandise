@@ -16,8 +16,18 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 public class SimpleStringCrypter implements StringCrypter {
-	static final String MESSAGE_DIGEST_ALGORITHMN = "MD5";
-	static final String CRYPT_ALGORITHMN = "AES";
+	private final String messageDigestAlgoritm ;
+	
+	SimpleStringCrypter(final String messageDigestAlgoritm, final String cryptAlgorithm) {
+		this.messageDigestAlgoritm = messageDigestAlgoritm;
+		this.cryptAlgorithm = cryptAlgorithm;
+	}
+
+	private final String cryptAlgorithm ;
+	public SimpleStringCrypter() {
+		messageDigestAlgoritm = "MD5";
+		cryptAlgorithm = "AES";
+	}
 	
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.util.StringCrypter#concatWithCurrentTimeAsFactorFromSeconds(long, java.lang.String, long)
@@ -78,23 +88,23 @@ public class SimpleStringCrypter implements StringCrypter {
 	}
 
 	private  String doEncrypt(final String data, final String keyValue) throws Exception {
-		final Cipher c = Cipher.getInstance(CRYPT_ALGORITHMN);
+		final Cipher c = Cipher.getInstance(cryptAlgorithm);
 		c.init(Cipher.ENCRYPT_MODE, generateKey(keyValue));
 		return new BASE64Encoder().encode(c.doFinal(data.getBytes()));
 	}
 
 	private  String doDecrypt(final String encryptedData, final String keyValue) throws IllegalBlockSizeException, BadPaddingException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
-		final Cipher c = Cipher.getInstance(CRYPT_ALGORITHMN);
+		final Cipher c = Cipher.getInstance(cryptAlgorithm);
 		c.init(Cipher.DECRYPT_MODE, generateKey(keyValue));
 		return new String(c.doFinal(new BASE64Decoder().decodeBuffer(encryptedData)));
 
 	}
 
 	private  Key generateKey(final String keyValue) throws NoSuchAlgorithmException {
-		final MessageDigest digest = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHMN);
+		final MessageDigest digest = MessageDigest.getInstance(messageDigestAlgoritm);
 		digest.update(keyValue.getBytes());
 		final byte[] key = digest.digest();
-		return new SecretKeySpec(key, CRYPT_ALGORITHMN);
+		return new SecretKeySpec(key, cryptAlgorithm);
 
 	}
 
