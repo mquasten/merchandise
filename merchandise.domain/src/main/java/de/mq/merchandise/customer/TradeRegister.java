@@ -1,7 +1,6 @@
 package de.mq.merchandise.customer;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public interface TradeRegister extends Serializable {
 

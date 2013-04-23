@@ -1,6 +1,5 @@
 package de.mq.merchandise.customer;
 
-import java.util.Date;
 
 
 public interface TradeRegisterBuilder {
