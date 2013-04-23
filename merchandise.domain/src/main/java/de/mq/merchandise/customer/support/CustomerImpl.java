@@ -151,6 +151,7 @@ class CustomerImpl implements Customer {
 	public final List<Person> activePersons() {
 		return filterPersons(true);
 	}
+	 
 	
 	public final List<Person> inActivePersons() {
 		return filterPersons(false);
