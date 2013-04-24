@@ -3,7 +3,6 @@ package de.mq.merchandise.customer.support;
 import junit.framework.Assert;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.context.SecurityContext;
 
