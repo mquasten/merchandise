@@ -30,36 +30,6 @@ public class SimpleStringCrypter implements StringCrypter {
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.mq.merchandise.util.StringCrypter#concatWithCurrentTimeAsFactorFromSeconds(long, java.lang.String, long)
-	 */
-	@Override
-	public  String concatWithCurrentTimeAsFactorFromSeconds(final long factor, final String del,  final long ... ids) {
-		final StringBuffer buffer = new StringBuffer();
-		for(final long key : ids){
-			buffer.append(key);
-			buffer.append(del);
-		}
-		buffer.append(System.currentTimeMillis() / 1000 / factor);
-		return buffer.toString();
-	}
-	
-	/* (non-Javadoc)
-	 * @see de.mq.merchandise.util.StringCrypter#concat(java.lang.String, long)
-	 */
-	@Override
-	public String concat(final String del,  final long ... ids) {
-		final StringBuffer buffer = new StringBuffer();
-		for(final long key : ids){
-			if(buffer.length() >0 ){
-				buffer.append(del);
-			}
-			buffer.append(key);
-		}
-		return buffer.toString();
-	}
-	
-
-	/* (non-Javadoc)
 	 * @see de.mq.merchandise.util.StringCrypter#encrypt(java.lang.String, java.lang.String)
 	 */
 	@Override

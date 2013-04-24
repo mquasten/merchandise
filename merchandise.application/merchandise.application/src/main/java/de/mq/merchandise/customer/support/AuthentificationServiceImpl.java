@@ -1,26 +1,22 @@
 package de.mq.merchandise.customer.support;
 
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.customer.CustomerRole;
 import de.mq.merchandise.customer.Person;
-import de.mq.merchandise.customer.PersonRole;
 import de.mq.merchandise.util.StringCrypter;
 
-public class AuthentificationServiceImpl {
+public class AuthentificationServiceImpl implements AuthenticationProvider {
 	
+	private static final String DELIMITER = ":";
+
 	private final CustomerRepository customerRepository;
 	
 	private final SecurityContextFactory securityContextFactory;
@@ -35,19 +31,18 @@ public class AuthentificationServiceImpl {
 	}
 	
 	public final void createSecurityToken(final long userId, final long customerId, final String credentials) {
-		securityContextFactory.securityContext().setAuthentication(new UsernamePasswordAuthenticationToken(stringCrypter.concat(":", userId, customerId), stringCrypter.encrypt(credentials, stringCrypter.concatWithCurrentTimeAsFactorFromSeconds(60, ":", userId, customerId))));
+		securityContextFactory.securityContext().setAuthentication(new UsernamePasswordAuthenticationToken(concat(DELIMITER, userId, customerId), stringCrypter.encrypt(credentials, concatWithCurrentTimeAsFactorFromSeconds(60, DELIMITER, userId, customerId))));
 	}
 	
 	@Transactional
-	public final  void setAuthenticated() {
+	public final  Authentication authenticate(final Authentication authentication) {
 		
 		final Long personId, customerId;
-		final Authentication authentication = securityContextFactory.securityContext().getAuthentication();
 		if ( authentication == null){
 			throw new AuthenticationServiceException("Missing Authentication in SecurityContext");
 		}
 		try(final Scanner scanner = new Scanner((String) authentication.getPrincipal())) {
-			 scanner.useDelimiter(":");	
+			 scanner.useDelimiter(DELIMITER);	
 			 idExistsGuard(scanner);
 			 personId=scanner.nextLong();
 			 idExistsGuard(scanner);
@@ -58,26 +53,13 @@ public class AuthentificationServiceImpl {
 		if (customer == null){
 			throw new AuthenticationServiceException("Customer not found for id, given in token");
 		}
-		if ( ! customer.state().isActive()){
-			throw new AuthenticationServiceException("Customer not active");
-		}
+		
 		final Person person = personFromCustomer(personId, customer);
-		if(! person.state().isActive()){
-			throw new AuthenticationServiceException("Person not active");
-		}
+		
 		if( ! person.digest().check(password) ) {
 			throw new AuthenticationServiceException("Wrong password");
 		}
-		
-		final Set<GrantedAuthority> authorities = new HashSet<>();
-		for(final PersonRole role : person.roles()){
-			authorities.add(new SimpleGrantedAuthority(role.name()));
-		}
-		
-		for(final CustomerRole role : customer.roles(person)) {
-			authorities.add(new SimpleGrantedAuthority(role.name()));
-		}
-		securityContextFactory.securityContext().setAuthentication(new PreAuthenticatedAuthenticationToken(authentication.getPrincipal() , "LadyGagaMaleOrFemaleOrWhatEver->BornThisWay" , authorities));
+		return new PersonCustomerAuthentificationImpl(person, customer);
 	}
 
 	private Person  personFromCustomer(final Long personId, final Customer customer) {
@@ -97,10 +79,40 @@ public class AuthentificationServiceImpl {
 
 	private String  decrypt(final long userId, final long customerId, final String credentials, long time ) {
 		try {
-		    return stringCrypter.decrypt(credentials, stringCrypter.concat(":", userId, customerId, time));
+		    return stringCrypter.decrypt(credentials, concat(DELIMITER, userId, customerId, time));
 		} catch (IllegalArgumentException ex) {
-			 return stringCrypter.decrypt(credentials, stringCrypter.concat(":", userId, customerId, time-1));
+			 return stringCrypter.decrypt(credentials, concat(DELIMITER, userId, customerId, time-1));
 		}
+	}
+
+	
+	@Override
+	public boolean supports(Class<?> clazz) {
+		return clazz.equals(UsernamePasswordAuthenticationToken.class);
+	}
+	
+	
+	
+	String concatWithCurrentTimeAsFactorFromSeconds(final long factor, final String del,  final long ... ids) {
+		final StringBuffer buffer = new StringBuffer();
+		for(final long key : ids){
+			buffer.append(key);
+			buffer.append(del);
+		}
+		buffer.append(System.currentTimeMillis() / 1000 / factor);
+		return buffer.toString();
+	}
+	
+	
+	String concat(final String del,  final long ... ids) {
+		final StringBuffer buffer = new StringBuffer();
+		for(final long key : ids){
+			if(buffer.length() >0 ){
+				buffer.append(del);
+			}
+			buffer.append(key);
+		}
+		return buffer.toString();
 	}
 	
 

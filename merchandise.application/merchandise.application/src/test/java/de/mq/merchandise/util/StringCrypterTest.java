@@ -8,21 +8,11 @@ public class StringCrypterTest {
 	
 	
 	private static final String TEXT = "Kylie is nice, hot and kinky";
-	private static final String DELIMITER = ":";
 	private static final long CUSTOMER_ID = 4711L;
 	private static final long USER_ID = 19680528L;
 	private StringCrypter stringCrypter = new SimpleStringCrypter();
 	
-	@Test
-	public final void  concatWithCurrentTimeAsFactorFromSeconds() {
-		final String result = stringCrypter.concatWithCurrentTimeAsFactorFromSeconds(60, DELIMITER,  USER_ID, CUSTOMER_ID);
-		Assert.assertEquals(String.format("%s:%s:%S", USER_ID, CUSTOMER_ID, System.currentTimeMillis()/1000/60), result);
-	}
-
-	@Test
-	public final void concat() {
-		Assert.assertEquals(String.format("%s:%s" ,USER_ID, CUSTOMER_ID), stringCrypter.concat(DELIMITER, USER_ID, CUSTOMER_ID));
-	}
+	
 	
 	@Test
 	public final void encryptAndDecrypt() {

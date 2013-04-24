@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -11,20 +12,30 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerRole;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.customer.PersonRole;
+import de.mq.merchandise.customer.State;
 
-public class PersonCustomerAuthentificationImpl implements UserCustomerAuthentification {
+class PersonCustomerAuthentificationImpl implements PersonCustomerAuthentification {
 
 	private final Person person;
 
-	private final Customer customer;
+	private Customer customer;
 
 	private static final long serialVersionUID = 1L;
 
-	public PersonCustomerAuthentificationImpl(final Person person, final Customer customer) {
+	PersonCustomerAuthentificationImpl(final Person person, final Customer customer) {
+		isActiveGuard(person.state(), "Person" );
+		isActiveGuard(customer.state(), "Customer" );
 		this.person = person;
 		this.customer = customer;
 	}
 
+    private void isActiveGuard(final State state, String object	) {
+    	if ( ! state.isActive()){
+    		throw new AuthenticationServiceException( object + " not active");
+    	}
+    }
+    
+    
 	@Override
 	public String getName() {
 		return person.name();
@@ -69,18 +80,16 @@ public class PersonCustomerAuthentificationImpl implements UserCustomerAuthentif
 	}
 
 	@Override
-	public final void assign(final Customer customer) {
+	public final void setDetails(final Customer customer) {
 		if (!customer.hasUser(person)) {
 			throw new SecurityException("Person is not user from customer");
 		}
-
-		if (!customer.state().isActive()) {
-			throw new SecurityException("Customer is not active");
-		}
-
+		isActiveGuard(customer.state(), "Customer" );
+		this.customer=customer;
 	}
 
-	public final Collection<Customer> customers() {
+	@Override
+	public final Collection<Customer> getCustomers() {
 		return person.customers();
 
 	}

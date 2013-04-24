@@ -14,7 +14,7 @@ import de.mq.merchandise.customer.Person;
  * @author MQuasten
  *
  */
-public interface UserCustomerAuthentification extends Authentication {
+public interface PersonCustomerAuthentification extends Authentication {
 
 	/**
 	 * The current customer that will be used by the person.
@@ -34,13 +34,13 @@ public interface UserCustomerAuthentification extends Authentication {
 	 * The customer that will be used. A user can be related to one or more customers.
 	 * @param customer the customer to that will be schwitched.
 	 */
-	void assign(final Customer customer);
+	void setDetails(final Customer customer);
 	
 	/**
 	 * All customers for that the person, can work as an user. To this list, the customer can switch without a new Login.
 	 * @return a collection of customers for that the person can be an user
 	 */
-	Collection<Customer> customers();
+	Collection<Customer> getCustomers();
 
 	
 }
