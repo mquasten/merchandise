@@ -7,11 +7,11 @@ import org.springframework.security.core.context.SecurityContext;
  * @author Manfred Quasten
  *
  */
-public abstract class SecurityContextFactory {
+public interface SecurityContextFactory {
 	/**
 	 * The current instance of securityContext from securityContextHolder
 	 * @return the securityContext
 	 */
-	public abstract SecurityContext securityContext();
+	SecurityContext securityContext();
 
 }
