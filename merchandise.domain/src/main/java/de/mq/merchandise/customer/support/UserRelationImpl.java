@@ -42,12 +42,12 @@ class UserRelationImpl implements UserRelation  {
 	@GeneratedValue
 	private  Long id;
 	
-	@ManyToOne(targetEntity=AbstractPerson.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@ManyToOne(targetEntity=AbstractPerson.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}  )
 	@Equals
-	@JoinColumn(name="person_id")
+	@JoinColumn(name="person_id" )
 	private final Person person;
 	
-	@ManyToOne(targetEntity=CustomerImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@ManyToOne(targetEntity=CustomerImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
 	@Equals
 	@JoinColumn(name="customer_id")
 	private final Customer customer;

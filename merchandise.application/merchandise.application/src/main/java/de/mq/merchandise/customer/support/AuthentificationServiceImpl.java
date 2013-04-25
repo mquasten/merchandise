@@ -3,7 +3,6 @@ package de.mq.merchandise.customer.support;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,7 +12,7 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.util.StringCrypter;
 
-public class AuthentificationServiceImpl implements AuthenticationProvider {
+public class AuthentificationServiceImpl implements AuthentificationService {
 	
 	private static final String DELIMITER = ":";
 
@@ -30,10 +29,18 @@ public class AuthentificationServiceImpl implements AuthenticationProvider {
 		this.stringCrypter=stringCrypter;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.customer.support.AuthentificationService#createSecurityToken(long, long, java.lang.String)
+	 */
+	@Override
 	public final void createSecurityToken(final long userId, final long customerId, final String credentials) {
 		securityContextFactory.securityContext().setAuthentication(new UsernamePasswordAuthenticationToken(concat(DELIMITER, userId, customerId), stringCrypter.encrypt(credentials, concatWithCurrentTimeAsFactorFromSeconds(60, DELIMITER, userId, customerId))));
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.customer.support.AuthentificationService#authenticate(org.springframework.security.core.Authentication)
+	 */
+	@Override
 	@Transactional
 	public final  Authentication authenticate(final Authentication authentication) {
 		
@@ -62,7 +69,7 @@ public class AuthentificationServiceImpl implements AuthenticationProvider {
 		return new PersonCustomerAuthentificationImpl(person, customer);
 	}
 
-	private Person  personFromCustomer(final Long personId, final Customer customer) {
+	private Person  personFromCustomer(final long personId, final Customer customer) {
 		for(final Person person : customer.activePersons()){
 			if(person.id() == personId){
 				return person;
@@ -85,6 +92,10 @@ public class AuthentificationServiceImpl implements AuthenticationProvider {
 		}
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.customer.support.AuthentificationService#supports(java.lang.Class)
+	 */
 	
 	@Override
 	public boolean supports(Class<?> clazz) {

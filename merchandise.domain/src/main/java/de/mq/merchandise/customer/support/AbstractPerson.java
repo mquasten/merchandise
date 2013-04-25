@@ -115,7 +115,7 @@ abstract class AbstractPerson implements Person {
 	} 
 	
 	@Override
-	public final long id() {
+	public long id() {
 		EntityUtil.idAware(id);
 		return id;
 	}

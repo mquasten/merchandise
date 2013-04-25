@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 import org.springframework.util.ReflectionUtils.FieldFilter;
@@ -32,16 +33,27 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 	@Override
 	public final EqualsBuilder  withSource(final Object source) {
 		sourceFields.clear();
-		sourceFields.putAll(fieldValues(source));
-		sourceFields.put(OBJECT_UUID, source);
+	   
+		
+		sourceFields.putAll(fieldValues( deProxymate(source)));
+		sourceFields.put(OBJECT_UUID,  deProxymate(source));
 		return this;
+	}
+
+
+	private Object deProxymate(final Object source) {
+		
+		if (source instanceof HibernateProxy) {
+			return  ((HibernateProxy) source).getHibernateLazyInitializer().getImplementation();
+		}
+		return source;
 	}
 	
 	@Override
 	public final EqualsBuilder  withTarget(final Object target) {
 		targetFields.clear();
-		targetFields.putAll(fieldValues(target));
-		targetFields.put(OBJECT_UUID, target);
+		targetFields.putAll(fieldValues(deProxymate(target)));
+		targetFields.put(OBJECT_UUID, deProxymate(target));
 		return this;
 		
 	}

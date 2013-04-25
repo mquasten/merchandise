@@ -112,7 +112,7 @@ class CustomerImpl implements Customer {
 	
 	
 	private UserRelation relation(final Person person) {
-		for(UserRelation userRelation : userRelations){
+		for(final UserRelation userRelation : userRelations){
 			if( userRelation.isOwner(person) ) {
 				return userRelation;
 			}

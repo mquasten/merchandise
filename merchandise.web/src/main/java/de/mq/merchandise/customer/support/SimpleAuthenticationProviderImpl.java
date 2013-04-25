@@ -7,12 +7,14 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerRole;
@@ -31,10 +33,13 @@ public class SimpleAuthenticationProviderImpl  implements AuthenticationProvider
 		@SuppressWarnings("unchecked")
 		final Entry<Customer,Person>  entry = (Entry<Customer, Person>) authentication.getDetails(); 
 		Collection<GrantedAuthority> roles = new ArrayList<>();
-		for(final PersonRole role : entry.getValue().roles()){
+		final Customer customer = customerRepository.forId(entry.getKey().id());
+		
+		final Person person = personFromCustomer(entry.getValue().id(), customer);
+		for(final PersonRole role : person.roles()){
 			roles.add(new SimpleGrantedAuthority(role.name()));
 		}
-		for(final CustomerRole role : entry.getKey().roles(entry.getValue())){
+		for(final CustomerRole role : customer.roles(person)){
 			roles.add(new SimpleGrantedAuthority(role.name()));
 		}
 		final AbstractAuthenticationToken  result = new  UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), roles);
@@ -46,6 +51,17 @@ public class SimpleAuthenticationProviderImpl  implements AuthenticationProvider
 	@Override
 	public boolean supports(Class<?> authentication) {
 		return authentication.equals(UsernamePasswordAuthenticationToken.class);
+	}
+	
+	
+	private Person  personFromCustomer(final long personId, final Customer customer)  {
+		for(final Person person : customer.activePersons()){
+			if(person.id() == personId) {
+				System.out.println();
+				return person;
+			}
+		}
+		throw new AuthenticationServiceException("Person is not user for this customer");
 	}
 
 
