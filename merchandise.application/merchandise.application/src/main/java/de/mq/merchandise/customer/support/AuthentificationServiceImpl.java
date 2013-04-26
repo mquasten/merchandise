@@ -3,9 +3,11 @@ package de.mq.merchandise.customer.support;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.customer.Customer;
@@ -46,7 +48,7 @@ public class AuthentificationServiceImpl implements AuthentificationService {
 		
 		final Long personId, customerId;
 		if ( authentication == null){
-			throw new AuthenticationServiceException("Missing Authentication in SecurityContext");
+			throw new AuthenticationCredentialsNotFoundException("Missing Authentication in SecurityContext");
 		}
 		try(final Scanner scanner = new Scanner((String) authentication.getPrincipal())) {
 			 scanner.useDelimiter(DELIMITER);	
@@ -58,13 +60,12 @@ public class AuthentificationServiceImpl implements AuthentificationService {
 		final String password = decrypt(personId, customerId, (String) authentication.getCredentials(), System.currentTimeMillis()/1000/60 ); 
 		final Customer customer = customerRepository.forId(customerId);
 		if (customer == null){
-			throw new AuthenticationServiceException("Customer not found for id, given in token");
+			throw new UsernameNotFoundException("Customer not found for id, given in token");
 		}
 		
 		final Person person = personFromCustomer(personId, customer);
-		
 		if( ! person.digest().check(password) ) {
-			throw new AuthenticationServiceException("Wrong password");
+			throw new BadCredentialsException("Wrong password");
 		}
 		return new PersonCustomerAuthentificationImpl(person, customer);
 	}
@@ -75,12 +76,12 @@ public class AuthentificationServiceImpl implements AuthentificationService {
 				return person;
 			}
 		}
-		throw new AuthenticationServiceException("Person is not user for this customer");
+		throw new UsernameNotFoundException("Person is not user for this customer");
 	}
 
 	private void idExistsGuard(final Scanner scanner) {
 		if (! scanner.hasNextLong() ) {
-			 throw new  AuthenticationServiceException("AuthenticationToken is invalid");
+			 throw new BadCredentialsException("AuthenticationToken is invalid");
 		 }
 	}
 
