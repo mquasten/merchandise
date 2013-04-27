@@ -20,19 +20,22 @@ import org.mockito.Mockito;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
+import de.mq.merchandise.customer.support.AuthentificationService;
 import de.mq.merchandise.customer.support.Digest;
 import de.mq.merchandise.customer.support.LoginAO;
 import de.mq.merchandise.model.support.FacesContextFactory;
 
-@Ignore
 public class LoginControllerTest {
 
+	private static final long CUSTOMER_ID = 4711L;
+	private static final long PERSON_ID = 19680528L;
 	private static final String LANGUAGE = "de";
 	private static final String PASSWORD = "fever";
 	private static final String LOGIN = "skype:kinkyKylie";
 	private CustomerService customerService = Mockito.mock(CustomerService.class);
 	private final FacesContextFactory facesContextFactory = Mockito.mock(FacesContextFactory.class);
-    private final LoginControllerImpl loginController = new LoginControllerImpl(customerService, null, facesContextFactory);
+	private final AuthentificationService authentificationService = Mockito.mock(AuthentificationService.class);
+	private final LoginControllerImpl loginController = new LoginControllerImpl(customerService, authentificationService, facesContextFactory);
     private final LoginAO loginAO = Mockito.mock(LoginAO.class);
     @SuppressWarnings("rawtypes")
     final private ArgumentCaptor<List> customerListCaptor = ArgumentCaptor.forClass(List.class);
@@ -44,11 +47,13 @@ public class LoginControllerTest {
 	private final Digest digest = Mockito.mock(Digest.class);
 	private final Customer customer = Mockito.mock(Customer.class);
 	
+	
+	
     @Before
 	public final void init() {
     	Mockito.when(person.digest()).thenReturn(digest);
-		
-		
+		Mockito.when(person.id()).thenReturn(PERSON_ID);
+		Mockito.when(customer.id()).thenReturn(CUSTOMER_ID);
 		Mockito.when(entry.getKey()).thenReturn(customer);
 		Mockito.when(entry.getValue()).thenReturn(person);
 		customers.add(entry);
@@ -56,6 +61,7 @@ public class LoginControllerTest {
 		
 		Mockito.when(loginAO.getUser()).thenReturn(LOGIN);
 	    Mockito.when(loginAO.getPassword()).thenReturn(PASSWORD);
+	    
 		Mockito.when(customerService.login(LOGIN.toLowerCase())).thenReturn(customers);
 	}
 	
@@ -66,17 +72,14 @@ public class LoginControllerTest {
 		Mockito.when(digest.check(PASSWORD)).thenReturn(true);
 		Assert.assertEquals("overview", loginController.login(loginAO));
 		Mockito.verify(loginAO).setPerson(person);
-		
-		
-		
 		Mockito.verify(loginAO).setCustomers(customerListCaptor.capture());
 		
 		Assert.assertEquals(1, customerListCaptor.getValue().size());
 		Assert.assertEquals(customer, customerListCaptor.getValue().get(0));
 		
-		Mockito.verify(loginAO).setCustomer(customer);
+		Mockito.verify(authentificationService).createSecurityToken(PERSON_ID, CUSTOMER_ID, PASSWORD);
 		Mockito.verify(loginAO).getUser();
-		Mockito.verify(loginAO).getPassword();
+		Mockito.verify(loginAO, Mockito.times(2)).getPassword();
 		Mockito.verifyNoMoreInteractions(loginAO);
 	}
 	
@@ -111,14 +114,14 @@ public class LoginControllerTest {
 	
 	@Test
 	public final void assignCustomer() {
-		final Customer customer = Mockito.mock(Customer.class);
-		Assert.assertEquals("overview?faces-redirect=true", loginController.assignCustomer(loginAO, customer));
-		Mockito.verify(loginAO).setCustomer(customer);
+		Mockito.when(loginAO.getPersonDomain()).thenReturn(person);
+		Assert.assertEquals("overview?faces-redirect=true", loginController.assignCustomer(person, customer, PASSWORD));
+		Mockito.verify(authentificationService).createSecurityToken(PERSON_ID, CUSTOMER_ID, PASSWORD);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public final void assignCustomerNullCustomer() {
-		loginController.assignCustomer(loginAO,null);
+		loginController.assignCustomer(person, null, PASSWORD );
 	}
 	
 	@Test

@@ -61,10 +61,10 @@ public class LoginControllerImpl {
 		login.setPerson(person);
 		
 		if( customerEntries.size() > 1){
-			//login.setCustomer(new CustomerBuilderFactoryImpl().customerBuilder().build());
 			return null;
 		}
-		login.setCustomer(customerEntries.iterator().next().getKey());
+		
+		authentificationService.createSecurityToken(person.id(), customerEntries.iterator().next().getKey().id(), login.getPassword());
 		return "overview" ;
 	}
 	
@@ -75,22 +75,21 @@ public class LoginControllerImpl {
 	
 	},  clazz = LoginControllerImpl.class)
 	
-	public String assignCustomer(final LoginAO login, final Customer customer ) {
+	public String assignCustomer(final Person person, final Customer customer, String password ) {
 		
+		customerExistsGuard(customer);
+		
+		authentificationService.createSecurityToken(person.id(), customer.id(), password);
+		
+		return "overview?faces-redirect=true";
+	}
+
+
+
+	private void customerExistsGuard(final Customer customer) {
 		if ( customer == null){
 			throw new IllegalArgumentException("Customer is mandatory");
 		}
-		
-		login.setCustomer(customer);
-		
-		//final AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("skype:kinkykylie" , "fever" );
-		//authentication.setDetails(new AbstractMap.SimpleEntry<>(customer, login.getPersonDomain()));
-		
-		//SecurityContextHolder.getContext().setAuthentication(authentication);
-		
-		authentificationService.createSecurityToken(login.getPersonDomain().id(), customer.id(), login.getPassword());
-		
-		return "overview?faces-redirect=true";
 	}
 	
 	public void abort(final String language) throws IOException {

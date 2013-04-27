@@ -48,16 +48,14 @@ public class LoginMappingTest {
 		final LoginAO login = proxyFactory.createProxy(LoginAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).build() );
 	    login.setPassword(PASSWORD) ;
 	    login.setUser(LOGIN);
-	    login.setCustomer(customer);
+	  
 	    final List<Customer> customers = new ArrayList<>();
 	    customers.add(customer);
 	    login.setCustomers(customers);
 	    login.setPerson(person);
 	    Assert.assertEquals(PASSWORD, login.getMap().get("password"));
 	    Assert.assertEquals(LOGIN, login.getMap().get("user"));
-	    Customer  resultCustomer = (Customer) login.getMap().get("customer");
-	    Assert.assertEquals(CUSTOMER_ID, resultCustomer.id() );
-	    Assert.assertEquals(person, resultCustomer.person() );
+	    
 		@SuppressWarnings("unchecked")
 	    final List<Customer> resultCustomers = (List<Customer>) login.getMap().get("customers");
 	    Assert.assertEquals(1, resultCustomers.size());
