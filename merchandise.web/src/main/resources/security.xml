@@ -20,11 +20,15 @@
   
   </security:authentication-manager>  
  
- <bean name ="userDetailsService" class="de.mq.merchandise.customer.support.SimpleAuthenticationProviderImpl" />
+ <bean name ="userDetailsService" class="de.mq.merchandise.customer.support.AuthentificationServiceImpl" />
   
-  <bean name="entryPoint" class="de.mq.merchandise.customer.support.SimpleAuthenticationEntryPointImpl" >
+  <bean name="entryPoint" class="de.mq.merchandise.customer.support.SimpleAuthenticationEntryPointImpl" />
     
-  </bean>
+  <bean id="securityContext" class="org.springframework.security.core.context.SecurityContextHolder"  factory-method="getContext" scope="prototype" />  
+<bean id="securityContextFactory" class="de.mq.merchandise.customer.support.SecurityContextFactory">
+   <lookup-method name="securityContext" bean="securityContext" />
+</bean> 
+  
 
 
 

@@ -1,7 +1,6 @@
 package de.mq.merchandise.controller;
 
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,15 +8,13 @@ import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.ExceptionTranslations;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
+import de.mq.merchandise.customer.support.AuthentificationService;
 import de.mq.merchandise.customer.support.LoginAO;
 import de.mq.merchandise.model.support.FacesContextFactory;
 
@@ -27,6 +24,9 @@ public class LoginControllerImpl {
 	
 	@Autowired
 	private   CustomerService customerService;
+	
+	@Autowired
+	private AuthentificationService authentificationService;
 	@Autowired
 	private  FacesContextFactory facesContextFactory;
 	
@@ -35,8 +35,9 @@ public class LoginControllerImpl {
 	
 	
 	
-	public LoginControllerImpl(final CustomerService customerService, final FacesContextFactory facesContextFactory){
+	public LoginControllerImpl(final CustomerService customerService, final AuthentificationService authentificationService, final FacesContextFactory facesContextFactory){
 		this.customerService=customerService;
+		this.authentificationService=authentificationService;
 		this.facesContextFactory=facesContextFactory;
 	}
 	
@@ -82,10 +83,12 @@ public class LoginControllerImpl {
 		
 		login.setCustomer(customer);
 		
-		final AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("skype:kinkykylie" , "fever" );
-		authentication.setDetails(new AbstractMap.SimpleEntry<>(customer, login.getPersonDomain()));
+		//final AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("skype:kinkykylie" , "fever" );
+		//authentication.setDetails(new AbstractMap.SimpleEntry<>(customer, login.getPersonDomain()));
 		
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		//SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		authentificationService.createSecurityToken(login.getPersonDomain().id(), customer.id(), login.getPassword());
 		
 		return "overview?faces-redirect=true";
 	}

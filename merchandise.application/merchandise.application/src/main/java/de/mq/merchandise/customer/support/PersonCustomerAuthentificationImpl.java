@@ -25,6 +25,7 @@ class PersonCustomerAuthentificationImpl implements PersonCustomerAuthentificati
 	PersonCustomerAuthentificationImpl(final Person person, final Customer customer) {
 		isActiveGuard(person.state(), "Person" );
 		isActiveGuard(customer.state(), "Customer" );
+		
 		this.person = person;
 		this.customer = customer;
 	}

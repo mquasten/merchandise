@@ -12,9 +12,12 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.stereotype.Component;
+
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+@Component
 public class SimpleStringCrypter implements StringCrypter {
 	private final String messageDigestAlgoritm ;
 	
