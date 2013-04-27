@@ -6,24 +6,27 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 
-public class SimpleAuthenticationEntryPointImpl implements AuthenticationEntryPoint{
+public class SimpleAuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
-	@Autowired
-	private ApplicationContext ctx;
-	
-	
+	private final boolean showMessage;
+	public SimpleAuthenticationEntryPointImpl(final boolean showMessage) {
+		this.showMessage=showMessage;
+	}
 	
 	@Override
 	public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException ex) throws IOException, ServletException {
-		throw ex; 
+		if( showMessage){
+		  response.sendError(HttpStatus.FORBIDDEN.value() , ex.getMessage());
+		  return;
+		}
+	    response.sendError(HttpStatus.FORBIDDEN.value());
 	}
 
-	
+
 
 }

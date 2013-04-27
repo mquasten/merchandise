@@ -18,6 +18,7 @@ public class AuthentificationServiceImpl implements AuthentificationService {
 	
 	private static final String DELIMITER = ":";
 
+	
 	private final CustomerRepository customerRepository;
 	
 	private final SecurityContextFactory securityContextFactory;
@@ -35,7 +36,7 @@ public class AuthentificationServiceImpl implements AuthentificationService {
 	 * @see de.mq.merchandise.customer.support.AuthentificationService#createSecurityToken(long, long, java.lang.String)
 	 */
 	@Override
-	public final void createSecurityToken(final long userId, final long customerId, final String credentials) {
+	public  void createSecurityToken(final long userId, final long customerId, final String credentials) {
 		securityContextFactory.securityContext().setAuthentication(new UsernamePasswordAuthenticationToken(concat(DELIMITER, userId, customerId), stringCrypter.encrypt(credentials, concatWithCurrentTimeAsFactorFromSeconds(60, DELIMITER, userId, customerId))));
 	}
 	
@@ -44,7 +45,7 @@ public class AuthentificationServiceImpl implements AuthentificationService {
 	 */
 	@Override
 	@Transactional
-	public final  Authentication authenticate(final Authentication authentication) {
+	public   Authentication authenticate(final Authentication authentication) {
 		
 		final Long personId, customerId;
 		if ( authentication == null){

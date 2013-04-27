@@ -80,7 +80,6 @@ public class LoginControllerImpl {
 		customerExistsGuard(customer);
 		
 		authentificationService.createSecurityToken(person.id(), customer.id(), password);
-		
 		return "overview?faces-redirect=true";
 	}
 

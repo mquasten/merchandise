@@ -7,25 +7,23 @@
           http://www.springframework.org/schema/security/spring-security-3.1.xsd">
    
  
-    <security:http entry-point-ref="entryPoint"  use-expressions="true" >
-        
-    		<security:intercept-url  pattern="/overview.*" access="hasAnyRole('Bids','Demands','Opportunities')" />
-    		
+    <security:http entry-point-ref="entryPoint"  use-expressions="true"  >
+    		<security:intercept-url  pattern="/overview.*" access="hasAnyRole('Bids','Demands','Opportunities')" />	
     </security:http>
     
   
   <security:authentication-manager>
-  <security:authentication-provider ref="userDetailsService" />
-  
-  
+       <security:authentication-provider ref="authentificationprovider" />
   </security:authentication-manager>  
  
- <bean name ="userDetailsService" class="de.mq.merchandise.customer.support.AuthentificationServiceImpl" />
+ <bean name ="authentificationprovider" class="de.mq.merchandise.customer.support.AuthentificationServiceImpl" />
   
-  <bean name="entryPoint" class="de.mq.merchandise.customer.support.SimpleAuthenticationEntryPointImpl" />
+  <bean name="entryPoint" class="de.mq.merchandise.customer.support.SimpleAuthenticationEntryPointImpl" >
+    <constructor-arg value="true"/>
+  </bean>
     
   <bean id="securityContext" class="org.springframework.security.core.context.SecurityContextHolder"  factory-method="getContext" scope="prototype" />  
-<bean id="securityContextFactory" class="de.mq.merchandise.customer.support.SecurityContextFactory">
+ <bean id="securityContextFactory" class="de.mq.merchandise.customer.support.SecurityContextFactory">
    <lookup-method name="securityContext" bean="securityContext" />
 </bean> 
   
