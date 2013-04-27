@@ -125,13 +125,13 @@ abstract class AbstractPerson implements Person {
 	}
 	
 	@Override
-	public final void assign(final LoginContact contact) {
+	public void assign(final LoginContact contact) {
 		remove(contact);
 		contacts.add(contact);
 	}
 	
 	@Override
-	public final Set<Contact> contacts() {
+	public  Set<Contact> contacts() {
 		final Set<Contact> results = new HashSet<>();
 		results.addAll(contacts);
 		results.addAll(addresses);
@@ -139,28 +139,28 @@ abstract class AbstractPerson implements Person {
 	}
 
 	@Override
-	public final void remove(final LoginContact contact) {
+	public  void remove(final LoginContact contact) {
 		contacts.remove(contact);
 	}
 	
 	@Override
-	public final void assign(final CityAddress cityAddress) {
+	public  void assign(final CityAddress cityAddress) {
 		remove(cityAddress);
 		addresses.add(cityAddress);
 	}
 	
 	@Override
-	public final void remove(final CityAddress cityAddress) {
+	public  void remove(final CityAddress cityAddress) {
 		addresses.remove(cityAddress);
 	}
 	
 	@Override
-	public final State state() {
+	public  State state() {
 		return state;
 	}
 	
 	@Override
-	public final void assign(final PersonRole personRole){
+	public  void assign(final PersonRole personRole){
 		remove(personRole);
 		roles.add(personRole);
 	}
@@ -214,7 +214,7 @@ abstract class AbstractPerson implements Person {
 	}
 	
 	
-	public final Digest digest() {
+	public Digest digest() {
 		return this.digest;
 	}
 	

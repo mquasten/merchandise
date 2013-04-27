@@ -45,14 +45,14 @@ class ReferenceImpl implements Reference {
 	}
 	
 	@Override
-	public final  int hashCode() {
+	public   int hashCode() {
 		return EntityUtil.equalsBuilder().withSource(this).buildHashCode();
 	}
 
 	
 
 	@Override
-	public final boolean equals(final Object obj) {
+	public  boolean equals(final Object obj) {
 		 return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(getClass()).isEquals();
 	}
 	
@@ -60,7 +60,7 @@ class ReferenceImpl implements Reference {
 	 * @see de.mq.merchandise.domain.reference.Reference#key()
 	 */
 	@Override
-	public final String key() {
+	public  String key() {
 		return this.key;
 	}
 	
@@ -69,7 +69,7 @@ class ReferenceImpl implements Reference {
 	 * @see de.mq.merchandise.domain.reference.Reference#referenceType()
 	 */
 	@Override
-	public final Kind referenceType() {
+	public  Kind referenceType() {
 		return this.referenceType;
 	}
 	

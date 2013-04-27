@@ -44,12 +44,12 @@ class NaturalPersonImpl extends AbstractPerson implements NaturalPerson{
 	}
 	
 	
-	public final String firstname() {
+	public  String firstname() {
 		return this.firstname;
 	}
 
 	
-	public final Nativity nativity(){
+	public  Nativity nativity(){
 		return this.nativity;
 	}
 

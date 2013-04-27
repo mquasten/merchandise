@@ -64,14 +64,14 @@ class AddressImpl extends AbstractCityAddress implements Address {
 	}
 
 	@Override
-	protected  final String contactInfo() {
+	protected   String contactInfo() {
 		return street +" "+houseNumber+ ", "+  zipCode() + " " + city() + ", " +country().getCountry() ;
 	}
 
 	
 
 	@Override
-	public final void assign(final Coordinates coordinates) {
+	public  void assign(final Coordinates coordinates) {
 		this.coordinates=coordinates;
 	}
 

@@ -87,7 +87,7 @@ class CustomerImpl implements Customer {
 
 	
 
-	public final State state() {
+	public  State state() {
 		stateEXistsGuard();
 		return state;
 	}
@@ -99,7 +99,7 @@ class CustomerImpl implements Customer {
 	}
 	
 	
-	public final void grant(final Person person, final CustomerRole...  roles){
+	public  void grant(final Person person, final CustomerRole...  roles){
 		UserRelation existing = relation(person);
 		if (existing == null ){
 			existing=new UserRelationImpl(this, person);
@@ -121,14 +121,14 @@ class CustomerImpl implements Customer {
 	}
 	
 	
-	public final boolean hasUser(final Person person) {
+	public  boolean hasUser(final Person person) {
 		if ( relation(person) != null) {
 			return true;
 		}
 		return false;
 	}
 	
-	public final void revoke(final Person person, final CustomerRole ... roles){
+	public  void revoke(final Person person, final CustomerRole ... roles){
 		UserRelation existing = relation(person);
 		if (existing==null){
 			return;
@@ -142,18 +142,18 @@ class CustomerImpl implements Customer {
 		existing.revoke(roles);
 	}
 	
-	public final  State state(final Person person) {
+	public   State state(final Person person) {
 		final UserRelation existing = relation(person);
 		return existing.state();
 	}
 	
 	
-	public final List<Person> activePersons() {
+	public  List<Person> activePersons() {
 		return filterPersons(true);
 	}
 	 
 	
-	public final List<Person> inActivePersons() {
+	public  List<Person> inActivePersons() {
 		return filterPersons(false);
 	}
 
@@ -169,7 +169,7 @@ class CustomerImpl implements Customer {
 		
 	}
 	
-	public final Map<Person,State> persons() {
+	public  Map<Person,State> persons() {
 		final Map<Person, State> results = new HashMap<Person, State>();
 		for(final UserRelation  userRelation : userRelations){
 			results.put(userRelation.person(), userRelation.state());
@@ -177,7 +177,7 @@ class CustomerImpl implements Customer {
 		return Collections.unmodifiableMap(results);
 	}
 	
-	public final List<CustomerRole> roles(final Person person) {
+	public  List<CustomerRole> roles(final Person person) {
 		final UserRelation existing = relation(person);
 		userRelationExistsGuard(existing);
 		return Collections.unmodifiableList(new ArrayList<CustomerRole>(existing.roles()));
@@ -192,7 +192,7 @@ class CustomerImpl implements Customer {
 	
 	
 	
-	public final boolean hasRole(final Person person, final CustomerRole role) {
+	public  boolean hasRole(final Person person, final CustomerRole role) {
 		final UserRelation existing = relation(person);
 		userRelationExistsGuard(existing);
 		return existing.hasRole(role);

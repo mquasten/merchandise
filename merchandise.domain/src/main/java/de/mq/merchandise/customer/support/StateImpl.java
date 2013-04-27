@@ -32,7 +32,7 @@ class StateImpl implements State {
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.domain.customer.StateAware#isActive()
 	 */
-	public final boolean isActive() {
+	public boolean isActive() {
 		return active;
 	}
 	
@@ -40,14 +40,14 @@ class StateImpl implements State {
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.domain.customer.StateAware#activate()
 	 */
-	public final void activate() {
+	public  void activate() {
 		this.active=true;
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.domain.customer.StateAware#deActivate()
 	 */
-	public final void deActivate() {
+	public void deActivate() {
 		this.active=false;
 	}
 

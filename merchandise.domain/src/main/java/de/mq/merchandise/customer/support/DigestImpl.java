@@ -64,7 +64,7 @@ public class DigestImpl implements Digest {
 		assignDigest(text, Algorithm.MD5);
 	}
 
-	final String digestAsHex(final String text, final String algorithm)  {
+	String digestAsHex(final String text, final String algorithm)  {
 		try {
 			final MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
 			messageDigest.update(text.getBytes());

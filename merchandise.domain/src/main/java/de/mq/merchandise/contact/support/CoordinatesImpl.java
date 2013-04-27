@@ -31,20 +31,20 @@ class CoordinatesImpl implements Coordinates {
 	
 	
 	@Override
-	public final  double longitude() {
+	public   double longitude() {
 		EntityUtil.notNullGuard(longitude, "longitude");
 		return longitude;
 	}
 
 	
 	@Override
-	public final double latitude() {
+	public  double latitude() {
 		EntityUtil.notNullGuard(latitude, "latitude");
 		return latitude;
 	}
 	
 	@Override
-	public final double distance(final Coordinates coordinates) {
+	public  double distance(final Coordinates coordinates) {
 		return RE* Math.acos(Math.sin(coordinates.latitude()*Math.PI/180)* Math.sin(latitude*Math.PI/180) + Math.cos(coordinates.latitude()*Math.PI/180)*Math.cos(latitude*Math.PI/180) * Math.cos((longitude*Math.PI/180)-(coordinates.longitude()*Math.PI/180)));
 	}
 

@@ -91,7 +91,7 @@ class UserRelationImpl implements UserRelation  {
 	 * @see de.mq.merchandise.domain.customer.support.UserRelation#revoke(de.mq.merchandise.domain.customer.CustomerRole)
 	 */
 	@Override
-	public final void revoke(final CustomerRole... roles) {
+	public  void revoke(final CustomerRole... roles) {
 		for (final CustomerRole role : roles) {
 			this.roles.remove(role);
 		}
@@ -101,7 +101,7 @@ class UserRelationImpl implements UserRelation  {
 	 * @see de.mq.merchandise.domain.customer.support.UserRelation#roles()
 	 */
 	@Override
-	public final Set<CustomerRole> roles() {
+	public  Set<CustomerRole> roles() {
 		return Collections.unmodifiableSet(roles);
 	}
 
@@ -111,17 +111,17 @@ class UserRelationImpl implements UserRelation  {
 	 * @see de.mq.merchandise.domain.customer.support.UserRelation#state()
 	 */
 	@Override
-	public final State state() {
+	public  State state() {
 		return this.state;
 	}
 
 	@Override
-	public final  int hashCode() {
+	public int hashCode() {
 		return EntityUtil.equalsBuilder().withSource(this).buildHashCode();
 	}
 
 	@Override
-	public final boolean equals(final Object obj) {
+	public boolean equals(final Object obj) {
 		return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(getClass()).isEquals();
 	}
 
@@ -129,7 +129,7 @@ class UserRelationImpl implements UserRelation  {
 	 * @see de.mq.merchandise.domain.customer.support.UserRelation#id()
 	 */
 	@Override
-	public final long id() {
+	public long id() {
 		EntityUtil.idAware(id);
 		return id;
 	}
@@ -138,7 +138,7 @@ class UserRelationImpl implements UserRelation  {
 	 * @see de.mq.merchandise.domain.customer.support.UserRelation#isOwner(de.mq.merchandise.domain.person.Person)
 	 */
     @Override
-	public final boolean isOwner(final Person person){
+	public boolean isOwner(final Person person){
 		return this.person.equals(person);
 	}
 	
@@ -146,7 +146,7 @@ class UserRelationImpl implements UserRelation  {
 	 * @see de.mq.merchandise.domain.customer.support.UserRelation#hasRole(de.mq.merchandise.domain.customer.CustomerRole)
 	 */
 	@Override
-	public final boolean hasRole(final CustomerRole role) {
+	public  boolean hasRole(final CustomerRole role) {
 		return this.roles.contains(role);
 	}
 	
@@ -155,7 +155,7 @@ class UserRelationImpl implements UserRelation  {
 	 * @see de.mq.merchandise.domain.customer.support.UserRelation#person()
 	 */
 	@Override
-	public final Person  person() {
+	public  Person  person() {
 		return this.person;
 	}
 	
@@ -163,7 +163,7 @@ class UserRelationImpl implements UserRelation  {
 	 * @see de.mq.merchandise.domain.customer.support.UserRelation#customer()
 	 */
 	@Override
-	public final Customer customer() {
+	public  Customer customer() {
 	   return this.customer;	
 	}
 	

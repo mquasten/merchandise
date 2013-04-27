@@ -84,7 +84,7 @@ public class GeoLocationImpl  implements CityAddress {
 		return new Locale(country, country);
 	}
 	
-	public final String place() {
+	public  String place() {
 		return place;
 	}
 	

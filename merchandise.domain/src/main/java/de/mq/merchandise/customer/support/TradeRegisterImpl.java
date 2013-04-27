@@ -40,19 +40,19 @@ class TradeRegisterImpl implements Serializable, TradeRegister  {
 	
 	
 	@Override
-	public final String zipCode(){
+	public  String zipCode(){
 		return this.zipCode;
 	}
 	
 	
 	@Override
-	public final String city() {
+	public  String city() {
 		return this.city;
 	}
 	
 	
 	@Override
-	public final String reference() {
+	public  String reference() {
 		return this.reference;
 	}
 	

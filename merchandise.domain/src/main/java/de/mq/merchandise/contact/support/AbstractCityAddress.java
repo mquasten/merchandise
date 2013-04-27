@@ -54,7 +54,7 @@ public abstract class AbstractCityAddress implements CityAddress {
 	
 	
 	@Override
-	public final Locale country() {
+	public  Locale country() {
 		return EntityUtil.locale(this.country);
 	}
 

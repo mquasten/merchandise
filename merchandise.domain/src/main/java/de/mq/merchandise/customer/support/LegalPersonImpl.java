@@ -59,20 +59,20 @@ class LegalPersonImpl extends AbstractPerson implements LegalPerson{
 	}
 	
 	
-	public final String taxId() {
+	public  String taxId() {
 		return this.taxId;
 	}
 	
 	
-	public final TradeRegister tradeRegister() {
+	public  TradeRegister tradeRegister() {
 		return this.tradeRegister;
 	}
 	
-	public final Date foundationDate() {
+	public  Date foundationDate() {
 		return this.foundationDate;
 	}
 	
-	public final LegalForm legalForm() {
+	public  LegalForm legalForm() {
 		return this.legalForm;
 	}
 

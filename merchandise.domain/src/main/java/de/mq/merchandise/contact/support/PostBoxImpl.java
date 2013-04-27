@@ -38,7 +38,7 @@ class PostBoxImpl extends AbstractCityAddress implements PostBox {
 
 
 	@Override
-	protected final String contactInfo() {
+	protected  String contactInfo() {
 		return  postBox+ ", " + zipCode() +" " + city() + " " + country().getCountry();
 	}
 
