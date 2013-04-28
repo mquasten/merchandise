@@ -19,7 +19,6 @@ public class AuthenticationEntryPointTest {
 	
 	private static final String ERRORMESSAGE = "Errormessage";
 
-	
 	private final MockHttpServletResponse response = new MockHttpServletResponse();
 	private final AuthenticationException  authenticationException = Mockito.mock(AuthenticationException.class);
 	

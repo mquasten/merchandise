@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import javax.persistence.Id;
+
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
@@ -18,12 +20,14 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 	
 	
 	static final  UUID OBJECT_UUID = UUID.randomUUID();
-	
+	static final  UUID ID_UUID = UUID.randomUUID();
 	
 	private final Map<UUID,Object>sourceFields=new HashMap<>();
 	private final Map<UUID,Object>targetFields=new HashMap<>();
 	private Class<?> clazz = Object.class;
 	private boolean nulls=false;
+	
+	private boolean idNulls=false;
 	
 	SimpleReflectionEqualsBuilderImpl() {
 		
@@ -33,16 +37,12 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 	@Override
 	public final EqualsBuilder  withSource(final Object source) {
 		sourceFields.clear();
-	   
-		
 		sourceFields.putAll(fieldValues( deProxymate(source)));
-		sourceFields.put(OBJECT_UUID,  deProxymate(source));
 		return this;
 	}
 
 
 	private Object deProxymate(final Object source) {
-		
 		if (source instanceof HibernateProxy) {
 			return  ((HibernateProxy) source).getHibernateLazyInitializer().getImplementation();
 		}
@@ -53,7 +53,6 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 	public final EqualsBuilder  withTarget(final Object target) {
 		targetFields.clear();
 		targetFields.putAll(fieldValues(deProxymate(target)));
-		targetFields.put(OBJECT_UUID, deProxymate(target));
 		return this;
 		
 	}
@@ -67,14 +66,19 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 	@Override
 	public final boolean isEquals() {
 		
-		sourceObjectExistsGuard();
-		targetObjectExistsGuard();
+		idsExistsGuard(sourceFields, "source");
+		idsExistsGuard(targetFields, "target");
 		
 		if(!clazz.isInstance(targetFields.get(OBJECT_UUID))){
 			return false;
 		}
 		
-		if( sourceFields.size() <= 1){
+		if( idAWare(sourceFields) && idAWare(targetFields)){
+			return id(sourceFields)==id(targetFields);
+		}
+		
+		
+		if( sourceFields.size() <= 2){
 			return equalsSuper();
 		}
 		
@@ -84,6 +88,10 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 		
 		for(final Entry<UUID,Object> entry : sourceFields.entrySet()){
 			if(entry.getKey() == OBJECT_UUID){
+				continue;
+			}
+			
+			if(entry.getKey() == ID_UUID){
 				continue;
 			}
 			
@@ -100,8 +108,13 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 	}
 	
 	public final int buildHashCode() {
-		sourceObjectExistsGuard();
-		if( sourceFields.size() <= 1){
+		idsExistsGuard(sourceFields, "source");
+	
+		if(idAWare(sourceFields)) {
+			return id(sourceFields);
+		}
+		
+		if( sourceFields.size() <= 2){
 			return System.identityHashCode(sourceFields.get(OBJECT_UUID));
 		}
 		if( nulls){
@@ -113,28 +126,45 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 			if(entry.getKey() == OBJECT_UUID){
 				continue;
 			}
+			if(entry.getKey() == ID_UUID){
+				continue;
+			}
 			result+=entry.getValue().hashCode();
 		}
 		return result;
 		
 	}
 
-	private void targetObjectExistsGuard() {
-		if( ! targetFields.containsKey(OBJECT_UUID)){
-			 throw new IllegalStateException("Target is missing");
-		}
+
+	private int id(final Map<UUID,Object> values) {
+		return (int) values.get(ID_UUID);
 	}
 
-	private void sourceObjectExistsGuard() {
-		if (! sourceFields.containsKey(OBJECT_UUID)) {
-			throw new IllegalStateException("Source is missing");
+
+	private boolean idAWare(final Map<UUID,Object> values) {
+		if( idNulls) {
+			return false;
+		}
+		return ((int) values.get(ID_UUID) != 0 );
+	}
+
+	private void idsExistsGuard(final Map<UUID,Object> map , final String name ) {
+		if( ! map.containsKey(OBJECT_UUID)){
+			 throw new IllegalStateException("ObjectIdentity is missing on " + name );
+		}
+		if (! map.containsKey(ID_UUID)) {
+			throw new IllegalStateException("Id Hash is missing on "+ name);
 		}
 	}
 
 	
 
+	
+
 	private Map<UUID,Object>  fieldValues(final Object source) {
 		final Map<UUID,Object> values = new HashMap<>();
+		values.put(ID_UUID, 0);
+		values.put(OBJECT_UUID,  deProxymate(source));
 		ReflectionUtils.doWithFields(source.getClass(), new FieldCallback() {
 			
 			@Override
@@ -148,7 +178,7 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 			
 			@Override
 			public boolean matches(final Field field) {
-				return field.isAnnotationPresent(Equals.class);
+				return field.isAnnotationPresent(Equals.class)||field.isAnnotationPresent(Id.class);
 			}
 		});
 		return values;
@@ -156,12 +186,35 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 	
 	private void handleField(final Object source, final Map<UUID, Object> values, final Field field) throws IllegalAccessException {
 		final Object value = field.get(source);
+		
+		if( field.isAnnotationPresent(Id.class) ){
+			handleIdField(values, field, value);
+		}
+		
+		if(field.isAnnotationPresent(Equals.class) ){
+		    handleEqualsField(values, field, value);
+		}
+	}
+
+
+	private void handleEqualsField(final Map<UUID, Object> values, final Field field, final Object value) {
 		if(  value==null){
 			nulls=true;
 			return;
 		}
 		
 	    values.put(new UUID(field.getDeclaringClass().hashCode(),field.hashCode()), value);
+	}
+
+
+	private void handleIdField(final Map<UUID, Object> values, final Field field, final Object value) {
+
+		if(value==null){
+			idNulls=true;
+			return;
+		}
+		
+		values.put(ID_UUID,(int) values.get(ID_UUID)+value.hashCode());
 	}
 	
 	

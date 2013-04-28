@@ -32,8 +32,14 @@ public class UserRelationTest {
 	}
 
 	private UserRelationImpl newUserRelation(Customer customer,final Person  person) {
+		return newUserRelation(customer, person, true);
+	}
+	
+	private UserRelationImpl newUserRelation(Customer customer,final Person  person, final boolean withId) {
 		final UserRelationImpl userRelation = new UserRelationImpl(customer, person);
-		ReflectionTestUtils.setField(userRelation, "id", ID);
+		if( withId) {
+				ReflectionTestUtils.setField(userRelation, "id", ID);
+		}
 		return userRelation;
 	}
 	
@@ -82,11 +88,9 @@ public class UserRelationTest {
 		final Customer customer = Mockito.mock(Customer.class);
 		final Person person = Mockito.mock(Person.class);
 		Assert.assertTrue(newUserRelation(customer, person).hashCode() == newUserRelation(customer, person).hashCode());
-		Assert.assertFalse(newUserRelation(Mockito.mock(Customer.class), person).hashCode() == newUserRelation(customer, person).hashCode());
-		
+		Assert.assertFalse(newUserRelation(Mockito.mock(Customer.class), person, false).hashCode() == newUserRelation(customer, person).hashCode());
 	    Assert.assertFalse(invalidUserRelation().hashCode() == invalidUserRelation().hashCode());
 	    
-	   
 	}
 
 	private UserRelation invalidUserRelation()  {
@@ -106,7 +110,7 @@ public class UserRelationTest {
 		final Customer customer = Mockito.mock(Customer.class);
 		final Person person = Mockito.mock(Person.class);
 		Assert.assertTrue(newUserRelation(customer, person).equals(newUserRelation(customer, person)));
-		Assert.assertFalse(newUserRelation(Mockito.mock(Customer.class), person).equals(newUserRelation(customer, person)));
+		Assert.assertFalse(newUserRelation(Mockito.mock(Customer.class), person, false).equals(newUserRelation(customer, person)));
 		Assert.assertFalse(newUserRelation(customer, person).equals(invalidUserRelation()));
 		Assert.assertFalse(invalidUserRelation().equals(newUserRelation(customer, person)));
 		Assert.assertFalse(invalidUserRelation().equals(invalidUserRelation()));

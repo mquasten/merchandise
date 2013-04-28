@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.Id;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -18,6 +20,7 @@ public class EqualsBuilderTest {
 	
 	
 	
+	private static final Long ID = 19680528L;
 	private static final String LASTNAME = "Minogue";
 	private static final String FIRSTNAME = "Kylie";
 
@@ -31,7 +34,7 @@ public class EqualsBuilderTest {
 		Assert.assertEquals(equalsBuilder, equalsBuilder.withSource(source));
 		@SuppressWarnings("unchecked")
 		final Map<UUID, Object> results = ((Map<UUID, Object>) ReflectionTestUtils.getField(equalsBuilder, "sourceFields"));
-		Assert.assertEquals(3, results.size());
+		Assert.assertEquals(4, results.size());
 	    Assert.assertTrue(results.containsKey(uuid(source.getClass(), "name")));
 	    Assert.assertTrue(results.containsKey(uuid(source.getClass(), "firstName")));
 	    Assert.assertTrue(results.containsKey(SimpleReflectionEqualsBuilderImpl.OBJECT_UUID));
@@ -42,19 +45,19 @@ public class EqualsBuilderTest {
 	    
 	    equalsBuilder.withSource(new Date());
 	   
-		Assert.assertEquals(1,results.size());
+		Assert.assertEquals(2,results.size());
 	}
 	
 	
 	@Test
 	public final void withSourceNulls() {
-		final Artist artist = new Artist(null, null);
+		final Artist artist = new Artist((Long)null, null);
 		final EqualsBuilder equalsBuilder = new SimpleReflectionEqualsBuilderImpl().withSource(artist);
 		@SuppressWarnings("unchecked")
 		final Map<UUID, Object> results = ((Map<UUID, Object>) ReflectionTestUtils.getField(equalsBuilder, "sourceFields"));
-		Assert.assertEquals(1, results.size());
-		Assert.assertEquals(artist, results.values().iterator().next());
-		
+		Assert.assertEquals(2, results.size());
+		Assert.assertEquals(artist, results.get(SimpleReflectionEqualsBuilderImpl.OBJECT_UUID));
+		Assert.assertEquals(0, results.get(SimpleReflectionEqualsBuilderImpl.ID_UUID));
 		
 	}
 
@@ -66,9 +69,9 @@ public class EqualsBuilderTest {
 		Assert.assertEquals(equalsBuilder, equalsBuilder.withTarget(artist));
 		@SuppressWarnings("unchecked")
 		final Map<UUID, Object> results = ((Map<UUID, Object>) ReflectionTestUtils.getField(equalsBuilder, "targetFields"));
-		Assert.assertEquals(3, results.size());
+		Assert.assertEquals(4, results.size());
 		equalsBuilder.withTarget(new Date());
-		Assert.assertEquals(1,results.size());
+		Assert.assertEquals(2,results.size());
 	}
 	
 	@Test
@@ -95,7 +98,7 @@ public class EqualsBuilderTest {
 		Assert.assertFalse(new SimpleReflectionEqualsBuilderImpl().withSource(new Date()).withTarget(new Artist(FIRSTNAME , LASTNAME)).isEquals());
 		
 		
-		final Artist artist = new Artist(null, "Madonna");
+		final Artist artist = new Artist((Long) null, "Madonna");
 		Assert.assertTrue(new SimpleReflectionEqualsBuilderImpl().withSource(artist).withTarget(artist).isEquals());
 		
 		final Date date = new Date();
@@ -122,7 +125,7 @@ public class EqualsBuilderTest {
 	   final Date date = new Date();
 	   Assert.assertEquals(System.identityHashCode(date),  new SimpleReflectionEqualsBuilderImpl().withSource(date).buildHashCode());
 	   
-	   final Artist artist = new Artist(null, "Madonna");
+	   final Artist artist = new Artist((Long) null, "Madonna");
 	   Assert.assertEquals(artist.hashCode(),  new SimpleReflectionEqualsBuilderImpl().withSource(artist).buildHashCode());
 	      
 	}
@@ -136,6 +139,42 @@ public class EqualsBuilderTest {
 	}
 	
 
+	@Test
+	public final void idsHash() {
+		Assert.assertTrue(ID.hashCode() + FIRSTNAME.hashCode() == new SimpleReflectionEqualsBuilderImpl().withSource(new Artist(ID, FIRSTNAME)).buildHashCode());
+		final Artist artist = new Artist(ID, null);
+		Assert.assertTrue(System.identityHashCode(artist) == new SimpleReflectionEqualsBuilderImpl().withSource(artist).buildHashCode());
+	}
+	
+	@Test
+	public final void idsEquals() {
+		Assert.assertTrue(new SimpleReflectionEqualsBuilderImpl().withSource(new Artist(ID, FIRSTNAME)).withTarget(new Artist(ID, FIRSTNAME)).isEquals());
+		Assert.assertFalse(new SimpleReflectionEqualsBuilderImpl().withSource(new Artist(ID, FIRSTNAME)).withTarget(new Artist(ID, null)).isEquals());
+		Assert.assertFalse(new SimpleReflectionEqualsBuilderImpl().withSource(new Artist(ID, null)).withTarget(new Artist(ID, null)).isEquals());
+	    final Artist artist = new Artist(ID, null);
+	    Assert.assertTrue(new SimpleReflectionEqualsBuilderImpl().withSource(artist).withTarget(artist).isEquals());
+	    Assert.assertFalse(new SimpleReflectionEqualsBuilderImpl().withSource(new Artist(ID, FIRSTNAME)).withTarget(new Artist(FIRSTNAME, LASTNAME)).isEquals());
+		Assert.assertFalse(builderWithOutIdNullSet(new Artist(FIRSTNAME, LASTNAME), new Artist(ID, FIRSTNAME)).isEquals());
+		Assert.assertFalse(builderWithOutIdNullSet(new Artist(ID, FIRSTNAME), new Artist(FIRSTNAME, LASTNAME)).isEquals());
+	}
+	
+	
+	@Test(expected=IllegalStateException.class)
+	public final void idHashMissing() {
+		final EqualsBuilder builder = new SimpleReflectionEqualsBuilderImpl().withSource(new Artist(ID, FIRSTNAME));
+		@SuppressWarnings("unchecked")
+		final Map<UUID,Object> map = (Map<UUID, Object>) ReflectionTestUtils.getField(builder, "sourceFields");
+		map.remove(SimpleReflectionEqualsBuilderImpl.ID_UUID);
+		builder.buildHashCode();
+	}
+
+
+	private EqualsBuilder builderWithOutIdNullSet(final Artist source, final Artist target) {
+		EqualsBuilder builder =  new SimpleReflectionEqualsBuilderImpl().withSource(source).withTarget(target);
+		ReflectionTestUtils.setField(builder, "idNulls", false);
+		return builder;
+	}
+	
 	
 	
 	private UUID uuid(final Class<?> clazz, final String field) {
@@ -151,6 +190,19 @@ public class EqualsBuilderTest {
 			this.name=name;
 			this.firstName=firstName;
 		}
+		
+		Artist(Long id, String artistName){
+			this.id=id;
+			this.artistName=artistName;
+		}
+				
+			
+		
+		@Id
+		private Long id;
+		
+		@Id
+		private String artistName;
 		
 		@Equals()
 		private String name;
