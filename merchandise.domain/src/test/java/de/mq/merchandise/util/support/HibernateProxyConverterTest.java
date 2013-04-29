@@ -1,4 +1,4 @@
-package de.mq.merchandise.model.support;
+package de.mq.merchandise.util.support;
 
 import junit.framework.Assert;
 
@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.core.convert.converter.Converter;
 
 import de.mq.merchandise.customer.Person;
-import de.mq.merchandise.model.support.HibernateProxyConverter;
+import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 public class HibernateProxyConverterTest {
 	

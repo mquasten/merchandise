@@ -1,4 +1,4 @@
-package de.mq.merchandise.model.support;
+package de.mq.merchandise.util.support;
 
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.core.convert.converter.Converter;

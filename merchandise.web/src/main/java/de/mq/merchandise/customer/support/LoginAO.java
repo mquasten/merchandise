@@ -14,8 +14,8 @@ import de.mq.mapping.util.proxy.GetterProxyCollection;
 import de.mq.mapping.util.proxy.Setter;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;
-import de.mq.merchandise.model.support.HibernateProxyConverter;
 import de.mq.merchandise.model.support.SimpleMapDataModel;
+import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 
 public abstract  class LoginAO  implements Serializable{

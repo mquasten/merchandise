@@ -12,8 +12,8 @@ import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Number2StringConverter;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
-import de.mq.merchandise.model.support.HibernateProxyConverter;
 import de.mq.merchandise.model.support.String2LongConverter;
+import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 public abstract class CustomerAO  implements Serializable {
 	

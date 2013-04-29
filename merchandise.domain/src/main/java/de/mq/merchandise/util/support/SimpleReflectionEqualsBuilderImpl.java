@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import javax.persistence.Id;
 
-import org.hibernate.proxy.HibernateProxy;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 import org.springframework.util.ReflectionUtils.FieldFilter;
@@ -29,6 +29,8 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 	
 	private boolean idNulls=false;
 	
+	private Converter<Object,Object> proxyConverter = new HibernateProxyConverter();
+	
 	SimpleReflectionEqualsBuilderImpl() {
 		
 	}
@@ -37,22 +39,17 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 	@Override
 	public final EqualsBuilder  withSource(final Object source) {
 		sourceFields.clear();
-		sourceFields.putAll(fieldValues( deProxymate(source)));
+		sourceFields.putAll(fieldValues(proxyConverter.convert(source)));
 		return this;
 	}
 
 
-	private Object deProxymate(final Object source) {
-		if (source instanceof HibernateProxy) {
-			return  ((HibernateProxy) source).getHibernateLazyInitializer().getImplementation();
-		}
-		return source;
-	}
+	
 	
 	@Override
 	public final EqualsBuilder  withTarget(final Object target) {
 		targetFields.clear();
-		targetFields.putAll(fieldValues(deProxymate(target)));
+		targetFields.putAll(fieldValues(proxyConverter.convert(target)));
 		return this;
 		
 	}
@@ -164,7 +161,7 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 	private Map<UUID,Object>  fieldValues(final Object source) {
 		final Map<UUID,Object> values = new HashMap<>();
 		values.put(ID_UUID, 0);
-		values.put(OBJECT_UUID,  deProxymate(source));
+		values.put(OBJECT_UUID,  proxyConverter.convert(source));
 		ReflectionUtils.doWithFields(source.getClass(), new FieldCallback() {
 			
 			@Override

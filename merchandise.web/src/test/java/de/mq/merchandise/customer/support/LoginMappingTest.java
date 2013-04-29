@@ -19,7 +19,7 @@ import de.mq.mapping.util.proxy.support.Number2StringConverter;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.model.PersonTestConstants;
-import de.mq.merchandise.model.support.HibernateProxyConverter;
+import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 public class LoginMappingTest {
 

@@ -21,8 +21,8 @@ import de.mq.merchandise.contact.support.CheckLoginAware;
 import de.mq.merchandise.contact.support.ContactSelector;
 import de.mq.merchandise.customer.LegalPerson;
 import de.mq.merchandise.customer.support.LegalPersonImpl;
-import de.mq.merchandise.model.support.HibernateProxyConverter;
 import de.mq.merchandise.model.support.String2LegalFormConverter;
+import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 
 public  abstract class   LegalPersonAO   implements Serializable {

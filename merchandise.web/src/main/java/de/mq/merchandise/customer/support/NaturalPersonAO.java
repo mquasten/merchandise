@@ -19,7 +19,7 @@ import de.mq.merchandise.contact.support.CheckLoginAware;
 import de.mq.merchandise.contact.support.ContactSelector;
 import de.mq.merchandise.customer.NaturalPerson;
 import de.mq.merchandise.customer.support.NaturalPersonImpl;
-import de.mq.merchandise.model.support.HibernateProxyConverter;
+import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 public abstract class NaturalPersonAO implements Serializable  {
 
