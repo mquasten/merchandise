@@ -26,6 +26,7 @@ import de.mq.merchandise.util.EntityUtil;
 @Profile("mock")
 public class CustomerMemoryReposioryMock implements CustomerRepository{
 	
+	private static final String PASSWORD = "fever";
 	public static final String DEFAULT_LOGIN = "kylie@minogue.net";
 	public static final long DEFAULT_CUSTOMER_ID = 19680528L;
 	private final Map<Long,Customer> index = new HashMap<>();
@@ -33,12 +34,14 @@ public class CustomerMemoryReposioryMock implements CustomerRepository{
 	public CustomerMemoryReposioryMock() {
 		final Person person = new LegalPersonImpl("Minogue-Music","12345",new TradeRegisterBuilderImpl().withCity("London").withZipCode("12345").withReference("0815").build(),LegalForm.GmbHCoKG ,new GregorianCalendar(1968,04, 28).getTime());
 		person.assign(new ContactBuilderFactoryImpl().eMailContactBuilder().withAccount(DEFAULT_LOGIN).withLogin().build());
+		person.digest().assignDigest(PASSWORD);
 		final Customer customer = new CustomerImpl(person);
 		EntityUtil.setId(customer, DEFAULT_CUSTOMER_ID);
-		customer.grant(person, CustomerRole.values());
+		customer.grant(person , CustomerRole.values());
 		customer.state().activate();
 		person.state().activate();
 		customer.state(person).activate();
+		EntityUtil.setId(person, Math.round(1e20 *Math.random()));
 		store(customer);
 	}
 
@@ -48,8 +51,8 @@ public class CustomerMemoryReposioryMock implements CustomerRepository{
 		if (! customer.hasId()){
 			EntityUtil.setId(customer,  Math.round(1e20 *Math.random()));
 				
-				
 		}
+		
 		
 		index.put(customer.id(), customer);
 		

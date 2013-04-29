@@ -69,7 +69,7 @@ public class LoginControllerTest {
 	@SuppressWarnings("unchecked")
 	public final void loginSingleCustomerReturned() {
 		Mockito.when(digest.check(PASSWORD)).thenReturn(true);
-		Assert.assertEquals("overview", loginController.login(loginAO));
+		Assert.assertEquals("overview?faces-redirect=true", loginController.login(loginAO));
 		Mockito.verify(loginAO).setPerson(person);
 		Mockito.verify(loginAO).setCustomers(customerListCaptor.capture());
 		

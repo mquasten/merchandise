@@ -65,7 +65,7 @@ public class LoginControllerImpl {
 		}
 		
 		authentificationService.createSecurityToken(person.id(), customerEntries.iterator().next().getKey().id(), login.getPassword());
-		return "overview" ;
+		return "overview?faces-redirect=true" ;
 	}
 	
 	@ExceptionTranslations(value={
