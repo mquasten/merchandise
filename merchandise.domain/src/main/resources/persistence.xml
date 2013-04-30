@@ -28,6 +28,8 @@
 	
 	<class>de.mq.merchandise.reference.support.ReferenceImpl</class>
 	
+	<class>de.mq.merchandise.opportunity.support.CommercialSubjectImpl</class>
+	
 		<!--  properties>
 		    <property name="eclipselink.weaving" value="false" />
 		 

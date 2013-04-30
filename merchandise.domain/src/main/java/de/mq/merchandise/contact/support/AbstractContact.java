@@ -71,8 +71,6 @@ public abstract  class AbstractContact implements LoginContact {
 	@PrePersist
 	@PreUpdate
 	void onStore() {
-		
-		System.out.println("???" + isLogin);
 		if(!isLogin){
 			return;
 		}

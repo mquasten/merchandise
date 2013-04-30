@@ -40,7 +40,7 @@ import de.mq.merchandise.util.Equals;
                 @NamedQuery(name=CustomerRepository.CUSTOMER_FOR_PERSON , query="Select r.customer from UserRelation r where r.person.id = :personId and r.state.active=true and r.customer.state.active=true")
 
 })
-class CustomerImpl implements Customer {
+public class CustomerImpl implements Customer {
 	
 	private static final long serialVersionUID = 1L;
 
