@@ -1,9 +1,11 @@
 package de.mq.merchandise.customer;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import de.mq.merchandise.BasicEntity;
+import de.mq.merchandise.opportunity.support.CommercialSubject;
 
 /**
  * A customer can buy things at the store. A customer is represented by a legal
@@ -102,5 +104,23 @@ public interface Customer extends BasicEntity {
 	 * @return true if the person have a role, false if not
 	 */
     boolean hasUser(final Person person);
+
+    /**
+     * The commercial subjects related to a customer, products services etc
+     * @return the products and services related to a customer
+     */
+	Collection<CommercialSubject> commercialSubjects();
+
+	/**
+	 * Adds a commercialSubject to a customer. An existing one that exists should be removed, the new one will be added
+	 * @param commercialSubject the commercial subject that will be added.
+	 */
+	void assign(final CommercialSubject commercialSubject);
+
+	/**
+	 * Removes a commercialSubject from a customer
+	 * @param commercialSubject the subject that should be removed
+	 */
+	void remove(final CommercialSubject commercialSubject);
 
 }

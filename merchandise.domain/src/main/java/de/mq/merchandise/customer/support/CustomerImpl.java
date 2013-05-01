@@ -2,6 +2,7 @@ package de.mq.merchandise.customer.support;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +30,8 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerRole;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.customer.State;
+import de.mq.merchandise.opportunity.support.CommercialSubject;
+import de.mq.merchandise.opportunity.support.CommercialSubjectImpl;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
@@ -61,7 +64,8 @@ public class CustomerImpl implements Customer {
 	@OneToMany(orphanRemoval=true,  targetEntity=UserRelationImpl.class, fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE} , mappedBy="customer")
 	private final  Set<UserRelation> userRelations = new HashSet<>();
 	
-	
+	@OneToMany(mappedBy="customer", targetEntity=CommercialSubjectImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+	private final Set<CommercialSubject> commercialSubjects=new HashSet<>();
 
 	/**
 	 * Especially for persistence. A default constructor is needed;
@@ -224,6 +228,21 @@ public class CustomerImpl implements Customer {
 		return"person=" + person.toString();
 	}
 	
+	@Override
+	public  Collection<CommercialSubject> commercialSubjects() {
+		return Collections.unmodifiableSet(commercialSubjects);
+	}
 	
+	@Override
+	public  void assign(final CommercialSubject commercialSubject) {
+		if( this.commercialSubjects().contains(commercialSubject)){
+		    this.commercialSubjects.remove(commercialSubject);
+		}
+		this.commercialSubjects.add(commercialSubject);
+	}
 
+	@Override
+	public  void remove(final CommercialSubject commercialSubject) {
+		this.commercialSubjects.remove(commercialSubject);
+	}
 }

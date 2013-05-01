@@ -20,6 +20,8 @@ import de.mq.merchandise.customer.support.StateImpl;
 import de.mq.merchandise.customer.support.UserRelation;
 import de.mq.merchandise.customer.support.UserRelationImpl;
 
+import de.mq.merchandise.opportunity.support.CommercialSubject;
+import de.mq.merchandise.opportunity.support.CommercialSubjectImpl;
 import de.mq.merchandise.util.EntityUtil;
 
 public class CustomerTest {
@@ -391,6 +393,53 @@ public class CustomerTest {
 		ReflectionTestUtils.setField(customer, "id", ID);
 		Assert.assertTrue(customer.hasId());
 		
+		
+	}
+	@Test
+	public final void commercialSubjects() {
+		final Customer customer = new CustomerImpl(Mockito.mock(Person.class));
+		final Set<CommercialSubject> results = new HashSet<>();
+		final CommercialSubject result = Mockito.mock(CommercialSubject.class);
+		results.add(result);
+		ReflectionTestUtils.setField(customer, "commercialSubjects", results);
+		
+		Assert.assertEquals(1, customer.commercialSubjects().size());
+		Assert.assertEquals(results, customer.commercialSubjects());
+		
+	}
+	
+	@Test
+	public final void removeCommercialSubjects() {
+		final Customer customer = new CustomerImpl(Mockito.mock(Person.class));
+		final Set<CommercialSubject> results = new HashSet<>();
+		final CommercialSubject result = Mockito.mock(CommercialSubject.class);
+		results.add(result);
+		ReflectionTestUtils.setField(customer, "commercialSubjects", results);
+		customer.remove(result);
+		
+		Assert.assertEquals(0, results.size());
+	}
+	
+	@Test
+	public final void assignCommercialSubjects() {
+		final Customer customer = new CustomerImpl(Mockito.mock(Person.class));
+		final CommercialSubject existing = Mockito.mock(CommercialSubjectImpl.class);
+		final CommercialSubject replacement = Mockito.mock(CommercialSubjectImpl.class);
+		
+		
+		
+		customer.assign(existing);
+		Assert.assertEquals(1, customer.commercialSubjects().size());
+		for(int i=0;i<10; i++){
+			customer.assign(existing);
+		}
+		Assert.assertEquals(1, customer.commercialSubjects().size());
+		Assert.assertEquals(existing, customer.commercialSubjects().iterator().next());
+		customer.assign(replacement);
+		Assert.assertEquals(2, customer.commercialSubjects().size());
+		
+		Assert.assertTrue(customer.commercialSubjects().contains(existing));
+		Assert.assertTrue(customer.commercialSubjects().contains(replacement));
 		
 	}
 }

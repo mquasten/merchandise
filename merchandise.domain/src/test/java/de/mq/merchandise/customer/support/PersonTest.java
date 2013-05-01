@@ -43,7 +43,8 @@ public class PersonTest {
 	private static final Nativity NATIVITY = Mockito.mock(Nativity.class);
 	private static final String PASSWORD = "kinkyKylie";
 			
-			
+
+
 
 
 	@Test
