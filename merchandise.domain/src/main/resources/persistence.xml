@@ -30,6 +30,11 @@
 	
 	<class>de.mq.merchandise.opportunity.support.CommercialSubjectImpl</class>
 	
+	<class>de.mq.merchandise.opportunity.support.OpportunityImpl</class>
+	
+	<class>de.mq.merchandise.opportunity.support.CommercialRelationImpl</class>
+	<class>de.mq.merchandise.opportunity.support.ConditionImpl</class>
+	
 		<!--  properties>
 		    <property name="eclipselink.weaving" value="false" />
 		 
