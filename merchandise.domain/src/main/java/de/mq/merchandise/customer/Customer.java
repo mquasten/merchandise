@@ -6,6 +6,7 @@ import java.util.Map;
 
 import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
+import de.mq.merchandise.opportunity.support.DocumentsAware;
 
 /**
  * A customer can buy things at the store. A customer is represented by a legal
@@ -121,6 +122,6 @@ public interface Customer extends BasicEntity {
 	 * Removes a commercialSubject from a customer
 	 * @param commercialSubject the subject that should be removed
 	 */
-	void remove(final CommercialSubject commercialSubject);
+	void remove(final DocumentsAware commercialSubject);
 
 }

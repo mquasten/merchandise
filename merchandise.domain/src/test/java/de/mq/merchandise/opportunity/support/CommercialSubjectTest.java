@@ -59,7 +59,7 @@ public class CommercialSubjectTest {
 	@Test
 	public final void assignDocument() {
 		final Customer customer = Mockito.mock(Customer.class);
-		final CommercialSubject commercialSubject = new CommercialSubjectImpl(customer , NAME , DESCRIPTION);
+		final DocumentsAware commercialSubject = new CommercialSubjectImpl(customer , NAME , DESCRIPTION);
 		
 		commercialSubject.assignDocument(DOCUMENT_NAME, DocumentType.Link, DOCUMENT);
 		
@@ -75,7 +75,7 @@ public class CommercialSubjectTest {
 	@Test
 	public final void removeDocument() {
 		final Customer customer = Mockito.mock(Customer.class);
-		final CommercialSubject commercialSubject = new CommercialSubjectImpl(customer , NAME , DESCRIPTION);
+		final DocumentsAware commercialSubject = new CommercialSubjectImpl(customer , NAME , DESCRIPTION);
 		final Map<String, byte[]> results = new HashMap<>();
 		results.put(DOCUMENT_NAME, DOCUMENT);
 		
@@ -87,7 +87,7 @@ public class CommercialSubjectTest {
 	@Test
 	public final void documents() {
 		final Customer customer = Mockito.mock(Customer.class);
-		final CommercialSubject commercialSubject = new CommercialSubjectImpl(customer , NAME , DESCRIPTION);
+		final DocumentsAware commercialSubject = new CommercialSubjectImpl(customer , NAME , DESCRIPTION);
 		
 		final Map<String, byte[]> results = new HashMap<>();
 		results.put(DOCUMENT_NAME, DOCUMENT);
@@ -101,7 +101,7 @@ public class CommercialSubjectTest {
 	
 	@Test
 	public final void hash() {
-		CommercialSubject commercialSubject = EntityUtil.create(CommercialSubjectImpl.class);
+		DocumentsAware commercialSubject = EntityUtil.create(CommercialSubjectImpl.class);
 		Assert.assertEquals(System.identityHashCode(commercialSubject), commercialSubject.hashCode() );
 		
 		final Customer customer = Mockito.mock(Customer.class);
@@ -113,7 +113,7 @@ public class CommercialSubjectTest {
 	@Test
 	public final void equals() {
 		final Customer customer = Mockito.mock(Customer.class);
-		final CommercialSubject commercialSubject = EntityUtil.create(CommercialSubjectImpl.class);
+		final DocumentsAware commercialSubject = EntityUtil.create(CommercialSubjectImpl.class);
 		
 		Assert.assertTrue(commercialSubject.equals(commercialSubject));
 		Assert.assertFalse(commercialSubject.equals(EntityUtil.create(CommercialSubjectImpl.class)));

@@ -32,6 +32,7 @@ import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.customer.State;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectImpl;
+import de.mq.merchandise.opportunity.support.DocumentsAware;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
@@ -242,7 +243,7 @@ public class CustomerImpl implements Customer {
 	}
 
 	@Override
-	public  void remove(final CommercialSubject commercialSubject) {
+	public  void remove(final DocumentsAware commercialSubject) {
 		this.commercialSubjects.remove(commercialSubject);
 	}
 }

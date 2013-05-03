@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.GeneratedValue;
@@ -31,26 +32,30 @@ class CommercialRelationImpl implements CommercialRelation {
 	
 	@ManyToOne(targetEntity=CommercialSubjectImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
 	@Equals
-	@JoinColumn(name="commercialSubject_id" )
-	private CommercialSubject commercialSubject;
+	@JoinColumn(name="commercial_subject_id" )
+	private DocumentsAware commercialSubject;
 
 	@ManyToOne(targetEntity=OpportunityImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
 	@Equals
 	@JoinColumn(name="opportunity_id" )
 	private Opportunity opportunity;
 	
-    //@ElementCollection(fetch=FetchType.LAZY, targetClass=ConditionImpl.class)
-    //@CollectionTable(name="conditions",joinColumns={@JoinColumn(name="commercial_relation_id")})
+	@Column(length=250)
+	private String validate;
+	
+	@Column(length=250)
+	private String calculation;
+ 
 	@OneToMany(targetEntity=ConditionImpl.class, mappedBy="commercialRelation")
-    @MapKeyColumn(name="condition_type" ,length=20)
-    @MapKeyEnumerated(EnumType.STRING)
+   @MapKeyColumn(name="condition_type", length=20)
+   @MapKeyEnumerated(EnumType.STRING)
 	private Map<Condition.ConditionType, Condition> conditions = new HashMap<>();
 	
 	protected CommercialRelationImpl() {
 		
 	}
 
-    CommercialRelationImpl(final CommercialSubject commercialSubject, final Opportunity opportunity) {
+    CommercialRelationImpl(final DocumentsAware commercialSubject, final Opportunity opportunity) {
 		this.commercialSubject = commercialSubject;
 		this.opportunity = opportunity;
 	}
@@ -65,7 +70,7 @@ class CommercialRelationImpl implements CommercialRelation {
 	
 	
 	@Override
-	public CommercialSubject commercialSubject() {
+	public DocumentsAware commercialSubject() {
 		return commercialSubject;
 	}
 	
@@ -74,9 +79,6 @@ class CommercialRelationImpl implements CommercialRelation {
 	public Opportunity opportunity() {
 		return opportunity;
 	}
-	
-	
-	
 	
 	
 	@Override

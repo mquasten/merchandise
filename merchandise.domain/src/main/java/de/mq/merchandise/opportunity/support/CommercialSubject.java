@@ -1,11 +1,10 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.util.Map;
 
 import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.customer.Customer;
 
-public interface CommercialSubject extends BasicEntity {
+public interface CommercialSubject extends BasicEntity, DocumentsAware {
 	
 	
 	enum DocumentType {
@@ -23,18 +22,12 @@ public interface CommercialSubject extends BasicEntity {
 		
 	}
 
-	void assignDocument(final String name, final DocumentType documentType, final byte[] document);
 
-	void removeDocument(final String name, final DocumentType documentType);
 
 	String name();
 
 	String description();
 
 	Customer customer();
-
-	Map<String, byte[]> documents();
-
-	
 
 }

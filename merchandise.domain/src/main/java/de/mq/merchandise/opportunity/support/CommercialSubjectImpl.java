@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 
 import de.mq.merchandise.customer.Customer;
@@ -45,9 +47,10 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 	private Customer customer;
 	
 	@ElementCollection(fetch=FetchType.LAZY)
-	@CollectionTable(name="documents")
+	@CollectionTable(name="commercial_subject_documents",joinColumns=@JoinColumn(name="commercial_subject_id"))
+   @MapKeyColumn(name="document_name", length=50)
+	@Column(name="stored_document" ,columnDefinition="BLOB")
 	private Map<String,byte[]> storedDocuments=new HashMap<>();
-	
 	
 	protected CommercialSubjectImpl() {
 		

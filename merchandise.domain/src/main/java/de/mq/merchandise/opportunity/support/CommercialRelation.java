@@ -7,8 +7,7 @@ import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 
 interface CommercialRelation extends BasicEntity{
 
-
-	CommercialSubject commercialSubject();
+	DocumentsAware commercialSubject();
 
 	Opportunity opportunity();
 

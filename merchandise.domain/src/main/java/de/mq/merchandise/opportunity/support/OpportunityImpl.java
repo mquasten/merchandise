@@ -1,20 +1,27 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
+import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
@@ -43,6 +50,13 @@ public class OpportunityImpl implements Opportunity {
 	
 	@OneToMany(mappedBy="commercialSubject", targetEntity=CommercialRelationImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 	private Set<CommercialRelation> commercialRelations = new HashSet<>(); 
+	
+	
+	@ElementCollection(fetch=FetchType.LAZY)
+	@CollectionTable(name="opportunity_documents", joinColumns=@JoinColumn(name="opportunity_id" ) )
+	@MapKeyColumn(name="document_name", length=50)
+	@Column(name="stored_document", columnDefinition="BLOB")
+	private Map<String,byte[]> storedDocuments=new HashMap<>();
 	
 	protected OpportunityImpl() {
 		
@@ -103,6 +117,22 @@ public class OpportunityImpl implements Opportunity {
 	@Override
 	public boolean equals(final Object obj) {
 	    return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(Opportunity.class).isEquals();
+	}
+
+	@Override
+	public Map<String, byte[]> documents() {
+		return Collections.unmodifiableMap(storedDocuments);
+	}
+
+	@Override
+	public void assignDocument(final String name, final DocumentType documentType, byte[] document) {
+		storedDocuments.put(name, document);
+		
+	}
+
+	@Override
+	public void removeDocument(final String name, final DocumentType documentType) {
+		storedDocuments.remove(name);		
 	}
 
 }
