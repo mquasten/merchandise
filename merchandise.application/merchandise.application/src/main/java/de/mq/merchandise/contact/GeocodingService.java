@@ -16,5 +16,6 @@ public interface GeocodingService {
 	 * @return the coordinates for the given address
 	 */
 	Coordinates coordinates(final CityAddress cityAddress);
+	
 
 }
