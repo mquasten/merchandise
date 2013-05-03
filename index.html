@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Merchandise : Storedemo Webapplication  with  Spring, JPA, Primefaces" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Merchandise</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/mquasten/merchandise">View on GitHub</a>
+
+          <h1 id="project_title">Merchandise</h1>
+          <h2 id="project_tagline">Storedemo Webapplication  with  Spring, JPA, Primefaces</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/mquasten/merchandise/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/mquasten/merchandise/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>Artefacts:</h3>
+
+<h2>merchandise.domain</h2>
+
+<p>The domain objects that represents the model. 
+The aggregate roots are:</p>
+
+<ul>
+<li>Customer (Persons, Contacts)</li>
+<li>CommercialSubjects (the abstraction from products and services, without commercial conditions)</li>
+<li>Opportunities (CommercialSubjects enhanced with commercial conditions, abstraction from tender, tender offer, Product and ServicePackages) </li>
+</ul><h2>merchandise.application</h2>
+
+<p>The application Layer, providing services for merchandise.web and merchandise.rest
+For each aggreate root a service is implemented to use the domain object. The repositories implementations are in application at the moment. Later it can be extracted into merchandise.infra. Repository-Implementations are done for JPA and in special stories for solr full text search.  An AuthentificationService is available for Security. This is done using Spring Security (for pages and methodbased security on the services. The servicelayer is  implemented without any remoting. Remoting can be done later using rest based services in merchandise.rest. Merchandise.rest can use merchandise. application and can provide the services simply using spring mvc controllers with annotation.</p>
+
+<h2>merchandise.web</h2>
+
+<p>A primefaces based web fronntend for the stories</p>
+
+<ul>
+<li>as an interested new user, I will be able to register as a legal or natural person that represents a customer or as user for an existing customer, to be able to work with the System. I want to be able to login to the system. I want that only authorized users can offer products, give bids to my tenders.<br>
+</li>
+<li>As a provider from  products and services or as a tender I want to able to create CommercialSubjects, Opportunities and CommmercialConditions. </li>
+<li>As a biider or customer that will by simply products  i want to be able to find products, tenders. I want to be able to buy then or to create a bid for them. </li>
+<li>As a tenderer or a provider from products I will be able to see who has orderd my Products and services or  which bids exists for my tender. I want to confirm the order or to give the sale by tender.</li>
+</ul><h2>merchandise.rest</h2>
+
+<p>Rest based services. tHis will be done later. </p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Merchandise maintained by <a href="https://github.com/mquasten">mquasten</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
