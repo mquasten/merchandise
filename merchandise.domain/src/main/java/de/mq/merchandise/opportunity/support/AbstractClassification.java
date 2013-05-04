@@ -3,8 +3,6 @@ package de.mq.merchandise.opportunity.support;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -27,7 +25,7 @@ abstract class AbstractClassification implements Classification{
 	@Id
 	private String id; 
 	
-	@Column(length=100)
+	@Column(length=250)
 	@Equals
 	private String  description;
 	

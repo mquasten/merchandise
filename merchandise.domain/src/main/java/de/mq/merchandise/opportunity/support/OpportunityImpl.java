@@ -44,11 +44,11 @@ public class OpportunityImpl implements Opportunity {
 	private Kind kind;
 	
 	@ManyToMany( targetEntity=ActivityClassificationImpl.class,  fetch=FetchType.LAZY,  cascade={ CascadeType.REFRESH} )
-	@JoinTable(name="opportunity_classification" , joinColumns={@JoinColumn(name="opportunity_id")}, inverseJoinColumns={@JoinColumn(name="classification_id")})
+	@JoinTable(name="opportunity_activity_classification" , joinColumns={@JoinColumn(name="opportunity_id")}, inverseJoinColumns={@JoinColumn(name="classification_id")})
 	private Set<ActivityClassification> activityClassifications=new HashSet<>();
 	
 	@ManyToMany( targetEntity=ProductClassificationImpl.class,  fetch=FetchType.LAZY,  cascade={ CascadeType.REFRESH} )
-	@JoinTable(name="opportunity_classification" , joinColumns={@JoinColumn(name="opportunity_id")}, inverseJoinColumns={@JoinColumn(name="classification_id")})
+	@JoinTable(name="opportunity_product_classification" , joinColumns={@JoinColumn(name="opportunity_id")}, inverseJoinColumns={@JoinColumn(name="classification_id")})
 	private Set<ProcuctClassification> procuctClassifications=new HashSet<>();
 	
 	@ElementCollection(fetch=FetchType.LAZY)
