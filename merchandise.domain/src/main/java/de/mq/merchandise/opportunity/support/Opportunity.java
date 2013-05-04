@@ -19,16 +19,22 @@ public interface Opportunity extends BasicEntity, DocumentsAware{
 
 	Customer customer();
 
-	Collection<Classification> classifications();
+	Collection<ActivityClassification> activityClassifications();
 
-	void assignClassification(Classification classification);
+	void assignClassification(ActivityClassification classification);
 
-	void removeClassification(Classification classification);
+	void removeClassification(ActivityClassification classification);
 
 	Collection<String> keyWords();
 
 	void assignKeyWord(String keyWord);
 
 	void removeKeyWord(String keyWord);
+
+	Collection<ProcuctClassification> productClassifications();
+
+	void assignClassification(ProcuctClassification classification);
+
+	void removeClassification(ProcuctClassification classification);
 
 }

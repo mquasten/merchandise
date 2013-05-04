@@ -43,9 +43,13 @@ public class OpportunityImpl implements Opportunity {
 	@Enumerated
 	private Kind kind;
 	
-	@ManyToMany( targetEntity=ClassificationImpl.class,  fetch=FetchType.LAZY,  cascade={ CascadeType.REFRESH} )
+	@ManyToMany( targetEntity=ActivityClassificationImpl.class,  fetch=FetchType.LAZY,  cascade={ CascadeType.REFRESH} )
 	@JoinTable(name="opportunity_classification" , joinColumns={@JoinColumn(name="opportunity_id")}, inverseJoinColumns={@JoinColumn(name="classification_id")})
-	private Set<Classification> classifications=new HashSet<>();
+	private Set<ActivityClassification> activityClassifications=new HashSet<>();
+	
+	@ManyToMany( targetEntity=ProductClassificationImpl.class,  fetch=FetchType.LAZY,  cascade={ CascadeType.REFRESH} )
+	@JoinTable(name="opportunity_classification" , joinColumns={@JoinColumn(name="opportunity_id")}, inverseJoinColumns={@JoinColumn(name="classification_id")})
+	private Set<ProcuctClassification> procuctClassifications=new HashSet<>();
 	
 	@ElementCollection(fetch=FetchType.LAZY)
 	@CollectionTable(name="opportunity_keyword", joinColumns=@JoinColumn(name="opportunity_id" ) )
@@ -154,18 +158,34 @@ public class OpportunityImpl implements Opportunity {
 	}
 	
 	@Override
-	public Collection<Classification> classifications() {
-		return Collections.unmodifiableSet(classifications);
+	public Collection<ActivityClassification> activityClassifications() {
+		return Collections.unmodifiableSet(activityClassifications);
 	}
 	
 	@Override
-	public void assignClassification(final Classification classification) {
-		classifications.add(classification);
+	public void assignClassification(final ActivityClassification classification) {
+		activityClassifications.add(classification);
 	}
 	
 	@Override
-	public void removeClassification(final Classification classification) {
-		classifications.add(classification);
+	public void removeClassification(final ActivityClassification classification) {
+		activityClassifications.add(classification);
+	}
+	
+	
+	@Override
+	public Collection<ProcuctClassification> productClassifications() {
+		return Collections.unmodifiableSet(this.procuctClassifications);
+	}
+	
+	@Override
+	public void assignClassification(final ProcuctClassification classification) {
+		procuctClassifications.add(classification);
+	}
+	
+	@Override
+	public void removeClassification(final ProcuctClassification classification) {
+		procuctClassifications.add(classification);
 	}
 	
 	@Override

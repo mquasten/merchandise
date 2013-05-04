@@ -1,12 +1,13 @@
 package de.mq.merchandise.opportunity.support;
 
-import de.mq.merchandise.BasicEntity;
+import java.io.Serializable;
 
-public interface Classification extends BasicEntity {
-	enum Kind {
-		Product,
-		Activity
-	}
+
+
+public interface Classification extends Serializable {
+	
+	
+	String id();
 	
 	String description();
 	

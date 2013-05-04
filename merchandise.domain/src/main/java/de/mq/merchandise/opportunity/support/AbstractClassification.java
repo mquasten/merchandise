@@ -1,11 +1,14 @@
 package de.mq.merchandise.opportunity.support;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -15,33 +18,30 @@ import de.mq.merchandise.util.Equals;
 
 @Entity(name="Classification")
 @Table(name="classification")
-class ClassificationImpl implements Classification{
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="kind")
+abstract class AbstractClassification implements Classification{
 
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	private Long id; 
+	private String id; 
 	
 	@Column(length=100)
 	@Equals
 	private String  description;
 	
-	@Enumerated(EnumType.STRING)
-	private Kind kind;
 	
-	@ManyToOne(targetEntity=ClassificationImpl.class,fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=AbstractClassification.class,fetch=FetchType.LAZY)
 	@JoinColumn(name="parent_id")
 	private Classification parent;
 
 	@Override
-	public long id() {
+	public String id() {
 		return id;
 	}
 
-	@Override
-	public boolean hasId() {
-		return true;
-	}
+	
 	
 	public String description() {
 		return description;
