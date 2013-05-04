@@ -1,5 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,10 +12,14 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
@@ -34,6 +39,18 @@ public class OpportunityImpl implements Opportunity {
 	@GeneratedValue
 	@Id
 	private Long id;
+	
+	@Enumerated
+	private Kind kind;
+	
+	@ManyToMany( targetEntity=ClassificationImpl.class,  fetch=FetchType.LAZY,  cascade={ CascadeType.REFRESH} )
+	@JoinTable(name="opportunity_classification" , joinColumns={@JoinColumn(name="opportunity_id")}, inverseJoinColumns={@JoinColumn(name="classification_id")})
+	private Set<Classification> classifications=new HashSet<>();
+	
+	@ElementCollection(fetch=FetchType.LAZY)
+	@CollectionTable(name="opportunity_keyword", joinColumns=@JoinColumn(name="opportunity_id" ) )
+	@Column(name="keyword", length=50 )
+	private Set<String> keyWords = new HashSet<>(); 
 	
 	@Column(length=50)
 	@Equals
@@ -55,7 +72,8 @@ public class OpportunityImpl implements Opportunity {
 	@ElementCollection(fetch=FetchType.LAZY)
 	@CollectionTable(name="opportunity_documents", joinColumns=@JoinColumn(name="opportunity_id" ) )
 	@MapKeyColumn(name="document_name", length=50)
-	@Column(name="stored_document", columnDefinition="BLOB")
+	@Column(name="stored_document"  )
+	@Lob()
 	private Map<String,byte[]> storedDocuments=new HashMap<>();
 	
 	protected OpportunityImpl() {
@@ -133,6 +151,36 @@ public class OpportunityImpl implements Opportunity {
 	@Override
 	public void removeDocument(final String name, final DocumentType documentType) {
 		storedDocuments.remove(name);		
+	}
+	
+	@Override
+	public Collection<Classification> classifications() {
+		return Collections.unmodifiableSet(classifications);
+	}
+	
+	@Override
+	public void assignClassification(final Classification classification) {
+		classifications.add(classification);
+	}
+	
+	@Override
+	public void removeClassification(final Classification classification) {
+		classifications.add(classification);
+	}
+	
+	@Override
+	public Collection<String> keyWords() {
+		return Collections.unmodifiableSet(keyWords);
+	}
+	
+	@Override
+	public void assignKeyWord(final String keyWord){
+		this.keyWords.add(keyWord);
+	}
+	
+	@Override
+	public void removeKeyWord(final String keyWord){
+		this.keyWords.remove(keyWord);
 	}
 
 }
