@@ -14,6 +14,7 @@ import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
 import de.mq.merchandise.util.EntityUtil;
 
 public class CommercialSubjectTest {
+	private static final String PATH = "artists";
 	private static final byte[] DOCUMENT = "http://www.dolls.de/content".getBytes();
 	private static final String DOCUMENT_NAME = "escorts";
 	private static final long ID = 19680528L;
@@ -120,6 +121,15 @@ public class CommercialSubjectTest {
 		
 		Assert.assertTrue(new CommercialSubjectImpl(customer, NAME, DESCRIPTION).equals(new CommercialSubjectImpl(customer, NAME, DESCRIPTION)));
 		Assert.assertFalse(new CommercialSubjectImpl(customer, NAME, DESCRIPTION).equals(new CommercialSubjectImpl(customer, "???", DESCRIPTION)));
+	}
+	
+	@Test
+	public final void documentType() {
+		for(final DocumentType documentType : DocumentType.values()){
+			Assert.assertEquals(documentType, DocumentType.valueOf(documentType.name()));
+		}
+		Assert.assertEquals(PATH + ".pdf", DocumentType.PDF.key(PATH));
+		Assert.assertEquals(PATH, DocumentType.Link.key(PATH));
 	}
 	
 }

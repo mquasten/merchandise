@@ -350,7 +350,7 @@ public class CustomerTest {
 		
 		Assert.assertTrue(customer.hasUser(person));
 		
-		
+		Assert.assertFalse(customer.hasUser(Mockito.mock(Person.class)));
 		
 	}
 	

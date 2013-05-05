@@ -33,7 +33,7 @@ class CommercialRelationImpl implements CommercialRelation {
 	@ManyToOne(targetEntity=CommercialSubjectImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
 	@Equals
 	@JoinColumn(name="commercial_subject_id" )
-	private DocumentsAware commercialSubject;
+	private CommercialSubject commercialSubject;
 
 	@ManyToOne(targetEntity=OpportunityImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
 	@Equals
@@ -47,15 +47,15 @@ class CommercialRelationImpl implements CommercialRelation {
 	private String calculation;
  
 	@OneToMany(targetEntity=ConditionImpl.class, mappedBy="commercialRelation")
-   @MapKeyColumn(name="condition_type", length=20)
-   @MapKeyEnumerated(EnumType.STRING)
+    @MapKeyColumn(name="condition_type", length=20)
+    @MapKeyEnumerated(EnumType.STRING)
 	private Map<Condition.ConditionType, Condition> conditions = new HashMap<>();
 	
 	protected CommercialRelationImpl() {
 		
 	}
 
-    CommercialRelationImpl(final DocumentsAware commercialSubject, final Opportunity opportunity) {
+    CommercialRelationImpl(final CommercialSubject commercialSubject, final Opportunity opportunity) {
 		this.commercialSubject = commercialSubject;
 		this.opportunity = opportunity;
 	}
@@ -103,6 +103,16 @@ class CommercialRelationImpl implements CommercialRelation {
 	@Override
 	public boolean hasId() {
 		return (id != null);
+	}
+	
+	@Override
+	public int hashCode() {
+		return EntityUtil.equalsBuilder().withSource(this).buildHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		 return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(CommercialRelation.class).isEquals();
 	}
 	
 	

@@ -61,7 +61,6 @@ public class OpportunityImpl implements Opportunity {
 	private String name;
 
 	@Column(length=250)
-	@Equals
 	private String description;
 	
 	@ManyToOne(targetEntity=CustomerImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
@@ -85,8 +84,7 @@ public class OpportunityImpl implements Opportunity {
 	}
 	
 	public OpportunityImpl(final Customer customer, final String name, final String description) {
-		this.customer = customer;
-		this.name = name;
+		this(customer, name);
 		this.description = description;
 	}
 	
@@ -113,7 +111,7 @@ public class OpportunityImpl implements Opportunity {
 	 */
 	@Override
 	public String description() {
-		return name;
+		return description;
 	}
 	
 	
@@ -127,7 +125,7 @@ public class OpportunityImpl implements Opportunity {
 
 	@Override
 	public boolean hasId() {
-		return (id==null);
+		return !(id==null);
 	}
 	
 	
@@ -148,13 +146,13 @@ public class OpportunityImpl implements Opportunity {
 
 	@Override
 	public void assignDocument(final String name, final DocumentType documentType, byte[] document) {
-		storedDocuments.put(name, document);
+		storedDocuments.put(documentType.key(name), document);
 		
 	}
 
 	@Override
 	public void removeDocument(final String name, final DocumentType documentType) {
-		storedDocuments.remove(name);		
+		storedDocuments.remove(documentType.key(name));		
 	}
 	
 	@Override
@@ -169,7 +167,7 @@ public class OpportunityImpl implements Opportunity {
 	
 	@Override
 	public void removeClassification(final ActivityClassification classification) {
-		activityClassifications.add(classification);
+		activityClassifications.remove(classification);
 	}
 	
 	
@@ -185,7 +183,7 @@ public class OpportunityImpl implements Opportunity {
 	
 	@Override
 	public void removeClassification(final ProcuctClassification classification) {
-		procuctClassifications.add(classification);
+		procuctClassifications.remove(classification);
 	}
 	
 	@Override

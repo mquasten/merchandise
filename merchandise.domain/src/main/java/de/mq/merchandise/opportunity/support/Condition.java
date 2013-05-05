@@ -17,4 +17,6 @@ public interface Condition extends Serializable {
 
 	String validation(); 
 	
+	CommercialRelation commercialRelation();
+	
 }

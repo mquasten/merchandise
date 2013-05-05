@@ -38,6 +38,22 @@ class ConditionImpl implements Condition{
 	@JoinColumn(name="commercial_relation_id")
 	private CommercialRelation commercialRelation;
 
+	protected ConditionImpl() {
+		
+	}
+	
+	
+	
+	ConditionImpl(final CommercialRelation commercialRelation,final List<String> values) {
+		this(commercialRelation, values, null, null);
+	}
+	
+	ConditionImpl(final CommercialRelation commercialRelation, final List<String> values, final String validation, final String calculation) {
+		this.commercialRelation=commercialRelation;
+		this.validation = validation;
+		this.calculation = calculation;
+		this.values.addAll(values);
+	}
 	
 	
 	@Override
@@ -55,20 +71,10 @@ class ConditionImpl implements Condition{
 		return validation;
 	}
 	
-	protected ConditionImpl() {
-		
-	}
-	
-	
-	
-	ConditionImpl(final List<String> values) {
-		this(values, null, null);
-	}
-	
-	ConditionImpl(final List<String> values, final String validation, final String calculation) {
-		this.validation = validation;
-		this.calculation = calculation;
-		this.values.addAll(values);
+
+	@Override
+	public CommercialRelation commercialRelation() {
+		return commercialRelation;
 	}
 	
 	
