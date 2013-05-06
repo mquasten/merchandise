@@ -1,5 +1,9 @@
 package de.mq.merchandise.util.support;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -30,18 +34,52 @@ public class HSQLTableCreater implements BeanFactoryPostProcessor {
 			}
 				
 		    processSql(con);
-				
+
 			
 		} catch (final SQLException ex) {
 			 System.err.println(ex.getMessage());
 		} 
+		process(ds, "docs/products.sql"); 
+		process(ds, "docs/activities.sql"); 
 		
+	}
+	private void process(DataSource ds, final String file) {
+		try(final Connection con = ds.getConnection()) {
+		   processFile(con,  file);
+		} catch (SQLException e) {
+			System.out.println("Error processing: "+ file);
+		}
+	}
+	private void processFile(final Connection connection, final String file) {
+		try {
+			create(connection, file);
+		} catch (IOException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	private void processSql(final Connection con) throws SQLException {
 		for(final String sql : SQLS ) {
 			final Statement st = con.createStatement(); 
 			st.executeUpdate(sql);
 			st.close();
+		}
+	}
+	
+	
+	
+	
+	private void create(final Connection connection, final String file) throws FileNotFoundException, IOException, SQLException {
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+			String line;
+			int counter=0;
+			while( (line = reader.readLine()) != null){
+				final Statement st = connection.createStatement(); 
+				st.executeUpdate(line);
+				st.close();
+				counter++;
+			}
+			System.out.println("Processed: " + file + " statements:" + counter );
 		}
 	}
 

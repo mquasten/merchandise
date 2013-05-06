@@ -1,3 +1,4 @@
+delete from classification where kind = 'P';
 insert into classification ( id, description, kind) values ( 'P-0', 'Agriculture, forestry and fishery products' , 'P');
 insert into classification ( id, description, kind, parent_id ) values ( 'P-01', 'Products of agriculture, horticulture and market gardening' , 'P', 'P-0');
 insert into classification ( id, description, kind, parent_id ) values ( 'P-02', 'Live animals and animal products (excluding meat)' , 'P', 'P-0');

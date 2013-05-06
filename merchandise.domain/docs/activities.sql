@@ -1,3 +1,4 @@
+delete from classification where kind = 'A';
 insert into classification ( id, description, kind) values ( 'A-A', 'Agriculture, forestry and fishing' , 'A');
 insert into classification ( id, description, kind, parent_id ) values ( 'A-01', 'Crop and animal production, hunting and related service activities' , 'A', 'A-A');
 insert into classification ( id, description, kind, parent_id ) values ( 'A-02', 'Forestry and logging' , 'A', 'A-A');
