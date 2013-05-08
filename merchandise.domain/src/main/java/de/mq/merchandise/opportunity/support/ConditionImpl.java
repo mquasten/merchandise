@@ -8,6 +8,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -33,6 +35,10 @@ class ConditionImpl implements Condition{
 	
 	@Column(length=250)
 	private String calculation;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name="condition_type")
+	private ConditionType conditionType = ConditionType.PricePerUnit;
 	
 	@ManyToOne(targetEntity=CommercialRelationImpl.class)
 	@JoinColumn(name="commercial_relation_id")
@@ -77,6 +83,9 @@ class ConditionImpl implements Condition{
 		return commercialRelation;
 	}
 	
-	
+	public ConditionType conditionType() {
+		return conditionType;
+		
+	}
 
 }

@@ -24,6 +24,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 
+import org.springframework.test.util.ReflectionTestUtils;
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
@@ -68,7 +70,7 @@ public class OpportunityImpl implements Opportunity {
 	@JoinColumn(name="customer_id" )
 	private Customer customer;
 	
-	@OneToMany(mappedBy="commercialSubject", targetEntity=CommercialRelationImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+	@OneToMany(mappedBy="commercialSubject", targetEntity=CommercialRelationImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE,  CascadeType.REMOVE })
 	private Set<CommercialRelation> commercialRelations = new HashSet<>(); 
 	
 	
@@ -199,6 +201,17 @@ public class OpportunityImpl implements Opportunity {
 	@Override
 	public void removeKeyWord(final String keyWord){
 		this.keyWords.remove(keyWord);
+	}
+	
+	@Override
+	public  void assignConditions(final CommercialSubject commercialSubject, final Condition ... conditions) {
+		for(final Condition condition : conditions){
+			final CommercialRelation relation = new  CommercialRelationImpl(commercialSubject, this);
+			ReflectionTestUtils.setField(condition , "commercialRelation", relation);
+			relation.assign(condition.conditionType(), condition);
+			
+			commercialRelations.add(relation);
+		}
 	}
 
 }

@@ -19,4 +19,6 @@ public interface Condition extends Serializable {
 	
 	CommercialRelation commercialRelation();
 	
+	ConditionType conditionType();
+	
 }
