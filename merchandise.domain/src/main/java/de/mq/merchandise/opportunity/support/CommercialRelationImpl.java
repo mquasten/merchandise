@@ -12,10 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
-import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
@@ -48,7 +46,7 @@ class CommercialRelationImpl implements CommercialRelation {
 	@Column(length=250)
 	private String calculation;
  
-	@OneToMany(targetEntity=ConditionImpl.class, mappedBy="commercialRelation",  cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH} )
+	@OneToMany(targetEntity=ConditionImpl.class  , mappedBy="commercialRelation",  cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH} )
 	@MapKeyColumn(name="condition_type", length=20)
     @MapKeyEnumerated(EnumType.STRING)
 	private Map<Condition.ConditionType, Condition> conditions = new HashMap<>();
@@ -93,8 +91,8 @@ class CommercialRelationImpl implements CommercialRelation {
 	
 	
 	@Override
-	public void assign(final ConditionType conditionType, final Condition condition) {
-		conditions.put(conditionType, condition);
+	public void assign(final Condition condition) {
+		conditions.put(condition.conditionType(), condition);
 	}
 
 	@Override

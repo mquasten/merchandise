@@ -1,14 +1,9 @@
 package de.mq.merchandise.opportunity.support;
 
-
-
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
-import java.util.Map.Entry;
 
 import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 
 
 public interface Opportunity extends BasicEntity, DocumentsAware{
@@ -45,7 +40,7 @@ public interface Opportunity extends BasicEntity, DocumentsAware{
 
 	
 	
-	void assignConditions(CommercialSubject commercialSubject,Condition ...  conditions);
+	void assignConditions(final CommercialSubject commercialSubject, final Condition ...  conditions);
 
 	
 

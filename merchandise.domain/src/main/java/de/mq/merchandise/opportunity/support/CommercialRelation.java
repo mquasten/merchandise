@@ -13,7 +13,7 @@ interface CommercialRelation extends BasicEntity{
 
 	Condition condition(final Condition.ConditionType conditionType);
 
-	void assign(final ConditionType conditionType, final Condition condition);
+	void assign(final Condition condition);
 
 	Map<ConditionType, Condition> conditions();
 

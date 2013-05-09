@@ -42,7 +42,7 @@ class ConditionImpl implements Condition{
 	
 	@ManyToOne(targetEntity=CommercialRelationImpl.class)
 	@JoinColumn(name="commercial_relation_id")
-	private CommercialRelation commercialRelation;
+	private CommercialRelation commercialRelation; 
 
 	protected ConditionImpl() {
 		
@@ -50,12 +50,12 @@ class ConditionImpl implements Condition{
 	
 	
 	
-	ConditionImpl(final CommercialRelation commercialRelation,final List<String> values) {
-		this(commercialRelation, values, null, null);
+	ConditionImpl(final ConditionType conditionType,final List<String> values) {
+		this(conditionType, values, null, null);
 	}
 	
-	ConditionImpl(final CommercialRelation commercialRelation, final List<String> values, final String validation, final String calculation) {
-		this.commercialRelation=commercialRelation;
+	ConditionImpl(final ConditionType conditionType, final List<String> values, final String validation, final String calculation) {
+		this.conditionType=conditionType;
 		this.validation = validation;
 		this.calculation = calculation;
 		this.values.addAll(values);
@@ -81,8 +81,9 @@ class ConditionImpl implements Condition{
 	@Override
 	public CommercialRelation commercialRelation() {
 		return commercialRelation;
-	}
+	} 
 	
+	@Override
 	public ConditionType conditionType() {
 		return conditionType;
 		

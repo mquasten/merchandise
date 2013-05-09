@@ -41,7 +41,8 @@ public class CommercialRelationTest {
 	public final void conditions() {
 		final CommercialRelation commercialRelation = new CommercialRelationImpl(commercialSubject, opportunity);
 		final Condition condition = Mockito.mock(Condition.class);
-		commercialRelation.assign(ConditionType.PricePerUnit, condition);
+		Mockito.when(condition.conditionType()).thenReturn(ConditionType.PricePerUnit);
+		commercialRelation.assign(condition);
 		Assert.assertEquals(1, commercialRelation.conditions().size());
 		Assert.assertEquals(ConditionType.PricePerUnit, commercialRelation.conditions().keySet().iterator().next());
 		Assert.assertEquals(condition, commercialRelation.conditions().values().iterator().next());

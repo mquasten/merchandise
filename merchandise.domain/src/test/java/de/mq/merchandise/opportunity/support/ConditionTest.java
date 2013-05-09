@@ -16,6 +16,7 @@ public class ConditionTest {
 	private static final String CALCULATION = "calculation";
 	private static final String VALIDATION = "validation";
 	private final List<String> values = new ArrayList<>();
+	@SuppressWarnings("unused")
 	private final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
 	
 	@Before
@@ -25,20 +26,22 @@ public class ConditionTest {
 	
 	@Test
 	public final void createConditionAllValues() {		
-		final Condition condition = new ConditionImpl(commercialRelation, values, VALIDATION, CALCULATION );
+		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values, VALIDATION, CALCULATION );
 		Assert.assertEquals(values, condition.values());
 		Assert.assertEquals(VALIDATION, condition.validation());
 		Assert.assertEquals(CALCULATION, condition.calculation());
-		Assert.assertEquals(commercialRelation, condition.commercialRelation());
+		Assert.assertEquals(ConditionType.PricePerUnit, condition.conditionType());
+		Assert.assertNull(condition.commercialRelation());
 	}
 	
 	@Test
 	public final void createOnlyValues() {
-		final Condition condition = new ConditionImpl(commercialRelation, values);
+		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values);
 		Assert.assertEquals(values, condition.values());
-		Assert.assertEquals(commercialRelation, condition.commercialRelation());
+		Assert.assertEquals(ConditionType.PricePerUnit, condition.conditionType());
 		Assert.assertNull(condition.validation());
 		Assert.assertNull(condition.calculation());
+		Assert.assertNull(condition.commercialRelation());
 	}
 	
 	@Test

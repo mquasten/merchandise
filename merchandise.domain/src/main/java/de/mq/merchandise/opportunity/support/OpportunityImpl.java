@@ -24,8 +24,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 
-import org.springframework.test.util.ReflectionTestUtils;
-
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
@@ -207,8 +205,8 @@ public class OpportunityImpl implements Opportunity {
 	public  void assignConditions(final CommercialSubject commercialSubject, final Condition ... conditions) {
 		for(final Condition condition : conditions){
 			final CommercialRelation relation = new  CommercialRelationImpl(commercialSubject, this);
-			ReflectionTestUtils.setField(condition , "commercialRelation", relation);
-			relation.assign(condition.conditionType(), condition);
+		//	ReflectionTestUtils.setField(condition , "commercialRelation", relation);
+			relation.assign(condition);
 			
 			commercialRelations.add(relation);
 		}
