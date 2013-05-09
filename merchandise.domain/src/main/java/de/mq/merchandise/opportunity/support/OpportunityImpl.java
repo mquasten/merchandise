@@ -70,7 +70,7 @@ public class OpportunityImpl implements Opportunity {
 	@JoinColumn(name="customer_id" )
 	private Customer customer;
 	
-	@OneToMany(mappedBy="commercialSubject", targetEntity=CommercialRelationImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE,  CascadeType.REMOVE })
+	@OneToMany(mappedBy="opportunity", targetEntity=CommercialRelationImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE,  CascadeType.REMOVE })
 	private Set<CommercialRelation> commercialRelations = new HashSet<>(); 
 	
 	

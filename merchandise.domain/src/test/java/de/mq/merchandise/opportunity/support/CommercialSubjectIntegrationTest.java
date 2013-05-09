@@ -8,10 +8,8 @@ import javax.persistence.PersistenceContext;
 
 import junit.framework.Assert;
 
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -25,7 +23,6 @@ import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.customer.support.PersonConstants;
 import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
 
-@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
 public class CommercialSubjectIntegrationTest {

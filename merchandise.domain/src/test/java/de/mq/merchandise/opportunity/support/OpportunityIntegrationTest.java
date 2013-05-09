@@ -1,10 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,7 +18,6 @@ import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.PersonConstants;
 import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
-import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -51,18 +47,16 @@ public class OpportunityIntegrationTest {
 	public final void persitOpportunity() {
 		final Customer customer  = entityManager.merge(PersonConstants.customer());
 		final CommercialSubject commercialSubject = entityManager.merge(new CommercialSubjectImpl(customer, "EscortService++", null));
-		//entityManager.flush();
+		
 		final ActivityClassification activityClassification = entityManager.find(ActivityClassificationImpl.class, "A-01");
 		final ProcuctClassification procuctClassification =entityManager.find(ProductClassificationImpl.class, "P-01");
-		
-		entityManager.refresh(commercialSubject);
 		
 		waste.add(customer);
 		waste.add(commercialSubject);
 		System.out.println(activityClassification.id());
 		System.out.println(procuctClassification.id());
 		
-		Opportunity opportunity = new OpportunityImpl(customer,"Nicole's Services" , "with prices and conditions");
+		final Opportunity opportunity = new OpportunityImpl(customer,"Nicole's special services" , "with prices and conditions");
        
 		opportunity.assignClassification(activityClassification);
 		opportunity.assignClassification(procuctClassification);
