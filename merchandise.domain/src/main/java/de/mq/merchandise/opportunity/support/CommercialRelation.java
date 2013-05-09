@@ -5,7 +5,7 @@ import java.util.Map;
 import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 
-interface CommercialRelation extends BasicEntity{
+public interface CommercialRelation extends BasicEntity{
 
 	DocumentsAware commercialSubject();
 

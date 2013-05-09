@@ -43,7 +43,9 @@ public interface Opportunity extends BasicEntity, DocumentsAware{
 	void assignConditions(final CommercialSubject commercialSubject, final Condition ...  conditions);
 
 	
-
+	Collection<CommercialRelation> commercialRelations();
+    
+ 
 	
 
 }

@@ -1,5 +1,8 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.util.Collection;
+
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -8,6 +11,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
+import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 
 public class OpportunityTest {
 	
@@ -112,5 +116,22 @@ public class OpportunityTest {
 		for(final Opportunity.Kind kind : Opportunity.Kind.values() ){
 			Assert.assertEquals(kind, Opportunity.Kind.valueOf(kind.name()));
 		}
+	}
+	
+	@Test
+	public final void assignConditions() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		final Condition condition = Mockito.mock(Condition.class);
+		Mockito.when(condition.conditionType()).thenReturn(ConditionType.PricePerUnit);
+		opportunity.assignConditions(commercialSubject, condition);
+		
+		
+		final Collection<CommercialRelation> results = opportunity.commercialRelations();
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(commercialSubject, results.iterator().next().commercialSubject());
+		Assert.assertEquals(1, results.iterator().next().conditions().size());
+		Assert.assertEquals(ConditionType.PricePerUnit, results.iterator().next().conditions().keySet().iterator().next());
+		Assert.assertEquals(condition, results.iterator().next().conditions().values().iterator().next());
 	}
 }

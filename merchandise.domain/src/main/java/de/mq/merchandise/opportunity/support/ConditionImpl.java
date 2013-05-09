@@ -15,6 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import de.mq.merchandise.util.EntityUtil;
+import de.mq.merchandise.util.Equals;
+
 @Entity(name="Condition")
 class ConditionImpl implements Condition{
 
@@ -38,10 +41,12 @@ class ConditionImpl implements Condition{
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name="condition_type")
-	private ConditionType conditionType = ConditionType.PricePerUnit;
+	@Equals
+	private ConditionType conditionType;
 	
 	@ManyToOne(targetEntity=CommercialRelationImpl.class)
 	@JoinColumn(name="commercial_relation_id")
+	@Equals
 	private CommercialRelation commercialRelation; 
 
 	protected ConditionImpl() {
@@ -88,5 +93,16 @@ class ConditionImpl implements Condition{
 		return conditionType;
 		
 	}
+	
+	@Override
+	public int hashCode() {
+		return EntityUtil.equalsBuilder().withSource(this).buildHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		 return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(Condition.class).isEquals();
+	}
+	
 
 }

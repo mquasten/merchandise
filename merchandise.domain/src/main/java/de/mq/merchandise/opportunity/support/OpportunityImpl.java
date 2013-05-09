@@ -205,11 +205,18 @@ public class OpportunityImpl implements Opportunity {
 	public  void assignConditions(final CommercialSubject commercialSubject, final Condition ... conditions) {
 		for(final Condition condition : conditions){
 			final CommercialRelation relation = new  CommercialRelationImpl(commercialSubject, this);
-		//	ReflectionTestUtils.setField(condition , "commercialRelation", relation);
 			relation.assign(condition);
 			
 			commercialRelations.add(relation);
 		}
 	}
+
+	@Override
+	public Collection<CommercialRelation> commercialRelations() {
+		return Collections.unmodifiableCollection(commercialRelations);
+		
+	}
+
+	
 
 }
