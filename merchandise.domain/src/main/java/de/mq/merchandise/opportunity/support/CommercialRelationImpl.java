@@ -70,7 +70,7 @@ class CommercialRelationImpl implements CommercialRelation {
 	
 	
 	@Override
-	public DocumentsAware commercialSubject() {
+	public CommercialSubject commercialSubject() {
 		return commercialSubject;
 	}
 	

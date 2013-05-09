@@ -6,8 +6,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import junit.framework.Assert;
+
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -19,13 +20,20 @@ import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.PersonConstants;
 import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
+import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
-@Ignore
 public class OpportunityIntegrationTest {
 	
+	private static final String UNIT_DAY = "day";
+	private static final String UNIT_HOUR = "hour";
+	private static final String KEY_WORD = "EscortService";
+	private static final String PRODUCT_ID = "P-01";
+	private static final String ACTIVITY_ID = "A-01";
+	private static final byte[] DOCUMENT_CONTENT = "nicoles pictures and videos".getBytes();
+	private static final String LINK = "nicole";
 	@PersistenceContext()
 	private EntityManager entityManager;
 	private final List<BasicEntity> waste  = new ArrayList<BasicEntity>();
@@ -50,29 +58,62 @@ public class OpportunityIntegrationTest {
 		final Customer customer  = entityManager.merge(PersonConstants.customer());
 		final CommercialSubject commercialSubject = entityManager.merge(new CommercialSubjectImpl(customer, "EscortService++", null));
 		
-		final ActivityClassification activityClassification = entityManager.find(ActivityClassificationImpl.class, "A-01");
-		final ProcuctClassification procuctClassification =entityManager.find(ProductClassificationImpl.class, "P-01");
+		final ActivityClassification activityClassification = entityManager.find(ActivityClassificationImpl.class, ACTIVITY_ID);
+		final ProcuctClassification procuctClassification =entityManager.find(ProductClassificationImpl.class, PRODUCT_ID);
 		
 		waste.add(customer);
 		waste.add(commercialSubject);
-		System.out.println(activityClassification.id());
-		System.out.println(procuctClassification.id());
 		
-		final Opportunity opportunity = new OpportunityImpl(customer,"Nicole's special services" , "with prices and conditions");
+		
+		Opportunity opportunity = new OpportunityImpl(customer,"Nicole's special services" , "with prices and conditions");
        
 		opportunity.assignClassification(activityClassification);
 		opportunity.assignClassification(procuctClassification);
-		opportunity.assignDocument("nicole", DocumentType.Link, "nicoles pictures and videos".getBytes());
-		opportunity.assignKeyWord("EscortService");
+		opportunity.assignDocument(LINK, DocumentType.Link, DOCUMENT_CONTENT);
+		opportunity.assignKeyWord(KEY_WORD);
 		final List<String> values = new ArrayList<>();
-		values.add("hour");
-		values.add("day");
+		values.add(UNIT_HOUR);
+		values.add(UNIT_DAY);
 		
 		
-		opportunity.assignConditions(commercialSubject, new ConditionImpl(null, values));
-		waste.add(entityManager.merge(opportunity));
+		opportunity.assignConditions(commercialSubject, new ConditionImpl(ConditionType.PricePerUnit, values));
+		opportunity=entityManager.merge(opportunity);
+		waste.add(opportunity);
 		entityManager.flush();
-		System.out.println("*******************************************************");
+		
+		entityManager.refresh(opportunity);
+		
+		final Opportunity result = entityManager.find(OpportunityImpl.class, opportunity.id());
+		
+		Assert.assertEquals(opportunity, result);
+		
+		
+		Assert.assertEquals(1, result.documents().size());
+		Assert.assertEquals(LINK, result.documents().keySet().iterator().next());
+		Assert.assertEquals(new String(DOCUMENT_CONTENT),  new String(result.documents().values().iterator().next()));
+		
+		Assert.assertEquals(1,result.activityClassifications().size());
+		Assert.assertEquals(ACTIVITY_ID, result.activityClassifications().iterator().next().id());
+		
+		Assert.assertEquals(1,result.productClassifications().size());
+		Assert.assertEquals(PRODUCT_ID, result.productClassifications().iterator().next().id());
+		
+		Assert.assertEquals(1,result.keyWords().size() ); 
+		Assert.assertEquals(KEY_WORD, result.keyWords().iterator().next());
+		
+		Assert.assertEquals(1, result.commercialRelations().size());
+		
+		Assert.assertEquals(commercialSubject, result.commercialRelations().iterator().next().commercialSubject());
+		
+		Assert.assertEquals(opportunity,  result.commercialRelations().iterator().next().opportunity());
+		
+		Assert.assertEquals(1, result.commercialRelations().iterator().next().conditions().size());
+		
+		Assert.assertEquals(ConditionType.PricePerUnit, result.commercialRelations().iterator().next().conditions().keySet().iterator().next());
+		Assert.assertEquals(2, result.commercialRelations().iterator().next().conditions().values().iterator().next().values().size());
+		Assert.assertTrue(result.commercialRelations().iterator().next().conditions().values().iterator().next().values().contains(UNIT_HOUR));
+		Assert.assertTrue(result.commercialRelations().iterator().next().conditions().values().iterator().next().values().contains(UNIT_DAY));
+		
 	}
 	
 
