@@ -3,8 +3,8 @@ package de.mq.merchandise.util;
 import java.io.Serializable;
 
 /**
- * Paging for long resultsets from database or other resources.
- *The resultSet will be splitted into Pages, with a defined size
+ * Paging for long resultSets from database or other resources.
+ *The resultSet will be split  into Pages, with a defined size
  * @author mquasten
  *
  */
@@ -54,11 +54,23 @@ public interface Paging extends Serializable{
 	 * if the given page < first set it to the first one 
 	  * @param currentPage the number of currentPage
 	 */
-	void assignCurrentPage(int currentPage);
+	void assignCurrentPage(final int currentPage);
 	/**
 	 * Calculates the maxPages, and checks if the currentPage  <= lastPage. If not set it to last page.
 	 * @param numberOfRows the total number of rows, of the complete resultSet
 	 */
-	void assignRowCounter(long numberOfRows) ;
+	void assignRowCounter(final long numberOfRows) ;
+
+	/**
+	 * The first row in the resultSet for the currentPage
+	 * @return the first row of the resultSet, that belongs to the currentPage
+	 */
+	int firstRow();
+	
+	/**
+	 * A String that contains hints, in witch  way the resultSet should be sorted. 
+	 * @return hint that can be used to sort the resultSet
+	 */
+	String sortHint();
 
 }
