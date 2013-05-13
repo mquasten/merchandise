@@ -12,7 +12,7 @@ public class SimplePagingImpl implements Paging{
 	
 	private final String orderBy; 
 	
-	private SimplePagingImpl(final int pageSize, final String orderBy){
+    public SimplePagingImpl(final int pageSize, final String orderBy){
 		this.pageSize=pageSize;
 		this.currentPage=1;
 		this.maxPages=1;
@@ -45,7 +45,7 @@ public class SimplePagingImpl implements Paging{
 	@Override
 	public final  void previous() {
 		if( currentPage > 1){
-			currentPage++;
+			currentPage--;
 		}
 		
 	}
@@ -65,9 +65,11 @@ public class SimplePagingImpl implements Paging{
 	@Override
 	public final void assignCurrentPage(final int currentPage) {
 		if( currentPage < 1){
+			this.currentPage=1;
 			return;
 		}
 		if( currentPage >= maxPages){
+			this.currentPage=maxPages;
 			return;
 		}
 		this.currentPage=currentPage;
@@ -75,13 +77,16 @@ public class SimplePagingImpl implements Paging{
 
 	@Override
 	public final  void assignRowCounter(final long numberOfRows) {
-		if( numberOfRows <= 0){
-			currentPage=1;
-		}
-		maxPages = (int) Math.floor( numberOfRows / pageSize);
+		maxPages = (int) Math.ceil( (double) numberOfRows / pageSize);
 		if ( currentPage > maxPages){
 			currentPage=maxPages;
+			return;
+		} 
+		if( currentPage <= 0){
+			currentPage=1;
 		}
+		
+		
 	}
 	
 	@Override
