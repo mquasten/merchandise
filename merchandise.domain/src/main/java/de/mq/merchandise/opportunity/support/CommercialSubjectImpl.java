@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.NamedQuery;
 
 
 import javax.persistence.ManyToOne;
@@ -28,6 +29,7 @@ import de.mq.merchandise.util.Equals;
 
 @Entity(name="CommercialSubject")
 @Table(name="commercial_subject")
+@NamedQuery(name=CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN, query="select s from CommercialSubject s where s.name like :name")
 public class CommercialSubjectImpl implements  CommercialSubject {
 	
 	private static final long serialVersionUID = 1L;
