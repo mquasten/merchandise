@@ -123,11 +123,9 @@
 		
 
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc</artifactId>
-			<version>14</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/ojdbc14.jar</systemPath>
+			<groupId>com.orcale.jdbc</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>6.0</version>
 		</dependency>
 
 
