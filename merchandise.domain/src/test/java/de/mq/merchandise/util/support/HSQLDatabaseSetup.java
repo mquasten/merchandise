@@ -11,7 +11,6 @@ import java.sql.Statement;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import org.mockito.internal.matchers.StartsWith;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
