@@ -14,6 +14,9 @@ import de.mq.merchandise.util.Paging;
 
 public class CommercialSubjectRepositoryImpl implements CommercialSubjectRepository{
 	
+	
+	static final String PARAMETER_NAME = "name";
+	
 	@PersistenceContext
 	private EntityManager entityManager;
 	
@@ -31,14 +34,14 @@ public class CommercialSubjectRepositoryImpl implements CommercialSubjectReposit
 		
 		final TypedQuery<Number> typedCountQuery = entityManager.createQuery(QueryUtils.createCountQueryFor(queryString(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN)), Number.class);
 	
-		typedCountQuery.setParameter("name" , namePattern);
+		typedCountQuery.setParameter(PARAMETER_NAME , namePattern);
 		paging.assignRowCounter(typedCountQuery.getSingleResult().longValue());
 		
 		final TypedQuery<CommercialSubject> typedResultQuery = entityManager.createQuery(queryString(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN) +" order by " +paging.sortHint(), CommercialSubject.class);
 		
 		typedResultQuery.setFirstResult(paging.firstRow());
 		typedResultQuery.setMaxResults(paging.pageSize());
-		typedResultQuery.setParameter("name", namePattern);
+		typedResultQuery.setParameter(PARAMETER_NAME, namePattern);
 		return typedResultQuery.getResultList();
 		
 	}
