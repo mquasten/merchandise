@@ -28,19 +28,23 @@ public class CommercialSubjectRepositoryImpl implements CommercialSubjectReposit
 	
 	
 	public final Collection<? extends CommercialSubject> forNamePattern(final String namePattern, final Paging paging ) {
-		final TypedQuery<Number> typedCountQuery = entityManager.createQuery(countQueryString(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN), Number.class);
+		
+		final TypedQuery<Number> typedCountQuery = entityManager.createQuery(QueryUtils.createCountQueryFor(queryString(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN)), Number.class);
+	
 		typedCountQuery.setParameter("name" , namePattern);
 		paging.assignRowCounter(typedCountQuery.getSingleResult().longValue());
 		
-		final TypedQuery<CommercialSubject> typedResultQuery = entityManager.createNamedQuery(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN +"order by " +paging.sortHint(), CommercialSubject.class);
+		final TypedQuery<CommercialSubject> typedResultQuery = entityManager.createQuery(queryString(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN) +" order by " +paging.sortHint(), CommercialSubject.class);
+		
 		typedResultQuery.setFirstResult(paging.firstRow());
 		typedResultQuery.setMaxResults(paging.pageSize());
+		typedResultQuery.setParameter("name", namePattern);
 		return typedResultQuery.getResultList();
 		
 	}
 	
 	
-	String countQueryString(final String queryName) { 
-	  return QueryUtils.createCountQueryFor(entityManager.createNamedQuery(queryName).unwrap(org.hibernate.Query.class).getQueryString().replaceFirst("[Oo][Rr][Dd][Ee][Rr].*[bB][Yy].*$", ""));
+	private String queryString(final String queryName) { 
+	  return entityManager.createNamedQuery(queryName).unwrap(org.hibernate.Query.class).getQueryString().replaceFirst("[Oo][Rr][Dd][Ee][Rr].*[bB][Yy].*$", "");
 	}
 }
