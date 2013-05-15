@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+@SuppressWarnings("restriction")
 @Component
 public class SimpleStringCrypter implements StringCrypter {
 	private final String messageDigestAlgoritm ;
@@ -60,12 +61,14 @@ public class SimpleStringCrypter implements StringCrypter {
 
 	}
 
+	
 	private  String doEncrypt(final String data, final String keyValue) throws Exception {
 		final Cipher c = Cipher.getInstance(cryptAlgorithm);
 		c.init(Cipher.ENCRYPT_MODE, generateKey(keyValue));
 		return new BASE64Encoder().encode(c.doFinal(data.getBytes()));
 	}
 
+	
 	private  String doDecrypt(final String encryptedData, final String keyValue) throws IllegalBlockSizeException, BadPaddingException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
 		final Cipher c = Cipher.getInstance(cryptAlgorithm);
 		c.init(Cipher.DECRYPT_MODE, generateKey(keyValue));
