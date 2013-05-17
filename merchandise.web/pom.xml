@@ -1,198 +1,62 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
-	<groupId>de.mq</groupId>
 	<artifactId>merchandise.web</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-
+	<parent>
+		<groupId>de.mq</groupId>
+		<artifactId>merchandise.parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 	<name>merchandise.web</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<hibernate.version>4.0.1.Final</hibernate.version>
-		<mysql.connector.version>5.1.18</mysql.connector.version>
-		<slf4j.version>1.6.1</slf4j.version>
 		<webXmlPath>${basedir}/src/main/resources/db/web.xml</webXmlPath>
-		
-		<spring.version>3.1.0.RELEASE</spring.version>
-		
-		
 	</properties>
-	
-	
+
 	<profiles>
-    <profile>
-        <id>mock</id>
-        <properties>
-            <webXmlPath>${basedir}/src/main/resources/mock/web.xml</webXmlPath>
-        </properties>
-    </profile>
-</profiles>
-    
-    
-    
-    
-	
-	
+		<profile>
+			<id>mock</id>
+			<properties>
+				<webXmlPath>${basedir}/src/main/resources/mock/web.xml</webXmlPath>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencies>
-	
-	<dependency>
-	
-	<groupId>de.mq</groupId>
-  <artifactId>merchandise.application</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
-	
-	</dependency>
-	
 		<dependency>
-		<groupId>de.mq</groupId>
-	    <artifactId>merchandise.domain</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+			<groupId>de.mq</groupId>
+			<artifactId>merchandise.application</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
-		
 		<dependency>
-		<groupId>de.mq</groupId>
+			<groupId>de.mq</groupId>
 			<artifactId>mapping.util</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
-	<!-- 	
-		<dependency>
-    <groupId>javax.servlet</groupId>
-    <artifactId>servlet-api</artifactId>
-    <version>2.5</version>
-    <scope>provided</scope>
-</dependency>
-		-->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-api</artifactId>
 			<version>2.1.16</version>
 		</dependency>
-		
-
-
 		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-impl</artifactId>
 			<version>2.1.16</version>
-			 
-		</dependency>
-
-
-		
-		<dependency>
-                    <groupId>javax.el</groupId>
-                    <artifactId>el-api</artifactId>
-                    <version>2.2</version>
-                    <scope>compile</scope>
-        </dependency>
-                <dependency>
-                    <groupId>org.glassfish.web</groupId>
-                    <artifactId>el-impl</artifactId>
-                    <scope>runtime</scope>
-                    <version>2.2</version>
-       </dependency>
-       
-       
-       <dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.8.4</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>test</scope>
-		</dependency>
-		
-		
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>javax.persistence</artifactId>
-			<version>2.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-
-
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
+			<groupId>javax.el</groupId>
+			<artifactId>el-api</artifactId>
+			<version>2.2</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${spring.version}</version>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>el-impl</artifactId>
+			<scope>runtime</scope>
+			<version>2.2</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-			<version>2.2.2</version>
-		</dependency>
-		<!-- Spring Data JPA -->
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-jpa</artifactId>
-			<version>1.0.2.RELEASE</version>
-		</dependency>
-		<!-- Hibernate -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
-
-
-
 
 		<dependency>
 			<groupId>com.jolbox</groupId>
@@ -207,98 +71,18 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
-		</dependency>
-		
-		
-  <dependency>
-  <groupId>javax.validation</groupId>
-  <artifactId>validation-api</artifactId>
-  <version>1.0.0.GA</version>
- </dependency>
- <dependency>
-  <groupId>org.hibernate</groupId>
-  <artifactId>hibernate-validator</artifactId>
-  <version>4.0.2.GA</version>
- </dependency>
- 
-  <dependency>
-  <groupId>org.slf4j</groupId>
-  <artifactId>slf4j-api</artifactId>
-  <version>1.6.1</version>
- </dependency>
- <dependency>
-  <groupId>org.slf4j</groupId>
-  <artifactId>slf4j-log4j12</artifactId>
-  <version>1.6.1</version>
- </dependency>
- 
- 
- 	<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-core</artifactId>
-    <version>${spring.version}</version>
- </dependency> 
- <dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-web</artifactId>
-    <version>${spring.version}</version>
-  </dependency> 
-  <dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-config</artifactId>
-    <version>${spring.version}</version>
-  </dependency>
-  
-  <dependency>
-	<groupId>javax.servlet</groupId>
-	<artifactId>servlet-api</artifactId>
-	<version>2.5</version>
-	<scope>provided</scope>
-</dependency>
-  
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
-			<scope>test</scope>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			
 			<version>3.4.2</version>
 		</dependency>
-		
-		
-		
-  
-		
-			<!-- dependency>
 
-				<groupId>javax.enterprise</groupId>
-
-				<artifactId>cdi-api</artifactId>
-
-				<scope>Runtime</scope>
-
-			<version>1.0-SP4</version>
-
-</dependency-->
 	</dependencies>
 
 	<repositories>
@@ -307,92 +91,56 @@
 			<name>Prime Repo</name>
 			<url>http://repository.primefaces.org</url>
 		</repository>
-		
+
 		<repository>
-  <id>jvnet-nexus-snapshots</id>
-  <name>jvnet-nexus-snapshots</name>
-  <url>https://maven.java.net/content/repositories/snapshots/</url>
-</repository>
+			<id>jvnet-nexus-snapshots</id>
+			<name>jvnet-nexus-snapshots</name>
+			<url>https://maven.java.net/content/repositories/snapshots/</url>
+		</repository>
 	</repositories>
 	<build>
-	
+
 		<finalName>merchandise.web</finalName>
-	
+
 		<resources>
-		<resource>
-		<directory>${basedir}/src/main/resources</directory>
-		<excludes>
-		<exclude>db/**</exclude>
-		<exclude>mock/**</exclude>
-		</excludes>
-		</resource>
-		
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<excludes>
+					<exclude>db/**</exclude>
+					<exclude>mock/**</exclude>
+				</excludes>
+			</resource>
+
 		</resources>
-		
+
 		<plugins>
 
 
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
-				
+
 				<version>6.1.15</version>
-				
-				<!--  its renamed to jetty-maven-plugin, but it will not work with j2ee 6 and jetty, fu..ing JavaEE  -->
-				<!-- artifactId>jetty-maven-plugin</artifactId-->
-				
+
+				<!-- its renamed to jetty-maven-plugin, but it will not work with j2ee 
+					6 and jetty, fu..ing JavaEE -->
+				<!-- artifactId>jetty-maven-plugin</artifactId -->
+
 				<configuration>
-                            <scanIntervalSeconds>10</scanIntervalSeconds>
-                            
-                            
-                </configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+
+				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
+				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<webXml>${webXmlPath}</webXml>
 				</configuration>
 			</plugin>
 
 
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.6.2.201302030002</version>
-				<configuration>
-					<destfile>${basedir}/target/coverage-reports/jacoco-unit.exec</destfile>
-					<datafile>${basedir}/target/coverage-reports/jacoco-unit.exec</datafile>
-				</configuration>
-				<executions>
-					<execution>
-						<id>jacoco-initialize</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-site</id>
-						<phase>install</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			
-			<plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-                <webXml>${webXmlPath}</webXml>
-            </configuration>
-        </plugin>
-			
-			
 		</plugins>
 	</build>
 </project>
