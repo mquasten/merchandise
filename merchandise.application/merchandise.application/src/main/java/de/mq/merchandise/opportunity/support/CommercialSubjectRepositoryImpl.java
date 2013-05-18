@@ -1,4 +1,4 @@
-package de.mq.merchandise.opportunity;
+package de.mq.merchandise.opportunity.support;
 
 import java.util.Collection;
 
@@ -6,12 +6,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.query.QueryUtils;
+import org.springframework.stereotype.Repository;
 
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectRepository;
 import de.mq.merchandise.util.Paging;
-
+@Repository
+@Profile("db")
 public class CommercialSubjectRepositoryImpl implements CommercialSubjectRepository{
 	
 	
@@ -30,7 +33,7 @@ public class CommercialSubjectRepositoryImpl implements CommercialSubjectReposit
 	}
 	
 	
-	public final Collection<? extends CommercialSubject> forNamePattern(final String namePattern, final Paging paging ) {
+	public final Collection<CommercialSubject> forNamePattern(final String namePattern, final Paging paging ) {
 		
 		final TypedQuery<Number> typedCountQuery = entityManager.createQuery(QueryUtils.createCountQueryFor(queryString(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN)), Number.class);
 	
@@ -44,10 +47,16 @@ public class CommercialSubjectRepositoryImpl implements CommercialSubjectReposit
 		typedResultQuery.setParameter(PARAMETER_NAME, namePattern);
 		return typedResultQuery.getResultList();
 		
+		
 	}
 	
 	
 	private String queryString(final String queryName) { 
 	  return entityManager.createNamedQuery(queryName).unwrap(org.hibernate.Query.class).getQueryString().replaceFirst("[Oo][Rr][Dd][Ee][Rr].*[bB][Yy].*$", "");
+	}
+
+	@Override
+	public final  CommercialSubject save(final CommercialSubject commercialSubject) {
+		return entityManager.merge(commercialSubject);
 	}
 }

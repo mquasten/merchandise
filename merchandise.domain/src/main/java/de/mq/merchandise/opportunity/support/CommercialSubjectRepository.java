@@ -8,6 +8,8 @@ public interface CommercialSubjectRepository {
 	
 	static final String SUBJECT_FOR_NAME_PATTERN = "subjectForNamePattern";
 	
-	Collection<? extends CommercialSubject> forNamePattern(final String namePattern, final Paging paging);
+	Collection<CommercialSubject> forNamePattern(final String namePattern, final Paging paging);
+	
+	CommercialSubject save(final CommercialSubject commercialSubject); 
 
 }

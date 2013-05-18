@@ -1,4 +1,4 @@
-package de.mq.merchandise.opportunity;
+package de.mq.merchandise.opportunity.support;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectRepository;
+import de.mq.merchandise.opportunity.support.CommercialSubjectRepositoryImpl;
 import de.mq.merchandise.util.Paging;
 
 public class CommercialSubjectRepositoryTest {
@@ -23,12 +24,13 @@ public class CommercialSubjectRepositoryTest {
 	private static final String PATTERN = "pattern";
 	private static final String QUERY = "select s from CommercialSubject s where ...";
 	private EntityManager entityManager = Mockito.mock(EntityManager.class); 
+	final CommercialSubjectRepository  commercialSubjectRepository = new CommercialSubjectRepositoryImpl(entityManager);
 	
 	@Test
 	public final void subjectsWithPaging() {
 		List<CommercialSubject> results = new ArrayList<>();
 		results.add(Mockito.mock(CommercialSubject.class));
-		final CommercialSubjectRepository  commercialSubjectRepository = new CommercialSubjectRepositoryImpl(entityManager);
+		
 		final Paging paging = Mockito.mock(Paging.class);
 		Mockito.when(paging.firstRow()).thenReturn(1900);
 		Mockito.when(paging.sortHint()).thenReturn(CommercialSubjectRepositoryImpl.PARAMETER_NAME);
@@ -66,6 +68,15 @@ public class CommercialSubjectRepositoryTest {
 	@Test
 	public final void defaultConstructor() {
 		Assert.assertNotNull(new CommercialSubjectRepositoryImpl());
+	}
+	
+	@Test
+	public final void save() {
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		Mockito.when(entityManager.merge(commercialSubject)).thenReturn(commercialSubject);
+		Assert.assertEquals(commercialSubject, commercialSubjectRepository.save(commercialSubject));
+		Mockito.verify(entityManager).merge(commercialSubject);
+		
 	}
 
 }
