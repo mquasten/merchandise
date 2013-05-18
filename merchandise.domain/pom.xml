@@ -22,70 +22,34 @@
 
 	<dependencies>
 		
-
-		
-
-
-
-		
-		
-		
-		
-
-		
-		
-		
-
-
-
-
 		<dependency>
 			<groupId>com.jolbox</groupId>
 			<artifactId>bonecp</artifactId>
-			<version>0.7.1.RELEASE</version>
+			<version>${bonecp.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>8.3-603.jdbc4</version>
+			<version>${postgresql.version}</version>
+			<scope>test</scope>
 		</dependency>
-		
-		
-
 		<dependency>
 			<groupId>com.orcale.jdbc</groupId>
 			<artifactId>ojdbc6</artifactId>
-			<version>6.0</version>
+			<version>${ojdbc6.version}</version>
+			<scope>test</scope>
 		</dependency>
-
-
-
-		
-		
-		
 		<dependency>
     		<groupId>org.hsqldb</groupId>
     		<artifactId>hsqldb</artifactId>
-    		<version>LATEST</version>
-    		
+    		<version>${hsql.version}</version>
+    		<scope>test</scope>
 		</dependency>
-		
-		
-
-		
-		
-		
-		
-
 	</dependencies>
 
 	<build>
-		
-
-
-    
-  
- 
+	
 </build>
 </project>
