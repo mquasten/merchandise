@@ -37,6 +37,14 @@ public class CommercialSubjectServiceImpl implements CommercialSubjectService {
 	public final CommercialSubject createOrUpdate(final CommercialSubject commercialSubject) {
 		return commercialSubjectRepository.save(commercialSubject);
 	}
+
+
+	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	public void delete(CommercialSubject commercialSubject) {
+		commercialSubjectRepository.delete(commercialSubject);
+		
+	}
 	
 	
 

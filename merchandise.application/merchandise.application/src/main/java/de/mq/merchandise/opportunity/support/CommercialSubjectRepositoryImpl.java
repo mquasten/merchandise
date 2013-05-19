@@ -59,4 +59,21 @@ public class CommercialSubjectRepositoryImpl implements CommercialSubjectReposit
 	public final  CommercialSubject save(final CommercialSubject commercialSubject) {
 		return entityManager.merge(commercialSubject);
 	}
+
+	@Override
+	public void delete(final CommercialSubject commercialSubject) {
+		idExistsGuard(commercialSubject);
+		final CommercialSubject existing = entityManager.find(commercialSubject.getClass(), commercialSubject.id());
+		if( existing==null){
+			return;
+		}
+		entityManager.remove(existing);
+		
+	}
+
+	private void idExistsGuard(CommercialSubject commercialSubject) {
+		if( ! commercialSubject.hasId()){
+			throw new IllegalArgumentException("Id not exists, given commercialSubject isn't persistent.");
+		}
+	}
 }

@@ -15,5 +15,8 @@ public interface CommercialSubjectService {
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	CommercialSubject createOrUpdate(final CommercialSubject commercialSubject);
+	
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	public void delete(final CommercialSubject commercialSubject);
 
 }

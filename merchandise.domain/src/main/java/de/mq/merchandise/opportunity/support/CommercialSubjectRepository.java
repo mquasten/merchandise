@@ -11,5 +11,7 @@ public interface CommercialSubjectRepository {
 	Collection<CommercialSubject> forNamePattern(final String namePattern, final Paging paging);
 	
 	CommercialSubject save(final CommercialSubject commercialSubject); 
+	
+	void delete(final CommercialSubject commercialSubject); 
 
 }

@@ -46,5 +46,11 @@ public class CommercialServiceTest {
 		Assert.assertEquals(commercialSubject, commercialSubjectService.createOrUpdate(commercialSubject));
 		Mockito.verify(commercialSubjectRepository).save(commercialSubject);
 	}
+	
+	@Test
+	public final void delete() {
+		commercialSubjectService.delete(commercialSubject);
+		Mockito.verify(commercialSubjectRepository).delete(commercialSubject);
+	}
 
 }

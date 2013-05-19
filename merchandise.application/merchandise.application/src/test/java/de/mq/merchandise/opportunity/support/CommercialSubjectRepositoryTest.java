@@ -19,6 +19,7 @@ import de.mq.merchandise.util.Paging;
 
 public class CommercialSubjectRepositoryTest {
 	
+	private static final long ID = 19680528L;
 	//private static final String PARAMETER_NAME = "name";
 	private static final long RESULT_COUNT = 1968L;
 	private static final String PATTERN = "pattern";
@@ -77,6 +78,36 @@ public class CommercialSubjectRepositoryTest {
 		Assert.assertEquals(commercialSubject, commercialSubjectRepository.save(commercialSubject));
 		Mockito.verify(entityManager).merge(commercialSubject);
 		
+	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public final void delete() {
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		Mockito.when(commercialSubject.hasId()).thenReturn(true);
+		Mockito.when(commercialSubject.id()).thenReturn(ID);
+		Mockito.when(entityManager.find((Class<CommercialSubject>)commercialSubject.getClass(),ID)).thenReturn(commercialSubject);
+		
+		commercialSubjectRepository.delete(commercialSubject);
+		
+		Mockito.verify(entityManager).remove(commercialSubject);
+	}
+	
+	@Test
+	public final void deleteNotFound() {
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		Mockito.when(commercialSubject.hasId()).thenReturn(true);
+		Mockito.when(commercialSubject.id()).thenReturn(ID);
+		
+		commercialSubjectRepository.delete(commercialSubject);
+		
+		Mockito.verify(entityManager).find(commercialSubject.getClass(), ID);
+		Mockito.verifyNoMoreInteractions(entityManager);
+		
+	}
+	@Test(expected=IllegalArgumentException.class)
+	public final void deleteNoId() {
+		commercialSubjectRepository.delete(Mockito.mock(CommercialSubject.class));
 	}
 
 }
