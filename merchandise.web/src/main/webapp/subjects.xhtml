@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+xmlns:ui="http://java.sun.com/jsf/facelets">
+   
+    <h:body>
+     <ui:composition template="masterlayout.xhtml">
+         <ui:define name="content">
+            <h2 style="text-align: center">
+					<h:outputText value="#{message.subjects_headline}" />
+			</h2>
+			<h:form>
+			<h:panelGrid columns="1" styleClass="positionCentered">
+			<h:panelGrid columns="5" styleClass="centered">
+			<p:outputLabel for="subjectPager" value="Seite [1...#{paging.maxPages}]" />
+			 <p:spinner id="subjectPager"   min="1" max="#{paging.maxPages}" size="#{paging.maxPages}"  value="#{paging.currentPage}"/> 
+			<p:outputLabel for="namePattern" value="Produkt- Servicename" />
+			 <p:inputText id="namePattern"  value="name" />
+             <p:commandButton id="paging" value="blättern"  />
+            </h:panelGrid>        
+			 <p:dataTable  id="subjects" var="subjectVar" paginator="false" rows="#{paging.pageSize}"   value="#{subjectController.subjects(paging.paging)}"  selection="#{subject}">  
+			
+			    <p:column selectionMode="single" style="width:2%" />  
+  
+                <p:column headerText="Name" style="width:48%">   #{subjectVar.name} </p:column>  
+                <p:column headerText="Beschreibung" style="width:48%">   #{subjectVar.description} </p:column>  
+			</p:dataTable>
+			</h:panelGrid>
+             </h:form>
+         </ui:define>
+    	
+     </ui:composition>
+  
+   	</h:body>
+</html>
+
+

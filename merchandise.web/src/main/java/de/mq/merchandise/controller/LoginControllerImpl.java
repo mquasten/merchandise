@@ -92,6 +92,7 @@ public class LoginControllerImpl {
 	}
 	
 	public void abort(final String language) throws IOException {
+		
 		facesContextFactory.facesContext().getExternalContext().invalidateSession();
 		facesContextFactory.facesContext().getExternalContext().redirect("login.jsf?language=" + language);
 	}
