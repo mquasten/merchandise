@@ -1,5 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,14 +9,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.ReflectionUtils;
+
+import de.mq.merchandise.customer.support.CustomerMemoryReposioryMock;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Paging;
-
+@Repository
+@Profile("mock")
 public class CommercialSubjectMemoryRepositoryMock implements CommercialSubjectRepository {
 
 	private final Map<Long, CommercialSubject> commercialSubjects = new HashMap<>();
 	
+	@Autowired
+	private CustomerMemoryReposioryMock customerMemoryReposioryMock;
+	
+	
+	private final CommercialSubject[] DEFAULTS = new CommercialSubject[] {new CommercialSubjectImpl(null, "EscortService", "Nicoles special service"),  new CommercialSubjectImpl(null, "Music-Downloads", "Flatrate für Musik")};
 
+	@PostConstruct
+	void init() {
+		for(final CommercialSubject commercialSubject : DEFAULTS){
+			EntityUtil.setId(commercialSubject, randomId());
+			final Field field = ReflectionUtils.findField(commercialSubject.getClass(), "customer");
+			field.setAccessible(true);
+			ReflectionUtils.setField(field, commercialSubject, customerMemoryReposioryMock.forId(CustomerMemoryReposioryMock.DEFAULT_CUSTOMER_ID));
+			commercialSubjects.put(commercialSubject.id(), commercialSubject);
+		}
+	}
+	
 	@Override
 	public Collection<CommercialSubject> forNamePattern(final String namePattern, final Paging paging) {
 		final String patternFoMatch = namePattern.replaceAll("[%]", ".*");
@@ -48,10 +74,14 @@ public class CommercialSubjectMemoryRepositoryMock implements CommercialSubjectR
 	@Override
 	public CommercialSubject save(final CommercialSubject commercialSubject) {
 		if ( ! commercialSubject.hasId()){
-			EntityUtil.setId(commercialSubject, (long) (Math.random() * 1e12));
+			EntityUtil.setId(commercialSubject, randomId());
 		}
 		commercialSubjects.put(commercialSubject.id(), commercialSubject);
 		return commercialSubject;
+	}
+
+	private long randomId() {
+		return (long) (Math.random() * 1e12);
 	}
 
 

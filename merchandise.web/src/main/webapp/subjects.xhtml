@@ -19,9 +19,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 			 <p:spinner id="subjectPager"   min="1" max="#{paging.maxPages}" size="#{paging.maxPages}"  value="#{paging.currentPage}"/> 
 			<p:outputLabel for="namePattern" value="Produkt- Servicename" />
 			 <p:inputText id="namePattern"  value="name" />
-             <p:commandButton id="paging" value="blättern"  />
+             <p:commandButton id="paging" value="suchen"  action="#{subjectController.subjects(subjectsModel, paging.paging)}"  update="@form" process="@form"  />
             </h:panelGrid>        
-			 <p:dataTable  id="subjects" var="subjectVar" paginator="false" rows="#{paging.pageSize}"   value="#{subjectController.subjects(paging.paging)}"  selection="#{subject}">  
+			 <p:dataTable  id="subjects" var="subjectVar" paginator="false" rows="#{paging.pageSize}"   value="#{subjectsModel.commercialSubjects}"  selection="#{subjectsModel.selected}">  
 			
 			    <p:column selectionMode="single" style="width:2%" />  
   

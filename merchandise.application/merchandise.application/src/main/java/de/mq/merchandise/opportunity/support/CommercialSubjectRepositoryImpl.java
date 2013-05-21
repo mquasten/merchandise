@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Repository;
 
-import de.mq.merchandise.opportunity.support.CommercialSubject;
-import de.mq.merchandise.opportunity.support.CommercialSubjectRepository;
 import de.mq.merchandise.util.Paging;
 @Repository
 @Profile("db")
@@ -34,6 +32,7 @@ public class CommercialSubjectRepositoryImpl implements CommercialSubjectReposit
 	
 	
 	public final Collection<CommercialSubject> forNamePattern(final String namePattern, final Paging paging ) {
+		
 		
 		final TypedQuery<Number> typedCountQuery = entityManager.createQuery(QueryUtils.createCountQueryFor(queryString(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN)), Number.class);
 	
