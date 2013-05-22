@@ -5,51 +5,42 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
-import de.mq.merchandise.model.support.WebProxyFactory;
 import de.mq.merchandise.util.EntityUtil;
-import de.mq.merchandise.util.Paging;
 import de.mq.merchandise.util.SimplePagingImpl;
 
 @Configuration
 public class PagingFactoryImpl {
 	
 	@Autowired
-	private final WebProxyFactory webProxyFactory;
+	private AOProxyFactory proxyFactory;
 	@Autowired
 	private final BeanResolver beanResolver;
 	@Autowired
 	PagingFactoryImpl(){
-		this.webProxyFactory=null;
+		this.proxyFactory=null;
 		this.beanResolver=null;
 	}
 	
-	PagingFactoryImpl(final WebProxyFactory webProxyFactory, final BeanResolver beanResolver) {
-		this.webProxyFactory=webProxyFactory;
+	PagingFactoryImpl(final AOProxyFactory proxyFactory, final BeanResolver beanResolver) {
+		this.proxyFactory=proxyFactory;
 		this.beanResolver=beanResolver;
 	}
 	
-	@Bean(name="paging")
-	@Scope("view")
 	
-	public PagingAO paging() {
-		final Paging paging =  new SimplePagingImpl(10, "id");
-		return webProxyFactory.webModell(PagingAO.class, paging);
-	}
 	
 	@Bean(name="subjectsModel")
 	@Scope("view")
 	public CommercialSubjectsModelAO commercialSubjectsModel() {
-		final CommercialSubjectsModelAO model = webProxyFactory.webModell(CommercialSubjectsModelAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).build());
-	  //  model.setSelected(webProxyFactory.webModell(CommercialSubjectAO.class, EntityUtil.create(CommercialSubjectImpl.class)));
-		return model; 
+		return proxyFactory.createProxy(CommercialSubjectsModelAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("paging", proxyFactory.createProxy(PagingAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(new SimplePagingImpl(10, "name, id")).build())).withBeanResolver(beanResolver).build());
 	}
 	
 	@Bean(name="commercialSubject")
-	@Scope("prototype") /* like a virgin ...*/ 
+	@Scope("view") 
 	public CommercialSubjectAO commercialSubject() {
-		 return webProxyFactory.webModell(CommercialSubjectAO.class, EntityUtil.create(CommercialSubjectImpl.class));
+		 return proxyFactory.createProxy(CommercialSubjectAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(CommercialSubjectImpl.class)).build());
 	}
 	
 	

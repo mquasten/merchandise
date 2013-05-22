@@ -24,5 +24,15 @@ public abstract class CommercialSubjectsModelAO implements Serializable {
 
 	@Setter(value = "selected")
 	public abstract void setSelected(final CommercialSubjectAO selected);
+	
+	@Setter(value = "pattern")
+	public abstract void setPattern(final String pattern);
+	
+	@Getter(value = "pattern")
+	public abstract String getPattern();
+	
+	@Getter(value = "paging")
+	public abstract PagingAO getPaging();
+
 
 }

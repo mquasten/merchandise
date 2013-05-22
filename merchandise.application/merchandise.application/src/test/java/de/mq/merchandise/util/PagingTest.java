@@ -109,6 +109,14 @@ public class PagingTest {
 		Assert.assertEquals(6, paging.maxPages());
 		Assert.assertEquals(6, paging.currentPage());
 	}
+	@Test
+	public final void assignRowCounterNoRows() {
+		ReflectionTestUtils.setField(paging, "currentPage", 10);
+		paging.assignRowCounter(0);
+		Assert.assertEquals(1, paging.maxPages());
+		Assert.assertEquals(1, paging.currentPage());
+		
+	}
 	
 	@Test
 	public final void assignRowCounterCurrentPageToLess() {

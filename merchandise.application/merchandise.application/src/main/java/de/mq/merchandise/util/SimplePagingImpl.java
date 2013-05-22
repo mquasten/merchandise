@@ -78,6 +78,12 @@ public class SimplePagingImpl implements Paging{
 	@Override
 	public final  void assignRowCounter(final long numberOfRows) {
 		maxPages = (int) Math.ceil( (double) numberOfRows / pageSize);
+		if( maxPages==0){
+			currentPage=1;
+			maxPages=1;
+			return;
+		}
+		
 		if ( currentPage > maxPages){
 			currentPage=maxPages;
 			return;

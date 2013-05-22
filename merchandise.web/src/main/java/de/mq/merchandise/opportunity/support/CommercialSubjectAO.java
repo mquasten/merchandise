@@ -24,5 +24,8 @@ public abstract class CommercialSubjectAO implements Serializable {
 
 	@Setter(clazz = CommercialSubjectImpl.class, value = "description")
 	public abstract void setDescription(final String description);
+	
+	
+	
 
 }
