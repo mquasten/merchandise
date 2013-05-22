@@ -12,19 +12,19 @@ import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.SimplePagingImpl;
 
 @Configuration
-public class PagingFactoryImpl {
+public class CommercialSubjectProxyFactoryImpl {
 	
 	@Autowired
 	private AOProxyFactory proxyFactory;
 	@Autowired
 	private final BeanResolver beanResolver;
 	@Autowired
-	PagingFactoryImpl(){
+	CommercialSubjectProxyFactoryImpl(){
 		this.proxyFactory=null;
 		this.beanResolver=null;
 	}
 	
-	PagingFactoryImpl(final AOProxyFactory proxyFactory, final BeanResolver beanResolver) {
+	CommercialSubjectProxyFactoryImpl(final AOProxyFactory proxyFactory, final BeanResolver beanResolver) {
 		this.proxyFactory=proxyFactory;
 		this.beanResolver=beanResolver;
 	}
@@ -41,7 +41,7 @@ public class PagingFactoryImpl {
 	@Scope("view") 
 	public CommercialSubjectAO commercialSubject() {
 		 return proxyFactory.createProxy(CommercialSubjectAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(CommercialSubjectImpl.class)).build());
-	}
+	} 
 	
 	
 
