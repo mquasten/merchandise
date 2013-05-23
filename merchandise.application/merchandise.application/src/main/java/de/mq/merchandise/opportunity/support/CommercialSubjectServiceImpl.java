@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.CommercialSubjectService;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectRepository;
@@ -26,8 +27,8 @@ public class CommercialSubjectServiceImpl implements CommercialSubjectService {
 	
 	
 	@Override
-	public final Collection<CommercialSubject> subjects(final String patternForName, final Paging paging) {
-		return commercialSubjectRepository.forNamePattern(patternForName, paging);
+	public final Collection<CommercialSubject> subjects(final Customer customer, final String patternForName, final Paging paging) {
+		return commercialSubjectRepository.forNamePattern(customer, patternForName, paging);
 		
 	}
 

@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerMemoryReposioryMock;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Paging;
@@ -25,11 +26,19 @@ public class CommercialSubjectMemoryRepositoryMock implements CommercialSubjectR
 
 	private final Map<Long, CommercialSubject> commercialSubjects = new HashMap<>();
 	
-	@Autowired
+	static final CommercialSubject[] DEFAULTS = new CommercialSubject[] {new CommercialSubjectImpl(null, "EscortService", "Nicoles special service"),  new CommercialSubjectImpl(null, "Music-Downloads", "Flatrate für Musik")};
+	
 	private CustomerMemoryReposioryMock customerMemoryReposioryMock;
 	
+	@Autowired
+	public CommercialSubjectMemoryRepositoryMock(final CustomerMemoryReposioryMock customerMemoryReposioryMock) {
+		this.customerMemoryReposioryMock=customerMemoryReposioryMock;
+	}
 	
-	private final CommercialSubject[] DEFAULTS = new CommercialSubject[] {new CommercialSubjectImpl(null, "EscortService", "Nicoles special service"),  new CommercialSubjectImpl(null, "Music-Downloads", "Flatrate für Musik")};
+	
+	
+	
+	
 
 	@PostConstruct
 	void init() {
@@ -43,12 +52,15 @@ public class CommercialSubjectMemoryRepositoryMock implements CommercialSubjectR
 	}
 	
 	@Override
-	public Collection<CommercialSubject> forNamePattern(final String namePattern, final Paging paging) {
+	public Collection<CommercialSubject> forNamePattern(final Customer customer, final String namePattern, final Paging paging) {
 		final String patternFoMatch = namePattern.replaceAll("[%]", ".*");
 	
 		final List<CommercialSubject> allResults = new ArrayList<>();
 		for(final CommercialSubject commercialSubject : commercialSubjects.values()){
 			
+			if( commercialSubject.customer().id() != customer.id()){
+				continue;
+			}
 			if( ! commercialSubject.name().matches(patternFoMatch)) {
 				continue;
 			}

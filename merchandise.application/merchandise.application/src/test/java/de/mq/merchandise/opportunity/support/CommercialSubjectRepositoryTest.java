@@ -12,6 +12,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectRepository;
 import de.mq.merchandise.opportunity.support.CommercialSubjectRepositoryImpl;
@@ -19,22 +20,27 @@ import de.mq.merchandise.util.Paging;
 
 public class CommercialSubjectRepositoryTest {
 	
+	private static final long CUSTOMER_ID = 4711L;
 	private static final long ID = 19680528L;
 	//private static final String PARAMETER_NAME = "name";
 	private static final long RESULT_COUNT = 1968L;
 	private static final String PATTERN = "pattern";
 	private static final String QUERY = "select s from CommercialSubject s where ...";
 	private EntityManager entityManager = Mockito.mock(EntityManager.class); 
-	final CommercialSubjectRepository  commercialSubjectRepository = new CommercialSubjectRepositoryImpl(entityManager);
+	private final CommercialSubjectRepository  commercialSubjectRepository = new CommercialSubjectRepositoryImpl(entityManager);
+	
+	private final Customer customer = Mockito.mock(Customer.class);
 	
 	@Test
 	public final void subjectsWithPaging() {
+		Mockito.when(customer.id()).thenReturn(CUSTOMER_ID);
+		
 		List<CommercialSubject> results = new ArrayList<>();
 		results.add(Mockito.mock(CommercialSubject.class));
 		
 		final Paging paging = Mockito.mock(Paging.class);
 		Mockito.when(paging.firstRow()).thenReturn(1900);
-		Mockito.when(paging.sortHint()).thenReturn(CommercialSubjectRepositoryImpl.PARAMETER_NAME);
+		Mockito.when(paging.sortHint()).thenReturn(CommercialSubjectRepositoryImpl.PARAMETER_SUBJECT_NAME);
 		Mockito.when(paging.pageSize()).thenReturn(100);
 		
 		final Query query = Mockito.mock(Query.class);
@@ -55,15 +61,17 @@ public class CommercialSubjectRepositoryTest {
 		Mockito.when(entityManager.createQuery(QUERY + " order by " + paging.sortHint() , CommercialSubject.class)).thenReturn(pageQuery);
 		Mockito.when(pageQuery.getResultList()).thenReturn(results);
 		
-		Assert.assertEquals(results, commercialSubjectRepository.forNamePattern(PATTERN, paging));
+		Assert.assertEquals(results, commercialSubjectRepository.forNamePattern(customer, PATTERN, paging));
 		
 		
-		Mockito.verify(countQuery).setParameter(CommercialSubjectRepositoryImpl.PARAMETER_NAME, PATTERN);
+		Mockito.verify(countQuery).setParameter(CommercialSubjectRepositoryImpl.PARAMETER_SUBJECT_NAME, PATTERN);
+		Mockito.verify(countQuery).setParameter(CommercialSubjectRepositoryImpl.PARAMETER_CUSTOMER_ID, CUSTOMER_ID);
 		Mockito.verify(paging).assignRowCounter(RESULT_COUNT);
 		
 		Mockito.verify(pageQuery).setFirstResult(paging.firstRow());
 		Mockito.verify(pageQuery).setMaxResults(paging.pageSize());
-		Mockito.verify(pageQuery).setParameter(CommercialSubjectRepositoryImpl.PARAMETER_NAME, PATTERN);
+		Mockito.verify(pageQuery).setParameter(CommercialSubjectRepositoryImpl.PARAMETER_SUBJECT_NAME, PATTERN);
+		Mockito.verify(pageQuery).setParameter(CommercialSubjectRepositoryImpl.PARAMETER_CUSTOMER_ID, CUSTOMER_ID);
 	}
 	
 	@Test

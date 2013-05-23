@@ -29,7 +29,7 @@ import de.mq.merchandise.util.Equals;
 
 @Entity(name="CommercialSubject")
 @Table(name="commercial_subject")
-@NamedQuery(name=CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN, query="select s from CommercialSubject s where s.name like :name")
+@NamedQuery(name=CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN, query="select s from CommercialSubject s where s.name like :name and s.customer.id = :customerId")
 public class CommercialSubjectImpl implements  CommercialSubject {
 	
 	private static final long serialVersionUID = 1L;

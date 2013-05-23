@@ -10,13 +10,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Repository;
 
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.util.Paging;
 @Repository
 @Profile("db")
 public class CommercialSubjectRepositoryImpl implements CommercialSubjectRepository{
 	
 	
-	static final String PARAMETER_NAME = "name";
+	static final String PARAMETER_SUBJECT_NAME = "name";
+	static final String PARAMETER_CUSTOMER_ID = "customerId";
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -31,19 +33,21 @@ public class CommercialSubjectRepositoryImpl implements CommercialSubjectReposit
 	}
 	
 	
-	public final Collection<CommercialSubject> forNamePattern(final String namePattern, final Paging paging ) {
+	public final Collection<CommercialSubject> forNamePattern(final Customer customer, final String namePattern, final Paging paging ) {
 		
 		
 		final TypedQuery<Number> typedCountQuery = entityManager.createQuery(QueryUtils.createCountQueryFor(queryString(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN)), Number.class);
 	
-		typedCountQuery.setParameter(PARAMETER_NAME , namePattern);
+		typedCountQuery.setParameter(PARAMETER_SUBJECT_NAME , namePattern);
+		typedCountQuery.setParameter(PARAMETER_CUSTOMER_ID , customer.id());
 		paging.assignRowCounter(typedCountQuery.getSingleResult().longValue());
 		
 		final TypedQuery<CommercialSubject> typedResultQuery = entityManager.createQuery(queryString(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN) +" order by " +paging.sortHint(), CommercialSubject.class);
 		
 		typedResultQuery.setFirstResult(paging.firstRow());
 		typedResultQuery.setMaxResults(paging.pageSize());
-		typedResultQuery.setParameter(PARAMETER_NAME, namePattern);
+		typedResultQuery.setParameter(PARAMETER_SUBJECT_NAME, namePattern);
+		typedResultQuery.setParameter(PARAMETER_CUSTOMER_ID, customer.id());
 		return typedResultQuery.getResultList();
 		
 		
