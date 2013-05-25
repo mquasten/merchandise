@@ -3,8 +3,13 @@ package de.mq.merchandise.opportunity.support;
 import java.io.Serializable;
 
 import de.mq.mapping.util.proxy.Getter;
+import de.mq.mapping.util.proxy.GetterDomain;
+import de.mq.mapping.util.proxy.GetterProxy;
 import de.mq.mapping.util.proxy.Setter;
+import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Number2StringConverter;
+import de.mq.merchandise.customer.support.CustomerAO;
+import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 public abstract class CommercialSubjectAO implements Serializable {
 
@@ -25,7 +30,14 @@ public abstract class CommercialSubjectAO implements Serializable {
 	@Setter(clazz = CommercialSubjectImpl.class, value = "description")
 	public abstract void setDescription(final String description);
 	
+	@GetterDomain(clazz = CommercialSubjectImpl.class)
+	public abstract CommercialSubject getCommercialSubject();
 	
+	@SetterDomain(clazz = CommercialSubjectImpl.class)
+	public abstract void setCommercialSubject(final CommercialSubject commercialSubject);
+	
+	@GetterProxy(clazz=CommercialSubjectImpl.class, name = "customer", proxyClass = CustomerAO.class , converter=HibernateProxyConverter.class)
+	public abstract CustomerAO getCustomer(); 
 	
 
 }

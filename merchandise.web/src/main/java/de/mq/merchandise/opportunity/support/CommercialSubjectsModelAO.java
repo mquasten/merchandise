@@ -8,13 +8,14 @@ import de.mq.mapping.util.proxy.Getter;
 import de.mq.mapping.util.proxy.GetterProxyCollection;
 import de.mq.mapping.util.proxy.Setter;
 import de.mq.merchandise.model.support.SimpleMapDataModel;
+import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 public abstract class CommercialSubjectsModelAO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@GetterProxyCollection(name = "commercialSubjects", proxyClass = CommercialSubjectAO.class, collectionClass = SimpleMapDataModel.class)
-	public abstract List<CommercialSubject> getCommercialSubjects();
+	@GetterProxyCollection(name = "commercialSubjects", proxyClass = CommercialSubjectAO.class, collectionClass = SimpleMapDataModel.class , converter=HibernateProxyConverter.class )
+	public abstract List<CommercialSubjectAO> getCommercialSubjects();
 
 	@Setter(value = "commercialSubjects")
 	public abstract void setCommercialSubjects(final Collection<? extends CommercialSubject> commercialSubjects);
