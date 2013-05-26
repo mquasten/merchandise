@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:u="http://example.com/functions"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<head>
+
+<title>Input for a commercial subject</title>
+</head>
+<body>
+
+	<composite:interface>
+		<composite:attribute name="commercialSubject" required="true" />
+		<composite:attribute name="message" required="true" />
+	</composite:interface>
+
+	<composite:implementation>
+	
+		<p:dialog
+			header="#{cc.attrs.message.subjects_dialog_headline}"
+			widgetVar="subjectDlg" modal="true">
+				
+			<p:ajax event="close" update="@form"  />
+			
+				<h1 style="text-align: center">
+					<h:outputText id="subject_headline"
+						value="#{cc.attrs.message.subjects_dialog_subject_headline}" />
+				</h1>
+				
+				
+				<p:panelGrid id="subjectGrid" columns="3" columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"  >
+				
+				<p:outputLabel for="name" value="#{cc.attrs.message.subject_dialog_name}"  />
+				<p:inputText id="name" value="#{cc.attrs.commercialSubject.name}"  >
+					  <f:validateBean />
+				</p:inputText>
+				<p:message for="name" display="text" />
+				
+				<p:outputLabel for="description" value="#{cc.attrs.message.subject_dialog_description}"  />
+				
+				<p:inputTextarea id="description" rows="5" cols="50"  value="#{cc.attrs.commercialSubject.description}"  maxlength="250"/>
+				<p:message for="description" display="text" />
+				
+				<f:facet name="footer">
+						<p:commandButton value="#{cc.attrs.message.contact_dialog_submit}"
+							update="subjectGrid" process="subjectGrid"
+							action="#{subjectController.save(cc.attrs.commercialSubject.commercialSubject)}"
+							oncomplete="handlSubjectRequest(xhr, status, args)" style="float:right" />
+				</f:facet>
+
+
+					
+				</p:panelGrid>
+				
+				
+               
+			
+
+
+
+
+
+
+		</p:dialog>
+
+
+		<script type="text/javascript">  
+    		function handlSubjectRequest(xhr, status, args) {  
+        		if(! args.validationFailed) {  
+            		subjectDlg.hide(); 
+        		} 
+        		
+    		}  
+		</script>
+
+
+
+	</composite:implementation>
+	
+	
+</body>
+</html>

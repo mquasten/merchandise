@@ -38,7 +38,7 @@ public class CommercialSubjectProxyFactoryImpl {
 	}
 	
 	@Bean(name="commercialSubject")
-	@Scope("view") 
+	@Scope("request") 
 	public CommercialSubjectAO commercialSubject() {
 		 return proxyFactory.createProxy(CommercialSubjectAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(CommercialSubjectImpl.class)).build());
 	} 
