@@ -55,8 +55,11 @@ public class SubjectControllerImpl {
 
 	
 	public final void delete(final CommercialSubjectAO commercialSubjectAO){
-		System.out.println(">>>>" + commercialSubjectAO.getId());
-		System.out.println(">>>" + commercialSubjectAO.getName() );
+		if( commercialSubjectAO == null) {
+			return;
+		}
+		System.out.println("delete" + commercialSubjectAO.getId());
+		commercialSubjectService.delete(commercialSubjectAO.getCommercialSubject());
 	}
 	
 

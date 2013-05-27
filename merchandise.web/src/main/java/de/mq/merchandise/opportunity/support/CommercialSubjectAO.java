@@ -2,6 +2,8 @@ package de.mq.merchandise.opportunity.support;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Size;
+
 
 import de.mq.mapping.util.proxy.Getter;
 import de.mq.mapping.util.proxy.GetterDomain;
@@ -18,7 +20,7 @@ public abstract class CommercialSubjectAO implements Serializable {
 
 	@Getter(clazz = CommercialSubjectImpl.class, value = "id", converter = Number2StringConverter.class)
 	public abstract String getId();
-	//@Size(min=1,  message="{mandatory_field}")
+	@Size(min=1,  message="{mandatory_field}")
 	@Getter(clazz = CommercialSubjectImpl.class, value = "name")
 	public abstract String getName();
 

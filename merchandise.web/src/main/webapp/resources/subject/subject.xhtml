@@ -30,19 +30,25 @@
 						value="#{cc.attrs.message.subjects_dialog_subject_headline}" />
 				</h1>
 				
-				
+				 <p:messages errorClass="error"  />  
 				<p:panelGrid id="subjectGrid" columns="3" columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"  >
 				
 				<p:outputLabel for="name" value="#{cc.attrs.message.subject_dialog_name}"  />
 				<p:inputText id="name" value="#{cc.attrs.commercialSubject.name}"  >
-					  <f:validateBean />
+					  <f:validateBean disabled="true" />
 				</p:inputText>
 				<p:message for="name" display="text" />
 				
 				<p:outputLabel for="description" value="#{cc.attrs.message.subject_dialog_description}"  />
+				     
 				
-				<p:inputTextarea id="description" rows="5" cols="50"  value="#{cc.attrs.commercialSubject.description}"  maxlength="250"/>
+				
+				<p:inputTextarea id="description" rows="5" cols="50"  value="#{cc.attrs.commercialSubject.description}"  maxlength="250">
+
+				</p:inputTextarea>
 				<p:message for="description" display="text" />
+				   
+				
 				
 				<f:facet name="footer">
 						<p:commandButton value="#{cc.attrs.message.contact_dialog_submit}"
