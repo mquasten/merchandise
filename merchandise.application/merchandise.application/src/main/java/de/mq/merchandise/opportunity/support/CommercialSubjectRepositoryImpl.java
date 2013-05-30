@@ -79,4 +79,9 @@ public class CommercialSubjectRepositoryImpl implements CommercialSubjectReposit
 			throw new IllegalArgumentException("Id not exists, given commercialSubject isn't persistent.");
 		}
 	}
+
+	@Override
+	public CommercialSubject forId(final Long id) {
+		return entityManager.find(CommercialSubjectImpl.class, id);
+	}
 }

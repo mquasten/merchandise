@@ -12,6 +12,7 @@ import de.mq.mapping.util.proxy.Setter;
 import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Number2StringConverter;
 import de.mq.merchandise.customer.support.CustomerAO;
+import de.mq.merchandise.model.support.String2LongConverter;
 import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 public abstract class CommercialSubjectAO implements Serializable {
@@ -20,6 +21,11 @@ public abstract class CommercialSubjectAO implements Serializable {
 
 	@Getter(clazz = CommercialSubjectImpl.class, value = "id", converter = Number2StringConverter.class)
 	public abstract String getId();
+	
+	@Setter(clazz = CommercialSubjectImpl.class, value = "id", converter =String2LongConverter.class)
+	public abstract void setId(final String id);
+	
+	
 	@Size(min=1,  message="{mandatory_field}")
 	@Getter(clazz = CommercialSubjectImpl.class, value = "name")
 	public abstract String getName();

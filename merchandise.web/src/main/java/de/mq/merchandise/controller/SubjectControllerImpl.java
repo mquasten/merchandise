@@ -29,8 +29,10 @@ public class SubjectControllerImpl {
 	}
 	
 	public void subjects(final CommercialSubjectsModelAO commercialSubjectsModel) {
+		System.out.println("*** select ***");
 		final Customer customer = (Customer)securityContextFactory.securityContext().getAuthentication().getDetails();
 		commercialSubjectsModel.setCommercialSubjects(commercialSubjectService.subjects(customer, commercialSubjectsModel.getPattern() + "%" , commercialSubjectsModel.getPaging().getPaging()));
+	    
 	}
 	
 	
@@ -50,6 +52,11 @@ public class SubjectControllerImpl {
 				
 			}
 		});
+		if (  commercialSubject.hasId()){
+			System.out.println("save:" + commercialSubject.id());
+		} else {
+			System.out.println("save without Id!!!");
+		}
 		commercialSubjectService.createOrUpdate(commercialSubject);
 	}
 
@@ -62,5 +69,14 @@ public class SubjectControllerImpl {
 		commercialSubjectService.delete(commercialSubjectAO.getCommercialSubject());
 	}
 	
+	public final void openChangeDialog(final CommercialSubjectAO  selected, final CommercialSubjectAO commercialSupject){
+		if( selected == null){
+			return;
+		}
+		
+		/* like a virgin, for the very first time ... */
+		commercialSupject.setCommercialSubject(commercialSubjectService.subject(selected.getCommercialSubject().id()));
+		
+	}
 
 }

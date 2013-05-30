@@ -15,6 +15,9 @@
 	<composite:interface>
 		<composite:attribute name="commercialSubject" required="true" />
 		<composite:attribute name="message" required="true" />
+		<composite:attribute name="saveAction" method-signature="void f()" /> 
+		<composite:attribute name="postSaveAction" method-signature="void f()" /> 
+		
 	</composite:interface>
 
 	<composite:implementation>
@@ -31,7 +34,11 @@
 				</h1>
 				
 				 <p:messages errorClass="error"  />  
+				
+				<h:inputHidden id="subjectId"  value="#{cc.attrs.commercialSubject.id}" />
 				<p:panelGrid id="subjectGrid" columns="3" columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"  >
+				
+				
 				
 				<p:outputLabel for="name" value="#{cc.attrs.message.subject_dialog_name}"  />
 				<p:inputText id="name" value="#{cc.attrs.commercialSubject.name}"  >
@@ -52,9 +59,11 @@
 				
 				<f:facet name="footer">
 						<p:commandButton value="#{cc.attrs.message.contact_dialog_submit}"
-							update="subjectGrid" process="subjectGrid"
-							action="#{subjectController.save(cc.attrs.commercialSubject.commercialSubject)}"
-							oncomplete="handlSubjectRequest(xhr, status, args)" style="float:right" />
+							update="subjectGrid" process="subjectGrid, subjectId"
+							actionListener="#{cc.attrs.saveAction}"
+							action="#{cc.attrs.postSaveAction}"
+							oncomplete="handlSubjectRequest(xhr, status, args)" 
+							style="float:right" />
 				</f:facet>
 
 

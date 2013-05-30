@@ -18,8 +18,8 @@ public interface CommercialSubjectService {
 	CommercialSubject createOrUpdate(final CommercialSubject commercialSubject);
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
-	public void delete(final CommercialSubject commercialSubject);
+	void delete(final CommercialSubject commercialSubject);
 
-	
+	CommercialSubject subject(Long id);
 
 }

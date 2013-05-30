@@ -15,4 +15,5 @@ public interface CommercialSubjectRepository {
 	
 	void delete(final CommercialSubject commercialSubject); 
 
+	CommercialSubject forId(final Long id);
 }

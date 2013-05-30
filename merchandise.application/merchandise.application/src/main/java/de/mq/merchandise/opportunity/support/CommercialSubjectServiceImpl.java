@@ -3,14 +3,13 @@ package de.mq.merchandise.opportunity.support;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.CommercialSubjectService;
-import de.mq.merchandise.opportunity.support.CommercialSubject;
-import de.mq.merchandise.opportunity.support.CommercialSubjectRepository;
 import de.mq.merchandise.util.Paging;
 
 @Service
@@ -45,6 +44,16 @@ public class CommercialSubjectServiceImpl implements CommercialSubjectService {
 	public void delete(CommercialSubject commercialSubject) {
 		commercialSubjectRepository.delete(commercialSubject);
 		
+	}
+
+
+	@Override
+	public CommercialSubject subject(final Long id) {
+		final CommercialSubject result = commercialSubjectRepository.forId(id);
+		if ( result == null){
+			throw new InvalidDataAccessApiUsageException("CommercialSubject not found");
+		}
+		return result;
 	}
 	
 	

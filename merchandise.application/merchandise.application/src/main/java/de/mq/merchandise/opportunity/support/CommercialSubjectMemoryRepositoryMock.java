@@ -113,4 +113,10 @@ public class CommercialSubjectMemoryRepositoryMock implements CommercialSubjectR
         }
 	}
 
+
+	@Override
+	public final CommercialSubject forId(final Long id) {
+		return commercialSubjects.get(id);
+	}
+
 }
