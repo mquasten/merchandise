@@ -7,64 +7,43 @@ xmlns:p="http://primefaces.org/ui"
 xmlns:subject="http://java.sun.com/jsf/composite/subject"
 xmlns:ui="http://java.sun.com/jsf/facelets">
    
-    <h:body>
-     <ui:composition template="masterlayout.xhtml">
-         <ui:define name="content">
-            <h2 style="text-align: center">
-					<h:outputText value="#{message.subjects_headline}" />
-			</h2>
+<h:body>
+  <ui:composition template="masterlayout.xhtml">
+  <ui:define name="content">
+      <h2 style="text-align: center"><h:outputText value="#{message.subjects_headline}" /></h2>
+	  <h:panelGrid id="page" columns="1" styleClass="positionCentered">
+		  <h:form>
+			   <subject:subject id="subjectDialog"  commercialSubject="#{commercialSubject}" message="#{message}"   saveAction="#{subjectController.save(commercialSubject.commercialSubject)}"  postSaveAction="#{subjectController.subjects(subjectsModel)}"/>  
+			   <h:panelGrid id="search" columns="5" styleClass="centered">
+			      <p:outputLabel for="subjectPager" value="#{message.subjects_page_prefix}[1...#{subjectsModel.paging.maxPages}]" />
+			      <p:spinner id="subjectPager"   min="1" max="#{subjectsModel.paging.maxPages}" size="#{subjectsModel.paging.maxPages}"  value="#{subjectsModel.paging.currentPage}"/> 
+			      <p:outputLabel for="namePattern" value="#{message.subjects_search_label}" />
+			      <p:inputText id="namePattern"  value="#{subjectsModel.pattern}"  >
+			 	     <p:ajax event="change" update="@this"  process="@this"/>
+			      </p:inputText>
+                  <p:commandButton id="paging" value="suchen"  action="#{subjectController.subjects(subjectsModel)}"   update="@form" process="@parent"  />     
+               </h:panelGrid>        
 			
-			<h:panelGrid id="page" columns="1" styleClass="positionCentered">
-			<h:form >
-			
-			<subject:subject id="subjectDialog"  commercialSubject="#{commercialSubject}" message="#{message}"   saveAction="#{subjectController.save(commercialSubject.commercialSubject)}"  postSaveAction="#{subjectController.subjects(subjectsModel)}"/>  
-			<h:panelGrid id="search" columns="5" styleClass="centered">
-			<p:outputLabel for="subjectPager" value="Seite [1...#{subjectsModel.paging.maxPages}]" />
-			 <p:spinner id="subjectPager"   min="1" max="#{subjectsModel.paging.maxPages}" size="#{subjectsModel.paging.maxPages}"  value="#{subjectsModel.paging.currentPage}"/> 
-			<p:outputLabel for="namePattern" value="Produkt- Servicename" />
-			 <p:inputText id="namePattern"  value="#{subjectsModel.pattern}"  >
-			 	<p:ajax event="change" update="@this"  process="@this"/>
-			 </p:inputText>
-             <p:commandButton id="paging" value="suchen"  action="#{subjectController.subjects(subjectsModel)}"   update="@form" process="@parent"  >
-                  
-             </p:commandButton>
-            </h:panelGrid>        
-			
-			
-			
-			
-			
-			 <p:dataTable  id="subjects" var="subjectVar" paginator="false" rows="#{subjectsModel.paging.pageSize}"   value="#{subjectsModel.commercialSubjects}"  selection="#{subjectsModel.selected}">  
-			    <p:column selectionMode="single" style="width:2%" />  
-  
-                <p:column headerText="Name">   #{subjectVar.name} </p:column>  
-                <p:column headerText="Beschreibung" >   #{subjectVar.description} </p:column>  
-			</p:dataTable>
-			
-			
-			<h:panelGrid columns="3">
-			 
-			 <p:commandButton value="#{message.subject_add_button}" oncomplete="subjectDlg.show();"    process="@form"  update="@form"/>
-			
-			
-			 <p:commandButton value="#{message.subject_change_button}" update="@form" oncomplete="subjectDlg.show();" process="@this,subjects"  actionListener="#{subjectController.openChangeDialog(subjectsModel.selected, commercialSubject)}"   />	
-			 
-			  <p:commandButton value="#{message.subject_delete_button}"   actionListener="#{subjectController.delete(subjectsModel.selected)}" action="#{subjectController.subjects(subjectsModel)}" process="@this,subjects" update="@form" />	
-			
-			</h:panelGrid>
-			
-			
+			   <p:dataTable  id="subjects" var="subjectVar" paginator="false" rows="#{subjectsModel.paging.pageSize}"   value="#{subjectsModel.commercialSubjects}"  selection="#{subjectsModel.selected}"  >  
+			   	   <p:column selectionMode="single" style="width:2%" />  
+                   <p:column headerText="#{message.subjects_table_column_name}">#{subjectVar.name}</p:column> 
+                   <p:column headerText="#{message.subjects_table_column_description}">#{subjectVar.description}</p:column>  
+                   <p:ajax event="rowSelectRadio"  update="@form" process="@this"/> 
+			   </p:dataTable>
+	
+			   <h:panelGrid id="buttonPanel" columns="3" >
+			      <p:commandButton value="#{message.subject_add_button}" oncomplete="subjectDlg.show();"    process="@form"  update="@form"/>
+			      <p:commandButton  value="#{message.subject_change_button}" update="@form" oncomplete="subjectDlg.show();" process="@this,subjects"  actionListener="#{subjectController.openChangeDialog(subjectsModel.selected, commercialSubject)}"  rendered="#{not empty subjectsModel.selected}" />
+			      <p:commandButton value="#{message.subject_delete_button}"   actionListener="#{subjectController.delete(subjectsModel.selected)}" action="#{subjectController.subjects(subjectsModel)}" process="@this,subjects" update="@form" rendered="#{not empty subjectsModel.selected}" />	
+			   </h:panelGrid>
+		
 			</h:form>
-			</h:panelGrid>
-			
-			  
-			 
-           
-         </ui:define>
+		</h:panelGrid>
+		   
+   </ui:define>
     	
-     </ui:composition>
-  
-   	</h:body>
+   </ui:composition>
+</h:body>
 </html>
 
 

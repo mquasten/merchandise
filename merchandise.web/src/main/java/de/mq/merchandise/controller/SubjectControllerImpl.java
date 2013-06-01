@@ -32,7 +32,18 @@ public class SubjectControllerImpl {
 		System.out.println("*** select ***");
 		final Customer customer = (Customer)securityContextFactory.securityContext().getAuthentication().getDetails();
 		commercialSubjectsModel.setCommercialSubjects(commercialSubjectService.subjects(customer, commercialSubjectsModel.getPattern() + "%" , commercialSubjectsModel.getPaging().getPaging()));
-	    
+		
+		if( commercialSubjectsModel.getSelected() == null){
+			return;
+		}
+		for(final CommercialSubjectAO subjectAO : commercialSubjectsModel.getCommercialSubjects()){
+		    if(subjectAO.getCommercialSubject().equals(commercialSubjectsModel.getSelected().getCommercialSubject())){
+		    	return;
+		    }
+		}
+		
+		
+		commercialSubjectsModel.setSelected(null);
 	}
 	
 	
@@ -78,5 +89,6 @@ public class SubjectControllerImpl {
 		commercialSupject.setCommercialSubject(commercialSubjectService.subject(selected.getCommercialSubject().id()));
 		
 	}
-
+	
+	
 }

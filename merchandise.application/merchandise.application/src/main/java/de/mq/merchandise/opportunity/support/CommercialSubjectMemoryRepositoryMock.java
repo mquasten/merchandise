@@ -26,7 +26,7 @@ public class CommercialSubjectMemoryRepositoryMock implements CommercialSubjectR
 
 	private final Map<Long, CommercialSubject> commercialSubjects = new HashMap<>();
 	
-	static final CommercialSubject[] DEFAULTS = new CommercialSubject[] {new CommercialSubjectImpl(null, "EscortService", "Nicoles special service"),  new CommercialSubjectImpl(null, "Music-Downloads", "Flatrate für Musik")};
+	static final CommercialSubject[] DEFAULTS = new CommercialSubject[] {new CommercialSubjectImpl(null, "EscortService", "Nicole's special services"),  new CommercialSubjectImpl(null, "Music-Downloads", "Flatrate für Musik")};
 	
 	private CustomerMemoryReposioryMock customerMemoryReposioryMock;
 	
