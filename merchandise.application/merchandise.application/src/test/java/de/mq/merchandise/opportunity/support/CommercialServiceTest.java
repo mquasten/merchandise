@@ -8,6 +8,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.CommercialSubjectService;
@@ -16,6 +17,8 @@ import de.mq.merchandise.util.Paging;
 public class CommercialServiceTest {
 	
 	
+	private static final long ID = 19680528L;
+
 	private  final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
 
 	private static final String NAME_PATTERN = "patternForName";
@@ -31,7 +34,7 @@ public class CommercialServiceTest {
 	
 	@Test
 	public final void subjects() {
-		Mockito.when(customer.id()).thenReturn(19680528L);
+		Mockito.when(customer.id()).thenReturn(ID);
 		final List<CommercialSubject> subjects = new ArrayList<>();
 		subjects.add(commercialSubject);
 		Mockito.when(commercialSubjectRepository.forNamePattern(customer, NAME_PATTERN, paging)).thenReturn(subjects);
@@ -54,6 +57,18 @@ public class CommercialServiceTest {
 	public final void delete() {
 		commercialSubjectService.delete(commercialSubject);
 		Mockito.verify(commercialSubjectRepository).delete(commercialSubject);
+	}
+	
+	@Test
+	public final void subject() {
+		Mockito.when(commercialSubjectRepository.forId(ID)).thenReturn(commercialSubject);
+		Assert.assertEquals(commercialSubject, commercialSubjectService.subject(ID));
+		Mockito.verify(commercialSubjectRepository).forId(ID);
+	}
+	
+	@Test(expected=InvalidDataAccessApiUsageException.class)
+	public final void subjectNotFound() {
+		commercialSubjectService.subject(ID);
 	}
 
 }

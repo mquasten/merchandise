@@ -117,5 +117,13 @@ public class CommercialSubjectRepositoryTest {
 	public final void deleteNoId() {
 		commercialSubjectRepository.delete(Mockito.mock(CommercialSubject.class));
 	}
+	
+	@Test
+	public final void forId() {
+		final CommercialSubjectImpl result = Mockito.mock(CommercialSubjectImpl.class);
+		Mockito.when(entityManager.find(CommercialSubjectImpl.class, ID)).thenReturn(result);
+		Assert.assertEquals(result, commercialSubjectRepository.forId(ID));
+		Mockito.verify(entityManager).find(CommercialSubjectImpl.class, ID);
+	}
 
 }

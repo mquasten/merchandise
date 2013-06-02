@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import de.mq.mapping.util.proxy.ExceptionTranslation;
-import de.mq.mapping.util.proxy.ExceptionTranslations;
+import de.mq.mapping.util.proxy.MethodInvocation;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
@@ -41,7 +41,7 @@ public class LoginControllerImpl {
 		this.facesContextFactory=facesContextFactory;
 	}
 	
-	@ExceptionTranslations(value={
+	@MethodInvocation(value={
             @ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = EmptyResultDataAccessException.class  , bundle="login_user_not_found" ),
             @ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = SecurityException.class  , bundle="login_invalid_password" )
 	
@@ -68,7 +68,7 @@ public class LoginControllerImpl {
 		return "overview?faces-redirect=true" ;
 	}
 	
-	@ExceptionTranslations(value={
+	@MethodInvocation(value={
           
             @ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class  , bundle="login_customer_mandatory" )
 	

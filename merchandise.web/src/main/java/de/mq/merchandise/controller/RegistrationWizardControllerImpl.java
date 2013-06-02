@@ -11,7 +11,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.ExceptionTranslation;
-import de.mq.mapping.util.proxy.ExceptionTranslations;
+import de.mq.mapping.util.proxy.MethodInvocation;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
@@ -55,7 +55,7 @@ public class RegistrationWizardControllerImpl   {
 		this.conversation=conversation;
 	}
 	
-	@ExceptionTranslations(value={@ExceptionTranslation( resultExpression="#args[0].oldStep",  action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="customer_not_found" ), 
+	@MethodInvocation(value={@ExceptionTranslation( resultExpression="#args[0].oldStep",  action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="customer_not_found" ), 
 	 @ExceptionTranslation(   resultExpression="#args[0].oldStep" , action = SimpleFacesExceptionTranslatorImpl.class, source = ConstraintViolationException.class  )}
 	
 	, clazz = RegistrationWizardControllerImpl.class)
@@ -83,7 +83,7 @@ public class RegistrationWizardControllerImpl   {
 	}
 	
 	
-	@ExceptionTranslations(value={
+	@MethodInvocation(value={
             @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = DataIntegrityViolationException.class  , bundle="register_dupplicate_login_contact" ),
             @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class  , bundle="register_person_already_assigned" )
 	

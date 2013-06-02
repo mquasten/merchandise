@@ -197,5 +197,17 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 		}
 		
 	}
+	
+	@Test
+	public final void forId() {
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		Mockito.when(commercialSubject.id()).thenReturn(ID);
+		@SuppressWarnings("unchecked")
+		final Map<Long,CommercialSubject> commercialSubjects = (Map<Long, CommercialSubject>) ReflectionTestUtils.getField(commercialSubjectRepository, "commercialSubjects");
+		commercialSubjects.put(ID, commercialSubject);
+		
+		Assert.assertEquals(commercialSubject, commercialSubjectRepository.forId(ID));
+		
+	}
 
 }
