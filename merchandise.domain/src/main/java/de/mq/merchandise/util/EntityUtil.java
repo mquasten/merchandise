@@ -157,6 +157,19 @@ public  abstract   class EntityUtil {
 	}
 	
 	
+	public static void setDependency(final Object parent, final Class<?> type, final Object child ) {
+           ReflectionUtils.doWithFields(parent.getClass(), new FieldCallback() {
+			
+			@Override
+			public void doWith(final Field field) throws IllegalArgumentException, IllegalAccessException {
+				if( field.getType().equals(type)){
+					field.setAccessible(true);
+					field.set(parent , child);
+				}
+				
+			}
+		});
+	}
 	
 
 }

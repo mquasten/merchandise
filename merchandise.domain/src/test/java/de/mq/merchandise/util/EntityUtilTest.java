@@ -21,6 +21,9 @@ import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.contact.Contact;
 import de.mq.merchandise.contact.Coordinates;
 import de.mq.merchandise.contact.support.ContactBuilderFactoryImpl;
+import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.opportunity.support.CommercialSubject;
+import de.mq.merchandise.opportunity.support.CommercialSubjectImpl;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.EqualsBuilder;
 import de.mq.merchandise.util.support.SimpleReflectionEqualsBuilderImpl;
@@ -214,7 +217,16 @@ public class EntityUtilTest {
 		EntityUtil.setId(contact, id);
 		
 		Assert.assertEquals(id, ReflectionTestUtils.getField(contact, "id"));
+	}
+	
+	@Test
+	public final void setDependency() {
+		final Customer customer = Mockito.mock(Customer.class);
+		final CommercialSubject commercialSubject = new CommercialSubjectImpl(null, "name", "description");
+		Assert.assertNull(commercialSubject.customer());
 		
+		EntityUtil.setDependency(commercialSubject, Customer.class, customer);
+		Assert.assertEquals(customer, commercialSubject.customer());
 	}
 	
 
