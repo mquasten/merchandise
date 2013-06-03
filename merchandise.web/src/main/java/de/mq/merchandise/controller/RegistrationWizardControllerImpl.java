@@ -12,6 +12,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.MethodInvocation;
+import de.mq.mapping.util.proxy.Parameter;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
@@ -58,7 +59,7 @@ public class RegistrationWizardControllerImpl   {
 	@MethodInvocation(value={@ExceptionTranslation( resultExpression="#args[0].oldStep",  action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="customer_not_found" ), 
 	 @ExceptionTranslation(   resultExpression="#args[0].oldStep" , action = SimpleFacesExceptionTranslatorImpl.class, source = ConstraintViolationException.class  )}
 	
-	, clazz = RegistrationWizardControllerImpl.class)
+	, clazz = RegistrationWizardControllerImpl.class, params={@Parameter(clazz=FlowEvent.class , originIndex=0)})
 	public String onFlowProcess(final FlowEvent event) { 
 		final Registration registration = beanResolver.getBeanOfType(Registration.class);	
 		
@@ -88,7 +89,7 @@ public class RegistrationWizardControllerImpl   {
             @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class  , bundle="register_person_already_assigned" )
 	
 	
-	},  clazz = RegistrationWizardControllerImpl.class)
+	},  clazz = RegistrationWizardControllerImpl.class, params={@Parameter(clazz=Customer.class, originIndex=0), @Parameter(clazz=Person.class, originIndex=1)})
 	
 	public String  register(final Customer customer, final Person person) {
 	

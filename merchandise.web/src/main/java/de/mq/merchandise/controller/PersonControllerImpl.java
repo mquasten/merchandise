@@ -8,6 +8,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.MethodInvocation;
+import de.mq.mapping.util.proxy.Parameter;
 import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.contact.CityAddress;
 import de.mq.merchandise.contact.Contact;
@@ -33,7 +34,7 @@ public class PersonControllerImpl {
 	 * Dirrrty   viewScope must be used for cityAddress, requestScope will not be enough
 	 * The address is empty after closing the dialog, why don't ask me, ask Ed ... 
 	 */
-	@MethodInvocation(clazz=PersonControllerImpl.class ,value={@ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="geo_coding_error_deviation" ) ,
+	@MethodInvocation(clazz=PersonControllerImpl.class , params={@Parameter(clazz=Person.class, originIndex=0), @Parameter(clazz=CityAddress.class, originIndex=1)}, value={@ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="geo_coding_error_deviation" ) ,
 		@ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class , bundle="geo_coding_error_deviation" ) ,
 		                                                            @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalStateException.class , bundle="geo_coding_error_status" ) , 
 		                                                            @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = IncorrectResultSizeDataAccessException.class , bundle="geo_coding_error_multiple" ) 

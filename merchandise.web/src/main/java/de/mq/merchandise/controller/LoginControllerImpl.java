@@ -11,6 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.MethodInvocation;
+import de.mq.mapping.util.proxy.Parameter;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
@@ -46,7 +47,7 @@ public class LoginControllerImpl {
             @ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = SecurityException.class  , bundle="login_invalid_password" )
 	
 	
-	},  clazz = LoginControllerImpl.class)
+	},  clazz = LoginControllerImpl.class, params={@Parameter(clazz=LoginAO.class, originIndex=0)})
 	
 	public String login(final LoginAO login ) {
 		
@@ -73,7 +74,7 @@ public class LoginControllerImpl {
             @ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class  , bundle="login_customer_mandatory" )
 	
 	
-	},  clazz = LoginControllerImpl.class)
+	},  clazz = LoginControllerImpl.class, params={@Parameter(clazz=Person.class, originIndex=0), @Parameter(clazz=Customer.class, originIndex=1), @Parameter(clazz=String.class, originIndex=2)})
 	
 	public String assignCustomer(final Person person, final Customer customer, String password ) {
 		
