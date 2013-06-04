@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
+import de.mq.mapping.util.proxy.ActionEvent;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.MethodInvocation;
@@ -59,7 +60,7 @@ public class RegistrationWizardControllerImpl   {
 	@MethodInvocation(value={@ExceptionTranslation( resultExpression="#args[0].oldStep",  action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="customer_not_found" ), 
 	 @ExceptionTranslation(   resultExpression="#args[0].oldStep" , action = SimpleFacesExceptionTranslatorImpl.class, source = ConstraintViolationException.class  )}
 	
-	, clazz = RegistrationWizardControllerImpl.class, params={@Parameter(clazz=FlowEvent.class , originIndex=0)})
+	, clazz = RegistrationWizardControllerImpl.class, actions={@ActionEvent(params={@Parameter(clazz=FlowEvent.class , originIndex=0)})})
 	public String onFlowProcess(final FlowEvent event) { 
 		final Registration registration = beanResolver.getBeanOfType(Registration.class);	
 		
@@ -84,12 +85,12 @@ public class RegistrationWizardControllerImpl   {
 	}
 	
 	
-	@MethodInvocation(value={
+  @MethodInvocation(value={
             @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = DataIntegrityViolationException.class  , bundle="register_dupplicate_login_contact" ),
             @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class  , bundle="register_person_already_assigned" )
 	
 	
-	},  clazz = RegistrationWizardControllerImpl.class, params={@Parameter(clazz=Customer.class, originIndex=0), @Parameter(clazz=Person.class, originIndex=1)})
+	},  clazz = RegistrationWizardControllerImpl.class, actions={@ActionEvent(params={@Parameter(clazz=Customer.class, originIndex=0), @Parameter(clazz=Person.class, originIndex=1)})})
 	
 	public String  register(final Customer customer, final Person person) {
 	

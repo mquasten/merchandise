@@ -3,9 +3,11 @@ package de.mq.merchandise.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
+import de.mq.mapping.util.proxy.ActionEvent;
 import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.MethodInvocation;
 import de.mq.mapping.util.proxy.Parameter;
@@ -22,8 +24,9 @@ public class PersonControllerImpl {
 	public PersonControllerImpl() {
 		
 	}
-	
+	@Autowired
 	private  GeocodingService geocodingService;
+	
 	
 	
 	PersonControllerImpl(final GeocodingService geocodingService) {
@@ -34,12 +37,12 @@ public class PersonControllerImpl {
 	 * Dirrrty   viewScope must be used for cityAddress, requestScope will not be enough
 	 * The address is empty after closing the dialog, why don't ask me, ask Ed ... 
 	 */
-	@MethodInvocation(clazz=PersonControllerImpl.class , params={@Parameter(clazz=Person.class, originIndex=0), @Parameter(clazz=CityAddress.class, originIndex=1)}, value={@ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="geo_coding_error_deviation" ) ,
+	@MethodInvocation(clazz=PersonControllerImpl.class , actions={@ActionEvent(params={@Parameter(clazz=Person.class, originIndex=0), @Parameter(clazz=CityAddress.class, originIndex=1)})}, value={@ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="geo_coding_error_deviation" ) ,
 		@ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class , bundle="geo_coding_error_deviation" ) ,
 		                                                            @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalStateException.class , bundle="geo_coding_error_status" ) , 
 		                                                            @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = IncorrectResultSizeDataAccessException.class , bundle="geo_coding_error_multiple" ) 
 	
-	})
+	}) 
 	public  void addAddress(final Person person, final CityAddress cityAddress) {	
 		final CityAddress address = EntityUtil.copy(cityAddress);
 		if (address instanceof Address) {
