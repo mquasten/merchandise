@@ -22,7 +22,6 @@ import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.customer.support.AuthentificationService;
 import de.mq.merchandise.customer.support.Digest;
 import de.mq.merchandise.customer.support.LoginAO;
-import de.mq.merchandise.model.support.FacesContextFactory;
 
 public class LoginControllerTest {
 
@@ -32,9 +31,9 @@ public class LoginControllerTest {
 	private static final String PASSWORD = "fever";
 	private static final String LOGIN = "skype:kinkyKylie";
 	private CustomerService customerService = Mockito.mock(CustomerService.class);
-	private final FacesContextFactory facesContextFactory = Mockito.mock(FacesContextFactory.class);
+	
 	private final AuthentificationService authentificationService = Mockito.mock(AuthentificationService.class);
-	private final LoginControllerImpl loginController = new LoginControllerImpl(customerService, authentificationService, facesContextFactory);
+	private final LoginControllerImpl loginController = new LoginControllerImpl(customerService, authentificationService);
     private final LoginAO loginAO = Mockito.mock(LoginAO.class);
     @SuppressWarnings("rawtypes")
     final private ArgumentCaptor<List> customerListCaptor = ArgumentCaptor.forClass(List.class);
@@ -126,17 +125,13 @@ public class LoginControllerTest {
 	@Test
 	public final void abort() throws IOException  {
 		final FacesContext facesContext = Mockito.mock(FacesContext.class);
-		Mockito.when(facesContextFactory.facesContext()).thenReturn(facesContext);
 		final ExternalContext externalContext = Mockito.mock(ExternalContext.class);
 		Mockito.when(facesContext.getExternalContext()).thenReturn(externalContext);
-		loginController.abort(LANGUAGE);
+		loginController.abort(LANGUAGE, facesContext);
 		
 		Mockito.verify(externalContext).invalidateSession();
 		Mockito.verify(externalContext).redirect("login.jsf?language=" + LANGUAGE );
 	}
 	
-	@Test
-	public final void defaultConstructorCoverageOnly() {
-		Assert.assertNotNull(new LoginControllerImpl());
-	}
+	
 }

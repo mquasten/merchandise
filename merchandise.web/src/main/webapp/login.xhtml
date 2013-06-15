@@ -56,7 +56,7 @@
 
 					<p:commandButton id="loginButton" value="#{message.login_login_button}"
 						icon="ui-icon-check"
-						action="#{loginController.login(login)}"
+						action="#{loginController.login}"
 						style="float:right"   update="@form"/>
 
 					
@@ -89,7 +89,7 @@
        <f:facet name="footer">
        		<p:commandButton id="abort" value="#{message.login_logoff}"
 						icon="ui-icon-close"
-						actionListener="#{loginController.abort(user.language)}" 
+						actionListener="#{loginController.abort}" 
 						  update="@form"  style="float:left">
 						 <f:param language="#{user.language}" />
 						
@@ -98,7 +98,7 @@
 						  
 		  <p:commandButton id="selectCustomer" value="#{message.login_login_button}"
 						icon="ui-icon-check"
-						action="#{loginController.assignCustomer(login.person.person, login.customer.customer, login.password)}" 
+						action="#{loginController.assignCustomer}" 
 						style="float:right"   update="@form"   process="@form" />
 						 <p:tooltip for="selectCustomer" value="#{message.login_select_customer_button_tt}" showEffect="fade" hideEffect="fade" />  
 						  

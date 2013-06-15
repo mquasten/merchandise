@@ -29,8 +29,8 @@ public class LoginControllerFactoryImpl {
 	
 	@Bean(name="loginController")
 	@Scope("singleton")
-	public LoginControllerImpl loginController() {
-		return  webProxyFactory.webModell(LoginControllerImpl.class, new LoginControllerImpl(customerService, authentificationService, facesContextFactory));
+	public LoginController loginController() {
+		return  webProxyFactory.webModell(LoginController.class, new LoginControllerImpl(customerService, authentificationService));
 	   
 	}
 	

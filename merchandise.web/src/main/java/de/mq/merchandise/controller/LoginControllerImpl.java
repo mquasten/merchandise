@@ -6,51 +6,30 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
+import javax.faces.context.FacesContext;
 
-import de.mq.mapping.util.proxy.ActionEvent;
-import de.mq.mapping.util.proxy.ExceptionTranslation;
-import de.mq.mapping.util.proxy.MethodInvocation;
-import de.mq.mapping.util.proxy.Parameter;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.customer.support.AuthentificationService;
 import de.mq.merchandise.customer.support.LoginAO;
-import de.mq.merchandise.model.support.FacesContextFactory;
 
 
-public class LoginControllerImpl {
+
+class LoginControllerImpl {
+	
+	private final CustomerService customerService;
 	
 	
-	@Autowired
-	private   CustomerService customerService;
-	
-	@Autowired
-	private AuthentificationService authentificationService;
-	@Autowired
-	private  FacesContextFactory facesContextFactory;
-	
-	protected  LoginControllerImpl() {
-	}
+	private final AuthentificationService authentificationService;
 	
 	
-	
-	public LoginControllerImpl(final CustomerService customerService, final AuthentificationService authentificationService, final FacesContextFactory facesContextFactory){
+	LoginControllerImpl(final CustomerService customerService, final AuthentificationService authentificationService){
 		this.customerService=customerService;
 		this.authentificationService=authentificationService;
-		this.facesContextFactory=facesContextFactory;
 	}
 	
-	@MethodInvocation(value={
-            @ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = EmptyResultDataAccessException.class  , bundle="login_user_not_found" ),
-            @ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = SecurityException.class  , bundle="login_invalid_password" )
-	
-	
-	},  clazz = LoginControllerImpl.class, actions={@ActionEvent(params={@Parameter(clazz=LoginAO.class, originIndex=0)})})
-	
-	public String login(final LoginAO login ) {
+	final String login(final LoginAO login ) {
 		
 		final Collection<Entry<Customer,Person>> customerEntries = customerService.login(login.getUser().toLowerCase());
         
@@ -70,13 +49,7 @@ public class LoginControllerImpl {
 		return "overview?faces-redirect=true" ;
 	}
 	
-	@MethodInvocation(value={
-          
-            @ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class  , bundle="login_customer_mandatory" )
-	
-	},  clazz = LoginControllerImpl.class, actions={@ActionEvent(params={@Parameter(clazz=Person.class, originIndex=0), @Parameter(clazz=Customer.class, originIndex=1), @Parameter(clazz=String.class, originIndex=2)})})
-	
-	public String assignCustomer(final Person person, final Customer customer, String password ) {
+	final String assignCustomer(final Person person, final Customer customer, String password ) {
 		
 		customerExistsGuard(customer);
 		
@@ -92,10 +65,9 @@ public class LoginControllerImpl {
 		}
 	}
 	
-	public void abort(final String language) throws IOException {
-		
-		facesContextFactory.facesContext().getExternalContext().invalidateSession();
-		facesContextFactory.facesContext().getExternalContext().redirect("login.jsf?language=" + language);
+	final void abort(final String language, final FacesContext facesContext) throws IOException {
+		facesContext.getExternalContext().invalidateSession();
+		facesContext.getExternalContext().redirect("login.jsf?language=" + language);
 	}
 	
 	
