@@ -1,8 +1,5 @@
 package de.mq.merchandise.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.SecurityContextFactory;
 import de.mq.merchandise.opportunity.CommercialSubjectService;
@@ -11,15 +8,13 @@ import de.mq.merchandise.opportunity.support.CommercialSubjectAO;
 import de.mq.merchandise.opportunity.support.CommercialSubjectsModelAO;
 import de.mq.merchandise.util.EntityUtil;
 
-@Component("subjectController")
+
 public class SubjectControllerImpl {
 	
 	private final CommercialSubjectService commercialSubjectService;
 	
 	private final SecurityContextFactory securityContextFactory;
 	
-	
-	@Autowired
 	public SubjectControllerImpl(final CommercialSubjectService commercialSubjectService, final SecurityContextFactory securityContextFactory){
 		this.commercialSubjectService=commercialSubjectService;
 		this.securityContextFactory=securityContextFactory;
@@ -69,7 +64,7 @@ public class SubjectControllerImpl {
 			return;
 		}
 		
-		/* like a virgin, for the very first time ... */
+		/* like a virgin, touched for the very first time ... */
 		commercialSupject.setCommercialSubject(commercialSubjectService.subject(selected.getCommercialSubject().id()));
 		
 	}

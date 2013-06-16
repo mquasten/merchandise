@@ -13,7 +13,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
       <h2 style="text-align: center"><h:outputText value="#{message.subjects_headline}" /></h2>
 	  <h:panelGrid id="page" columns="1" styleClass="positionCentered">
 		  <h:form>
-			   <subject:subject id="subjectDialog"  commercialSubject="#{commercialSubject}" message="#{message}"   saveAction="#{subjectController.save(commercialSubject.commercialSubject)}"  postSaveAction="#{subjectController.subjects(subjectsModel)}"/>  
+			   <subject:subject id="subjectDialog"  commercialSubject="#{commercialSubject}" message="#{message}"   saveAction="#{subjectController.save()}"  />  
 			   <h:panelGrid id="search" columns="5" styleClass="centered">
 			      <p:outputLabel for="subjectPager" value="#{message.subjects_page_prefix}[1...#{subjectsModel.paging.maxPages}]" />
 			      <p:spinner id="subjectPager"   min="1" max="#{subjectsModel.paging.maxPages}" size="#{subjectsModel.paging.maxPages}"  value="#{subjectsModel.paging.currentPage}"/> 
@@ -21,7 +21,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 			      <p:inputText id="namePattern"  value="#{subjectsModel.pattern}"  >
 			 	     <p:ajax event="change" update="@this"  process="@this"/>
 			      </p:inputText>
-                  <p:commandButton id="paging" value="suchen"  action="#{subjectController.subjects(subjectsModel)}"   update="@form" process="@parent"  />     
+                  <p:commandButton id="paging" value="suchen"  action="#{subjectController.subjects()}"   update="@form" process="@parent"  />     
                </h:panelGrid>        
 			
 			   <p:dataTable  id="subjects" var="subjectVar" paginator="false" rows="#{subjectsModel.paging.pageSize}"   value="#{subjectsModel.commercialSubjects}"  selection="#{subjectsModel.selected}"  >  
@@ -33,8 +33,8 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 	
 			   <h:panelGrid id="buttonPanel" columns="3" >
 			      <p:commandButton value="#{message.subject_add_button}" oncomplete="subjectDlg.show();"    process="@form"  update="@form"/>
-			      <p:commandButton  value="#{message.subject_change_button}" update="@form" oncomplete="subjectDlg.show();" process="@this,subjects"  actionListener="#{subjectController.openChangeDialog(subjectsModel.selected, commercialSubject)}"  rendered="#{not empty subjectsModel.selected}" />
-			      <p:commandButton value="#{message.subject_delete_button}"   actionListener="#{subjectController.delete(subjectsModel.selected)}" action="#{subjectController.subjects(subjectsModel)}" process="@this,subjects" update="@form" rendered="#{not empty subjectsModel.selected}" />	
+			      <p:commandButton  value="#{message.subject_change_button}" update="@form" oncomplete="subjectDlg.show();" process="@this,subjects"  actionListener="#{subjectController.openChangeDialog()}"  rendered="#{not empty subjectsModel.selected}" />
+			      <p:commandButton value="#{message.subject_delete_button}"   action="#{subjectController.delete()}"  process="@this,subjects" update="@form" rendered="#{not empty subjectsModel.selected}" />	
 			   </h:panelGrid>
 		
 			</h:form>

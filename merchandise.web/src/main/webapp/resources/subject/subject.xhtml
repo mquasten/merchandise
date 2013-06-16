@@ -15,8 +15,7 @@
 	<composite:interface>
 		<composite:attribute name="commercialSubject" required="true" />
 		<composite:attribute name="message" required="true" />
-		<composite:attribute name="saveAction" method-signature="void f()" /> 
-		<composite:attribute name="postSaveAction" method-signature="void f()" /> 
+		<composite:attribute name="saveAction" method-signature="void f()" />  
 		
 	</composite:interface>
 
@@ -60,8 +59,7 @@
 				<f:facet name="footer">
 						<p:commandButton value="#{cc.attrs.message.contact_dialog_submit}"
 							update="subjectGrid" process="subjectGrid, subjectId"
-							actionListener="#{cc.attrs.saveAction}"
-							action="#{cc.attrs.postSaveAction}"
+							action="#{cc.attrs.saveAction}"
 							oncomplete="handlSubjectRequest(xhr, status, args)" 
 							style="float:right" />
 				</f:facet>
