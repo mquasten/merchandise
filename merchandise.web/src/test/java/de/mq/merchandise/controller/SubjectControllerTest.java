@@ -7,11 +7,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.customer.support.SecurityContextFactory;
 import de.mq.merchandise.opportunity.CommercialSubjectService;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectAO;
@@ -25,15 +22,9 @@ public class SubjectControllerTest {
 
 	private final CommercialSubjectService commercialSubjectService = Mockito.mock(CommercialSubjectService.class);
 	
-	private final SecurityContextFactory securityContextFactory = Mockito.mock(SecurityContextFactory.class);
-	
-	private final SubjectControllerImpl subjectController = new SubjectControllerImpl(commercialSubjectService, securityContextFactory);
+	private final SubjectControllerImpl subjectController = new SubjectControllerImpl(commercialSubjectService);
 	
 	private  CommercialSubjectsModelAO commercialSubjectsModel = Mockito.mock(CommercialSubjectsModelAO.class);
-	
-	private SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-
-	private Authentication authentication = Mockito.mock(Authentication.class);
 
 	private Customer customer = Mockito.mock(Customer.class);
 	
@@ -46,9 +37,8 @@ public class SubjectControllerTest {
 	
 	@Before
 	public final void setup() {
-		Mockito.when(securityContextFactory.securityContext()).thenReturn(securityContext);
-	    Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-	    Mockito.when(authentication.getDetails()).thenReturn(customer);
+		
+	  
 	    Mockito.when(commercialSubjectsModel.getPattern()).thenReturn(PATTERN); 
 	    Mockito.when(pagingAO.getPaging()).thenReturn(paging);
 	    Mockito.when(commercialSubjectsModel.getPaging()).thenReturn(pagingAO);
@@ -58,7 +48,7 @@ public class SubjectControllerTest {
 	
 	@Test
 	public final void subjects() {
-		subjectController.subjects(commercialSubjectsModel);
+		subjectController.subjects(commercialSubjectsModel, customer);
 		Mockito.verify(commercialSubjectsModel).setCommercialSubjects(results);
 	}
 	
@@ -112,14 +102,12 @@ public class SubjectControllerTest {
 	@Test
 	public final void save() {
 		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
-		subjectController.save(commercialSubject);
+		subjectController.save(commercialSubject,customer);
 		
-		Mockito.verify(securityContextFactory).securityContext();
-		Mockito.verify(securityContext).getAuthentication();
-		Mockito.verify(authentication).getDetails();
+		
 		
 		Mockito.verify(commercialSubjectService).createOrUpdate(commercialSubject);
-		Mockito.verifyNoMoreInteractions(commercialSubjectService,securityContextFactory,securityContext,authentication,commercialSubject);
+	
 		
 	}
 	
