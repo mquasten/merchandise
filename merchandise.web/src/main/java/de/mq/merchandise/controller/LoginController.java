@@ -25,7 +25,7 @@ public interface LoginController {
 	
 	@MethodInvocation(value={
         @ExceptionTranslation( action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class  , bundle="login_customer_mandatory" )
-	},  clazz = LoginControllerImpl.class, actions={@ActionEvent(params={@Parameter(clazz=LoginAO.class , el="#arg.person.person", elResultType=Person.class), @Parameter(clazz=LoginAO.class, el="#arg.customer.customer", elResultType=Customer.class), @Parameter(clazz=LoginAO.class, el="#arg.password" , elResultType=String.class)})})
+	},  clazz = LoginControllerImpl.class, actions={@ActionEvent(params={@Parameter(clazz=LoginAO.class , el="#arg.person.person", elResultType=Person.class), @Parameter(clazz=LoginAO.class, el="#arg.customer.customer", elResultType=Customer.class, skipNotReachableOnNullElException=true ), @Parameter(clazz=LoginAO.class, el="#arg.password" , elResultType=String.class)})})
 	
 	String assignCustomer();
 	
