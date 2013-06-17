@@ -35,10 +35,7 @@ public class RegistrationWizardControllerImpl   {
 	static final String GENERAL = "general";
 
 	private CustomerService customerService;
-	
-	//private BeanResolver beanResolver;
-	
-	
+		
     private ValidationService validationService;
     
     private Conversation conversation;
