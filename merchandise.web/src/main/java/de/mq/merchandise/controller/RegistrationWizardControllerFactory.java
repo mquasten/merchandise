@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.model.support.WebProxyFactory;
@@ -22,9 +21,6 @@ public class RegistrationWizardControllerFactory {
 	@Autowired
 	private CustomerService customerService;
 	
-    @Autowired
-	private BeanResolver beanResolver;
-	
 	
     @Autowired
     private ValidationService validationService;
@@ -39,8 +35,8 @@ public class RegistrationWizardControllerFactory {
 		
 	@Bean(name="registrationWizardController")
 	@Scope("singleton")
-	public RegistrationWizardControllerImpl registrationWizardController() {
-		  return webProxyFactory.webModell(RegistrationWizardControllerImpl.class, new RegistrationWizardControllerImpl(customerService, beanResolver, validationService, conversation));
+	public RegistrationWizardController registrationWizardController() {
+		  return webProxyFactory.webModell(RegistrationWizardController.class, new RegistrationWizardControllerImpl(customerService, validationService, conversation));
 	}
 
 }

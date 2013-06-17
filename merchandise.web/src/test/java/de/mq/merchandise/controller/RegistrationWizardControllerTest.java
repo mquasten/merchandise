@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.primefaces.event.FlowEvent;
 
-import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
@@ -23,7 +22,7 @@ public class RegistrationWizardControllerTest {
 	private CustomerService customerService = Mockito.mock(CustomerService.class);
     private  RegistrationWizardControllerImpl registrationWizardController;
 	private FlowEvent flowEvent;
-	private BeanResolver beanResolver;
+
 	private Registration registration = Mockito.mock(Registration.class);
 	private ValidationService validationService;
 	private Conversation conversation=Mockito.mock(Conversation.class);
@@ -35,14 +34,13 @@ public class RegistrationWizardControllerTest {
 		Mockito.when(customer.id()).thenReturn(ID);
 		customerService = Mockito.mock(CustomerService.class);
 		
-		beanResolver = Mockito.mock(BeanResolver.class);
-		registrationWizardController = new RegistrationWizardControllerImpl(customerService, beanResolver, validationService, conversation);
+		
+		registrationWizardController = new RegistrationWizardControllerImpl(customerService,validationService, conversation);
 		flowEvent = Mockito.mock(FlowEvent.class);
 		registration = Mockito.mock(Registration.class);
 		Mockito.when(registration.kind()).thenReturn(Registration.Kind.User);
 		Mockito.when(registration.customer()).thenReturn(customer);
-		Mockito.when(beanResolver.getBeanOfType(Registration.class)).thenReturn(registration);
-		
+	
 	}
 	
 	@Test
@@ -52,11 +50,11 @@ public class RegistrationWizardControllerTest {
 		Mockito.when(flowEvent.getNewStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
 		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.GENERAL);
 		
-		Assert.assertEquals(RegistrationWizardControllerImpl.PERSON, registrationWizardController.onFlowProcess(flowEvent));
+		Assert.assertEquals(RegistrationWizardControllerImpl.PERSON, registrationWizardController.onFlowProcess(flowEvent, registration));
 		
 		Mockito.when(flowEvent.getNewStep()).thenReturn(RegistrationWizardControllerImpl.GENERAL);
 		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
-		Assert.assertEquals(RegistrationWizardControllerImpl.GENERAL, registrationWizardController.onFlowProcess(flowEvent));
+		Assert.assertEquals(RegistrationWizardControllerImpl.GENERAL, registrationWizardController.onFlowProcess(flowEvent, registration));
 		Mockito.verify(validationService).validate(registration.getPerson());
 	} 
 	
@@ -68,7 +66,7 @@ public class RegistrationWizardControllerTest {
 		Mockito.when(flowEvent.getNewStep()).thenReturn(RegistrationWizardControllerImpl.OVERVIEW);
 		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
 		
-		Assert.assertEquals(RegistrationWizardControllerImpl.OVERVIEW, registrationWizardController.onFlowProcess(flowEvent));
+		Assert.assertEquals(RegistrationWizardControllerImpl.OVERVIEW, registrationWizardController.onFlowProcess(flowEvent,registration));
 		Mockito.verify(validationService).validate(registration.getPerson());
 	}
 	
@@ -80,7 +78,7 @@ public class RegistrationWizardControllerTest {
 		Mockito.when(flowEvent.getNewStep()).thenReturn(RegistrationWizardControllerImpl.OVERVIEW);
 		Mockito.when(flowEvent.getOldStep()).thenReturn(RegistrationWizardControllerImpl.PERSON);
 		
-		Assert.assertEquals(RegistrationWizardControllerImpl.OVERVIEW, registrationWizardController.onFlowProcess(flowEvent));
+		Assert.assertEquals(RegistrationWizardControllerImpl.OVERVIEW, registrationWizardController.onFlowProcess(flowEvent,registration));
 		Mockito.verifyNoMoreInteractions(customerService);
 		Mockito.verify(validationService).validate(registration.getPerson());
 	}
@@ -97,11 +95,6 @@ public class RegistrationWizardControllerTest {
 		Mockito.verify(conversation).end();
 	}
 	
-
-	@Test
-	public final void defaultConstructoer() {
-		Assert.assertNotNull(new RegistrationWizardControllerImpl());
-	}
 	
 	@Test
 	public final void startConversation() {

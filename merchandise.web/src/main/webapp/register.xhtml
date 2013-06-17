@@ -103,7 +103,7 @@ xmlns:pers="http://java.sun.com/jsf/composite/person" >
              		
              </p:panel>
              <p:commandButton update="@form"   process="@this" id="registerButton" value="#{message.register_overview_submit}"  
-						action="#{registrationWizardController.register(registration.customer.customer, registration.person.person)}"   style="float:right" />
+						action="#{registrationWizardController.register}"   style="float:right" />
 
              </p:tab>
 

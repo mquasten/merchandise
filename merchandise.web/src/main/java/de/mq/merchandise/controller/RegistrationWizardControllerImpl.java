@@ -23,6 +23,7 @@ import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.util.ValidationService;
 
 
+@SuppressWarnings("unused")
 public class RegistrationWizardControllerImpl   {
 	
 	
@@ -33,38 +34,24 @@ public class RegistrationWizardControllerImpl   {
 	
 	static final String GENERAL = "general";
 
-	protected  RegistrationWizardControllerImpl() {
-	}
-	
-	@Autowired
 	private CustomerService customerService;
 	
-    @Autowired
-	private BeanResolver beanResolver;
+	//private BeanResolver beanResolver;
 	
 	
-    @Autowired
     private ValidationService validationService;
     
-    @Autowired
     private Conversation conversation;
 	
    
-	RegistrationWizardControllerImpl(final CustomerService customerService, final BeanResolver beanResolver, final ValidationService validationService, final Conversation conversation){
+	RegistrationWizardControllerImpl(final CustomerService customerService,  final ValidationService validationService, final Conversation conversation){
 		this.customerService=customerService;
-		this.beanResolver=beanResolver;
 		this.validationService=validationService;
 		this.conversation=conversation;
 	}
 	
-	@MethodInvocation(value={@ExceptionTranslation( resultExpression="#args[0].oldStep",  action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class , bundle="customer_not_found" ), 
-	 @ExceptionTranslation(   resultExpression="#args[0].oldStep" , action = SimpleFacesExceptionTranslatorImpl.class, source = ConstraintViolationException.class  )}
 	
-	, clazz = RegistrationWizardControllerImpl.class, actions={@ActionEvent(params={@Parameter(clazz=FlowEvent.class , originIndex=0)})})
-	public String onFlowProcess(final FlowEvent event) { 
-		final Registration registration = beanResolver.getBeanOfType(Registration.class);	
-		
-	
+	String onFlowProcess(final FlowEvent event, final Registration registration) { 
 		if (isGoToOverviewPage(event)) {
 			validationService.validate(registration.getPerson());
 		}
@@ -85,15 +72,9 @@ public class RegistrationWizardControllerImpl   {
 	}
 	
 	
-  @MethodInvocation(value={
-            @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = DataIntegrityViolationException.class  , bundle="register_dupplicate_login_contact" ),
-            @ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = IllegalArgumentException.class  , bundle="register_person_already_assigned" )
+  
 	
-	
-	},  clazz = RegistrationWizardControllerImpl.class, actions={@ActionEvent(params={@Parameter(clazz=Customer.class, originIndex=0), @Parameter(clazz=Person.class, originIndex=1)})})
-	
-	public String  register(final Customer customer, final Person person) {
-	
+	String  register(final Customer customer, final Person person) {
 	  customerService.register(customer, person);
 	  conversation.end();
 	  return "login?faces-redirect=true";
@@ -101,7 +82,7 @@ public class RegistrationWizardControllerImpl   {
 	} 
 
 	
-	public void startConversation() {
+	void startConversation() {
 		if( ! conversation.isTransient()) {
 			return;
 		}
