@@ -83,14 +83,16 @@ public class OpportunityImpl implements Opportunity {
 		
 	}
 	
-	public OpportunityImpl(final Customer customer, final String name, final String description) {
+	public OpportunityImpl(final Customer customer, final String name, final String description, final Kind kind) {
 		this(customer, name);
 		this.description = description;
+		this.kind=kind;
 	}
 	
 	public OpportunityImpl(final Customer customer, final String name) {
 		this.customer = customer;
 		this.name = name;
+		this.kind=Kind.ProductOrService;
 	}
 	
 	public long id() {
@@ -217,6 +219,8 @@ public class OpportunityImpl implements Opportunity {
 		
 	}
 
-	
+	public Kind kind() {
+		return this.kind;
+	}
 
 }

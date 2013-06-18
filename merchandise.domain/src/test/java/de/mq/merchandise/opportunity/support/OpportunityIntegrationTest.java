@@ -21,6 +21,7 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.PersonConstants;
 import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
+import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -65,7 +66,7 @@ public class OpportunityIntegrationTest {
 		waste.add(commercialSubject);
 		
 		
-		Opportunity opportunity = new OpportunityImpl(customer,"Nicole's special services" , "with prices and conditions");
+		Opportunity opportunity = new OpportunityImpl(customer,"Nicole's special services" , "with prices and conditions", Kind.Tender);
        
 		opportunity.assignClassification(activityClassification);
 		opportunity.assignClassification(procuctClassification);

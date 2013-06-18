@@ -19,6 +19,8 @@ public interface Opportunity extends BasicEntity, DocumentsAware{
 	String description();
 
 	Customer customer();
+	
+	Kind kind();
 
 	Collection<ActivityClassification> activityClassifications();
 

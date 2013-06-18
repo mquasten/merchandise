@@ -12,6 +12,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
+import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
 public class OpportunityTest {
 	
@@ -26,10 +27,11 @@ public class OpportunityTest {
 
 	@Test
 	public final void constructorWithDescription() {
-		final Opportunity opportunity = new OpportunityImpl(customer,NAME , DESCRIPTION); 
+		final Opportunity opportunity = new OpportunityImpl(customer,NAME , DESCRIPTION, Kind.Tender); 
 		Assert.assertEquals(customer, opportunity.customer());
 		Assert.assertEquals(NAME, opportunity.name());
 		Assert.assertEquals(DESCRIPTION, opportunity.description());
+		Assert.assertEquals(Kind.Tender, opportunity.kind());
 	}
 	
 	@Test
@@ -38,6 +40,7 @@ public class OpportunityTest {
 		Assert.assertEquals(customer, opportunity.customer());
 		Assert.assertEquals(NAME, opportunity.name());
 		Assert.assertNull(opportunity.description());
+		Assert.assertEquals(Kind.ProductOrService, opportunity.kind());
 	}
 	
 	@Test
