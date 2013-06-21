@@ -1,12 +1,17 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.Size;
 
 import de.mq.mapping.util.proxy.Getter;
+import de.mq.mapping.util.proxy.GetterDomain;
 import de.mq.mapping.util.proxy.GetterProxy;
+import de.mq.mapping.util.proxy.GetterProxyCollection;
 import de.mq.mapping.util.proxy.Setter;
+import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Enum2StringConverter;
 import de.mq.mapping.util.proxy.support.Number2StringConverter;
 import de.mq.merchandise.customer.support.CustomerAO;
@@ -52,16 +57,20 @@ public abstract class OpportunityAO {
 	public abstract Set<String> getKeyWords();
 	
 	
-	//private Set<ActivityClassification> activityClassifications=new HashSet<>();
+	@GetterProxyCollection(clazz=OpportunityImpl.class, name = "activityClassifications",  proxyClass = ActivityClassificationAO.class , converter=HibernateProxyConverter.class)
+	public abstract Collection<ActivityClassificationAO> getActivityClassifications();
 	
-	
-	//private Set<ProcuctClassification> procuctClassifications=new HashSet<>();
+	@GetterProxyCollection(clazz=OpportunityImpl.class, name = "procuctClassifications", proxyClass = ProductclassificationAO.class , converter=HibernateProxyConverter.class)
+	public abstract Collection<ProductclassificationAO> getProcuctClassifications();
 	
 
 	//@GetterProxyCollection(name = "commercialRelations", proxyClass = CommercialRelationAO.class, collectionClass = HashSet.class , converter=HibernateProxyConverter.class )
 	//private Set<CommercialRelation> commercialRelations = new HashSet<>(); 
 	
+	@GetterDomain(clazz=OpportunityImpl.class)
+	public abstract Opportunity getOpportunity(); 
 	
-	
+	@SetterDomain(clazz=OpportunityImpl.class)
+	public abstract void setOpportunity(final Opportunity opportunity); 
 
 }
