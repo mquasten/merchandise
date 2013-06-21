@@ -1,7 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.Size;
