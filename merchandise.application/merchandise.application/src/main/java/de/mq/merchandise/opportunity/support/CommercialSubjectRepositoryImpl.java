@@ -4,14 +4,15 @@ import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Repository;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.util.Paging;
+import de.mq.merchandise.util.PagingUtil;
+import de.mq.merchandise.util.ParameterImpl;
 @Repository
 @Profile("db")
 public class CommercialSubjectRepositoryImpl implements CommercialSubjectRepository{
@@ -23,40 +24,27 @@ public class CommercialSubjectRepositoryImpl implements CommercialSubjectReposit
 	@PersistenceContext
 	private EntityManager entityManager;
 	
+	@Autowired
+	private PagingUtil entityManagerUtil; 
 	
 	public CommercialSubjectRepositoryImpl() {
 		
 	}
 	
-	CommercialSubjectRepositoryImpl(final EntityManager entityManager){
+	CommercialSubjectRepositoryImpl(final EntityManager entityManager, final PagingUtil entityManagerUtil){
 		this.entityManager=entityManager;
+		this.entityManagerUtil=entityManagerUtil;
 	}
 	
 	
 	public final Collection<CommercialSubject> forNamePattern(final Customer customer, final String namePattern, final Paging paging ) {
 		
-		
-		final TypedQuery<Number> typedCountQuery = entityManager.createQuery(QueryUtils.createCountQueryFor(queryString(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN)), Number.class);
-	
-		typedCountQuery.setParameter(PARAMETER_SUBJECT_NAME , namePattern);
-		typedCountQuery.setParameter(PARAMETER_CUSTOMER_ID , customer.id());
-		paging.assignRowCounter(typedCountQuery.getSingleResult().longValue());
-		
-		final TypedQuery<CommercialSubject> typedResultQuery = entityManager.createQuery(queryString(CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN) +" order by " +paging.sortHint(), CommercialSubject.class);
-		
-		typedResultQuery.setFirstResult(paging.firstRow());
-		typedResultQuery.setMaxResults(paging.pageSize());
-		typedResultQuery.setParameter(PARAMETER_SUBJECT_NAME, namePattern);
-		typedResultQuery.setParameter(PARAMETER_CUSTOMER_ID, customer.id());
-		return typedResultQuery.getResultList();
-		
+		return entityManagerUtil.countAndQuery(entityManager, CommercialSubject.class, paging, CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN , new ParameterImpl<String>(PARAMETER_SUBJECT_NAME, namePattern)  , new ParameterImpl<Long>(PARAMETER_CUSTOMER_ID, customer.id()));
 		
 	}
 	
 	
-	private String queryString(final String queryName) { 
-	  return entityManager.createNamedQuery(queryName).unwrap(org.hibernate.Query.class).getQueryString().replaceFirst("[Oo][Rr][Dd][Ee][Rr].*[bB][Yy].*$", "");
-	}
+	
 
 	@Override
 	public final  CommercialSubject save(final CommercialSubject commercialSubject) {
