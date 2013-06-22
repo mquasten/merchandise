@@ -14,7 +14,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.ModelRepository;
-import de.mq.mapping.util.proxy.NoModel;
 import de.mq.merchandise.util.SimplePagingImpl;
 
 public class OpportunityProxyFactoryTest {
