@@ -15,7 +15,6 @@ public class ContactSelector implements  Converter<LoginContact, Class<?>>  {
 		
 		if (contact instanceof PhoneContactImpl) {
 			 return PhoneContactAO.class;
-			
 		} 
 		
 		if (contact instanceof EMailContactImpl) {
