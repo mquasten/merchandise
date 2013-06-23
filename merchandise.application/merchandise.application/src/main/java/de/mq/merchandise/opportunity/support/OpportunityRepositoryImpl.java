@@ -30,9 +30,13 @@ public class OpportunityRepositoryImpl implements OpportunityRepository {
 	@Autowired
 	private PagingUtil entityManagerUtil; 
 	
-	public OpportunityRepositoryImpl(final EntityManager entityManager, final PagingUtil entityManagerUtil) {
+	OpportunityRepositoryImpl(final EntityManager entityManager, final PagingUtil entityManagerUtil) {
 		this.entityManager = entityManager;
 		this.entityManagerUtil = entityManagerUtil;
+	}
+	
+	public  OpportunityRepositoryImpl() {
+		
 	}
 	
 	
