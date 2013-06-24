@@ -16,7 +16,7 @@ import de.mq.merchandise.util.ParameterImpl;
 
 @Repository
 @Profile("db")
-public class OpportunityRepositoryImpl implements OpportunityRepository {
+public class OpportunityRepositoryImpl extends AbstractRepositoryImpl<Opportunity, Long> implements OpportunityRepository {
 	
 	
 	static final String PARAMETER_SUBJECT_NAME = "name";
@@ -47,28 +47,11 @@ public class OpportunityRepositoryImpl implements OpportunityRepository {
 	public Collection<Opportunity> forNamePattern(final Customer customer, final String namePattern, final Paging paging ) {
 		return entityManagerUtil.countAndQuery(entityManager, Opportunity.class, paging, OPPORTUNITY_FOR_NAME_PATTERN, new ParameterImpl<String>(PARAMETER_SUBJECT_NAME, namePattern ), new ParameterImpl<Long>(PARAMETER_CUSTOMER_ID, customer.id() ));
 	}
-	
-	/* (non-Javadoc)
-	 * @see de.mq.merchandise.opportunity.support.OpportunityRepository#save(de.mq.merchandise.opportunity.support.Opportunity)
-	 */
+
 	@Override
-	public void save(final Opportunity opportunity) {
-		entityManager.merge(opportunity);
-	}
-	
-	@Override
-	public void delete(final Opportunity opportunity) {
-         final Opportunity result = entityManager.find(OpportunityImpl.class, opportunity.id());
-         if( result == null){
-        	 return;
-         }
-         entityManager.remove(result);
-	}
-	
-	@Override
-	public Opportunity forId(final Long id) {
-		return  entityManager.find(OpportunityImpl.class, id);
-		
+	protected Class<? extends Opportunity> clazz() {
+		return OpportunityImpl.class;
 	}
 
+	
 }

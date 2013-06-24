@@ -19,7 +19,7 @@ import de.mq.merchandise.util.ParameterImpl;
 public class CommercialSubjectRepositoryTest {
 	
 	private static final long CUSTOMER_ID = 4711L;
-	private static final long ID = 19680528L;
+	
 
 	private static final String PATTERN = "pattern";
 
@@ -53,47 +53,10 @@ public class CommercialSubjectRepositoryTest {
 		Assert.assertNotNull(new CommercialSubjectRepositoryImpl());
 	}
 	
-	@Test
-	public final void save() {
-		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
-		Mockito.when(entityManager.merge(commercialSubject)).thenReturn(commercialSubject);
-		Assert.assertEquals(commercialSubject, commercialSubjectRepository.save(commercialSubject));
-		Mockito.verify(entityManager).merge(commercialSubject);
-		
-	}
 	
 	@Test
-	public final void delete() {
-		final CommercialSubjectImpl commercialSubject = Mockito.mock(CommercialSubjectImpl.class);
-		Mockito.when(commercialSubject.hasId()).thenReturn(true);
-		Mockito.when(commercialSubject.id()).thenReturn(ID);
-		Mockito.when(entityManager.find( CommercialSubjectImpl.class ,ID)).thenReturn( commercialSubject);
-		
-		commercialSubjectRepository.delete(commercialSubject.id());
-		
-		Mockito.verify(entityManager).remove(commercialSubject);
-	}
-	
-	@Test
-	public final void deleteNotFound() {
-		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
-		Mockito.when(commercialSubject.hasId()).thenReturn(true);
-		Mockito.when(commercialSubject.id()).thenReturn(ID);
-		
-		commercialSubjectRepository.delete(commercialSubject.id());
-		
-		Mockito.verify(entityManager).find(CommercialSubjectImpl.class, ID);
-		Mockito.verifyNoMoreInteractions(entityManager);
-		
-	}
-	
-	
-	@Test
-	public final void forId() {
-		final CommercialSubjectImpl result = Mockito.mock(CommercialSubjectImpl.class);
-		Mockito.when(entityManager.find(CommercialSubjectImpl.class, ID)).thenReturn(result);
-		Assert.assertEquals(result, commercialSubjectRepository.forId(ID));
-		Mockito.verify(entityManager).find(CommercialSubjectImpl.class, ID);
+	public final void clazz() {
+		Assert.assertEquals(CommercialSubjectImpl.class, new CommercialSubjectRepositoryImpl().clazz());
 	}
 
 }
