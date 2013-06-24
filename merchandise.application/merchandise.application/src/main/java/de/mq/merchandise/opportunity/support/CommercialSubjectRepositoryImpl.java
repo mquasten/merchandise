@@ -13,7 +13,7 @@ import de.mq.merchandise.util.PagingUtil;
 import de.mq.merchandise.util.ParameterImpl;
 @Repository
 @Profile("db")
-public class CommercialSubjectRepositoryImpl extends AbstractRepositoryImpl<CommercialSubject, Long> implements CommercialSubjectRepository  {
+public class CommercialSubjectRepositoryImpl extends AbstractRepository<CommercialSubject, Long> implements CommercialSubjectRepository  {
 	
 	
 	static final String PARAMETER_SUBJECT_NAME = "name";

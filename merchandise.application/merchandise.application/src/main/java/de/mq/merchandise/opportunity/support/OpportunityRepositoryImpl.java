@@ -16,7 +16,7 @@ import de.mq.merchandise.util.ParameterImpl;
 
 @Repository
 @Profile("db")
-public class OpportunityRepositoryImpl extends AbstractRepositoryImpl<Opportunity, Long> implements OpportunityRepository {
+public class OpportunityRepositoryImpl extends AbstractRepository<Opportunity, Long> implements OpportunityRepository {
 	
 	
 	static final String PARAMETER_SUBJECT_NAME = "name";

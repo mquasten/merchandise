@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import de.mq.merchandise.BasicRepository;
 import de.mq.merchandise.util.PagingUtil;
 
-public abstract class AbstractRepositoryImpl<T,V> implements BasicRepository<T,V>  {
+public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 
 	@PersistenceContext
 	protected EntityManager entityManager;
