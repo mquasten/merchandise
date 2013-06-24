@@ -99,24 +99,22 @@ public class CommercialSubjectMemoryRepositoryMock implements CommercialSubjectR
 
 
 	@Override
-	public void delete(final CommercialSubject commercialSubject) {
-        idExistsGuard(commercialSubject);
-		commercialSubjects.remove(commercialSubject.id());
-		
+	public void delete(final Long id) {
+		commercialSubjects.remove(id);
 	}
 
 
 
-	private void idExistsGuard(final CommercialSubject commercialSubject) {
-		if( ! commercialSubject.hasId()) {
-        	throw new IllegalArgumentException("Id should not be null, commercialSubject isn't persistent");
-        }
-	}
+
 
 
 	@Override
-	public final CommercialSubject forId(final Long id) {
+	public CommercialSubject forId(final Long id) {
 		return commercialSubjects.get(id);
 	}
+
+
+
+	
 
 }

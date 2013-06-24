@@ -42,7 +42,7 @@ public class CommercialSubjectServiceImpl implements CommercialSubjectService {
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public void delete(CommercialSubject commercialSubject) {
-		commercialSubjectRepository.delete(commercialSubject);
+		commercialSubjectRepository.delete(commercialSubject.id());
 		
 	}
 

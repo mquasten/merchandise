@@ -56,7 +56,7 @@ public class CommercialServiceTest {
 	@Test
 	public final void delete() {
 		commercialSubjectService.delete(commercialSubject);
-		Mockito.verify(commercialSubjectRepository).delete(commercialSubject);
+		Mockito.verify(commercialSubjectRepository).delete(commercialSubject.id());
 	}
 	
 	@Test

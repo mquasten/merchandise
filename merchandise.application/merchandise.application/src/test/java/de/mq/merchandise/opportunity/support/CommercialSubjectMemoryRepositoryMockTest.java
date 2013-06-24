@@ -155,16 +155,13 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 	    commercialSubjects.put(ID, commercialSubject);
 	    Assert.assertEquals(1, commercialSubjects.size());
 	    
-	    commercialSubjectRepository.delete(commercialSubject);
+	    commercialSubjectRepository.delete(commercialSubject.id());
 	    
 	    Assert.assertEquals(0, commercialSubjects.size());
 		
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public final void deleteMissingId() {
-		commercialSubjectRepository.delete(Mockito.mock(CommercialSubject.class));
-	}
+	
 	
 	
 	
