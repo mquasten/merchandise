@@ -11,6 +11,9 @@ public interface CommercialSubjectRepository extends BasicRepository<CommercialS
 	
 	static final String SUBJECT_FOR_NAME_PATTERN = "subjectForNamePattern";
 	
+	static final String PARAMETER_SUBJECT_NAME = "name";
+	static final String PARAMETER_CUSTOMER_ID = "customerId";
+	
 	Collection<CommercialSubject> forNamePattern(final Customer customer, final String namePattern, final Paging paging); 
 	
 	

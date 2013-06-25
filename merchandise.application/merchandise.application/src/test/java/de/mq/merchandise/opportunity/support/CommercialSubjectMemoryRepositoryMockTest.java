@@ -35,8 +35,7 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 		Assert.assertEquals(commercialSubject, result);
 		Assert.assertEquals((long) ID, result.id());
 		
-		@SuppressWarnings("unchecked")
-		final Map<Long,CommercialSubject> results = (Map<Long, CommercialSubject>) ReflectionTestUtils.getField(commercialSubjectRepository, "commercialSubjects");
+		final Map<Long,CommercialSubject> results = storedValues();
 		
 		Assert.assertEquals(1, results.size());
 		
@@ -55,8 +54,7 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 	    Assert.assertTrue(result.id() > 0L);
 		Assert.assertEquals(commercialSubject, result);
 		
-		@SuppressWarnings("unchecked")
-		final Map<Long,CommercialSubject> results = (Map<Long, CommercialSubject>) ReflectionTestUtils.getField(commercialSubjectRepository, "commercialSubjects");
+		final Map<Long,CommercialSubject> results = storedValues();
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals(commercialSubject, results.get(result.id()));
 	}
@@ -64,8 +62,7 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 	
 	@Test
 	public final void search() {
-		@SuppressWarnings("unchecked")
-		final Map<Long,CommercialSubject> results = (Map<Long, CommercialSubject>) ReflectionTestUtils.getField(commercialSubjectRepository, "commercialSubjects");
+		final Map<Long,CommercialSubject> results = storedValues();
 	    final Customer customer = Mockito.mock(Customer.class);
 		for(long i=0; i < 100; i++){
 	    	final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
@@ -104,9 +101,7 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 		final Customer otherCustomer = Mockito.mock(Customer.class);
 		Mockito.when(otherCustomer.id()).thenReturn(815L);
 		
-		
-		@SuppressWarnings("unchecked")
-		final Map<Long,CommercialSubject> commercialSubjects = (Map<Long, CommercialSubject>) ReflectionTestUtils.getField(commercialSubjectRepository, "commercialSubjects");
+		final Map<Long,CommercialSubject> commercialSubjects = storedValues();
 	    final CommercialSubject notInResult = Mockito.mock(CommercialSubject.class);
 	    Mockito.when(notInResult.id()).thenReturn(1L);
 	    Mockito.when(notInResult.hasId()).thenReturn(true);
@@ -146,8 +141,8 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 	
 	@Test
 	public final void delete() {
-		@SuppressWarnings("unchecked")
-		final Map<Long,CommercialSubject> commercialSubjects = (Map<Long, CommercialSubject>) ReflectionTestUtils.getField(commercialSubjectRepository, "commercialSubjects");
+		
+		final Map<Long,CommercialSubject> commercialSubjects = storedValues();
 		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
 	    Mockito.when(commercialSubject.id()).thenReturn(ID);
 	    Mockito.when(commercialSubject.hasId()).thenReturn(true);
@@ -174,8 +169,8 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 	
 	@Test
 	public final void init() {
-		@SuppressWarnings("unchecked")
-		final Map<Long,CommercialSubject> commercialSubjects = (Map<Long, CommercialSubject>) ReflectionTestUtils.getField(commercialSubjectRepository, "commercialSubjects");
+		
+		final Map<Long,CommercialSubject> commercialSubjects = storedValues();
 		Assert.assertTrue(commercialSubjects.isEmpty());
 		((CommercialSubjectMemoryRepositoryMock) commercialSubjectRepository).init();
 		
@@ -199,12 +194,17 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 	public final void forId() {
 		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
 		Mockito.when(commercialSubject.id()).thenReturn(ID);
-		@SuppressWarnings("unchecked")
-		final Map<Long,CommercialSubject> commercialSubjects = (Map<Long, CommercialSubject>) ReflectionTestUtils.getField(commercialSubjectRepository, "commercialSubjects");
+		
+		final Map<Long,CommercialSubject> commercialSubjects = storedValues();
 		commercialSubjects.put(ID, commercialSubject);
 		
 		Assert.assertEquals(commercialSubject, commercialSubjectRepository.forId(ID));
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<Long, CommercialSubject> storedValues() {
+		return (Map<Long, CommercialSubject>) ReflectionTestUtils.getField(commercialSubjectRepository, "storedVales");
 	}
 
 }

@@ -3,7 +3,6 @@ package de.mq.merchandise.opportunity.support;
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -23,9 +22,6 @@ public class OpportunityRepositoryImpl extends AbstractRepository<Opportunity, L
 	static final String PARAMETER_CUSTOMER_ID = "customerId";
 	
 	
-	
-	@PersistenceContext
-	private EntityManager entityManager;
 	
 	@Autowired
 	private PagingUtil entityManagerUtil; 

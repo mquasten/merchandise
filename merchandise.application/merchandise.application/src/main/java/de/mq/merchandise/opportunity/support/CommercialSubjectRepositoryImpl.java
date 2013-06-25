@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
@@ -16,8 +17,11 @@ import de.mq.merchandise.util.ParameterImpl;
 public class CommercialSubjectRepositoryImpl extends AbstractRepository<CommercialSubject, Long> implements CommercialSubjectRepository  {
 	
 	
-	static final String PARAMETER_SUBJECT_NAME = "name";
-	static final String PARAMETER_CUSTOMER_ID = "customerId";
+	
+	
+	@Autowired
+	private PagingUtil pagingUtil;
+	
 	
 	public CommercialSubjectRepositoryImpl() {
 		
@@ -25,14 +29,12 @@ public class CommercialSubjectRepositoryImpl extends AbstractRepository<Commerci
 	
 	CommercialSubjectRepositoryImpl(final EntityManager entityManager, final PagingUtil entityManagerUtil){
 		this.entityManager=entityManager;
-		this.entityManagerUtil=entityManagerUtil;
+		this.pagingUtil=entityManagerUtil;
 	}
 	
 	
 	public final Collection<CommercialSubject> forNamePattern(final Customer customer, final String namePattern, final Paging paging ) {
-		
-		return entityManagerUtil.countAndQuery(entityManager, CommercialSubject.class, paging, CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN , new ParameterImpl<String>(PARAMETER_SUBJECT_NAME, namePattern)  , new ParameterImpl<Long>(PARAMETER_CUSTOMER_ID, customer.id()));
-		
+		return pagingUtil.countAndQuery(entityManager, CommercialSubject.class, paging, CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN , new ParameterImpl<String>(PARAMETER_SUBJECT_NAME, namePattern)  , new ParameterImpl<Long>(PARAMETER_CUSTOMER_ID, customer.id()));
 	}
 
 	
