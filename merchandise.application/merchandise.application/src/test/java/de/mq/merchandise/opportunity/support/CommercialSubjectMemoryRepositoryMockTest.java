@@ -8,6 +8,8 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -18,7 +20,7 @@ import de.mq.merchandise.customer.support.CustomerMemoryReposioryMock;
 import de.mq.merchandise.util.Paging;
 
 
-
+@Ignore
 public class CommercialSubjectMemoryRepositoryMockTest {
 	
 	private static final Long ID = 19680528L;

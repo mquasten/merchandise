@@ -14,12 +14,12 @@ import de.mq.merchandise.BasicRepository;
 public abstract  class AbstractPagingMemoryRepository<T>  implements BasicRepository<T, Long>{
 	
 	
-	protected final Map<Long,T> storedVales = new HashMap<Long,T>();
+	protected final Map<Long,T> storedValues = new HashMap<Long,T>();
 	
 	protected final Collection<T> forPattern(final Paging paging, final Parameter<?> ... params) {
 	
 		final List<T> allResults = new ArrayList<>();
-		for(final T value : storedVales.values()){
+		for(final T value : storedValues.values()){
 			
 			if( ! match( value, params )){
 				continue;
@@ -51,12 +51,11 @@ public abstract  class AbstractPagingMemoryRepository<T>  implements BasicReposi
 
 
 	@Override
-	public final T save(final T entity) {
-		
+	public  final T save(final T entity) {
 		if ( ! ((BasicEntity) entity).hasId()){
 			EntityUtil.setId(entity, randomId());
 		}
-		storedVales.put( ((BasicEntity) entity).id(), entity);
+		storedValues.put( ((BasicEntity) entity).id(), entity);
 		return entity;
 		
 		
@@ -69,16 +68,16 @@ public abstract  class AbstractPagingMemoryRepository<T>  implements BasicReposi
 
 	@Override
 	public final void delete(final Long id) {
-		if ( ! storedVales.containsKey(id)){
+		if ( ! storedValues.containsKey(id)){
 			return;
 		}
-		storedVales.remove(id);
+		storedValues.remove(id);
 	}
 
 
 	@Override
 	public final T forId(final Long id) {
-		return storedVales.get(id);
+		return storedValues.get(id);
 	}
 	
 

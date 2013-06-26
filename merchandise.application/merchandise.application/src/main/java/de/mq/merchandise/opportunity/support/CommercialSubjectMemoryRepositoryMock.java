@@ -40,7 +40,7 @@ public class CommercialSubjectMemoryRepositoryMock extends AbstractPagingMemoryR
 			final Field field = ReflectionUtils.findField(commercialSubject.getClass(), "customer");
 			field.setAccessible(true);
 			ReflectionUtils.setField(field, commercialSubject, customerMemoryReposioryMock.forId(CustomerMemoryReposioryMock.DEFAULT_CUSTOMER_ID));
-			storedVales.put(commercialSubject.id(), commercialSubject);
+			storedValues.put(commercialSubject.id(), commercialSubject);
 		}
 	}
 
