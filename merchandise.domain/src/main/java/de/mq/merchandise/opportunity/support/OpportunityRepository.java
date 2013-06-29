@@ -10,7 +10,7 @@ public interface OpportunityRepository extends BasicRepository<Opportunity, Long
 	
 	static final String OPPORTUNITY_FOR_NAME_PATTERN = "subjectForNamePattern";
 	
-	static final String PARAMETER_SUBJECT_NAME = "name";
+	static final String PARAMETER_OPPORTUNITY_NAME = "name";
 	static final String PARAMETER_CUSTOMER_ID = "customerId";
 	
 	Collection<Opportunity> forNamePattern(final Customer customer, final String namePattern, final Paging paging);

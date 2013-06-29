@@ -45,7 +45,7 @@ public class OpportunityRepositoryTest {
 	   final Customer customer = Mockito.mock(Customer.class);
 	   
 	   final Paging paging = Mockito.mock(Paging.class);
-	   final Parameter<String> nameParameter =new ParameterImpl<String>(OpportunityRepository.PARAMETER_SUBJECT_NAME,null);
+	   final Parameter<String> nameParameter =new ParameterImpl<String>(OpportunityRepository.PARAMETER_OPPORTUNITY_NAME,null);
 	   final List<Opportunity> results = new ArrayList<Opportunity>();
 	   results.add(Mockito.mock(Opportunity.class));
 	   final Parameter<Long> idParameter = new ParameterImpl<Long>(OpportunityRepository.PARAMETER_CUSTOMER_ID, null);

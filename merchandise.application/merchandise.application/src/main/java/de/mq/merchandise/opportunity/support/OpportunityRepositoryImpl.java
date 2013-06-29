@@ -18,8 +18,7 @@ import de.mq.merchandise.util.ParameterImpl;
 public class OpportunityRepositoryImpl extends AbstractRepository<Opportunity, Long> implements OpportunityRepository {
 	
 	
-	static final String PARAMETER_SUBJECT_NAME = "name";
-	static final String PARAMETER_CUSTOMER_ID = "customerId";
+	
 	
 	
 	
@@ -42,7 +41,7 @@ public class OpportunityRepositoryImpl extends AbstractRepository<Opportunity, L
 	@Override
 	public Collection<Opportunity> forNamePattern(final Customer customer, final String namePattern, final Paging paging ) {
 		
-		return pagingUtil.countAndQuery(entityManager, Opportunity.class, paging, OPPORTUNITY_FOR_NAME_PATTERN, new ParameterImpl<String>(PARAMETER_SUBJECT_NAME, namePattern ), new ParameterImpl<Long>(PARAMETER_CUSTOMER_ID, customer.id() ));
+		return pagingUtil.countAndQuery(entityManager, Opportunity.class, paging, OPPORTUNITY_FOR_NAME_PATTERN, new ParameterImpl<String>(PARAMETER_OPPORTUNITY_NAME, namePattern ), new ParameterImpl<Long>(PARAMETER_CUSTOMER_ID, customer.id() ));
 	}
 
 	@Override
