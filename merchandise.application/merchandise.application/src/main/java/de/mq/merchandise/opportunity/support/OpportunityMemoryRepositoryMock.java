@@ -3,12 +3,17 @@ package de.mq.merchandise.opportunity.support;
 import java.util.Collection;
 import java.util.Comparator;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.util.AbstractPagingMemoryRepository;
 import de.mq.merchandise.util.Paging;
 import de.mq.merchandise.util.Parameter;
 import de.mq.merchandise.util.ParameterImpl;
 
+@Repository
+@Profile("mock")
 public class OpportunityMemoryRepositoryMock extends AbstractPagingMemoryRepository<Opportunity> implements OpportunityRepository {
 
 	@Override
