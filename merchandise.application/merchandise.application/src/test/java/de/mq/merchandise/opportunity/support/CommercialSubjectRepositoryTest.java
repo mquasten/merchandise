@@ -56,7 +56,7 @@ public class CommercialSubjectRepositoryTest {
 	
 	@Test
 	public final void clazz() {
-		Assert.assertEquals(CommercialSubjectImpl.class, new CommercialSubjectRepositoryImpl().clazz());
+		Assert.assertEquals(CommercialSubjectImpl.class, new CommercialSubjectRepositoryImpl().entityImplementationClass());
 	}
 
 }

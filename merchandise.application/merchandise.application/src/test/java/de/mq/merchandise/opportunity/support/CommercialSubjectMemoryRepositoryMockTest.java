@@ -8,8 +8,6 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
-
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -20,46 +18,16 @@ import de.mq.merchandise.customer.support.CustomerMemoryReposioryMock;
 import de.mq.merchandise.util.Paging;
 
 
-@Ignore
+
 public class CommercialSubjectMemoryRepositoryMockTest {
 	
 	private static final Long ID = 19680528L;
 	private final CommercialSubjectRepository commercialSubjectRepository = new CommercialSubjectMemoryRepositoryMock(new CustomerMemoryReposioryMock());
 	
 	
-	@Test
-	public final void save() {
-		
-		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
-		Mockito.when(commercialSubject.hasId()).thenReturn(true);
-		Mockito.when(commercialSubject.id()).thenReturn(ID);
-		final CommercialSubject result =  commercialSubjectRepository.save(commercialSubject);
-		Assert.assertEquals(commercialSubject, result);
-		Assert.assertEquals((long) ID, result.id());
-		
-		final Map<Long,CommercialSubject> results = storedValues();
-		
-		Assert.assertEquals(1, results.size());
-		
-		Assert.assertEquals(ID, results.keySet().iterator().next());
-		Assert.assertEquals(commercialSubject, results.values().iterator().next());
-		Assert.assertEquals(commercialSubject.id(), results.values().iterator().next().id());
-		
-	}
 	
-	@Test
-	public final void saveNew() {
-		final CommercialSubject commercialSubject = new CommercialSubjectImpl(Mockito.mock(Customer.class), "name", "description");
-		Assert.assertFalse(commercialSubject.hasId());
-		
-		final CommercialSubject result =  commercialSubjectRepository.save(commercialSubject);
-	    Assert.assertTrue(result.id() > 0L);
-		Assert.assertEquals(commercialSubject, result);
-		
-		final Map<Long,CommercialSubject> results = storedValues();
-		Assert.assertEquals(1, results.size());
-		Assert.assertEquals(commercialSubject, results.get(result.id()));
-	}
+	
+	
 	
 	
 	@Test
@@ -141,22 +109,6 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 		
 	}
 	
-	@Test
-	public final void delete() {
-		
-		final Map<Long,CommercialSubject> commercialSubjects = storedValues();
-		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
-	    Mockito.when(commercialSubject.id()).thenReturn(ID);
-	    Mockito.when(commercialSubject.hasId()).thenReturn(true);
-	    Mockito.when(commercialSubject.name()).thenReturn("Special Escortsecvice");
-	    commercialSubjects.put(ID, commercialSubject);
-	    Assert.assertEquals(1, commercialSubjects.size());
-	    
-	    commercialSubjectRepository.delete(commercialSubject.id());
-	    
-	    Assert.assertEquals(0, commercialSubjects.size());
-		
-	}
 	
 	
 	
@@ -192,21 +144,11 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 		
 	}
 	
-	@Test
-	public final void forId() {
-		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
-		Mockito.when(commercialSubject.id()).thenReturn(ID);
-		
-		final Map<Long,CommercialSubject> commercialSubjects = storedValues();
-		commercialSubjects.put(ID, commercialSubject);
-		
-		Assert.assertEquals(commercialSubject, commercialSubjectRepository.forId(ID));
-		
-	}
+	
 
 	@SuppressWarnings("unchecked")
 	private Map<Long, CommercialSubject> storedValues() {
-		return (Map<Long, CommercialSubject>) ReflectionTestUtils.getField(commercialSubjectRepository, "storedVales");
+		return (Map<Long, CommercialSubject>) ReflectionTestUtils.getField(commercialSubjectRepository, "storedValues");
 	}
 
 }

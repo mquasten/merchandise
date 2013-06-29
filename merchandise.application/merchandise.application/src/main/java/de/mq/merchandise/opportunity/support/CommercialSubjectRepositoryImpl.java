@@ -40,7 +40,7 @@ public class CommercialSubjectRepositoryImpl extends AbstractRepository<Commerci
 	
 
 	@Override
-	protected Class<? extends CommercialSubject> clazz() {
+	protected Class<? extends CommercialSubject> entityImplementationClass() {
 		return CommercialSubjectImpl.class;
 	}
 }

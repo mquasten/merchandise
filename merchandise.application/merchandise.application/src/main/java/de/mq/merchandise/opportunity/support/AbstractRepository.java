@@ -26,7 +26,7 @@ public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 	
 	@Override
 	public final void delete(final V id ) {
-		final T existing = (T) entityManager.find(clazz(),  id);
+		final T existing = (T) entityManager.find(entityImplementationClass(),  id);
 		if( existing==null){
 			return;
 		}
@@ -35,12 +35,12 @@ public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 	}
 
 	
-	protected  abstract Class<? extends T> clazz();
+	protected  abstract Class<? extends T> entityImplementationClass();
 	
 
 	
 	public final T forId(final V id) {
-		return entityManager.find(clazz(), id);
+		return entityManager.find(entityImplementationClass(), id);
 		
 	}
 	

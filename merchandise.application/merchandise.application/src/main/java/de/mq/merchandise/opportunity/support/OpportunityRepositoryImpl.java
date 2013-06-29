@@ -24,11 +24,11 @@ public class OpportunityRepositoryImpl extends AbstractRepository<Opportunity, L
 	
 	
 	@Autowired
-	private PagingUtil entityManagerUtil; 
+	private PagingUtil pagingUtil; 
 	
-	OpportunityRepositoryImpl(final EntityManager entityManager, final PagingUtil entityManagerUtil) {
+	OpportunityRepositoryImpl(final EntityManager entityManager, final PagingUtil pagingUtil) {
 		this.entityManager = entityManager;
-		this.entityManagerUtil = entityManagerUtil;
+		this.pagingUtil = pagingUtil;
 	}
 	
 	public  OpportunityRepositoryImpl() {
@@ -41,11 +41,12 @@ public class OpportunityRepositoryImpl extends AbstractRepository<Opportunity, L
 	 */
 	@Override
 	public Collection<Opportunity> forNamePattern(final Customer customer, final String namePattern, final Paging paging ) {
-		return entityManagerUtil.countAndQuery(entityManager, Opportunity.class, paging, OPPORTUNITY_FOR_NAME_PATTERN, new ParameterImpl<String>(PARAMETER_SUBJECT_NAME, namePattern ), new ParameterImpl<Long>(PARAMETER_CUSTOMER_ID, customer.id() ));
+		
+		return pagingUtil.countAndQuery(entityManager, Opportunity.class, paging, OPPORTUNITY_FOR_NAME_PATTERN, new ParameterImpl<String>(PARAMETER_SUBJECT_NAME, namePattern ), new ParameterImpl<Long>(PARAMETER_CUSTOMER_ID, customer.id() ));
 	}
 
 	@Override
-	protected Class<? extends Opportunity> clazz() {
+	protected Class<? extends Opportunity> entityImplementationClass() {
 		return OpportunityImpl.class;
 	}
 
