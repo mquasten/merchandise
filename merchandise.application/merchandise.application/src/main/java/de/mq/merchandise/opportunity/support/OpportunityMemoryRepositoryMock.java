@@ -3,11 +3,17 @@ package de.mq.merchandise.opportunity.support;
 import java.util.Collection;
 import java.util.Comparator;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.customer.support.CustomerMemoryReposioryMock;
+import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 import de.mq.merchandise.util.AbstractPagingMemoryRepository;
+import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Paging;
 import de.mq.merchandise.util.Parameter;
 import de.mq.merchandise.util.ParameterImpl;
@@ -16,6 +22,23 @@ import de.mq.merchandise.util.ParameterImpl;
 @Profile("mock")
 public class OpportunityMemoryRepositoryMock extends AbstractPagingMemoryRepository<Opportunity> implements OpportunityRepository {
 
+	final static Opportunity[] DEFAULT_OPPORTUNITIES = { new OpportunityImpl(null, "Pussycat EscortService" , "Begleitung++", Kind.ProductOrService) ,  new OpportunityImpl(null, "Music without GEMA" , "Illegale Downloads", Kind.ProductOrService) } ;
+	
+	@Autowired
+	private CustomerMemoryReposioryMock customerMemoryReposioryMock;
+	
+	@PostConstruct
+	void init() {
+		final Customer customer = customerMemoryReposioryMock.forId(CustomerMemoryReposioryMock.DEFAULT_CUSTOMER_ID);
+		for(final Opportunity opportunity : DEFAULT_OPPORTUNITIES){
+			EntityUtil.setId(opportunity, randomId());
+			EntityUtil.setDependency(opportunity, Customer.class, customer);
+			storedValues.put(opportunity.id(), opportunity);
+		}
+		
+	}
+	
+	
 	@Override
 	public final Collection<Opportunity> forNamePattern(final Customer customer, final String namePattern, final Paging paging) {
 		return super.forPattern(paging, new ParameterImpl<String>(OpportunityRepository.PARAMETER_OPPORTUNITY_NAME, namePattern.replaceAll("[%]", ".*")),  new ParameterImpl<Long>(OpportunityRepository.PARAMETER_CUSTOMER_ID, customer.id()));

@@ -1,4 +1,4 @@
-package de.mq.merchandise.util;
+package de.mq.merchandise.opportunity.support;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +14,7 @@ import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityRepository;
 import de.mq.merchandise.opportunity.support.OpportunityService;
 import de.mq.merchandise.opportunity.support.OpportunityServiceImpl;
+import de.mq.merchandise.util.Paging;
 
 public class OpportunityServiceTest {
 	

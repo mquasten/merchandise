@@ -1,15 +1,22 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.CollectionUtils;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.customer.support.CustomerMemoryReposioryMock;
+import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Paging;
 
 import de.mq.merchandise.util.Parameter;
@@ -95,6 +102,26 @@ public class OpportunityMemoryRepositoryMockTest {
 		final Collection<Opportunity> results = mockRepository.forNamePattern(customer, PATTERN, paging);
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals(opportunity, results.iterator().next());
+	}
+	
+	
+	@Test
+	public final void init() {
+		@SuppressWarnings("unchecked")
+		final Map<Long,Opportunity> storedValues = (Map<Long, Opportunity>) ReflectionTestUtils.getField(mockRepository, "storedValues");
+		EntityUtil.setDependency(mockRepository, CustomerMemoryReposioryMock.class, new CustomerMemoryReposioryMock());
+		Assert.assertTrue(storedValues.isEmpty());
+		mockRepository.init();
+		Assert.assertEquals(OpportunityMemoryRepositoryMock.DEFAULT_OPPORTUNITIES.length, storedValues.size());
+		final Set<String> names = new HashSet<>();
+		for(final Opportunity opportunity : OpportunityMemoryRepositoryMock.DEFAULT_OPPORTUNITIES) {
+			names.add(opportunity.name());
+		}
+		for(final Entry<Long, Opportunity> entry : storedValues.entrySet()){
+			Assert.assertEquals((long) entry.getKey(), entry.getValue().id());
+			Assert.assertTrue(names.contains(entry.getValue().name()));
+			Assert.assertEquals(CustomerMemoryReposioryMock.DEFAULT_CUSTOMER_ID, entry.getValue().customer().id());
+		}
 	}
 
 }

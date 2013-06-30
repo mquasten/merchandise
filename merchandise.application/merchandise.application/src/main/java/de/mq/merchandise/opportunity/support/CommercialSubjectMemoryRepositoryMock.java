@@ -27,6 +27,8 @@ public class CommercialSubjectMemoryRepositoryMock extends AbstractPagingMemoryR
 			new CommercialSubjectImpl(null, "Music-Downloads", "Flatrate für Musik") };
 
 	private CustomerMemoryReposioryMock customerMemoryReposioryMock;
+	
+	
 
 	@Autowired
 	public CommercialSubjectMemoryRepositoryMock(final CustomerMemoryReposioryMock customerMemoryReposioryMock) {

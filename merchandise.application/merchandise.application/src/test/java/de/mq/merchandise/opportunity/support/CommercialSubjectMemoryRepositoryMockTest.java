@@ -24,12 +24,6 @@ public class CommercialSubjectMemoryRepositoryMockTest {
 	private static final Long ID = 19680528L;
 	private final CommercialSubjectRepository commercialSubjectRepository = new CommercialSubjectMemoryRepositoryMock(new CustomerMemoryReposioryMock());
 	
-	
-	
-	
-	
-	
-	
 	@Test
 	public final void search() {
 		final Map<Long,CommercialSubject> results = storedValues();
