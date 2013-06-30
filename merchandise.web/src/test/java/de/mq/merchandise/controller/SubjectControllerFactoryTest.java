@@ -10,7 +10,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.model.support.WebProxyFactory;
 import de.mq.merchandise.opportunity.CommercialSubjectService;
-import de.mq.merchandise.util.BasicService;
 
 public class SubjectControllerFactoryTest {
 	
@@ -18,7 +17,7 @@ public class SubjectControllerFactoryTest {
 	
 	private final  WebProxyFactory webProxyFactory = Mockito.mock(WebProxyFactory.class);
 	
-	private final BasicService commercialSubjectService = Mockito.mock(CommercialSubjectService.class);
+	private final CommercialSubjectService commercialSubjectService = Mockito.mock(CommercialSubjectService.class);
 	
 	@Before
 	public final void setup() {
