@@ -1,7 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,13 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.CollectionUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerMemoryReposioryMock;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Paging;
-
 import de.mq.merchandise.util.Parameter;
 
 public class OpportunityMemoryRepositoryMockTest {
