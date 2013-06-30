@@ -63,7 +63,7 @@ class SubjectControllerImpl {
 		}
 		
 		/* like a virgin, touched for the very first time ... */
-		commercialSupject.setCommercialSubject(commercialSubjectService.subject(selected.getCommercialSubject().id()));
+		commercialSupject.setCommercialSubject(commercialSubjectService.read(selected.getCommercialSubject().id()));
 		
 	}
 	

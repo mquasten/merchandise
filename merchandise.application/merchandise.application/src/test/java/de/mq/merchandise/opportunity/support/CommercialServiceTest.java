@@ -8,7 +8,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.CommercialSubjectService;
@@ -46,29 +45,5 @@ public class CommercialServiceTest {
 		Mockito.verify(commercialSubjectRepository).forNamePattern(customer, NAME_PATTERN, paging);
 	}
 	
-	@Test
-	public final void createOrUpdate() {
-		Mockito.when(commercialSubjectRepository.save(commercialSubject)).thenReturn(commercialSubject);
-		Assert.assertEquals(commercialSubject, commercialSubjectService.createOrUpdate(commercialSubject));
-		Mockito.verify(commercialSubjectRepository).save(commercialSubject);
-	}
 	
-	@Test
-	public final void delete() {
-		commercialSubjectService.delete(commercialSubject);
-		Mockito.verify(commercialSubjectRepository).delete(commercialSubject.id());
-	}
-	
-	@Test
-	public final void subject() {
-		Mockito.when(commercialSubjectRepository.forId(ID)).thenReturn(commercialSubject);
-		Assert.assertEquals(commercialSubject, commercialSubjectService.subject(ID));
-		Mockito.verify(commercialSubjectRepository).forId(ID);
-	}
-	
-	@Test(expected=InvalidDataAccessApiUsageException.class)
-	public final void subjectNotFound() {
-		commercialSubjectService.subject(ID);
-	}
-
 }

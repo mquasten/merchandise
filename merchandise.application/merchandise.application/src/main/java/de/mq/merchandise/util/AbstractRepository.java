@@ -1,4 +1,4 @@
-package de.mq.merchandise.opportunity.support;
+package de.mq.merchandise.util;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

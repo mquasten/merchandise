@@ -133,7 +133,7 @@ public class SubjectControllerTest {
 		Mockito.when(selected.getCommercialSubject()).thenReturn(commercialSubject);
 		Mockito.when(commercialSubject.id()).thenReturn(id);
 		final CommercialSubjectAO target = Mockito.mock(CommercialSubjectAO.class);
-		Mockito.when(commercialSubjectService.subject(id)).thenReturn(commercialSubject);
+		Mockito.when(commercialSubjectService.read(id)).thenReturn(commercialSubject);
 		subjectController.openChangeDialog(selected, target);
 		Mockito.verify(target).setCommercialSubject(commercialSubject);
 	}

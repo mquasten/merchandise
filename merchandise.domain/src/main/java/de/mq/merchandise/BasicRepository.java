@@ -24,6 +24,8 @@ public interface BasicRepository<T,V> {
 		 * @return the entity or null if not found
 		 */
 		T forId(final V id);
+		
+		
 
 		
 

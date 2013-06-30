@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.util.AbstractRepository;
 import de.mq.merchandise.util.Paging;
 import de.mq.merchandise.util.PagingUtil;
 import de.mq.merchandise.util.ParameterImpl;
