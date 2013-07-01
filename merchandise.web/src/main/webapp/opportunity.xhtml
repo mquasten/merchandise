@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+xmlns:subject="http://java.sun.com/jsf/composite/subject"
+xmlns:ui="http://java.sun.com/jsf/facelets">
+   
+<h:body>
+  <ui:composition template="masterlayout.xhtml">
+  <ui:define name="content">
+      <h2 style="text-align: center"><h:outputText value="#{message.opportunity_headline}" /></h2>
+	  <h:form>
+	 
+	 <h:panelGrid columns="1" styleClass="positionCentered">
+	  <h:panelGrid  columns="3" columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle" >
+		 
+		  
+		  
+		  		<p:outputLabel id="nameLabel" for="name" value="#{message.opportunity_name}" />  
+                <p:inputText id="name" label="name"  value="#{opportunity.name}" styleClass="gridInputField" >  
+                    	<f:validateBean />
+                
+                </p:inputText>
+                <p:message for="name" display="text" />
+                
+                <p:outputLabel  for="name" value="#{message.opportunity_description}" />  
+                <p:inputTextarea  id="description" value="#{opportunity.description }" style="width:100%" >
+						<f:validateBean />
+				</p:inputTextarea >
+		  		<p:message for="description" display="text" />
+		  
+		  
+ </h:panelGrid>
+ </h:panelGrid>
+
+ </h:form>
+ </ui:define>
+ </ui:composition>
+ </h:body>
+ 
+ </html>
+ 

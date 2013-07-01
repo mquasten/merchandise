@@ -32,11 +32,15 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 			   </p:dataTable>
 	
 			   <h:panelGrid id="buttonPanel" columns="3" >
-			      <p:commandButton value="#{message.opportunities_add_button}" oncomplete="subjectDlg.show();"    process="@form"  update="@form"/>
+			     
+			      <p:button id="registerButton" outcome="opportunity" value="#{message.opportunities_add_button}"  icon="ui-icon-new" style="float:left" />
+			    
+			      
 			     
 			   </h:panelGrid>
 		
 			</h:form>
+			
 		</h:panelGrid>
 		   
    </ui:define>

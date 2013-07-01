@@ -15,8 +15,11 @@ xmlns:ui="http://java.sun.com/jsf/facelets" >
       	<f:viewParam name="language" value="#{user.language}" /> 
       			
   	</f:metadata>
+  	  <h:outputStylesheet library="css" name="style.css"  />
+   	 
      <div id="header">
         <ui:insert name="header" >
+       
         		  <h1 style="text-align:center">  <h:outputText id="headline" value="#{message.headline}" /> </h1>  
         		  <h:form>
         		  <p:menubar>  
