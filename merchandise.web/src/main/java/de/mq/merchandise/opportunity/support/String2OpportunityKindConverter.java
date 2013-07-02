@@ -11,6 +11,7 @@ public class String2OpportunityKindConverter implements Converter<String,Opportu
 		if( source == null){
 			return null;
 		}
+		System.out.println(source);
 		return Opportunity.Kind.valueOf(source);
 	}
 

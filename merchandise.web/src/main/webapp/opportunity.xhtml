@@ -25,14 +25,39 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
                 </p:inputText>
                 <p:message for="name" display="text" />
                 
-                <p:outputLabel  for="name" value="#{message.opportunity_description}" />  
+                <p:outputLabel  for="description" value="#{message.opportunity_description}" />  
                 <p:inputTextarea  id="description" value="#{opportunity.description }" style="width:100%" >
 						<f:validateBean />
 				</p:inputTextarea >
 		  		<p:message for="description" display="text" />
-		  
+		  		
+		  		
+		  		<p:outputLabel  for="kind" value="#{message.opportunity_description}" />  
+                
+                <p:selectOneMenu  id="kind" value="#{opportunity.kind}"  style="width:100%"  >  
+                      				 <f:selectItem itemLabel="#{message.select_empty}" itemValue="" />
+            							<f:selectItem itemLabel="#{message.opportunity_kind_product}" itemValue="ProductOrService" />  
+            						<f:selectItem itemLabel="#{message.opportunity_kind_offer}" itemValue="Offer" />  
+            						<f:selectItem itemLabel="#{message.opportunity_kind_tender}" itemValue="Tender" />  
+           							<f:validateBean />
+           							
+		
+        		</p:selectOneMenu >  
+                
+		  		<p:message for="kind" display="text" />
+		  		
+		  		<p:outputLabel  for="activities" value="#{message.opportunity_activities}" /> 
+		  		  <p:selectCheckboxMenu id ="activities" value="#{opportunity.activityClassifications}" label="#{message.opportunity_activities}" filter="true" filterText="Filter" filterMatchMode="startsWith" style="width:100%" >  
+       					 <f:selectItems  value="#{classifications.activities()}"/> 
+    			</p:selectCheckboxMenu>  
+		  	<p:message for="activities" display="text" />
 		  
  </h:panelGrid>
+ 
+ <p:commandButton id="#{message.opportunity_save}" value="speichern"
+						icon="ui-icon-check"
+						
+						style="float:right"   update="@form"/>
  </h:panelGrid>
 
  </h:form>
