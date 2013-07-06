@@ -23,16 +23,16 @@ abstract class AbstractClassification implements Classification{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	private String id; 
+	protected String id; 
 	
 	@Column(length=250)
 	@Equals
-	private String  description;
+	protected String  description;
 	
 	
 	@ManyToOne(targetEntity=AbstractClassification.class,fetch=FetchType.LAZY)
 	@JoinColumn(name="parent_id")
-	private Classification parent;
+	protected Classification parent;
 
 	@Override
 	public String id() {

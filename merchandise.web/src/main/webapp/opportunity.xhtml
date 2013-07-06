@@ -6,7 +6,8 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:p="http://primefaces.org/ui"
 xmlns:subject="http://java.sun.com/jsf/composite/subject"
 xmlns:ui="http://java.sun.com/jsf/facelets">
-   
+
+
 <h:body>
   <ui:composition template="masterlayout.xhtml">
   <ui:define name="content">
@@ -47,9 +48,17 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  		<p:message for="kind" display="text" />
 		  		
 		  		<p:outputLabel  for="activities" value="#{message.opportunity_activities}" /> 
-		  		  <p:selectCheckboxMenu id ="activities" value="#{opportunity.activityClassifications}" label="#{message.opportunity_activities}" filter="true" filterText="Filter" filterMatchMode="startsWith" style="width:100%" >  
-       					 <f:selectItems  value="#{classifications.activities()}"/> 
-    			</p:selectCheckboxMenu>  
+		  		
+		  		
+		  		<p:tree id="activities" style="width:100%;height:200px"  dynamic="true"  value="#{classifications.activities()}" var="node"    selectionMode="checkbox"  selection="#{opportunity.activities}" >  
+  
+        			<p:treeNode>  
+            			<h:outputText value="#{node}" />  
+        			</p:treeNode>  
+    			</p:tree>  
+  			
+		  		
+		  		
 		  	<p:message for="activities" display="text" />
 		  
  </h:panelGrid>
@@ -64,6 +73,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
  </ui:define>
  </ui:composition>
  </h:body>
+ 
+ 
+ 
  
  </html>
  

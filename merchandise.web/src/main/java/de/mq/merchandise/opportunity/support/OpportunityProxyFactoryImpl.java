@@ -38,7 +38,7 @@ public class OpportunityProxyFactoryImpl {
 	}
 	
 	@Bean(name="opportunity")
-	@Scope("request") 
+	@Scope("view") 
 	public OpportunityAO opportunity() {
 		 return proxyFactory.createProxy(OpportunityAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(OpportunityImpl.class)).build());
 	} 

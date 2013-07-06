@@ -1,9 +1,13 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.Size;
+
+import org.primefaces.model.TreeNode;
 
 import de.mq.mapping.util.proxy.Getter;
 import de.mq.mapping.util.proxy.GetterDomain;
@@ -17,11 +21,11 @@ import de.mq.merchandise.customer.support.CustomerAO;
 import de.mq.merchandise.model.support.String2LongConverter;
 import de.mq.merchandise.util.support.HibernateProxyConverter;
 
-public abstract class OpportunityAO {
+public abstract class OpportunityAO implements Serializable {
 	
+	
+	private static final long serialVersionUID = 1L;
 
-	
-	
 	@Getter(clazz = OpportunityImpl.class, value = "id", converter = Number2StringConverter.class)
 	public abstract String getId();
 	
@@ -57,7 +61,13 @@ public abstract class OpportunityAO {
 	
 	
 	@GetterProxyCollection(clazz=OpportunityImpl.class, name = "activityClassifications",  proxyClass = ActivityClassificationAO.class , converter=HibernateProxyConverter.class)
-	public abstract Collection<ActivityClassificationAO> getActivityClassifications();
+	public abstract List<ActivityClassificationAO> getActivityClassifications();
+	
+	@Setter(clazz=OpportunityImpl.class, value="activityClassifications", converter=TreeNode2ClassificationConverterImpl.class )
+	public abstract void setActivities(TreeNode[]  activityClassification);
+	
+	@Getter(clazz=OpportunityImpl.class, value="activityClassifications", converter=Classification2TreeNodeConverter.class )
+	public abstract TreeNode[] getActivities();
 	
 	@GetterProxyCollection(clazz=OpportunityImpl.class, name = "procuctClassifications", proxyClass = ProductclassificationAO.class , converter=HibernateProxyConverter.class)
 	public abstract Collection<ProductclassificationAO> getProcuctClassifications();
