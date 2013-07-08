@@ -3,6 +3,8 @@ package de.mq.merchandise.opportunity.support;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.primefaces.model.TreeNode;
 
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
@@ -64,6 +66,9 @@ public class OpportunityMappingTest {
 	      Assert.assertEquals(ACTIVITY_ID, web.getActivityClassifications().iterator().next().getId());
 	      Assert.assertEquals(1, web.getProcuctClassifications().size());
 	      Assert.assertEquals(opportunity, web.getOpportunity());
+	      
+	      Assert.assertEquals(1, web.getActivities().length);
+	      Assert.assertEquals(activityClassification, web.getActivities()[0].getData());
 	}
 	
 	
@@ -76,6 +81,10 @@ public class OpportunityMappingTest {
 	    web.setName(NAME);
 	    web.setDescription(DESCRIPTION);
 	    Assert.assertEquals(opportunity, web.getOpportunity()); 
+	    final TreeNode node = Mockito.mock(TreeNode.class);
+	    ActivityClassification activityClassification = Mockito.mock(ActivityClassification.class);
+	    Mockito.when(node.getData()).thenReturn(activityClassification);
+	    web.setActivities(new TreeNode[] { node});
 	     
 	    Assert.assertEquals(ID, opportunity.id());
 	    Assert.assertEquals(NAME, opportunity.name());
@@ -83,6 +92,9 @@ public class OpportunityMappingTest {
 	    Opportunity newppOpportunity =EntityUtil.create(OpportunityImpl.class);
 	    web.setOpportunity(newppOpportunity);
 	    Assert.assertEquals(newppOpportunity, web.getOpportunity());
+	    
+	   Assert.assertEquals(1, opportunity.activityClassifications().size());
+	   Assert.assertEquals(activityClassification, opportunity.activityClassifications().iterator().next());
 	}
 	
 	

@@ -1,6 +1,7 @@
 package de.mq.merchandise.controller;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.OpportunityService;
@@ -38,6 +39,11 @@ class OpportunityControllerImpl {
 		
 		
 		opportunityModelAO.setSelected(null);
+	}
+	
+	
+	void save(final Opportunity opportunity){
+		System.out.println(opportunity.activityClassifications().size());
 	}
 
 }

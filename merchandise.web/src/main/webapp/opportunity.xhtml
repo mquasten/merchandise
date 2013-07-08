@@ -33,10 +33,10 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  		<p:message for="description" display="text" />
 		  		
 		  		
-		  		<p:outputLabel  for="kind" value="#{message.opportunity_description}" />  
+		  		<p:outputLabel  for="kind" value="#{message.opportunity_kind}" />  
                 
                 <p:selectOneMenu  id="kind" value="#{opportunity.kind}"  style="width:100%"  >  
-                      				 <f:selectItem itemLabel="#{message.select_empty}" itemValue="" />
+                      				 <f:selectItem itemLabel="#{message.select_empty}" itemValue=" " />
             							<f:selectItem itemLabel="#{message.opportunity_kind_product}" itemValue="ProductOrService" />  
             						<f:selectItem itemLabel="#{message.opportunity_kind_offer}" itemValue="Offer" />  
             						<f:selectItem itemLabel="#{message.opportunity_kind_tender}" itemValue="Tender" />  
@@ -50,11 +50,16 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  		<p:outputLabel  for="activities" value="#{message.opportunity_activities}" /> 
 		  		
 		  		
-		  		<p:tree id="activities" style="width:100%;height:200px"  dynamic="true"  value="#{classifications.activities()}" var="node"    selectionMode="checkbox"  selection="#{opportunity.activities}" >  
+		  		<p:tree id="activities" style="width:100%;height:200px"    dynamic="false"   value="#{classifications.activities}" var="node"    selectionMode="checkbox"   >  
   
         			<p:treeNode>  
-            			<h:outputText value="#{node}" />  
+            			<h:outputText value="#{node}" >
+            					<f:converter converterId="classificationConverter" />
+            			</h:outputText>  
+            		 
         			</p:treeNode>  
+        			  <p:ajax listener="#{classifications.onNodeSelect}" update="@this" event="select"/>
+        			 
     			</p:tree>  
   			
 		  		
@@ -63,7 +68,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  
  </h:panelGrid>
  
- <p:commandButton id="#{message.opportunity_save}" value="speichern"
+ <p:commandButton id="#{message.opportunity_save}" value="speichern" action="#{opportunityController.save()}"
 						icon="ui-icon-check"
 						
 						style="float:right"   update="@form"/>
