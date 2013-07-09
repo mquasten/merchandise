@@ -3,7 +3,7 @@ package de.mq.merchandise.opportunity.support;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+
 
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -17,7 +17,7 @@ public class Classification2TreeNodeConverter  implements Converter<Collection<C
 	static  final TreeNode ROOT = new DefaultTreeNode(new ActivityClassificationImpl("headline", null), null);
 	@Override
 	public final TreeNode[] convert(final Collection<Classification> classifications) {
-		System.out.println("read:" + classifications.size());
+		
 		final List<TreeNode> results = new ArrayList<>();
 		for(final Classification classification : classifications){
 			TreeNode parent = ROOT;

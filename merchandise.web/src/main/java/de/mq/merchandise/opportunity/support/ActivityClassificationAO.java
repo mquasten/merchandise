@@ -5,7 +5,7 @@ import de.mq.mapping.util.proxy.GetterDomain;
 import de.mq.mapping.util.proxy.GetterProxy;
 import de.mq.merchandise.util.support.HibernateProxyConverter;
 
-public abstract class ActivityClassificationAO {
+public abstract class ActivityClassificationAO  {
 	
 	@Getter(clazz = ActivityClassificationImpl.class, value = "id")
 	public abstract String getId();	

@@ -50,7 +50,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  		<p:outputLabel  for="activities" value="#{message.opportunity_activities}" /> 
 		  		
 		  		
-		  		<p:tree id="activities" style="width:100%;height:200px"    dynamic="false"   value="#{classifications.activities}" var="node"    selectionMode="checkbox"   >  
+		  		<p:tree id="activities" style="width:100%;height:200px"    dynamic="false"   value="#{activityClassifications.treeNode}" var="node"    selectionMode="checkbox"   >  
   
         			<p:treeNode>  
             			<h:outputText value="#{node}" >
@@ -58,7 +58,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
             			</h:outputText>  
             		 
         			</p:treeNode>  
-        			  <p:ajax listener="#{classifications.onNodeSelect}" update="@this" event="select"/>
+        			  <p:ajax listener="#{opportunityController.onActivityNodeSelect}" update="@this" event="select"/>
         			 
     			</p:tree>  
   			
