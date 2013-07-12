@@ -7,16 +7,23 @@ import java.util.Set;
 
 import javax.validation.constraints.Size;
 
+
+import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 
+import de.mq.mapping.util.proxy.ActionEvent;
 import de.mq.mapping.util.proxy.Getter;
 import de.mq.mapping.util.proxy.GetterDomain;
 import de.mq.mapping.util.proxy.GetterProxy;
 import de.mq.mapping.util.proxy.GetterProxyCollection;
+import de.mq.mapping.util.proxy.MethodInvocation;
+import de.mq.mapping.util.proxy.Parameter;
 import de.mq.mapping.util.proxy.Setter;
 import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Enum2StringConverter;
 import de.mq.mapping.util.proxy.support.Number2StringConverter;
+import de.mq.merchandise.controller.OpportunityControllerFactoryImpl;
+import de.mq.merchandise.controller.OpportunityControllerImpl;
 import de.mq.merchandise.customer.support.CustomerAO;
 import de.mq.merchandise.model.support.String2LongConverter;
 import de.mq.merchandise.util.support.HibernateProxyConverter;
@@ -81,5 +88,12 @@ public abstract class OpportunityAO implements Serializable {
 	
 	@SetterDomain(clazz=OpportunityImpl.class)
 	public abstract void setOpportunity(final Opportunity opportunity); 
+	
+	
+	/*
+	 * like an observer ... 
+	 */
+	@MethodInvocation(actions={@ActionEvent(  params={@Parameter(clazz=OpportunityAO.class, domain=OpportunityImpl.class,elResultType=Collection.class ,  el="#arg.activityClassifications()"), @Parameter(clazz = ClassificationTreeAO.class, elResultType=TreeNode.class, el="#arg.treeNode")})}, clazz = OpportunityControllerImpl.class)
+    public abstract void notifyActionClassificationChanged();
 
 }

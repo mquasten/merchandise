@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
+import de.mq.merchandise.controller.OpportunityControllerImpl;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.SimplePagingImpl;
 
@@ -40,7 +41,7 @@ public class OpportunityProxyFactoryImpl {
 	@Bean(name="opportunity")
 	@Scope("session") 
 	public OpportunityAO opportunity() {
-		 return proxyFactory.createProxy(OpportunityAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(OpportunityImpl.class)).build());
+		 return proxyFactory.createProxy(OpportunityAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(OpportunityImpl.class)).withDomain(new OpportunityControllerImpl(null)).build());
 	} 
 	
 	

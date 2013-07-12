@@ -1,21 +1,24 @@
 package de.mq.merchandise.controller;
 
+import java.util.Collection;
+
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.OpportunityService;
 
-class OpportunityControllerImpl {
+public class OpportunityControllerImpl {
 	
 	
 	private final OpportunityService opportunityService;
 	
 	
-	OpportunityControllerImpl(final OpportunityService opportunityService){
+	public OpportunityControllerImpl(final OpportunityService opportunityService){
 		this.opportunityService=opportunityService;
 	}
 	
@@ -50,10 +53,23 @@ class OpportunityControllerImpl {
 	}
 	
 	
-	void onActivityNodeSelect(final NodeSelectEvent e, final TreeNode treeNode) {
-		processTree(treeNode, e.getTreeNode());
+	void onActivityNodeSelect(final ActivityClassification activityClassification, final OpportunityAO opportunityAO) {
+		final Opportunity opportunity = opportunityAO.getOpportunity();
+		if( opportunity.activityClassifications().contains(activityClassification) ) {
+			 opportunity.removeClassification(activityClassification);
+		} else {
+			 opportunity.assignClassification(activityClassification);
+		}
+		
+		System.out.println("model update " + opportunity.activityClassifications() );
+		
+		opportunityAO.notifyActionClassificationChanged();
 	}
 	
+	
+	public void notifyActionClassificationChanged(final Collection<ActivityClassification> activityClassifications, final TreeNode treeNode) {
+		System.out.println("update tree");
+	}
 	
 	void processTree(final TreeNode node, final TreeNode  selected) {
 		for(final TreeNode tn  : node.getChildren() ) {
