@@ -7,8 +7,6 @@ import java.util.Set;
 
 import javax.validation.constraints.Size;
 
-
-import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 
 import de.mq.mapping.util.proxy.ActionEvent;
@@ -22,7 +20,6 @@ import de.mq.mapping.util.proxy.Setter;
 import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Enum2StringConverter;
 import de.mq.mapping.util.proxy.support.Number2StringConverter;
-import de.mq.merchandise.controller.OpportunityControllerFactoryImpl;
 import de.mq.merchandise.controller.OpportunityControllerImpl;
 import de.mq.merchandise.customer.support.CustomerAO;
 import de.mq.merchandise.model.support.String2LongConverter;
