@@ -33,7 +33,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 	
 			   <h:panelGrid id="buttonPanel" columns="3" >
 			     
-			      <p:button id="registerButton" outcome="opportunity" value="#{message.opportunities_add_button}"  icon="ui-icon-new" style="float:left" />
+			      <p:commandButton id="addButton"  action="#{opportunityController.create()}"  value="#{message.opportunities_add_button}"  icon="ui-icon-new" style="float:left" />
 			    
 			      
 			     

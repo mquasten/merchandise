@@ -22,7 +22,7 @@ public class OpportunityControllerFactoryImpl {
 	
 	@Bean(name="opportunityController")
 	@Scope("singleton")
-	public OpportunityController subjectController() {
+	public OpportunityController opportunityController() {
 		return  webProxyFactory.webModell(OpportunityController.class, new OpportunityControllerImpl(opportunityService));
 	   
 	}

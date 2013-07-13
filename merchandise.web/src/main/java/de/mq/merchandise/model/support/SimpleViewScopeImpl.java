@@ -21,6 +21,8 @@ public class SimpleViewScopeImpl implements Scope {
 		}
 		
 		final Map<String, Object> viewMap = facesContextFactory.facesContext().getViewRoot().getViewMap();
+		
+		
 		if (!viewMap.containsKey(name)) {
 			viewMap.put(name, objectFactory.getObject());
 		}

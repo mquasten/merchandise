@@ -14,6 +14,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.ModelRepository;
+import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.util.SimplePagingImpl;
 
 public class OpportunityProxyFactoryTest {
@@ -21,7 +22,9 @@ public class OpportunityProxyFactoryTest {
 	final AOProxyFactory proxyFactory = Mockito.mock(AOProxyFactory.class);
 	final BeanResolver beanResolver = Mockito.mock(BeanResolver.class);
 	
-	final OpportunityProxyFactoryImpl opportunityProxyFactoryImpl = new OpportunityProxyFactoryImpl(proxyFactory, beanResolver);
+	final Conversation conversation = Mockito.mock(Conversation.class);
+	
+	final OpportunityProxyFactoryImpl opportunityProxyFactoryImpl = new OpportunityProxyFactoryImpl(proxyFactory, beanResolver, conversation);
 	
 	@Test
 	public final void createDefaultConstructor() {
