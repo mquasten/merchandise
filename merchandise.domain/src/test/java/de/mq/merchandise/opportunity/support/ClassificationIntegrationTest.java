@@ -20,12 +20,12 @@ public class ClassificationIntegrationTest {
 	
 	@Test
 	public final void activities() {
-		Assert.assertEquals(109L, entityManager.createQuery(countString("findActivityClassification"), Number.class).getSingleResult().longValue());
+		Assert.assertEquals(109L, entityManager.createQuery(countString(ClassificationRepository.FIND_ALL_ACTIFITY_CLASSIFICATIONS), Number.class).getSingleResult().longValue());
 	}
 	
 	@Test
 	public final void products() {
-		Assert.assertEquals(81L, entityManager.createQuery(countString("findProductClassification"), Number.class).getSingleResult().longValue());
+		Assert.assertEquals(81L, entityManager.createQuery(countString(ClassificationRepository.FIND_ALL_PRODUCT_CLASSIFICATIONS), Number.class).getSingleResult().longValue());
 	}
 
 	private String countString(final String queryName) {
