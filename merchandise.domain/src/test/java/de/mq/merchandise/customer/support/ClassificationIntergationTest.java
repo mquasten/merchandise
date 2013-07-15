@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import de.mq.merchandise.opportunity.support.ActivityClassification;
-import de.mq.merchandise.opportunity.support.ProcuctClassification;
+import de.mq.merchandise.opportunity.support.ProductClassification;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
@@ -22,9 +22,9 @@ public class ClassificationIntergationTest {
 	
 	@Test
 	public final void products() {
-		final TypedQuery<ProcuctClassification> query = entityManager.createQuery("select p from ProductClassification p" ,ProcuctClassification.class);
+		final TypedQuery<ProductClassification> query = entityManager.createQuery("select p from ProductClassification p" ,ProductClassification.class);
 		int counter=0;
-		for(final ProcuctClassification procuctClassification : query.getResultList()) {
+		for(final ProductClassification procuctClassification : query.getResultList()) {
 			Assert.assertTrue(procuctClassification.id().startsWith("P-"));
 			if(procuctClassification.id().length()>3){
 				Assert.assertNotNull(procuctClassification.parent().id());

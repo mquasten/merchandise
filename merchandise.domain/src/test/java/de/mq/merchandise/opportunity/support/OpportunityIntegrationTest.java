@@ -60,7 +60,7 @@ public class OpportunityIntegrationTest {
 		final CommercialSubject commercialSubject = entityManager.merge(new CommercialSubjectImpl(customer, "EscortService++", null));
 		
 		final ActivityClassification activityClassification = entityManager.find(ActivityClassificationImpl.class, ACTIVITY_ID);
-		final ProcuctClassification procuctClassification =entityManager.find(ProductClassificationImpl.class, PRODUCT_ID);
+		final ProductClassification procuctClassification =entityManager.find(ProductClassificationImpl.class, PRODUCT_ID);
 		
 		waste.add(customer);
 		waste.add(commercialSubject);

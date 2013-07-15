@@ -24,6 +24,8 @@ import de.mq.merchandise.util.EntityUtil;
 @Profile("mock")
 class ClassificationFileRepositoryMock implements ClassificationRepository {
 
+	private   String resource = "classifications.csv";
+
 	static final String DELIMITER = "[|]";
 
 	static final String PRODUCT_KIND = "P";
@@ -38,17 +40,20 @@ class ClassificationFileRepositoryMock implements ClassificationRepository {
 
 	final Set<ActivityClassification> activityClassifications = new HashSet<>();
 
-	final Set<ProcuctClassification> productClassifications = new HashSet<>();
+	final Set<ProductClassification> productClassifications = new HashSet<>();
+	
+	
 
 	@PostConstruct
 	void loadCaches() {
 		/*
 		 * java.io is shit, one of the most biggest shit ever ...
 		 */
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new DataInputStream(getClass().getClassLoader().getResourceAsStream("classifications.csv"))))) {
+		
+		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new DataInputStream(getClass().getClassLoader().getResourceAsStream(resource))))) {
 			handleLines(reader);
-		} catch (IOException ex) {
-
+		} catch (final Exception ex) {
+			throw new IllegalStateException("Error reading resource: " + resource , ex);
 		}
 
 	}
@@ -71,9 +76,9 @@ class ClassificationFileRepositoryMock implements ClassificationRepository {
 
 	private void setParent(final Collection<? extends Classification> classifications, final Map<String, Classification> idMap, final Map<String, String> parentMap) {
 		for (final Classification entity : classifications) {
-			if (!parentMap.containsKey(entity.id())) {
+			/*if (!parentMap.containsKey(entity.id())) {
 				continue;
-			}
+			}*/
 			setField(entity, PARENT, idMap.get(parentMap.get(entity.id())));
 		}
 	}
@@ -93,7 +98,7 @@ class ClassificationFileRepositoryMock implements ClassificationRepository {
 		if (entity instanceof ActivityClassification) {
 			activityClassifications.add((ActivityClassification) entity);
 		} else {
-			productClassifications.add((ProcuctClassification) entity);
+			productClassifications.add((ProductClassification) entity);
 		}
 
 		return entity;
@@ -117,10 +122,9 @@ class ClassificationFileRepositoryMock implements ClassificationRepository {
 
 		if (col.equalsIgnoreCase(ACTIVITY_KIND)) {
 			return EntityUtil.create(ActivityClassificationImpl.class);
-		} else if (col.equalsIgnoreCase(PRODUCT_KIND)) {
-			return EntityUtil.create(ProductClassificationImpl.class);
-		}
-		throw new IllegalArgumentException("Wrong Kind of classification: " + col);
+		} 
+	    return EntityUtil.create(ProductClassificationImpl.class);
+		
 	}
 
 	@Override
@@ -129,7 +133,7 @@ class ClassificationFileRepositoryMock implements ClassificationRepository {
 	}
 
 	@Override
-	public Collection<ProcuctClassification> allProductClassifications() {
+	public Collection<ProductClassification> allProductClassifications() {
 		return productClassifications;
 	}
 

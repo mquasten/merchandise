@@ -85,7 +85,7 @@ public class OpportunityTest {
 	@Test
     public final void productClassifications() {
 		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
-		final ProcuctClassification procuctClassification = Mockito.mock(ProcuctClassification.class);
+		final ProductClassification procuctClassification = Mockito.mock(ProductClassification.class);
 		opportunity.assignClassification(procuctClassification);
 		Assert.assertEquals(1, opportunity.productClassifications().size());
 		Assert.assertEquals(procuctClassification, opportunity.productClassifications().iterator().next());

@@ -1,5 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import java.util.Set;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.springframework.util.ReflectionUtils;
 
 public class ClassificationFileRepositoryMockTest {
 	
@@ -145,6 +147,16 @@ public class ClassificationFileRepositoryMockTest {
 			childs.get(classification.parent()).add(classification);
 		}
 		return childs;
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public final void resourceNotFound() throws IllegalArgumentException, IllegalAccessException {
+		ClassificationFileRepositoryMock classificationRepository = new ClassificationFileRepositoryMock();
+		final Field field = ReflectionUtils.findField(ClassificationFileRepositoryMock.class, "resource");
+		field.setAccessible(true);
+		field.set(classificationRepository, "dontLetMeGetMe.csv");
+		classificationRepository.loadCaches();
+		
 	}
 
 }

@@ -30,8 +30,8 @@ class ClassificationRepositoryImpl implements ClassificationRepository {
 	 * @see de.mq.merchandise.opportunity.support.ClassificationRepository#allProductClassifications()
 	 */
 	@Override
-	public final Collection<ProcuctClassification> allProductClassifications() {
-		return entityManager.createNamedQuery(ClassificationRepository.FIND_ALL_PRODUCT_CLASSIFICATIONS, ProcuctClassification.class).getResultList();
+	public final Collection<ProductClassification> allProductClassifications() {
+		return entityManager.createNamedQuery(ClassificationRepository.FIND_ALL_PRODUCT_CLASSIFICATIONS, ProductClassification.class).getResultList();
 	}
 
 }

@@ -34,11 +34,11 @@ public interface Opportunity extends BasicEntity, DocumentsAware{
 
 	void removeKeyWord(String keyWord);
 
-	Collection<ProcuctClassification> productClassifications();
+	Collection<ProductClassification> productClassifications();
 
-	void assignClassification(ProcuctClassification classification);
+	void assignClassification(ProductClassification classification);
 
-	void removeClassification(ProcuctClassification classification);
+	void removeClassification(ProductClassification classification);
 
 	
 	

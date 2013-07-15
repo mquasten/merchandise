@@ -45,7 +45,7 @@ public class OpportunityMappingTest {
 		  opportunity.assignKeyWord(KEY_WORD);
 	      EntityUtil.setId(opportunity, ID);
 	      final ActivityClassification activityClassification = new ActivityClassificationImpl();
-	      final ProcuctClassification procuctClassification = new ProductClassificationImpl();
+	      final ProductClassification procuctClassification = new ProductClassificationImpl();
 	      EntityUtil.setId(activityClassification, ACTIVITY_ID);
 	      EntityUtil.setId(procuctClassification, P01);
 	      opportunity.assignClassification(activityClassification);

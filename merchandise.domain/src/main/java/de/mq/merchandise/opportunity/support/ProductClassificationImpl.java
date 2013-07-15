@@ -10,6 +10,6 @@ import javax.persistence.NamedQuery;
 @NamedQueries({
 @NamedQuery(name=ClassificationRepository.FIND_ALL_PRODUCT_CLASSIFICATIONS, query ="Select p from ProductClassification p order by p.id")
 })
-public class ProductClassificationImpl extends AbstractClassification implements ProcuctClassification{
+public class ProductClassificationImpl extends AbstractClassification implements ProductClassification{
 	private static final long serialVersionUID = 1L;
 }

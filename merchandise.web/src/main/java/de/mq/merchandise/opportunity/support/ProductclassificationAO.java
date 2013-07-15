@@ -19,7 +19,7 @@ public abstract class ProductclassificationAO {
 		public abstract ProductclassificationAO getParent();
 		
 		@GetterDomain(clazz=ProductClassificationImpl.class)
-		public abstract ProcuctClassification getProductClassification();
+		public abstract ProductClassification getProductClassification();
 
 	
 	

@@ -49,7 +49,7 @@ public class OpportunityImpl implements Opportunity {
 	
 	@ManyToMany( targetEntity=ProductClassificationImpl.class,  fetch=FetchType.LAZY,  cascade={ CascadeType.REFRESH} )
 	@JoinTable(name="opportunity_product_classification" , joinColumns={@JoinColumn(name="opportunity_id")}, inverseJoinColumns={@JoinColumn(name="classification_id")})
-	private Set<ProcuctClassification> procuctClassifications=new HashSet<>();
+	private Set<ProductClassification> procuctClassifications=new HashSet<>();
 	
 	@ElementCollection(fetch=FetchType.LAZY)
 	@CollectionTable(name="opportunity_keyword", joinColumns=@JoinColumn(name="opportunity_id" ) )
@@ -174,17 +174,17 @@ public class OpportunityImpl implements Opportunity {
 	
 	
 	@Override
-	public Collection<ProcuctClassification> productClassifications() {
+	public Collection<ProductClassification> productClassifications() {
 		return Collections.unmodifiableSet(this.procuctClassifications);
 	}
 	
 	@Override
-	public void assignClassification(final ProcuctClassification classification) {
+	public void assignClassification(final ProductClassification classification) {
 		procuctClassifications.add(classification);
 	}
 	
 	@Override
-	public void removeClassification(final ProcuctClassification classification) {
+	public void removeClassification(final ProductClassification classification) {
 		procuctClassifications.remove(classification);
 	}
 	

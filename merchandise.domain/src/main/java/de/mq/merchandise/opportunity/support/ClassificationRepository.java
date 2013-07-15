@@ -29,6 +29,6 @@ interface ClassificationRepository {
 	 * All product classifications that are defined in the database.
 	 * @return a collection of product classifications
 	 */
-	Collection<ProcuctClassification> allProductClassifications();
+	Collection<ProductClassification> allProductClassifications();
 
 }
