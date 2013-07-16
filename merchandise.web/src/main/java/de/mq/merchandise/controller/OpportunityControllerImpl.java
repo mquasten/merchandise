@@ -1,16 +1,9 @@
 package de.mq.merchandise.controller;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.ClassificationService;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
-import de.mq.merchandise.opportunity.support.ActivityClassificationAO;
-import de.mq.merchandise.opportunity.support.ActivityClassificationImpl;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
-import de.mq.merchandise.opportunity.support.Classification;
-import de.mq.merchandise.opportunity.support.ClassificationTreeAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
