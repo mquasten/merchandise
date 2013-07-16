@@ -8,10 +8,12 @@ import de.mq.mapping.util.proxy.MethodInvocation;
 import de.mq.mapping.util.proxy.Parameter;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
-import de.mq.merchandise.opportunity.support.ClassificationTreeAO;
+import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
+import de.mq.merchandise.opportunity.support.ProductClassification;
+import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
 
 public interface OpportunityController {
 	
@@ -24,7 +26,11 @@ public interface OpportunityController {
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = NodeSelectEvent.class,originIndex=0,elResultType=ActivityClassification.class, el="#arg.treeNode.data"), @Parameter(clazz = OpportunityAO.class)})}, clazz = OpportunityControllerImpl.class)
 	void onActivityNodeSelect(final NodeSelectEvent nodeSelectEvent);
 	
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ClassificationTreeAO.class)})}, clazz = OpportunityControllerImpl.class)
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = NodeSelectEvent.class,originIndex=0,elResultType=ProductClassification.class, el="#arg.treeNode.data"), @Parameter(clazz = OpportunityAO.class)})}, clazz = OpportunityControllerImpl.class)
+	void onProductNodeSelect(final NodeSelectEvent nodeSelectEvent);
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ActivityClassificationTreeAO.class), @Parameter(clazz = ProductClassificationTreeAO.class)})}, clazz = OpportunityControllerImpl.class)
 	String create();
 
 

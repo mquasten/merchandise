@@ -57,11 +57,17 @@ public class OpportunityProxyFactoryImpl {
 	
 	@Bean(name="activityClassifications")
 	@Scope("conversation")
-	public ClassificationTreeAO treeModel() {
+	public ActivityClassificationTreeAO activityClassifications() {
 		conversation.begin();
-		return proxyFactory.createProxy(ClassificationTreeAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("treeNode", new DefaultTreeNode() ).withBeanResolver(beanResolver).withDomain(classificationTreeChangedObserveableController).build());
+		return proxyFactory.createProxy(ActivityClassificationTreeAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("treeNode", new DefaultTreeNode() ).withBeanResolver(beanResolver).withDomain(classificationTreeChangedObserveableController).build());
 	}
 	
+	@Bean(name="productClassifications")
+	@Scope("conversation")
+	public ProductClassificationTreeAO productClassifications() {
+		conversation.begin();
+		return proxyFactory.createProxy(ProductClassificationTreeAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("treeNode", new DefaultTreeNode() ).withBeanResolver(beanResolver).withDomain(classificationTreeChangedObserveableController).build());
+	}
 	
 	
 }

@@ -89,7 +89,13 @@ public abstract class OpportunityAO implements Serializable {
 	/*
 	 * like an observer ... 
 	 */
-	@MethodInvocation(actions={@ActionEvent(  params={@Parameter(clazz=OpportunityAO.class, domain=OpportunityImpl.class,elResultType=Collection.class ,  el="#arg.activityClassifications()"), @Parameter(clazz = ClassificationTreeAO.class, elResultType=TreeNode.class, el="#arg.treeNode")})}, clazz = ClassificationTreeChangedObserveableControllerImpl.class)
-    public abstract void notifyActionClassificationChanged();
+	@MethodInvocation(actions={@ActionEvent(  params={@Parameter(clazz=OpportunityAO.class, domain=OpportunityImpl.class,elResultType=Collection.class ,  el="#arg.activityClassifications()"), @Parameter(clazz = ActivityClassificationTreeAO.class, elResultType=TreeNode.class, el="#arg.treeNode")})}, clazz = ClassificationTreeChangedObserveableControllerImpl.class)
+    public abstract void notifyActivityClassificationChanged();
+	
+	/*
+	 * like an observer, too ... 
+	 */
+	@MethodInvocation(actions={@ActionEvent(  params={@Parameter(clazz=OpportunityAO.class, domain=OpportunityImpl.class,elResultType=Collection.class ,  el="#arg.productClassifications()"), @Parameter(clazz = ProductClassificationTreeAO.class, elResultType=TreeNode.class, el="#arg.treeNode")})}, clazz = ClassificationTreeChangedObserveableControllerImpl.class)
+    public abstract void notifyProductClassificationChanged();
 
 }

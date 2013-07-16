@@ -64,6 +64,26 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
   			
 		  		
 		  		
+		  	<p:message for="products" display="text" />
+		  	
+		  	
+		  	<p:outputLabel  for="products" value="#{message.opportunity_products}" /> 
+		  		
+		  		
+		  		<p:tree id="products" style="width:100%;height:200px"    dynamic="true"   value="#{productClassifications.treeNode}" var="node"    selectionMode="checkbox"   >  
+  
+        			<p:treeNode>  
+            			<h:outputText value="#{node}" >
+            					<f:converter converterId="classificationConverter" />
+            			</h:outputText>  
+            		 
+        			</p:treeNode>  
+        			  <p:ajax listener="#{opportunityController.onProductNodeSelect}" update="@this" event="select"/>
+        			 
+    			</p:tree>  
+  			
+		  		
+		  		
 		  	<p:message for="activities" display="text" />
 		  
  </h:panelGrid>

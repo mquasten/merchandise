@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import de.mq.merchandise.model.support.WebProxyFactory;
+import de.mq.merchandise.opportunity.ClassificationService;
 import de.mq.merchandise.opportunity.support.OpportunityService;
 
 @Configuration
@@ -17,13 +18,14 @@ public class OpportunityControllerFactoryImpl {
 	@Autowired
 	private OpportunityService opportunityService;
 	
-	
+	@Autowired
+	private ClassificationService classificationService;
 	
 	
 	@Bean(name="opportunityController")
 	@Scope("singleton")
 	public OpportunityController opportunityController() {
-		return  webProxyFactory.webModell(OpportunityController.class, new OpportunityControllerImpl(opportunityService));
+		return  webProxyFactory.webModell(OpportunityController.class, new OpportunityControllerImpl(opportunityService, classificationService));
 	   
 	}
 	
