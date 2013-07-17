@@ -67,8 +67,7 @@ public class OpportunityMappingTest {
 	      Assert.assertEquals(1, web.getProcuctClassifications().size());
 	      Assert.assertEquals(opportunity, web.getOpportunity());
 	      
-	      Assert.assertEquals(1, web.getActivities().length);
-	      Assert.assertEquals(activityClassification, web.getActivities()[0].getData());
+	    
 	}
 	
 	
@@ -84,7 +83,7 @@ public class OpportunityMappingTest {
 	    final TreeNode node = Mockito.mock(TreeNode.class);
 	    ActivityClassification activityClassification = Mockito.mock(ActivityClassification.class);
 	    Mockito.when(node.getData()).thenReturn(activityClassification);
-	    web.setActivities(new TreeNode[] { node});
+	  
 	     
 	    Assert.assertEquals(ID, opportunity.id());
 	    Assert.assertEquals(NAME, opportunity.name());
@@ -93,8 +92,7 @@ public class OpportunityMappingTest {
 	    web.setOpportunity(newppOpportunity);
 	    Assert.assertEquals(newppOpportunity, web.getOpportunity());
 	    
-	   Assert.assertEquals(1, opportunity.activityClassifications().size());
-	   Assert.assertEquals(activityClassification, opportunity.activityClassifications().iterator().next());
+	
 	}
 	
 	

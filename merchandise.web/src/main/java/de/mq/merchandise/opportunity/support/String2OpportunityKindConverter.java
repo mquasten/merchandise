@@ -8,12 +8,9 @@ public class String2OpportunityKindConverter implements Converter<String,Opportu
 
 	@Override
 	public Opportunity.Kind convert(final String source) {
-		
-		System.out.println(">>>>>>>>>>>>>>>>"+  source);
-		if( source == null){
+		if(source == null){
 			return null;
 		}
-		System.out.println(source);
 		return Opportunity.Kind.valueOf(source);
 	}
 

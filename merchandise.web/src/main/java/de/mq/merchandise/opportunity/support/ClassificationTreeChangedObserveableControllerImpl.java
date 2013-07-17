@@ -16,15 +16,9 @@ import org.primefaces.model.TreeNode;
 class ClassificationTreeChangedObserveableControllerImpl {
 
 	
-	          
-	final void notifyActivityClassificationChanged(final Collection<Classification> activityClassifications, final TreeNode treeNode) {
+	final void notifyClassificationChanged(final Collection<Classification> activityClassifications, final TreeNode treeNode) {
 		processTree(treeNode, activityClassifications);
-		System.out.println("change Activitytree: " );
-	} 
-	
-	final void notifyProductClassificationChanged(final Collection<Classification> activityClassifications, final TreeNode treeNode) {
-		processTree(treeNode, activityClassifications);
-		System.out.println("change Activitytree: " );
+		System.out.println("change tree: " );
 	} 
 	
 	
@@ -38,7 +32,7 @@ class ClassificationTreeChangedObserveableControllerImpl {
 	           
 	
 	
-	private void  addTree(TreeNode root, final Collection<? extends Classification> classifications) {
+	private void  addTree(final TreeNode root, final Collection<? extends Classification> classifications) {
 		
 		final Map<Classification, Set<Classification>> domainTree = new HashMap<>();
 		for(final Classification classification : classifications){

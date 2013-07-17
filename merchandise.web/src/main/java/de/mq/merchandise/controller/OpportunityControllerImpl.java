@@ -42,14 +42,6 @@ class OpportunityControllerImpl {
 	
 	String create(final ActivityClassificationTreeAO activityClassificationTreeAO, final ProductClassificationTreeAO productClassificationTreeAO) {
 		System.out.println("create");
-	/*	final Set<Classification> results = new HashSet<>();
-		for(int i=0; i < 10; i++){
-			ActivityClassification parent = new ActivityClassificationImpl("Test " +i , null);
-			results.add(parent);
-			results.add(new ActivityClassificationImpl("Child " + i +".1", parent));
-			results.add(new ActivityClassificationImpl("Child " + i +".2", parent));
-		} */
-		
 		activityClassificationTreeAO.setClassifications(classificationService.activityClassifications());
 		activityClassificationTreeAO.notifyClassificationsChanged();
 		
@@ -61,7 +53,8 @@ class OpportunityControllerImpl {
 	
 
 	void save(final Opportunity opportunity) {
-		System.out.println(opportunity.activityClassifications().size());
+		System.out.println("save opportunity with activities:" +opportunity.activityClassifications().size());
+		System.out.println("save opportunity with product:" +opportunity.productClassifications().size());
 	}
 
 	void onActivityNodeSelect(final ActivityClassification activityClassification, final OpportunityAO opportunityAO) {

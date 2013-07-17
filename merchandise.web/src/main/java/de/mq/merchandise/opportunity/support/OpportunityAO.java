@@ -66,18 +66,8 @@ public abstract class OpportunityAO implements Serializable {
 	@GetterProxyCollection(clazz=OpportunityImpl.class, name = "activityClassifications",  proxyClass = ActivityClassificationAO.class , converter=HibernateProxyConverter.class)
 	public abstract List<ActivityClassificationAO> getActivityClassifications();
 	
-	@Setter(clazz=OpportunityImpl.class, value="activityClassifications", converter=TreeNode2ClassificationConverterImpl.class )
-	public abstract void setActivities(TreeNode[]  activityClassification);
-	
-	@Getter(clazz=OpportunityImpl.class, value="activityClassifications", converter=Classification2TreeNodeConverter.class )
-	public abstract TreeNode[] getActivities();
-	
 	@GetterProxyCollection(clazz=OpportunityImpl.class, name = "procuctClassifications", proxyClass = ProductclassificationAO.class , converter=HibernateProxyConverter.class)
 	public abstract Collection<ProductclassificationAO> getProcuctClassifications();
-	
-
-	//@GetterProxyCollection(name = "commercialRelations", proxyClass = CommercialRelationAO.class, collectionClass = HashSet.class , converter=HibernateProxyConverter.class )
-	//private Set<CommercialRelation> commercialRelations = new HashSet<>(); 
 	
 	@GetterDomain(clazz=OpportunityImpl.class)
 	public abstract Opportunity getOpportunity(); 
@@ -89,13 +79,13 @@ public abstract class OpportunityAO implements Serializable {
 	/*
 	 * like an observer ... 
 	 */
-	@MethodInvocation(actions={@ActionEvent(  params={@Parameter(clazz=OpportunityAO.class, domain=OpportunityImpl.class,elResultType=Collection.class ,  el="#arg.activityClassifications()"), @Parameter(clazz = ActivityClassificationTreeAO.class, elResultType=TreeNode.class, el="#arg.treeNode")})}, clazz = ClassificationTreeChangedObserveableControllerImpl.class)
+	@MethodInvocation(actions={@ActionEvent( name="notifyClassificationChanged",  params={@Parameter(clazz=OpportunityAO.class, domain=OpportunityImpl.class,elResultType=Collection.class ,  el="#arg.activityClassifications()"), @Parameter(clazz = ActivityClassificationTreeAO.class, elResultType=TreeNode.class, el="#arg.treeNode")})}, clazz = ClassificationTreeChangedObserveableControllerImpl.class)
     public abstract void notifyActivityClassificationChanged();
 	
 	/*
 	 * like an observer, too ... 
 	 */
-	@MethodInvocation(actions={@ActionEvent(  params={@Parameter(clazz=OpportunityAO.class, domain=OpportunityImpl.class,elResultType=Collection.class ,  el="#arg.productClassifications()"), @Parameter(clazz = ProductClassificationTreeAO.class, elResultType=TreeNode.class, el="#arg.treeNode")})}, clazz = ClassificationTreeChangedObserveableControllerImpl.class)
+	@MethodInvocation(actions={@ActionEvent(  name="notifyClassificationChanged" , params={@Parameter(clazz=OpportunityAO.class, domain=OpportunityImpl.class,elResultType=Collection.class ,  el="#arg.productClassifications()"), @Parameter(clazz = ProductClassificationTreeAO.class, elResultType=TreeNode.class, el="#arg.treeNode")})}, clazz = ClassificationTreeChangedObserveableControllerImpl.class)
     public abstract void notifyProductClassificationChanged();
 
 }
