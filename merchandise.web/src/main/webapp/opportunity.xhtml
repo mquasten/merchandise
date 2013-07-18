@@ -61,10 +61,10 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
         			  <p:ajax listener="#{opportunityController.onActivityNodeSelect}" update="@this" event="select"/>
         			 
     			</p:tree>  
-  			
+  			<p:message for="activities" display="text" />
 		  		
 		  		
-		  	<p:message for="products" display="text" />
+		  
 		  	
 		  	
 		  	<p:outputLabel  for="products" value="#{message.opportunity_products}" /> 
@@ -83,9 +83,21 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
     			</p:tree>  
   			
 		  		
-		  		
-		  	<p:message for="activities" display="text" />
-		  
+		  	<p:message for="products" display="text" />
+		  	
+		  	<p:outputLabel  for="keywords" value="#{message.opportunity_keyword}" /> 
+		  	<h:panelGrid id="keywords">
+		  		<p:dataTable  id="keywordTable" var="keyWordVarVar" paginator="false"   value="#{opportunity.keyWords}"  selection="#{opportunity.selectedKeyWord}"  >  
+			   	   <p:column selectionMode="single" style="width:2%" />  
+                   <p:column headerText="#{message.keyword_table_column_name}">#{keyWordVarVar}</p:column> 
+                 
+                   <p:ajax event="rowSelectRadio"  update="@form" process="@this"/> 
+			   </p:dataTable>
+		  	
+		  	
+		  	</h:panelGrid>
+		  	
+		  	<p:message for="keywords" display="text" />
  </h:panelGrid>
  
  <p:commandButton id="#{message.opportunity_save}" value="speichern" action="#{opportunityController.save()}"

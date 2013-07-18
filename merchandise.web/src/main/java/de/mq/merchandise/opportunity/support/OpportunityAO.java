@@ -3,8 +3,8 @@ package de.mq.merchandise.opportunity.support;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
+import javax.faces.model.DataModel;
 import javax.validation.constraints.Size;
 
 import org.primefaces.model.TreeNode;
@@ -59,8 +59,15 @@ public abstract class OpportunityAO implements Serializable {
 	public abstract void setKind(String kind);
 	
 
-	@Getter( clazz=OpportunityImpl.class,  value = "keyWords" )
-	public abstract Set<String> getKeyWords();
+	@Getter( clazz=OpportunityImpl.class,  value = "keyWords" , converter=String2SimpleMapDataModel.class)
+	public abstract DataModel<String> getKeyWords();
+	
+	
+	@Getter(value = "selectedKeyWord")
+	public abstract String getSelectedKeyWord();
+
+	@Setter(value = "selectedKeyWord")
+	public abstract void setSelectedKeyWord(final String selected);
 	
 	
 	@GetterProxyCollection(clazz=OpportunityImpl.class, name = "activityClassifications",  proxyClass = ActivityClassificationAO.class , converter=HibernateProxyConverter.class)
@@ -68,6 +75,10 @@ public abstract class OpportunityAO implements Serializable {
 	
 	@GetterProxyCollection(clazz=OpportunityImpl.class, name = "procuctClassifications", proxyClass = ProductclassificationAO.class , converter=HibernateProxyConverter.class)
 	public abstract Collection<ProductclassificationAO> getProcuctClassifications();
+	
+	
+	
+	
 	
 	@GetterDomain(clazz=OpportunityImpl.class)
 	public abstract Opportunity getOpportunity(); 

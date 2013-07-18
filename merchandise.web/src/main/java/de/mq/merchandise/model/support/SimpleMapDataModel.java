@@ -1,6 +1,7 @@
 package de.mq.merchandise.model.support;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,21 +40,30 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 	
 	@Override
 	public final UUID getRowKey(T object) {
-		try {
+	 	try {
 			return id(object);
 			
 		} catch (final Exception  ex) {
 			 throw new IllegalArgumentException("Unable to get id for Row.",  ex);
-		}
+		} 
 		
 	}
 
 	private UUID id(T object) throws IllegalAccessException, InvocationTargetException {
-		final Object id = ReflectionUtils.findMethod(object.getClass(), "getId" ).invoke(object);
+		final Object id = invokeGetId(object);
 		if ( id != null){
 		   return UUID.nameUUIDFromBytes(id.toString().getBytes());
 		}
 		return UUID.nameUUIDFromBytes(Long.valueOf(System.identityHashCode(object)).toString().getBytes());
+	}
+
+	private Object invokeGetId(T object) throws IllegalAccessException, InvocationTargetException {
+		
+		final Method method =  ReflectionUtils.findMethod(object.getClass(), "getId" );
+		if ( method == null){
+			return null;
+		}
+		return method.invoke(object);
 	}
 
 	@Override

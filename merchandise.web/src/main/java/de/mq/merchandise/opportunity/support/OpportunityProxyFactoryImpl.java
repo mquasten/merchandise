@@ -51,7 +51,10 @@ public class OpportunityProxyFactoryImpl {
 	@Bean(name="opportunity")
 	@Scope("conversation") 
 	public OpportunityAO opportunity() {
-		 return proxyFactory.createProxy(OpportunityAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(OpportunityImpl.class)).withDomain(classificationTreeChangedObserveableController).build());
+		final OpportunityImpl opportunity = EntityUtil.create(OpportunityImpl.class);
+		opportunity.assignKeyWord("Escort Service");
+		opportunity.assignKeyWord("Begleitservice");
+		return proxyFactory.createProxy(OpportunityAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(opportunity).withDomain(classificationTreeChangedObserveableController).build());
 	} 
 	
 	

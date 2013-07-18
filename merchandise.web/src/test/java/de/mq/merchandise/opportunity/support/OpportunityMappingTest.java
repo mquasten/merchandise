@@ -1,5 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.util.Collection;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -57,7 +59,7 @@ public class OpportunityMappingTest {
 		  Assert.assertEquals(""+ ID, web.getId());
 	      Assert.assertEquals(NAME, web.getName());
 	      Assert.assertEquals(DESCRIPTION, web.getDescription());
-	      Assert.assertEquals(1, web.getKeyWords().size());
+	      Assert.assertEquals(1, ((Collection<?>)web.getKeyWords()).size());
 	      Assert.assertEquals(KEY_WORD, web.getKeyWords().iterator().next());
 	      Assert.assertEquals(customer, web.getCustomer().getCustomer());
 	      Assert.assertEquals(""+CUSTOMER_ID, web.getCustomer().getId());
