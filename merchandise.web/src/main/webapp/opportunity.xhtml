@@ -4,7 +4,7 @@
 xmlns:h="http://java.sun.com/jsf/html"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:p="http://primefaces.org/ui"
-xmlns:subject="http://java.sun.com/jsf/composite/subject"
+xmlns:in="http://java.sun.com/jsf/composite/input"
 xmlns:ui="http://java.sun.com/jsf/facelets">
 
 
@@ -13,8 +13,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
   <ui:define name="content">
       <h2 style="text-align: center"><h:outputText value="#{message.opportunity_headline}" /></h2>
 	  <h:form>
-	 
+	
 	 <h:panelGrid columns="1" styleClass="positionCentered">
+	
 	  <h:panelGrid  columns="3" columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle" >
 		 
 		  
@@ -86,26 +87,30 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  	<p:message for="products" display="text" />
 		  	
 		  	<p:outputLabel  for="keywords" value="#{message.opportunity_keyword}" /> 
-		  	<h:panelGrid id="keywords">
+		  	<h:panelGrid id="keywords" columns="3">
 		  		<p:dataTable  id="keywordTable" var="keyWordVarVar" paginator="false"   value="#{opportunity.keyWords}"  selection="#{opportunity.selectedKeyWord}"  >  
 			   	   <p:column selectionMode="single" style="width:2%" />  
-                   <p:column headerText="#{message.keyword_table_column_name}">#{keyWordVarVar}</p:column> 
+                   <p:column headerText="#{message.opportunity_keyword_table_column_name}">#{keyWordVarVar}</p:column> 
                  
                    <p:ajax event="rowSelectRadio"  update="@form" process="@this"/> 
 			   </p:dataTable>
+		  	<p:commandButton type="button" value="#{message.opportunity_keyword_add}" onclick="inputDlg.show();" icon="ui-icon ui-icon-check"/>  
 		  	
+		  	 <p:commandButton id="#{message.opportunity_save}" value="#{message.opportunity_keyword_delete}" action="#{opportunityController.delete()}"
+						icon="ui-icon ui-icon-close" />
 		  	
 		  	</h:panelGrid>
 		  	
 		  	<p:message for="keywords" display="text" />
  </h:panelGrid>
  
- <p:commandButton id="#{message.opportunity_save}" value="speichern" action="#{opportunityController.save()}"
-						icon="ui-icon-check"
+ <p:commandButton id="saveOpportunity" value="#{message.opportunity_save}" action="#{opportunityController.save()}"
+						icon="ui-icon ui-icon-disk"
+						
 						
 						style="float:right"   update="@form"/>
  </h:panelGrid>
-
+  <in:input   title="#{message.opportunity_keyword_input_title}" submitText="#{message.opportunity_keyword_input_submit_text}" label="#{message.opportunity_keyword_input_label}"  input="#{test.name}"/>   
  </h:form>
  </ui:define>
  </ui:composition>

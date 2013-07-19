@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:u="http://example.com/functions"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<head>
+
+<title>Input for a simple field</title>
+</head>
+<body>
+
+	<composite:interface>
+		<composite:attribute name="title" required="true" />
+		<composite:attribute name="label" required="true" />
+		<composite:attribute name="submitText" required="true" />
+		<composite:attribute name="input" required="true" />
+		<composite:editableValueHolder name="inputField"/>
+	</composite:interface>
+
+	<composite:implementation>
+	<p:dialog header="#{cc.attrs.title}" widgetVar="inputDlg" resizable="false">  
+	
+	
+   
+  
+        <h:panelGrid columns="2" style="margin-bottom:10px">  
+            <h:outputLabel for="inputField" value="#{cc.attrs.label}" />  
+            <p:inputText id="inputField" value="#{cc.attrs.input}" />  
+        </h:panelGrid>  
+  
+        <p:commandButton id="submitButton" value="#{cc.attrs.submitText}"  oncomplete="inputDlg.hide();"/>  
+              
+   
+</p:dialog>  
+	
+	
+	<script type="text/javascript">  
+    		function handlSubjectRequest(xhr, status, args) {  
+        		if(! args.validationFailed) {  
+            		inputDlg.hide(); 
+        		} 
+        		
+    		}  
+		</script>
+	
+	</composite:implementation>
+</body>
+</html>
