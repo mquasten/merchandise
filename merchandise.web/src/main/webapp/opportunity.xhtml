@@ -12,8 +12,11 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
   <ui:composition template="masterlayout.xhtml">
   <ui:define name="content">
       <h2 style="text-align: center"><h:outputText value="#{message.opportunity_headline}" /></h2>
+     
+	 
 	  <h:form>
-	
+ 
+	 
 	 <h:panelGrid columns="1" styleClass="positionCentered">
 	
 	  <h:panelGrid  columns="3" columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle" >
@@ -21,11 +24,15 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  
 		  
 		  		<p:outputLabel id="nameLabel" for="name" value="#{message.opportunity_name}" />  
-                <p:inputText id="name" label="name"  value="#{opportunity.name}" styleClass="gridInputField" >  
-                    	<f:validateBean />
+                <p:inputText id="name" label="name"  value="#{opportunity.name}" styleClass="gridInputField" >
+                   
+                </p:inputText>  
+                    	
                 
-                </p:inputText>
+              
                 <p:message for="name" display="text" />
+                     	
+             
                 
                 <p:outputLabel  for="description" value="#{message.opportunity_description}" />  
                 <p:inputTextarea  id="description" value="#{opportunity.description }" style="width:100%" >
@@ -88,21 +95,28 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  	
 		  	<p:outputLabel  for="keywords" value="#{message.opportunity_keyword}" /> 
 		  	<h:panelGrid id="keywords" columns="3">
-		  		<p:dataTable  id="keywordTable" var="keyWordVarVar" paginator="false"   value="#{opportunity.keyWords}"  selection="#{opportunity.selectedKeyWord}"  >  
+		  		<p:dataTable  id="keywordTable" var="keyWordVarVar" paginator="false"   value="#{opportunity.keyWords}"  selection="#{keyWordModel.selectedKeyWord}"  >  
 			   	   <p:column selectionMode="single" style="width:2%" />  
                    <p:column headerText="#{message.opportunity_keyword_table_column_name}">#{keyWordVarVar}</p:column> 
                  
                    <p:ajax event="rowSelectRadio"  update="@form" process="@this"/> 
 			   </p:dataTable>
-		  	<p:commandButton type="button" value="#{message.opportunity_keyword_add}" onclick="inputDlg.show();" icon="ui-icon ui-icon-check"/>  
+			   
+			   
+			       
 		  	
-		  	 <p:commandButton id="#{message.opportunity_save}" value="#{message.opportunity_keyword_delete}" action="#{opportunityController.delete()}"
-						icon="ui-icon ui-icon-close" />
+		  	<p:commandButton  value="#{message.opportunity_keyword_add}"  oncomplete="inputDlg.show();"   icon="ui-icon-check"    />  
+		  	
+		  	 <p:commandButton id="#{message.opportunity_save}" value="#{message.opportunity_keyword_delete}" action="#{madonna.likeAPrayer()}" process="@form"  update="@form"
+						icon="ui-icon-close" />
 		  	
 		  	</h:panelGrid>
-		  	
+		  
 		  	<p:message for="keywords" display="text" />
- </h:panelGrid>
+		  	
+		  
+            </h:panelGrid>
+           
  
  <p:commandButton id="saveOpportunity" value="#{message.opportunity_save}" action="#{opportunityController.save()}"
 						icon="ui-icon ui-icon-disk"
@@ -110,7 +124,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 						
 						style="float:right"   update="@form"/>
  </h:panelGrid>
-  <in:input   title="#{message.opportunity_keyword_input_title}" submitText="#{message.opportunity_keyword_input_submit_text}" label="#{message.opportunity_keyword_input_label}"  input="#{test.name}"/>   
+ <in:input   title="#{message.opportunity_keyword_input_title}" submitText="#{message.opportunity_keyword_input_submit_text}" label="#{message.opportunity_keyword_input_label}"  saveAction="#{opportunityController.addKeyWord()}"/>
  </h:form>
  </ui:define>
  </ui:composition>

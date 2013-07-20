@@ -9,6 +9,7 @@ import de.mq.mapping.util.proxy.Parameter;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
+import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
@@ -34,5 +35,8 @@ public interface OpportunityController {
 	String create();
 
 
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class, el="#arg.opportunity", elResultType=Opportunity.class), @Parameter(clazz=KeyWordModelAO.class, el="#arg.keyWord", elResultType=String.class)})}, clazz = OpportunityControllerImpl.class)
+	void addKeyWord();
+	
 	
 }

@@ -16,29 +16,36 @@
 		<composite:attribute name="title" required="true" />
 		<composite:attribute name="label" required="true" />
 		<composite:attribute name="submitText" required="true" />
-		<composite:attribute name="input" required="true" />
-		<composite:editableValueHolder name="inputField"/>
+		<composite:attribute name="saveAction" method-signature="void f()" />  
+		
 	</composite:interface>
 
 	<composite:implementation>
-	<p:dialog header="#{cc.attrs.title}" widgetVar="inputDlg" resizable="false">  
+	<p:dialog header="#{cc.attrs.title}" widgetVar="inputDlg" modal="true">  
 	
-	
-   
-  
-        <h:panelGrid columns="2" style="margin-bottom:10px">  
-            <h:outputLabel for="inputField" value="#{cc.attrs.label}" />  
-            <p:inputText id="inputField" value="#{cc.attrs.input}" />  
+		<p:ajax event="close" update="@form"  />
+  		
+       
+        <h:panelGrid id="inputGrid" columns="3" style="margin-bottom:10px">  
+           
+            <h:outputLabel  for="inputField" value="#{cc.attrs.label}" />  
+            <h:inputText id="inputField"  value="#{keyWordModel.keyWord}" >
+            		<f:validateBean />
+            </h:inputText>
+            <p:message for="inputField" display="text" />
+            <f:facet name="footer">
+                <p:commandButton   value="#{cc.attrs.submitText}" action="#{cc.attrs.saveAction}"  process="inputGrid"  update="inputGrid" oncomplete="handleInputRequest(xhr, status, args)"  style="float:right" />     
+            </f:facet>
         </h:panelGrid>  
   
-        <p:commandButton id="submitButton" value="#{cc.attrs.submitText}"  oncomplete="inputDlg.hide();"/>  
+         
               
-   
+  
 </p:dialog>  
 	
 	
 	<script type="text/javascript">  
-    		function handlSubjectRequest(xhr, status, args) {  
+    		function handleInputRequest(xhr, status, args) {  
         		if(! args.validationFailed) {  
             		inputDlg.hide(); 
         		} 

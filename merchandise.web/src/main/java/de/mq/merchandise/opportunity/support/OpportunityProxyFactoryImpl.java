@@ -42,7 +42,7 @@ public class OpportunityProxyFactoryImpl {
 	
 	         
 	@Bean(name="opportunitiesModel")
-	@Scope("conversation")
+	@Scope("view")
 	public OpportunityModelAO opportunityModel() {
 		conversation.begin();
 		return proxyFactory.createProxy(OpportunityModelAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("paging", proxyFactory.createProxy(PagingAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(new SimplePagingImpl(10, "name, id")).build())).withBeanResolver(beanResolver).build());
@@ -70,6 +70,12 @@ public class OpportunityProxyFactoryImpl {
 	public ProductClassificationTreeAO productClassifications() {
 		conversation.begin();
 		return proxyFactory.createProxy(ProductClassificationTreeAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("treeNode", new DefaultTreeNode() ).withBeanResolver(beanResolver).withDomain(classificationTreeChangedObserveableController).build());
+	}
+	
+	@Bean(name="keyWordModel")
+	@Scope("view")
+	public KeyWordModelAO keyWordModel() {
+		return proxyFactory.createProxy(KeyWordModelAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).build());
 	}
 	
 	

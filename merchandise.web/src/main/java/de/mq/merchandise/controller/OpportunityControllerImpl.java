@@ -78,5 +78,13 @@ class OpportunityControllerImpl {
 
 		opportunityAO.notifyProductClassificationChanged();
 	}
+	
+	void addKeyWord(final Opportunity opportunity, final String keyWord){
+		System.out.println(opportunity);
+		System.out.println(keyWord);
+		opportunity.assignKeyWord(keyWord);
+	}
+	
+	
 
 }

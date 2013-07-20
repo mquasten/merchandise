@@ -63,12 +63,6 @@ public abstract class OpportunityAO implements Serializable {
 	public abstract DataModel<String> getKeyWords();
 	
 	
-	@Getter(value = "selectedKeyWord")
-	public abstract String getSelectedKeyWord();
-
-	@Setter(value = "selectedKeyWord")
-	public abstract void setSelectedKeyWord(final String selected);
-	
 	
 	@GetterProxyCollection(clazz=OpportunityImpl.class, name = "activityClassifications",  proxyClass = ActivityClassificationAO.class , converter=HibernateProxyConverter.class)
 	public abstract List<ActivityClassificationAO> getActivityClassifications();
