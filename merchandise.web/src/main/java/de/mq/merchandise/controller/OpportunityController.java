@@ -35,8 +35,11 @@ public interface OpportunityController {
 	String create();
 
 
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class, el="#arg.opportunity", elResultType=Opportunity.class), @Parameter(clazz=KeyWordModelAO.class, el="#arg.keyWord", elResultType=String.class)})}, clazz = OpportunityControllerImpl.class)
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class, el="#arg.opportunity", elResultType=Opportunity.class), @Parameter(clazz=KeyWordModelAO.class)})}, clazz = OpportunityControllerImpl.class)
 	void addKeyWord();
 	
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class, el="#arg.opportunity", elResultType=Opportunity.class), @Parameter(clazz=KeyWordModelAO.class)})}, clazz = OpportunityControllerImpl.class)
+	void deleteKeyWord();
 	
 }

@@ -42,19 +42,17 @@ public class OpportunityProxyFactoryImpl {
 	
 	         
 	@Bean(name="opportunitiesModel")
-	@Scope("view")
+	@Scope("conversation")
 	public OpportunityModelAO opportunityModel() {
 		conversation.begin();
 		return proxyFactory.createProxy(OpportunityModelAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("paging", proxyFactory.createProxy(PagingAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(new SimplePagingImpl(10, "name, id")).build())).withBeanResolver(beanResolver).build());
 	}
 	
 	@Bean(name="opportunity")
-	@Scope("conversation") 
+	@Scope("view") 
 	public OpportunityAO opportunity() {
-		final OpportunityImpl opportunity = EntityUtil.create(OpportunityImpl.class);
-		opportunity.assignKeyWord("Escort Service");
-		opportunity.assignKeyWord("Begleitservice");
-		return proxyFactory.createProxy(OpportunityAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(opportunity).withDomain(classificationTreeChangedObserveableController).build());
+		
+		return proxyFactory.createProxy(OpportunityAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(OpportunityImpl.class)).withDomain(classificationTreeChangedObserveableController).build());
 	} 
 	
 	

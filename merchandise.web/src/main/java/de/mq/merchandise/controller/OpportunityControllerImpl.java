@@ -4,6 +4,7 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.ClassificationService;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
+import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
@@ -79,12 +80,19 @@ class OpportunityControllerImpl {
 		opportunityAO.notifyProductClassificationChanged();
 	}
 	
-	void addKeyWord(final Opportunity opportunity, final String keyWord){
+	void addKeyWord(final Opportunity opportunity, final KeyWordModelAO keyWordModel){
 		System.out.println(opportunity);
-		System.out.println(keyWord);
-		opportunity.assignKeyWord(keyWord);
+		System.out.println(keyWordModel.getKeyWord());
+		opportunity.assignKeyWord(keyWordModel.getKeyWord());
+		keyWordModel.setKeyWord(null);
 	}
 	
-	
+	void deleteKeyWord(final Opportunity opportunity, final KeyWordModelAO keyWordModel) {
+		System.out.println("removeKeyword");
+		System.out.println(opportunity);
+		System.out.println(keyWordModel.getSelectedKeyWord());
+		opportunity.removeKeyWord(keyWordModel.getSelectedKeyWord());
+		keyWordModel.setSelectedKeyWord(null);
+	}
 
 }

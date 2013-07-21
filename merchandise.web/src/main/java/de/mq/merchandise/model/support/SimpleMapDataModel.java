@@ -58,9 +58,6 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 	}
 
 	private Object invokeGetId(T object) throws IllegalAccessException, InvocationTargetException {
-		if( object == null) {
-			return null;
-		}
 		final Method method =  ReflectionUtils.findMethod(object.getClass(), "getId" );
 		if ( method == null){
 			return null;
