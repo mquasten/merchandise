@@ -81,16 +81,11 @@ class OpportunityControllerImpl {
 	}
 	
 	void addKeyWord(final Opportunity opportunity, final KeyWordModelAO keyWordModel){
-		System.out.println(opportunity);
-		System.out.println(keyWordModel.getKeyWord());
 		opportunity.assignKeyWord(keyWordModel.getKeyWord());
 		keyWordModel.setKeyWord(null);
 	}
 	
 	void deleteKeyWord(final Opportunity opportunity, final KeyWordModelAO keyWordModel) {
-		System.out.println("removeKeyword");
-		System.out.println(opportunity);
-		System.out.println(keyWordModel.getSelectedKeyWord());
 		opportunity.removeKeyWord(keyWordModel.getSelectedKeyWord());
 		keyWordModel.setSelectedKeyWord(null);
 	}
