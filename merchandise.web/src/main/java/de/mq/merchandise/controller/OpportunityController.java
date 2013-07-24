@@ -42,4 +42,10 @@ public interface OpportunityController {
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class, el="#arg.opportunity", elResultType=Opportunity.class), @Parameter(clazz=KeyWordModelAO.class)})}, clazz = OpportunityControllerImpl.class)
 	void deleteKeyWord();
 	
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class)})}, clazz = OpportunityControllerImpl.class)	
+	void conditions();
+		
+
+	
 }

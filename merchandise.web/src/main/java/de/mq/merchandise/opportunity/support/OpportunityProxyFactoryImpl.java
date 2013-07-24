@@ -18,6 +18,7 @@ public class OpportunityProxyFactoryImpl {
 
 	final ClassificationTreeChangedObserveableControllerImpl classificationTreeChangedObserveableController = EntityUtil.create(ClassificationTreeChangedObserveableControllerImpl.class);
 	
+	final ConditionsChangedObserverableControllerImpl conditionsChangedObserverableController = EntityUtil.create(ConditionsChangedObserverableControllerImpl.class);
 	
 	@Autowired
 	private AOProxyFactory proxyFactory;
@@ -52,7 +53,7 @@ public class OpportunityProxyFactoryImpl {
 	@Scope("view") 
 	public OpportunityAO opportunity() {
 		
-		return proxyFactory.createProxy(OpportunityAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(OpportunityImpl.class)).withDomain(classificationTreeChangedObserveableController).build());
+		return proxyFactory.createProxy(OpportunityAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(OpportunityImpl.class)).withDomain(classificationTreeChangedObserveableController).withDomain(conditionsChangedObserverableController).build());
 	} 
 	
 	
@@ -75,6 +76,17 @@ public class OpportunityProxyFactoryImpl {
 	public KeyWordModelAO keyWordModel() {
 		return proxyFactory.createProxy(KeyWordModelAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).build());
 	}
+	
+	
+	@Bean(name="conditions")
+	@Scope("conversation")
+	public ConditionTreeAO conditions() {
+		conversation.begin();
+		return proxyFactory.createProxy(ConditionTreeAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("treeNode", new DefaultTreeNode() ).withBeanResolver(beanResolver).withDomain(conditionsChangedObserverableController).build());
+	}
+	
+	
+	
 	
 	
 }

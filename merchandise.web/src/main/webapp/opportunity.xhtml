@@ -43,6 +43,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  		
 		  		
 		  		 <p:outputLabel  for="conditions" value="#{message.opportunity_products}" />  
+		  		<h:panelGrid colums="2"> 
 		  		<p:tree id="conditions" style="width:100%;height:200px"  var="node"   dynamic="true"   value="#{conditions.treeNode}"  selectionMode="single"   selection="#{conditions.selected}">  
   
 		  		  <p:treeNode>  
@@ -53,7 +54,14 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
         			</p:treeNode>  
         			 
     			</p:tree>  
-		  		
+    			 <f:facet name="footer">
+			        	<p:commandButton  value="conditions"  process="@this" update="@form"   action="#{opportunityController.conditions}"  icon="ui-icon-check"    />  
+		  	
+		  	            
+			  
+			  </f:facet>
+    			
+		  		</h:panelGrid>
 		  		<p:message for="conditions" display="text" />
 		  		
 		  		<p:outputLabel  for="kind" value="#{message.opportunity_kind}" />  

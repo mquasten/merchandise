@@ -41,6 +41,12 @@ class OpportunityControllerImpl {
 		opportunityModelAO.setSelected(null);
 	}
 	
+	
+	void conditions(final OpportunityAO opportunityAO) {
+		System.out.println("kylie is nice and hot...");
+		opportunityAO.notifyConditionsChanged();
+	}
+	
 	String create(final ActivityClassificationTreeAO activityClassificationTreeAO, final ProductClassificationTreeAO productClassificationTreeAO) {
 		System.out.println("create");
 		activityClassificationTreeAO.setClassifications(classificationService.activityClassifications());
@@ -48,6 +54,8 @@ class OpportunityControllerImpl {
 		
 		productClassificationTreeAO.setClassifications(classificationService.productClassCollections());
 		productClassificationTreeAO.notifyClassificationsChanged();
+		
+		
 		return "opportunity";
 	}
 
