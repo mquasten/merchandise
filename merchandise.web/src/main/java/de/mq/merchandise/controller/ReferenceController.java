@@ -24,7 +24,6 @@ public class ReferenceController {
 		
 	}
 	
-	
 	public final List<SelectItem> languages(final String language) {
 		final List<SelectItem> items = new ArrayList<>();
 		for(final Locale locale : referenceService.languages() ) {
