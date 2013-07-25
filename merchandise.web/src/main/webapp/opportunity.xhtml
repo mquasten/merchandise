@@ -47,9 +47,8 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  		<p:tree id="conditions" style="width:100%;height:200px"  var="node"   dynamic="true"   value="#{conditions.treeNode}"  selectionMode="single"   selection="#{conditions.selected}">  
   
 		  		  <p:treeNode>  
-            			<h:outputText value="#{node}" >
-            					<f:converter converterId="classificationConverter" />
-            			</h:outputText>  
+            			<h:outputText value="#{node}" />
+            			
             		 
         			</p:treeNode>  
         			 
