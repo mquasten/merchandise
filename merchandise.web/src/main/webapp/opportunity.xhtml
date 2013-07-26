@@ -56,7 +56,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
     			 <f:facet name="footer">
 			        	<p:commandButton  value="conditions"  process="@this" update="@form"   action="#{opportunityController.conditions}"  icon="ui-icon-check"    />  
 		  	
-		  	            
+		  	          <p:button  value="üproducts"    outcome="/subjects.xhtml" icon="ui-icon-check"    >
+		  	             	<f:param name="selectMode" value="true" />  
+		  	          </p:button>
 			  
 			  </f:facet>
     			

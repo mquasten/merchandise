@@ -35,5 +35,4 @@ public abstract class CommercialSubjectsModelAO implements Serializable {
 	@Getter(value = "paging")
 	public abstract PagingAO getPaging();
 
-
 }

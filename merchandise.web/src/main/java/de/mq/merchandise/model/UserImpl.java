@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 @Component("user")
 @Scope( "session")
-
 public class UserImpl implements User {
 	
 	private String language="en";

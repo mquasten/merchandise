@@ -8,7 +8,14 @@ xmlns:subject="http://java.sun.com/jsf/composite/subject"
 xmlns:ui="http://java.sun.com/jsf/facelets">
    
 <h:body>
-  <ui:composition template="masterlayout.xhtml">
+  
+  <f:metadata>
+      	
+      	<f:viewParam name="selectMode" value="#{pageModel.selectMode}" /> 		
+  	</f:metadata>
+
+  <ui:composition template="masterlayout.xhtml" >
+  
   <ui:define name="content">
       <h2 style="text-align: center"><h:outputText value="#{message.subjects_headline}" /></h2>
 	  <h:panelGrid id="page" columns="1" styleClass="positionCentered">
@@ -31,7 +38,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
                    <p:ajax event="rowSelectRadio"  update="@form" process="@this"/> 
 			   </p:dataTable>
 	
-			   <h:panelGrid id="buttonPanel" columns="3" >
+			   <h:panelGrid id="buttonPanel" columns="3"  rendered="#{!pageModel.selectMode}">
 			      <p:commandButton value="#{message.subject_add_button}" oncomplete="subjectDlg.show();"    process="@form"  update="@form"/>
 			      <p:commandButton  value="#{message.subject_change_button}" update="@form" oncomplete="subjectDlg.show();" process="@this,subjects"  actionListener="#{subjectController.openChangeDialog()}"  rendered="#{not empty subjectsModel.selected}" />
 			      <p:commandButton value="#{message.subject_delete_button}"   action="#{subjectController.delete()}"  process="@this,subjects" update="@form" rendered="#{not empty subjectsModel.selected}" />	

@@ -13,7 +13,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets" >
      <f:view locale="#{user.language}" contentType="text/html" >
   	<f:metadata>
       	<f:viewParam name="language" value="#{user.language}" /> 
-      			
+      		<f:viewParam name="selectMode" value="#{pageModel.selectMode}" /> 		
   	</f:metadata>
   	  <h:outputStylesheet library="css" name="style.css"  />
    	 
@@ -22,7 +22,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets" >
        
         		  <h1 style="text-align:center">  <h:outputText id="headline" value="#{message.headline}" /> </h1>  
         		  <h:form>
-        		  <p:menubar>  
+        		  <p:menubar  rendered="#{!pageModel.selectMode}">  
         		      <p:submenu label="#{message.menu_file}" icon="ui-icon-document">  
                          <p:menuitem value="#{message.menu_file_quit}" actionListener="#{loginController.abort}" />  
         		      </p:submenu>  
