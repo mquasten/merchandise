@@ -18,7 +18,6 @@ public class ClassificationConverter implements Converter{
 	public String getAsString(final FacesContext context, final UIComponent component, final Object value) {
 		if (!(value instanceof Classification)) {
 			return "???";
-			
 		}
 		return ((Classification)value).description();
 	}
