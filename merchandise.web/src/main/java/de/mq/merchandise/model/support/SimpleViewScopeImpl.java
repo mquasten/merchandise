@@ -7,7 +7,6 @@ import org.springframework.beans.factory.config.Scope;
 
 public class SimpleViewScopeImpl implements Scope {
 	
-	
 	private final FacesContextFactory facesContextFactory;
 	
 	public SimpleViewScopeImpl(final FacesContextFactory facesContextFactory) {

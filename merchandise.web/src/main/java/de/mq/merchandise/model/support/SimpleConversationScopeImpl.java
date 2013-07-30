@@ -5,14 +5,10 @@ import org.springframework.beans.factory.config.Scope;
 
 
 public class SimpleConversationScopeImpl extends AbstractConversation implements Scope {
-	
-	
 
-	public SimpleConversationScopeImpl(FacesContextFactory facesContextFactory) {
+	public SimpleConversationScopeImpl(final FacesContextFactory facesContextFactory) {
 		super(facesContextFactory);
 	}
-
-	
 
 	@Override
 	public Object get(String name, ObjectFactory<?> objectFactory) {
@@ -27,8 +23,6 @@ public class SimpleConversationScopeImpl extends AbstractConversation implements
 		return createOrGetModelRepositoryFromSession(facesContextFactory.facesContext()).get(name);
 	}
 
-
-
 	private void addToRequestMapIfNotExists(String name, ObjectFactory<?> objectFactory) {
 		if ( ! facesContextFactory.facesContext().getExternalContext().getRequestMap().containsKey(name) ) {
 			facesContextFactory.facesContext().getExternalContext().getRequestMap().put(name, objectFactory.getObject());
@@ -40,16 +34,12 @@ public class SimpleConversationScopeImpl extends AbstractConversation implements
 		if ( isTransient(facesContextFactory.facesContext()) ) {
 			return facesContextFactory.facesContext().getExternalContext().getRequestMap().remove(name);
 		}
-		
 	    return createOrGetModelRepositoryFromSession(facesContextFactory.facesContext()).remove(name);
-	  
-	   
 	}
 
 	@Override
 	public void registerDestructionCallback(String name, Runnable callback) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

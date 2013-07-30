@@ -10,6 +10,8 @@ import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
 import de.mq.merchandise.opportunity.support.CommercialRelation;
 import de.mq.merchandise.opportunity.support.CommercialRelationServiceMock;
+import de.mq.merchandise.opportunity.support.CommercialSubject;
+import de.mq.merchandise.opportunity.support.CommercialSubjectsModelAO;
 import de.mq.merchandise.opportunity.support.ConditionTreeAO;
 import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
@@ -117,5 +119,13 @@ class OpportunityControllerImpl {
 		opportunity.removeKeyWord(keyWordModel.getSelectedKeyWord());
 		keyWordModel.setSelectedKeyWord(null);
 	}
+	
+	String addSubject(final OpportunityAO opportunityAO, final CommercialSubject commercialSubject) {
+		System.out.println("***************************************************");
+		System.out.println(commercialSubject  +" added to " + opportunityAO);
+		System.out.println("***************************************************");
+		return "opportunity.xhtml";
+	}
+	
 
 }

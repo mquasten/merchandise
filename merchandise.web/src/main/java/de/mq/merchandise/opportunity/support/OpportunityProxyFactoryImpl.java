@@ -52,7 +52,6 @@ public class OpportunityProxyFactoryImpl {
 	@Bean(name="opportunity")
 	@Scope("view") 
 	public OpportunityAO opportunity() {
-		
 		return proxyFactory.createProxy(OpportunityAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(OpportunityImpl.class)).withDomain(classificationTreeChangedObserveableController).withDomain(conditionsChangedObserverableController).build());
 	} 
 	

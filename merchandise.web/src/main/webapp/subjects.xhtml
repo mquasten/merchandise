@@ -43,6 +43,11 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 			      <p:commandButton  value="#{message.subject_change_button}" update="@form" oncomplete="subjectDlg.show();" process="@this,subjects"  actionListener="#{subjectController.openChangeDialog()}"  rendered="#{not empty subjectsModel.selected}" />
 			      <p:commandButton value="#{message.subject_delete_button}"   action="#{subjectController.delete()}"  process="@this,subjects" update="@form" rendered="#{not empty subjectsModel.selected}" />	
 			   </h:panelGrid>
+			   
+			    <h:panelGrid id="buttonPanelSection" columns="2"  rendered="#{pageModel.selectMode}">
+			    		  <p:commandButton value="#{message.subject_ok_button}" action="#{opportunityController.addSubject()}"    process="@this"  update="@parent" rendered="#{not empty subjectsModel.selected}"/>
+			    		  <p:button value="#{message.subject_cancel_button}" outcome="opportunity.xhtml"    />
+			    </h:panelGrid>
 		
 			</h:form>
 		</h:panelGrid>
