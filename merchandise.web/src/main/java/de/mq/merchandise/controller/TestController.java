@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 public class TestController {
 	
 	public final void test() {
+		
 		System.out.println("life is a mystery, heaven help me (like aprayer)");
 	}
 
