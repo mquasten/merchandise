@@ -1,6 +1,8 @@
 package de.mq.merchandise.controller;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.util.ReflectionUtils;
 
@@ -12,6 +14,7 @@ import de.mq.merchandise.opportunity.support.CommercialRelation;
 import de.mq.merchandise.opportunity.support.CommercialRelationServiceMock;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectsModelAO;
+import de.mq.merchandise.opportunity.support.ConditionImpl;
 import de.mq.merchandise.opportunity.support.ConditionTreeAO;
 import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
@@ -20,6 +23,7 @@ import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.OpportunityService;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
+import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 import de.mq.merchandise.util.EntityUtil;
 
 class OpportunityControllerImpl {
@@ -124,6 +128,12 @@ class OpportunityControllerImpl {
 		System.out.println("***************************************************");
 		System.out.println(commercialSubject  +" added to " + opportunityAO);
 		System.out.println("***************************************************");
+		
+		final Opportunity opportunity = opportunityAO.getOpportunity();
+		opportunity.assignConditions(commercialSubject, new ConditionImpl(ConditionType.Quantity, new ArrayList<String>()), new ConditionImpl(ConditionType.PricePerUnit, new ArrayList<String>()));
+		
+		
+		opportunityAO.notifyConditionsChanged();
 		return "opportunity.xhtml";
 	}
 	

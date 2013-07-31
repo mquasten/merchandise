@@ -13,14 +13,16 @@ class ConditionsChangedObserverableControllerImpl {
 		 * shit api (encapsulate collections and so on) !!!!
 		 * modification shouldn't be done directly on a list, unmodifyable collections ...
 		 */
+	
 		node.getChildren().clear();
 		 for(final CommercialRelation commercialRelation : commercialRelations){
+			
 			 handleSubject(node, commercialRelation);
 		 }
 	}
 
 	private void handleSubject(final TreeNode node, final CommercialRelation commercialRelation) {
-		final TreeNode subjectNode = new DefaultTreeNode(commercialRelation.commercialSubject(), node);
+		final TreeNode subjectNode = new DefaultTreeNode(commercialRelation.commercialSubject().name(), node);
 		 for(final Condition condition : commercialRelation.conditions().values()){
 			 handleType(subjectNode, condition);
 			 

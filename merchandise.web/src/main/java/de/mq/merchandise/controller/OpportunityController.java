@@ -10,7 +10,6 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
-import de.mq.merchandise.opportunity.support.CommercialSubjectAO;
 import de.mq.merchandise.opportunity.support.CommercialSubjectsModelAO;
 import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
