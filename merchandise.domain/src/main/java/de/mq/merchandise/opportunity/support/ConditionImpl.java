@@ -19,7 +19,7 @@ import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
 @Entity(name="Condition")
-class ConditionImpl implements Condition{
+public class ConditionImpl implements Condition{
 
 	
 	private static final long serialVersionUID = 8021776550000024158L;
@@ -55,7 +55,7 @@ class ConditionImpl implements Condition{
 	
 	
 	
-	ConditionImpl(final ConditionType conditionType,final List<String> values) {
+	public ConditionImpl(final ConditionType conditionType,final List<String> values) {
 		this(conditionType, values, null, null);
 	}
 	

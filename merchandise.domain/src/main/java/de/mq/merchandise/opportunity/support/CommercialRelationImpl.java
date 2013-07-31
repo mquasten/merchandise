@@ -105,6 +105,7 @@ class CommercialRelationImpl implements CommercialRelation {
 		return (id != null);
 	}
 	
+	
 	@Override
 	public int hashCode() {
 		return EntityUtil.equalsBuilder().withSource(this).buildHashCode();
@@ -113,7 +114,7 @@ class CommercialRelationImpl implements CommercialRelation {
 	@Override
 	public boolean equals(Object obj) {
 		 return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(CommercialRelation.class).isEquals();
-	}
+	} 
 	
 	
 }

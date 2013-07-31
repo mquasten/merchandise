@@ -73,5 +73,17 @@ public class ConditionTest {
 		ReflectionTestUtils.setField(condition, "commercialRelation", commercialRelation);
 		return condition;
 	}
+	
+	@Test
+	public final void create() {
+		final Opportunity opportunity = new OpportunityImpl();
+		CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		opportunity.assignConditions(commercialSubject,new ConditionImpl(ConditionType.PricePerUnit, new ArrayList<String>()), new ConditionImpl(ConditionType.Quantity, new ArrayList<String>()));
+		Assert.assertEquals(1, opportunity.commercialRelations().size());
+		Assert.assertEquals(2,  opportunity.commercialRelations().iterator().next().conditions().keySet().size());
+		Assert.assertTrue(opportunity.commercialRelations().iterator().next().conditions().containsKey(ConditionType.PricePerUnit));
+		Assert.assertTrue(opportunity.commercialRelations().iterator().next().conditions().containsKey(ConditionType.Quantity));
+		
+	}
 
 }

@@ -205,12 +205,13 @@ public class OpportunityImpl implements Opportunity {
 	
 	@Override
 	public  void assignConditions(final CommercialSubject commercialSubject, final Condition ... conditions) {
+		
+		final CommercialRelation relation = new  CommercialRelationImpl(commercialSubject, this);
 		for(final Condition condition : conditions){
-			final CommercialRelation relation = new  CommercialRelationImpl(commercialSubject, this);
 			relation.assign(condition);
-			
 			commercialRelations.add(relation);
 		}
+		
 	}
 
 	@Override
