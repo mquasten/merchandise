@@ -103,6 +103,19 @@ public class ConditionImpl implements Condition{
 	public boolean equals(Object obj) {
 		 return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(Condition.class).isEquals();
 	}
+
+
+
+	@Override
+	public long id() {
+		EntityUtil.idAware(id);
+		return id;
+	}
+	
+	@Override
+	public boolean hasId() {
+		return (id != null);
+	}
 	
 
 }

@@ -1,9 +1,10 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.io.Serializable;
 import java.util.List;
 
-public interface Condition extends Serializable {
+import de.mq.merchandise.BasicEntity;
+
+public interface Condition extends BasicEntity {
 	
 	enum ConditionType {
 		Quantity,
@@ -20,5 +21,7 @@ public interface Condition extends Serializable {
 	CommercialRelation commercialRelation();
 	
 	ConditionType conditionType();
+	
+	
 	
 }
