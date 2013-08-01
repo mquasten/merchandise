@@ -2,6 +2,7 @@ package de.mq.merchandise.controller;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.util.ReflectionUtils;
@@ -14,6 +15,8 @@ import de.mq.merchandise.opportunity.support.CommercialRelation;
 import de.mq.merchandise.opportunity.support.CommercialRelationServiceMock;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectsModelAO;
+import de.mq.merchandise.opportunity.support.Condition;
+import de.mq.merchandise.opportunity.support.ConditionAO;
 import de.mq.merchandise.opportunity.support.ConditionImpl;
 import de.mq.merchandise.opportunity.support.ConditionTreeAO;
 import de.mq.merchandise.opportunity.support.KeyWordModelAO;
@@ -137,5 +140,16 @@ class OpportunityControllerImpl {
 		return "opportunity.xhtml";
 	}
 	
+	
+	@SuppressWarnings("unchecked")
+	void addConditionValue(ConditionAO conditionAO) throws IllegalArgumentException, IllegalAccessException {
+		
+		System.out.println(conditionAO.getValue());
+		Condition condition = conditionAO.getCondition();
+		Field field =   ReflectionUtils.findField(ConditionImpl.class, "values");
+		field.setAccessible(true);
+		Collection<String> values = (Collection<String>) field.get(condition);
+		values.add(conditionAO.getValue());
+	}
 
 }

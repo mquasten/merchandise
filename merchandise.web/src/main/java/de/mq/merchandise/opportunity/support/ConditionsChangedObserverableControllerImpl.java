@@ -22,15 +22,14 @@ class ConditionsChangedObserverableControllerImpl {
 	}
 
 	private void handleSubject(final TreeNode node, final CommercialRelation commercialRelation) {
-		final TreeNode subjectNode = new DefaultTreeNode(commercialRelation.commercialSubject().name(), node);
+		final TreeNode subjectNode = new DefaultTreeNode(commercialRelation.commercialSubject(), node);
 		 for(final Condition condition : commercialRelation.conditions().values()){
 			 handleType(subjectNode, condition);
-			 
 		 }
 	}
 
 	private void handleType(final TreeNode subjectNode, final Condition condition) {
-		final TreeNode typeNode = new DefaultTreeNode(condition.conditionType(), subjectNode);
+		final TreeNode typeNode = new DefaultTreeNode(condition, subjectNode);
 		 for(final String value : condition.values()){
 			 new DefaultTreeNode(value, typeNode);
 		 }

@@ -2,6 +2,10 @@ package de.mq.merchandise.opportunity.support;
 
 import java.io.Serializable;
 
+import javax.faces.model.DataModel;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import de.mq.mapping.util.proxy.Getter;
 import de.mq.mapping.util.proxy.GetterDomain;
 import de.mq.mapping.util.proxy.Setter;
@@ -22,6 +26,8 @@ public abstract class ConditionAO implements Serializable {
 	@Setter(clazz=ConditionImpl.class, value = "id", converter=String2LongConverter.class)
 	public abstract void setId(final String id);
 	
+	
+	@NotNull(message="{mandatory_field}")
 	@Getter(clazz=ConditionImpl.class, value = "conditionType", converter=Enum2StringConverter.class)
 	public abstract String getConditionType();
 
@@ -41,8 +47,8 @@ public abstract class ConditionAO implements Serializable {
 	public abstract void setValidation(final String validation);
 	
 	
-	@Getter(clazz=ConditionImpl.class, value = "values")
-	public abstract String getValules();
+	@Getter(clazz=ConditionImpl.class, value = "values" , converter=String2SimpleMapDataModel.class )
+	public abstract DataModel<String> getValues();
 	
 	@SetterDomain(clazz=ConditionImpl.class)
 	public abstract void setCondition(final Condition condition) ;
@@ -51,4 +57,19 @@ public abstract class ConditionAO implements Serializable {
 	public abstract Condition getCondition() ;
 
 
+	@Getter("value")
+	public abstract String getValue(); 
+	
+	@Setter("value")
+	public abstract void setValue(final String value);
+	
+	@Getter("selectedValue")
+	public abstract String getSelectedValue(); 
+	
+	@Setter("selectedValue")
+	public abstract void setSelectedValue(final String value);
+	
+	
+	
+	
 }

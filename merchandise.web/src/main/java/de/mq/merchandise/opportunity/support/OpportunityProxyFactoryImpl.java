@@ -84,8 +84,11 @@ public class OpportunityProxyFactoryImpl {
 		return proxyFactory.createProxy(ConditionTreeAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("treeNode", new DefaultTreeNode() ).withBeanResolver(beanResolver).withDomain(conditionsChangedObserverableController).build());
 	}
 	
-	
-	
+	@Bean(name="condition")
+	@Scope("view")
+	public ConditionAO condition() {
+		 return proxyFactory.createProxy(ConditionAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(ConditionImpl.class)).build());
+	}
 	
 	
 }

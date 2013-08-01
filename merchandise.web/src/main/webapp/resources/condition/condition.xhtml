@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:u="http://example.com/functions"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<head>
+
+<title>Input for a condition</title>
+</head>
+<body>
+
+	<composite:interface>
+		<composite:attribute name="message" required="true" />
+		
+		<composite:attribute name="saveAction" method-signature="void f()" />  
+		<composite:attribute name="addAction" method-signature="void f()" />  
+		
+	</composite:interface>
+
+	<composite:implementation>
+	<p:dialog header="#{cc.attrs.message.condition_title}" widgetVar="conditionDlg" modal="true" >  
+	
+		<p:ajax event="close" update="@form"  />
+  		
+       
+        <h:panelGrid id="inputGrid" columns="3"  columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"   style="margin-bottom:10px">  
+           
+            <h:outputLabel  for="type" value="#{cc.attrs.message.condition_type}" />  
+            
+            
+             <p:selectOneMenu  id="type" value="#{condition.conditionType}"  style="width:100%"  >  
+                      				 <f:selectItem itemLabel="#{message.select_empty}" itemValue="" />
+            						 <f:selectItem itemLabel="#{message.condition_type_price_per_unit}" itemValue="PricePerUnit" />  
+            						<f:selectItem itemLabel="#{message.condition_type_quantity}" itemValue="Quantity" />  
+            						<f:selectItem itemLabel="#{message.condition_type_unit}" itemValue="Unit" />  
+           							<f:validateBean />
+           							
+		
+        		</p:selectOneMenu >  
+            
+            <p:message for="type" display="text" />
+            
+            
+            <h:outputLabel  for="validation" value="#{cc.attrs.message.condition_validation}" />  
+            
+            <p:inputTextarea  id="validation" value="#{condition.validation }" style="width:100%" >
+						<f:validateBean />
+			</p:inputTextarea >
+            
+             <p:message for="validation" display="text" />
+             
+             <h:outputLabel  for="calculation" value="#{cc.attrs.message.condition_calculation}" /> 
+              <p:inputTextarea  id="calculation" value="#{condition.calculation }" style="width:100%" >
+						<f:validateBean />
+			</p:inputTextarea >
+			
+			 <p:message for="calculation" display="text" />
+			 
+			 
+			 <h:outputLabel  for="valueTable" value="#{cc.attrs.message.condition_values}" />
+			 
+			 
+			 <p:dataTable  id="valueTable" var="valueVar" paginator="false"   value="#{condition.values}"  selection="#{condition.selectedValue}"  >  
+			   	   <p:column selectionMode="single" style="width:2%" />  
+                   <p:column headerText="#{message.condition_permitted_value_table_column}">#{valueVar}</p:column> 
+                 
+                   <p:ajax event="rowSelectRadio"  update="@form" process="@this"/> 
+                   
+			   <f:facet name="footer">
+			        	
+		  	
+		  	            <p:inputText  id="addValue" value="#{condition.value}" />  
+		  	              <p:commandButton    value="#{message.condition_value_add}" action="#{cc.attrs.addAction}"   process="valueTable"  update="valueTable"   />      
+			 			
+			  </f:facet>
+			   
+			   </p:dataTable>
+			 
+			  <p:message for="valueTable" display="text" />
+            
+            <f:facet name="footer">
+                <p:commandButton   value="#{cc.attrs.message.condition_save_action}" action="#{cc.attrs.saveAction}"  process="inputGrid"  update="inputGrid" oncomplete="handleInputRequest(xhr, status, args)"  style="float:right" />     
+            </f:facet>
+        </h:panelGrid>  
+  
+         
+              
+  
+</p:dialog>  
+	
+	
+	<script type="text/javascript">  
+    		function handleInputRequest(xhr, status, args) {  
+        		if(! args.validationFailed) {  
+            		conditionDlg.hide(); 
+        		} 
+        		
+    		}  
+		</script>
+	
+	</composite:implementation>
+</body>
+</html>

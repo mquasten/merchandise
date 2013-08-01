@@ -11,6 +11,7 @@ import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectsModelAO;
+import de.mq.merchandise.opportunity.support.ConditionAO;
 import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
@@ -50,7 +51,9 @@ public interface OpportunityController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class), @Parameter(clazz = CommercialSubjectsModelAO.class, el="#arg.selected.commercialSubject" , elResultType=CommercialSubject.class )})}, clazz = OpportunityControllerImpl.class)	
 	String addSubject();
-		
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ConditionAO.class)})}, clazz = OpportunityControllerImpl.class)	
+	void addConditionValue();
 
 	
 }

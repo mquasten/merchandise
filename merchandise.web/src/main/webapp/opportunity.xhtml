@@ -5,10 +5,12 @@ xmlns:h="http://java.sun.com/jsf/html"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:p="http://primefaces.org/ui"
 xmlns:in="http://java.sun.com/jsf/composite/input"
+xmlns:co="http://java.sun.com/jsf/composite/condition"
 xmlns:ui="http://java.sun.com/jsf/facelets">
 
 
 <h:body>
+
   <ui:composition template="masterlayout.xhtml">
   <ui:define name="content">
       <h2 style="text-align: center"><h:outputText value="#{message.opportunity_headline}" /></h2>
@@ -47,7 +49,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  		<p:tree id="conditions" style="width:100%;height:200px"  var="node"   dynamic="true"   value="#{conditions.treeNode}"  selectionMode="single"   selection="#{conditions.selected}">  
   
 		  		  <p:treeNode>  
-            			<h:outputText value="#{node}" />
+            			<h:outputText value="#{node}" >
+            			  <f:converter converterId="conditionConverter" />
+            			</h:outputText>
             
             			
             			
@@ -61,7 +65,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  	          <p:button  value="#{message.opportunity_add_subject}"    outcome="/subjects.xhtml" icon="ui-icon-check"    >
 		  	             	<f:param name="selectMode" value="true" />  
 		  	          </p:button>
-			  
+			  		  <p:commandButton  value="#{message.opportunity_condition_add}"  oncomplete="conditionDlg.show();"   icon="ui-icon-check"    /> 	
 			  </f:facet>
     			
 		  		</h:panelGrid>
@@ -158,6 +162,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 						style="float:right"   update="@form"/>
  </p:panelGrid>
  <in:input   title="#{message.opportunity_keyword_input_title}" submitText="#{message.opportunity_keyword_input_submit_text}" label="#{message.opportunity_keyword_input_label}"  saveAction="#{opportunityController.addKeyWord()}"/>
+ <co:condition message="#{message}" addAction="#{opportunityController.addConditionValue()}" />
  </h:form>
  </ui:define>
  </ui:composition>
