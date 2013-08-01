@@ -116,6 +116,24 @@ public class ConditionImpl implements Condition{
 	public boolean hasId() {
 		return (id != null);
 	}
+
+
+
+	@Override
+	public void assignValue(final String value) {
+		if( values.contains(value)){
+			return;
+		}
+		values.add(value);
+		
+	}
+
+
+
+	@Override
+	public void removeValue(String value) {
+		values.remove(value);
+	}
 	
 
 }

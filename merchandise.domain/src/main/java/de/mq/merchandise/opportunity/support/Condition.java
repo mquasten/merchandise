@@ -22,6 +22,8 @@ public interface Condition extends BasicEntity {
 	
 	ConditionType conditionType();
 	
+	void assignValue(final String value);
 	
+	void removeValue(final String value);
 	
 }

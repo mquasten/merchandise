@@ -141,15 +141,20 @@ class OpportunityControllerImpl {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
 	void addConditionValue(ConditionAO conditionAO) throws IllegalArgumentException, IllegalAccessException {
 		
 		System.out.println(conditionAO.getValue());
-		Condition condition = conditionAO.getCondition();
-		Field field =   ReflectionUtils.findField(ConditionImpl.class, "values");
-		field.setAccessible(true);
-		Collection<String> values = (Collection<String>) field.get(condition);
-		values.add(conditionAO.getValue());
+		conditionAO.getCondition().assignValue(conditionAO.getValue());
+	}
+	
+	void deleteConditionValue(ConditionAO conditionAO) throws IllegalArgumentException, IllegalAccessException {
+		
+		System.out.println(conditionAO.getSelectedValue());
+		if( conditionAO.getSelectedValue() == null){
+			return;
+		}
+		conditionAO.getCondition().removeValue(conditionAO.getSelectedValue());
+		conditionAO.setSelectedValue(null);
 	}
 
 }

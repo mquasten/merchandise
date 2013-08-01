@@ -17,6 +17,7 @@
 		
 		<composite:attribute name="saveAction" method-signature="void f()" />  
 		<composite:attribute name="addAction" method-signature="void f()" />  
+		<composite:attribute name="deleteAction" method-signature="void f()" />  
 		
 	</composite:interface>
 
@@ -67,19 +68,22 @@
 			   	   <p:column selectionMode="single" style="width:2%" />  
                    <p:column headerText="#{message.condition_permitted_value_table_column}">#{valueVar}</p:column> 
                  
-                   <p:ajax event="rowSelectRadio"  update="@form" process="@this"/> 
+                   <p:ajax event="rowSelectRadio"  update="@this" process="@this"/> 
                    
 			   <f:facet name="footer">
 			        	
-		  	
-		  	            <p:inputText  id="addValue" value="#{condition.value}" />  
-		  	              <p:commandButton    value="#{message.condition_value_add}" action="#{cc.attrs.addAction}"   process="valueTable"  update="valueTable"   />      
-			 			
+		  	   
+		  	            <p:inputText  id="addValue" value="#{condition.value}" >
+		  	           	   
+		  	            </p:inputText>  
+		  	              <p:commandButton  id="addConditionValue"   value="#{message.condition_value_add}" action="#{cc.attrs.addAction}"   process="valueTable"  update="valueTable"   />      
+		  	              <p:commandButton    value="#{message.condition_value_delete}" action="#{cc.attrs.deleteAction}"   process="valueTable"  update="@this valueTable"  rendered="#{not empty condition.selectedValue}"  />      
+			 		
 			  </f:facet>
 			   
 			   </p:dataTable>
 			 
-			  <p:message for="valueTable" display="text" />
+			  <p:message for="valueTable" display="text"  />
             
             <f:facet name="footer">
                 <p:commandButton   value="#{cc.attrs.message.condition_save_action}" action="#{cc.attrs.saveAction}"  process="inputGrid"  update="inputGrid" oncomplete="handleInputRequest(xhr, status, args)"  style="float:right" />     

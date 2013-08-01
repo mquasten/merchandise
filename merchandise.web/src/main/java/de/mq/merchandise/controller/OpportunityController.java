@@ -54,6 +54,9 @@ public interface OpportunityController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ConditionAO.class)})}, clazz = OpportunityControllerImpl.class)	
 	void addConditionValue();
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ConditionAO.class)})}, clazz = OpportunityControllerImpl.class)	
+	void deleteConditionValue();
 
 	
 }
