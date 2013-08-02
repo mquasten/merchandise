@@ -56,8 +56,9 @@ public abstract class ConditionAO implements Serializable {
 	@GetterDomain(clazz=ConditionImpl.class)
 	public abstract Condition getCondition() ;
 
+	
 
-	@Getter("value")
+	@Getter("value" )
 	public abstract String getValue(); 
 	
 	@Setter("value")

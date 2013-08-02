@@ -143,8 +143,16 @@ class OpportunityControllerImpl {
 	
 	void addConditionValue(ConditionAO conditionAO) throws IllegalArgumentException, IllegalAccessException {
 		
+		if(conditionAO.getValue() == null ){
+			return;
+		}
+		if(conditionAO.getValue().trim().length()==0) {
+			return ; 
+		}
 		System.out.println(conditionAO.getValue());
 		conditionAO.getCondition().assignValue(conditionAO.getValue());
+		
+		conditionAO.setValue(null);
 	}
 	
 	void deleteConditionValue(ConditionAO conditionAO) throws IllegalArgumentException, IllegalAccessException {

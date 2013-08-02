@@ -68,16 +68,16 @@
 			   	   <p:column selectionMode="single" style="width:2%" />  
                    <p:column headerText="#{message.condition_permitted_value_table_column}">#{valueVar}</p:column> 
                  
-                   <p:ajax event="rowSelectRadio"  update="@this" process="@this"/> 
+                   <p:ajax event="rowSelectRadio"  update="@this" process="@this"   /> 
                    
 			   <f:facet name="footer">
 			        	
 		  	   
-		  	            <p:inputText  id="addValue" value="#{condition.value}" >
-		  	           	   
-		  	            </p:inputText>  
-		  	              <p:commandButton  id="addConditionValue"   value="#{message.condition_value_add}" action="#{cc.attrs.addAction}"   process="valueTable"  update="valueTable"   />      
-		  	              <p:commandButton    value="#{message.condition_value_delete}" action="#{cc.attrs.deleteAction}"   process="valueTable"  update="@this valueTable"  rendered="#{not empty condition.selectedValue}"  />      
+		  	            <p:inputText  id="addValue" value="#{condition.value}"  process="@this" />
+		  	           
+		  	              
+		  	              <p:commandButton  id="addConditionValue"   value="#{message.condition_value_add}" action="#{cc.attrs.addAction}"   process="valueTable"  update="valueTable"    />      
+		  	              <p:commandButton id="deleteConditionValue"    value="#{message.condition_value_delete}" action="#{cc.attrs.deleteAction}"   process="@this valueTable"  update="@this valueTable"  immediate="true" rendered="#{not empty condition.selectedValue}"  />      
 			 		
 			  </f:facet>
 			   
