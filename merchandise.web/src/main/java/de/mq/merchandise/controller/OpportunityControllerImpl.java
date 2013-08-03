@@ -61,21 +61,6 @@ class OpportunityControllerImpl {
 	}
 	
 	
-	void conditions(final OpportunityAO opportunityAO) {
-		
-		final Opportunity opportunity = opportunityAO.getOpportunity();
-		
-		try {
-			final Field field = ReflectionUtils.findField(opportunity.getClass(), "commercialRelations");
-			field.setAccessible(true);
-			field.set(opportunity, commercialRelationServiceMock.create(opportunity));
-			opportunityAO.notifyConditionsChanged();
-		} catch (final IllegalArgumentException | IllegalAccessException e) {
-			throw new IllegalArgumentException(e);
-		}
-		
-	}
-	
 	String create(final ActivityClassificationTreeAO activityClassificationTreeAO, final ProductClassificationTreeAO productClassificationTreeAO) {
 		System.out.println("create");
 		activityClassificationTreeAO.setClassifications(classificationService.activityClassifications());
@@ -131,9 +116,8 @@ class OpportunityControllerImpl {
 		System.out.println("***************************************************");
 		System.out.println(commercialSubject  +" added to " + opportunityAO);
 		System.out.println("***************************************************");
-		
 		final Opportunity opportunity = opportunityAO.getOpportunity();
-		opportunity.assignConditions(commercialSubject, new ConditionImpl(ConditionType.Quantity, new ArrayList<String>()), new ConditionImpl(ConditionType.PricePerUnit, new ArrayList<String>()));
+		opportunity.assignConditions(commercialSubject);
 		
 		
 		opportunityAO.notifyConditionsChanged();
@@ -163,6 +147,24 @@ class OpportunityControllerImpl {
 		}
 		conditionAO.getCondition().removeValue(conditionAO.getSelectedValue());
 		conditionAO.setSelectedValue(null);
+	}
+	
+	void addCondition(final OpportunityAO opportunityAO, final Condition condition) {
+		System.out.println("addCondition");
+		System.out.println(condition.commercialRelation().commercialSubject());
+		System.out.println(condition.commercialRelation().commercialSubject().customer());
+		System.out.println(condition.conditionType());
+		
+		opportunityAO.getOpportunity().assignConditions(condition.commercialRelation().commercialSubject(), EntityUtil.copy(condition));
+		opportunityAO.notifyConditionsChanged();
+	}
+	
+	
+	
+	void onConditionNodeSelect(final Object selected, final ConditionAO conditionAO) {
+	    if (selected instanceof CommercialRelation) {
+	    	conditionAO.setCommercialRelation((CommercialRelation) selected);	
+		}
 	}
 
 }

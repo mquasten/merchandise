@@ -96,7 +96,7 @@ public abstract class OpportunityAO implements Serializable {
 	/*
 	 * like an observer, too for commercialRelationsChanged 
 	 */
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=OpportunityAO.class, domain=OpportunityImpl.class,elResultType=Collection.class ,  el="#arg.commercialRelations()"), @Parameter(clazz = ConditionTreeAO.class, elResultType=TreeNode.class, el="#arg.treeNode")})}, clazz = ConditionsChangedObserverableControllerImpl.class)
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=OpportunityAO.class, domain=OpportunityImpl.class,elResultType=Collection.class ,  el="#arg.commercialRelations()"), @Parameter(clazz = ConditionTreeAO.class, elResultType=TreeNode.class, el="#arg.treeNode"), @Parameter(clazz = ConditionTreeAO.class)})}, clazz = ConditionsChangedObserverableControllerImpl.class)
 	public abstract void notifyConditionsChanged(); 
 
 }

@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 import de.mq.mapping.util.proxy.Getter;
 import de.mq.mapping.util.proxy.GetterDomain;
+import de.mq.mapping.util.proxy.GetterProxy;
 import de.mq.mapping.util.proxy.Setter;
 import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Enum2StringConverter;
@@ -56,8 +57,14 @@ public abstract class ConditionAO implements Serializable {
 	@GetterDomain(clazz=ConditionImpl.class)
 	public abstract Condition getCondition() ;
 
+	@Getter(clazz=ConditionImpl.class,  value="commercialRelation" )
+	public abstract CommercialRelation getCommercialRelation(); 
 	
 
+	@Setter(clazz=ConditionImpl.class,  value="commercialRelation" )
+	public abstract void setCommercialRelation(final CommercialRelation commercialSubject); 
+	
+	
 	@Getter("value" )
 	public abstract String getValue(); 
 	

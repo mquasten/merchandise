@@ -1,5 +1,7 @@
 package de.mq.merchandise.controller;
 
+
+
 import org.primefaces.event.NodeSelectEvent;
 import org.springframework.security.core.context.SecurityContext;
 
@@ -11,7 +13,9 @@ import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectsModelAO;
+import de.mq.merchandise.opportunity.support.Condition;
 import de.mq.merchandise.opportunity.support.ConditionAO;
+import de.mq.merchandise.opportunity.support.ConditionTreeAO;
 import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
@@ -45,10 +49,6 @@ public interface OpportunityController {
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class, el="#arg.opportunity", elResultType=Opportunity.class), @Parameter(clazz=KeyWordModelAO.class)})}, clazz = OpportunityControllerImpl.class)
 	void deleteKeyWord();
 	
-	
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class)})}, clazz = OpportunityControllerImpl.class)	
-	void conditions();
-	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class), @Parameter(clazz = CommercialSubjectsModelAO.class, el="#arg.selected.commercialSubject" , elResultType=CommercialSubject.class )})}, clazz = OpportunityControllerImpl.class)	
 	String addSubject();
 	
@@ -57,6 +57,13 @@ public interface OpportunityController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ConditionAO.class)})}, clazz = OpportunityControllerImpl.class)	
 	void deleteConditionValue();
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class ), @Parameter(clazz = ConditionAO.class, elResultType=Condition.class, el="#arg.condition" ) })}, clazz = OpportunityControllerImpl.class)	
+	void addCondition();
+	
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = NodeSelectEvent.class,originIndex=0,elResultType=Object.class, el="#arg.treeNode.data"), @Parameter(clazz = ConditionAO.class)})}, clazz = OpportunityControllerImpl.class)
+	void onConditionNodeSelect(final NodeSelectEvent nodeSelectEvent);
 
 	
 }

@@ -16,8 +16,8 @@ public class ConditionConvertImpl implements Converter{
 
 	@Override
 	public String getAsString(final FacesContext context, final UIComponent component, final Object value) {
-		if (value instanceof CommercialSubject) {
-			return ((CommercialSubject) value).name();
+		if (value instanceof CommercialRelation) {
+			return ((CommercialRelation) value).commercialSubject().name();
 		}
 		
 		if (value instanceof Condition) {
