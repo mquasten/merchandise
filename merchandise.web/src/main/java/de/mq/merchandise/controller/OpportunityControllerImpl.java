@@ -1,11 +1,7 @@
 package de.mq.merchandise.controller;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.ClassificationService;
@@ -14,11 +10,8 @@ import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
 import de.mq.merchandise.opportunity.support.CommercialRelation;
 import de.mq.merchandise.opportunity.support.CommercialRelationServiceMock;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
-import de.mq.merchandise.opportunity.support.CommercialSubjectsModelAO;
 import de.mq.merchandise.opportunity.support.Condition;
 import de.mq.merchandise.opportunity.support.ConditionAO;
-import de.mq.merchandise.opportunity.support.ConditionImpl;
-import de.mq.merchandise.opportunity.support.ConditionTreeAO;
 import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
@@ -26,7 +19,6 @@ import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.OpportunityService;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
-import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 import de.mq.merchandise.util.EntityUtil;
 
 class OpportunityControllerImpl {
@@ -134,6 +126,7 @@ class OpportunityControllerImpl {
 			return ; 
 		}
 		System.out.println(conditionAO.getValue());
+		EntityUtil.
 		conditionAO.getCondition().assignValue(conditionAO.getValue());
 		
 		conditionAO.setValue(null);
@@ -149,11 +142,22 @@ class OpportunityControllerImpl {
 		conditionAO.setSelectedValue(null);
 	}
 	
+	void clearCondition(final ConditionAO conditionAO) {
+	
+		final CommercialRelation relation = conditionAO.getCommercialRelation();
+		
+		EntityUtil.setFieldsToNull(conditionAO.getCondition());
+		EntityUtil.setDependency(conditionAO.getCondition(), List.class, new ArrayList<>());
+		
+		conditionAO.setCommercialRelation(relation);
+		
+	}
+	
 	void addCondition(final OpportunityAO opportunityAO, final Condition condition) {
-		System.out.println("addCondition");
-		System.out.println(condition.commercialRelation().commercialSubject());
-		System.out.println(condition.commercialRelation().commercialSubject().customer());
-		System.out.println(condition.conditionType());
+		//System.out.println("addCondition");
+		//System.out.println(condition.commercialRelation().commercialSubject());
+		//System.out.println(condition.commercialRelation().commercialSubject().customer());
+		//System.out.println(condition.conditionType());
 		
 		opportunityAO.getOpportunity().assignConditions(condition.commercialRelation().commercialSubject(), EntityUtil.copy(condition));
 		opportunityAO.notifyConditionsChanged();

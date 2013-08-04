@@ -15,7 +15,6 @@ import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectsModelAO;
 import de.mq.merchandise.opportunity.support.Condition;
 import de.mq.merchandise.opportunity.support.ConditionAO;
-import de.mq.merchandise.opportunity.support.ConditionTreeAO;
 import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
@@ -57,6 +56,9 @@ public interface OpportunityController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ConditionAO.class)})}, clazz = OpportunityControllerImpl.class)	
 	void deleteConditionValue();
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ConditionAO.class ) })}, clazz = OpportunityControllerImpl.class)	
+	void clearCondition();
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class ), @Parameter(clazz = ConditionAO.class, elResultType=Condition.class, el="#arg.condition" ) })}, clazz = OpportunityControllerImpl.class)	
 	void addCondition();

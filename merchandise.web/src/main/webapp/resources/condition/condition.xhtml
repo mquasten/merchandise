@@ -31,7 +31,9 @@
         <h:panelGrid id="inputGrid" columns="3"  columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"   style="margin-bottom:10px">  
            
             <h:outputLabel  for="product" value="#{cc.attrs.message.condition_product}" />  
-            <h:outputText id="product"  value="#{condition.commercialRelation}"/>
+            <h:outputText id="product"  value="#{condition.commercialRelation}">
+            	  <f:converter converterId="conditionConverter" />
+            </h:outputText>
            
             <p:message for="product" display="text" />
             

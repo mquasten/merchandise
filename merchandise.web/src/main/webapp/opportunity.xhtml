@@ -45,8 +45,8 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  		
 		  		
 		  		 <p:outputLabel  for="conditions" value="#{message.opportunity_products}" />  
-		  		<h:panelGrid colums="2"> 
-		  		<p:tree id="conditions" style="width:100%;height:200px"  var="node"   dynamic="true"   value="#{conditions.treeNode}"  selectionMode="single" selection="#{conditions.selected}" >  
+		  		<h:panelGrid colums="1" > 
+		  		<p:tree id="conditions"  var="node"   dynamic="true"   value="#{conditions.treeNode}"  selectionMode="single" selection="#{conditions.selected}"  style="width:100%;height:200px" >  
   
 		  		  <p:treeNode>  
             			<h:outputText value="#{node}" >
@@ -58,13 +58,14 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
             		 
         			</p:treeNode>  
         			 <p:ajax listener="#{opportunityController.onConditionNodeSelect}" update="@form"  process="@this" event="select"  /> 
+    			
+    			
     			</p:tree>  
     			 <f:facet name="footer">
-    			#{conditions.selected.data.class.simpleName}
-		  	          <p:button  value="#{message.opportunity_add_subject}"    outcome="/subjects.xhtml" icon="ui-icon-check"    >
+		  	          <p:button  value="#{message.opportunity_add_subject}"   outcome="/subjects.xhtml" icon="ui-icon-check"    >
 		  	             	<f:param name="selectMode" value="true" />  
 		  	          </p:button>
-			  		  <p:commandButton  value="#{message.opportunity_condition_add}"  oncomplete="conditionDlg.show();"  icon="ui-icon-check"  rendered="#{conditions.selected.data.class.simpleName == 'CommercialRelationImpl'}" /> 	
+			  		  <p:commandButton  value="#{message.opportunity_condition_add}"   action="#{opportunityController.clearCondition}" update="@form"  process="@this"  oncomplete="conditionDlg.show();"  icon="ui-icon-check"  rendered="#{conditions.selected.data.class.simpleName == 'CommercialRelationImpl'}" /> 	
 			  </f:facet>
     			
 		  		</h:panelGrid>
