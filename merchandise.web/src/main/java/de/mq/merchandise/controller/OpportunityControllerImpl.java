@@ -126,7 +126,7 @@ class OpportunityControllerImpl {
 			return ; 
 		}
 		System.out.println(conditionAO.getValue());
-		EntityUtil.
+	
 		conditionAO.getCondition().assignValue(conditionAO.getValue());
 		
 		conditionAO.setValue(null);
