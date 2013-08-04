@@ -154,11 +154,6 @@ class OpportunityControllerImpl {
 	}
 	
 	void addCondition(final OpportunityAO opportunityAO, final Condition condition) {
-		//System.out.println("addCondition");
-		//System.out.println(condition.commercialRelation().commercialSubject());
-		//System.out.println(condition.commercialRelation().commercialSubject().customer());
-		//System.out.println(condition.conditionType());
-		
 		opportunityAO.getOpportunity().assignConditions(condition.commercialRelation().commercialSubject(), EntityUtil.copy(condition));
 		opportunityAO.notifyConditionsChanged();
 	}
