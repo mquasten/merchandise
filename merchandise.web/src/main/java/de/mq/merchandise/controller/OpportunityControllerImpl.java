@@ -165,5 +165,21 @@ class OpportunityControllerImpl {
 	    	conditionAO.setCommercialRelation((CommercialRelation) selected);	
 		}
 	}
+	
+	void deleteCondition(final OpportunityAO opportunityAO, final Object data){
+		if (data instanceof CommercialRelation) {
+			opportunityAO.getOpportunity().remove(((CommercialRelation) data).commercialSubject());
+			opportunityAO.notifyConditionsChanged();
+			return;
+			
+		}
+		
+		if (data instanceof Condition) {
+			opportunityAO.getOpportunity().remove(((Condition)data).commercialRelation().commercialSubject(), ((Condition)data).conditionType());
+			opportunityAO.notifyConditionsChanged();
+			return;
+		}
+		
+	}
 
 }

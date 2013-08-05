@@ -17,4 +17,8 @@ public interface CommercialRelation extends BasicEntity{
 
 	Map<ConditionType, Condition> conditions();
 
+	
+
+	void remove(final ConditionType conditionType);
+
 }

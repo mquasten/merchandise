@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 
 
 public interface Opportunity extends BasicEntity, DocumentsAware{
@@ -47,6 +48,10 @@ public interface Opportunity extends BasicEntity, DocumentsAware{
 	
 	Collection<CommercialRelation> commercialRelations();
     
+	
+	void remove(final CommercialSubject commercialSubject);
+
+	void remove(CommercialSubject commercialSubject, ConditionType conditionType);
  
 	
 

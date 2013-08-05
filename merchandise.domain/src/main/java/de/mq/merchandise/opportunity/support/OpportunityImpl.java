@@ -27,6 +27,7 @@ import javax.persistence.OneToMany;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
+import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
@@ -237,6 +238,38 @@ public class OpportunityImpl implements Opportunity {
 
 	public Kind kind() {
 		return this.kind;
+	}
+
+	@Override
+	public void remove(final CommercialSubject commercialSubject) {
+		final CommercialRelation relation=findRelation(commercialSubject);
+		if( relation == null){
+			return;
+		}
+		this.commercialRelations.remove(relation);
+		
+	}
+	
+	
+	@Override
+	public void remove(final CommercialSubject commercialSubject, ConditionType conditionType) {
+		final CommercialRelation relation=findRelation(commercialSubject);
+		
+		if( relation == null){
+			return;
+		}
+		
+		relation.remove(conditionType);
+		
+	}
+	
+	private CommercialRelation findRelation(final CommercialSubject commercialSubject) {
+		for(final CommercialRelation commercialRelation : this.commercialRelations){
+			if( commercialRelation.commercialSubject().equals(commercialSubject)){
+				return commercialRelation;
+			}
+		}
+		return null;
 	}
 
 }

@@ -15,6 +15,7 @@ import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectsModelAO;
 import de.mq.merchandise.opportunity.support.Condition;
 import de.mq.merchandise.opportunity.support.ConditionAO;
+import de.mq.merchandise.opportunity.support.ConditionTreeAO;
 import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
@@ -66,6 +67,9 @@ public interface OpportunityController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = NodeSelectEvent.class,originIndex=0,elResultType=Object.class, el="#arg.treeNode.data"), @Parameter(clazz = ConditionAO.class)})}, clazz = OpportunityControllerImpl.class)
 	void onConditionNodeSelect(final NodeSelectEvent nodeSelectEvent);
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class), @Parameter(clazz = ConditionTreeAO.class, elResultType=Object.class, el="#arg.selected.data" , skipNotReachableOnNullElException=true) })}, clazz = OpportunityControllerImpl.class)	
+	void deleteCondition();
 
 	
 }

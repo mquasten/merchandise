@@ -4,11 +4,9 @@ import java.io.Serializable;
 
 import javax.faces.model.DataModel;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import de.mq.mapping.util.proxy.Getter;
 import de.mq.mapping.util.proxy.GetterDomain;
-import de.mq.mapping.util.proxy.GetterProxy;
 import de.mq.mapping.util.proxy.Setter;
 import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Enum2StringConverter;

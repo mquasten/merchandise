@@ -65,6 +65,8 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  	          <p:button  value="#{message.opportunity_add_subject}"   outcome="/subjects.xhtml" icon="ui-icon-check"    >
 		  	             	<f:param name="selectMode" value="true" />  
 		  	          </p:button>
+		  	            <p:commandButton  value="#{message.opportunity_delete_condition}"   action="#{opportunityController.deleteCondition}" icon="ui-icon-remove"  update="conditions"  process="@this"   rendered="#{(conditions.selected.data.class.simpleName == 'CommercialRelationImpl') || (conditions.selected.data.class.simpleName == 'ConditionImpl')}"   />
+		  	          
 			  		  <p:commandButton  value="#{message.opportunity_condition_add}"   action="#{opportunityController.clearCondition}" update="@form"  process="@this"  oncomplete="conditionDlg.show();"  icon="ui-icon-check"  rendered="#{conditions.selected.data.class.simpleName == 'CommercialRelationImpl'}" /> 	
 			  </f:facet>
     			
