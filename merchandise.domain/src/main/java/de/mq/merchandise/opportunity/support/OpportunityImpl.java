@@ -206,7 +206,6 @@ public class OpportunityImpl implements Opportunity {
 	
 	@Override
 	public  void assignConditions(final CommercialSubject commercialSubject, final Condition ... conditions) {
-		
 		final CommercialRelation relation = findOrCreateCommercialRelation(commercialSubject);
 		for(final Condition condition : conditions){
 			relation.assign(condition);
@@ -216,10 +215,7 @@ public class OpportunityImpl implements Opportunity {
 	}
 
 	private CommercialRelation findOrCreateCommercialRelation(final CommercialSubject commercialSubject) {
-		
 		for(CommercialRelation relation : commercialRelations) {
-			System.out.println(relation.commercialSubject().customer() +"?" + commercialSubject.customer());
-			System.out.println(relation.commercialSubject().name() +"?" + commercialSubject.name());
 			if (! relation.commercialSubject().equals(commercialSubject)){
 				continue;
 			}

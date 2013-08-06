@@ -2,7 +2,6 @@ package de.mq.merchandise.opportunity.support;
 
 import java.util.Collection;
 
-
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -137,4 +136,151 @@ public class OpportunityTest {
 		Assert.assertEquals(ConditionType.PricePerUnit, results.iterator().next().conditions().keySet().iterator().next());
 		Assert.assertEquals(condition, results.iterator().next().conditions().values().iterator().next());
 	}
+	
+	
+	
+	@Test
+	public final void assignConditionsRelationExists() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		Mockito.when(commercialRelation.commercialSubject()).thenReturn(commercialSubject);
+		@SuppressWarnings("unchecked")
+		final Collection<CommercialRelation> relations = (Collection<CommercialRelation>) ReflectionTestUtils.getField(opportunity, "commercialRelations");
+		relations.add(commercialRelation);
+		
+		Condition condition = Mockito.mock(Condition.class);
+		Mockito.when(condition.conditionType()).thenReturn(ConditionType.Quantity);
+		
+		opportunity.assignConditions(commercialSubject, condition);
+		
+		
+		Mockito.verify(commercialRelation).assign(condition);
+		
+		
+	}
+	
+	@Test
+	public final void assignConditionsRelationCreateNewOtherSubject() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		final CommercialRelation existingRelation = Mockito.mock(CommercialRelation.class);
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		Mockito.when(existingRelation.commercialSubject()).thenReturn(commercialSubject);
+		
+		final CommercialRelation newRelation = Mockito.mock(CommercialRelation.class);
+		final CommercialSubject newCommercialSubject = Mockito.mock(CommercialSubject.class);
+		Mockito.when(newRelation.commercialSubject()).thenReturn(newCommercialSubject);
+		
+		final Condition condition = Mockito.mock(Condition.class);
+		Mockito.when(condition.conditionType()).thenReturn(ConditionType.Quantity);
+		@SuppressWarnings("unchecked")
+		final Collection<CommercialRelation> relations = (Collection<CommercialRelation>) ReflectionTestUtils.getField(opportunity, "commercialRelations");
+		
+		relations.add(existingRelation);
+		
+		
+		opportunity.assignConditions(newCommercialSubject,condition );
+		
+		
+		
+		Assert.assertEquals(2, relations.size());
+		
+		for(final CommercialRelation commercialRelation : opportunity.commercialRelations()){
+			if(commercialRelation.commercialSubject().equals(newCommercialSubject)){
+				Assert.assertEquals(condition, commercialRelation.conditions().values().iterator().next());
+			} else {
+				Assert.assertEquals(0,commercialRelation.conditions().size());
+			}
+		}
+		
+		
+	}
+	
+	@Test
+	public final void removeCommercialSubject() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		
+		final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		Mockito.when(commercialRelation.commercialSubject()).thenReturn(commercialSubject);
+		
+		@SuppressWarnings("unchecked")
+		final Collection<CommercialRelation> relations = (Collection<CommercialRelation>) ReflectionTestUtils.getField(opportunity, "commercialRelations");
+		
+		relations.add(commercialRelation);
+		
+		opportunity.remove(commercialSubject);
+		
+		Assert.assertEquals(0, relations.size());
+	}
+	
+	
+	@Test
+	public final void removeCommercialSubjectNotFound() {
+		
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		
+		final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		Mockito.when(commercialRelation.commercialSubject()).thenReturn(commercialSubject);
+		
+		@SuppressWarnings("unchecked")
+		final Collection<CommercialRelation> relations = (Collection<CommercialRelation>) ReflectionTestUtils.getField(opportunity, "commercialRelations");
+		
+		relations.add(commercialRelation);
+		
+		
+		opportunity.remove(Mockito.mock(CommercialSubject.class));
+		Assert.assertEquals(1, relations.size());
+		
+	}
+	
+	@Test
+	public final void removeCondition() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		final CommercialRelation relation = new CommercialRelationImpl(commercialSubject,opportunity);
+		final Condition  condition =  Mockito.mock(Condition.class);
+		Mockito.when(condition.conditionType()).thenReturn(ConditionType.Quantity);
+		relation.assign(condition);
+		
+		@SuppressWarnings("unchecked")
+		final Collection<CommercialRelation> relations = (Collection<CommercialRelation>) ReflectionTestUtils.getField(opportunity, "commercialRelations");
+		
+		relations.add(relation);
+		
+		Assert.assertEquals(1, relations.size());
+		Assert.assertEquals(1, relations.iterator().next().conditions().values().size());
+		opportunity.remove(commercialSubject, ConditionType.Quantity);
+		
+		Assert.assertEquals(1, relations.size());
+		Assert.assertEquals(0, relations.iterator().next().conditions().values().size());
+		
+		
+		
+	}
+	
+	@Test
+	public final void removeConditionSubjectNotExists() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		final CommercialRelation relation = new CommercialRelationImpl(commercialSubject,opportunity);
+		final Condition  condition =  Mockito.mock(Condition.class);
+		Mockito.when(condition.conditionType()).thenReturn(ConditionType.Quantity);
+		relation.assign(condition);
+		@SuppressWarnings("unchecked")
+		final Collection<CommercialRelation> relations = (Collection<CommercialRelation>) ReflectionTestUtils.getField(opportunity, "commercialRelations");
+		
+		relations.add(relation);
+		Assert.assertEquals(1, relations.size());
+		Assert.assertEquals(1, relations.iterator().next().conditions().values().size());
+		
+		opportunity.remove(Mockito.mock(CommercialSubject.class), ConditionType.Quantity);
+		
+		Assert.assertEquals(1, relations.size());
+		Assert.assertEquals(1, relations.iterator().next().conditions().values().size());
+		
+		
+	}
+	
 }
