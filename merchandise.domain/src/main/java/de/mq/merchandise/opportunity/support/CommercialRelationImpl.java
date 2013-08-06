@@ -95,8 +95,8 @@ class CommercialRelationImpl implements CommercialRelation {
 		conditions.put(condition.conditionType(), condition);
 	}
 	
-	@Override
-	public void remove(final ConditionType conditionType){
+	
+	void remove(final ConditionType conditionType){
 		conditions.remove(conditionType);
 	}
 

@@ -259,7 +259,7 @@ public class OpportunityImpl implements Opportunity {
 			return;
 		}
 		
-		relation.remove(conditionType);
+		((CommercialRelationImpl)relation).remove(conditionType);
 		
 	}
 	
