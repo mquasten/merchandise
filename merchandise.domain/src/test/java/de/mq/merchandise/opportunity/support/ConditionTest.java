@@ -14,6 +14,8 @@ import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 
 public class ConditionTest {
 	
+	private static final String VALUE = "value";
+	private static final long ID = 19680528L;
 	private static final String CALCULATION = "calculation";
 	private static final String VALIDATION = "validation";
 	private final List<String> values = new ArrayList<>();
@@ -84,6 +86,52 @@ public class ConditionTest {
 		Assert.assertTrue(opportunity.commercialRelations().iterator().next().conditions().containsKey(ConditionType.PricePerUnit));
 		Assert.assertTrue(opportunity.commercialRelations().iterator().next().conditions().containsKey(ConditionType.Quantity));
 		
+	}
+	
+	@Test
+	public final void id() {
+		final Condition condition = new ConditionImpl();
+		ReflectionTestUtils.setField(condition, "id", ID);
+		Assert.assertEquals(ID, condition.id());
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public final void idNotSet()  {
+		 new ConditionImpl().id();
+	}
+	
+	@Test
+	public final void hasId() {
+		final Condition condition = new ConditionImpl();
+		ReflectionTestUtils.setField(condition, "id", ID);
+		Assert.assertTrue(condition.hasId());
+		
+	}
+	
+	@Test
+	public final void hasIdNotExisting() {
+		Assert.assertFalse(new ConditionImpl().hasId());
+	}
+	
+	@Test
+	public final void assign() {
+		final Condition condition = new ConditionImpl();
+		for(int i=0; i< 10; i++){
+			condition.assignValue(VALUE);
+		}
+		Assert.assertEquals(1, condition.values().size());
+		Assert.assertEquals(VALUE, condition.values().iterator().next());
+	}
+	
+	@Test
+	public final void deleteValue() {
+		final Condition condition = new ConditionImpl();
+		condition.assignValue(VALUE);
+		Assert.assertEquals(1, condition.values().size());
+		
+		condition.removeValue(VALUE);
+		
+		Assert.assertEquals(0, condition.values().size());
 	}
 
 }

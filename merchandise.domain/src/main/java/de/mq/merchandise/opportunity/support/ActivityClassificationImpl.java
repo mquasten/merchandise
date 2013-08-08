@@ -14,15 +14,7 @@ import javax.persistence.NamedQuery;
 })
 public class ActivityClassificationImpl extends AbstractClassification implements ActivityClassification{
 	private static final long serialVersionUID = 1L;
-	public ActivityClassificationImpl(String description, ActivityClassification parent) {
-		this.id=description;
-		this.description=description;
-		this.parent=parent;
-	}
 	
-	public ActivityClassificationImpl() {
-		
-	}
 	
 
 }
