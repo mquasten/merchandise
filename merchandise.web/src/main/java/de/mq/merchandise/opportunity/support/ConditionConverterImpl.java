@@ -6,11 +6,10 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
 @FacesConverter("conditionConverter")
-public class ConditionConvertImpl implements Converter{
+public class ConditionConverterImpl implements Converter{
 
 	@Override
 	public Object getAsObject(final FacesContext context, final UIComponent component, final String value) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

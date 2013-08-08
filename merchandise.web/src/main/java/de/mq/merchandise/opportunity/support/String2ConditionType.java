@@ -10,7 +10,6 @@ public class String2ConditionType  implements Converter<String, ConditionType>{
 
 	@Override
 	public ConditionType convert(final String source) {
-		System.out.println(">>>>>>> "+ source);
 		if( source == null){
 			return null;
 		}

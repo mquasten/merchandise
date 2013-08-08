@@ -8,6 +8,8 @@ import javax.faces.convert.FacesConverter;
 @FacesConverter("classificationConverter")
 public class ClassificationConverter implements Converter{
 
+    static final String UNDEFINED = "???";
+
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
 		
@@ -17,7 +19,7 @@ public class ClassificationConverter implements Converter{
 	@Override
 	public String getAsString(final FacesContext context, final UIComponent component, final Object value) {
 		if (!(value instanceof Classification)) {
-			return "???";
+			return UNDEFINED;
 		}
 		return ((Classification)value).description();
 	}
