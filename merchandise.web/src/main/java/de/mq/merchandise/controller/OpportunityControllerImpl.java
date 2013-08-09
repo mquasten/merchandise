@@ -8,7 +8,6 @@ import de.mq.merchandise.opportunity.ClassificationService;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
 import de.mq.merchandise.opportunity.support.CommercialRelation;
-import de.mq.merchandise.opportunity.support.CommercialRelationServiceMock;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.Condition;
 import de.mq.merchandise.opportunity.support.ConditionAO;
@@ -27,7 +26,7 @@ class OpportunityControllerImpl {
 	
 	private final ClassificationService classificationService;
 	
-	final CommercialRelationServiceMock commercialRelationServiceMock = new CommercialRelationServiceMock(); 
+
 
 	OpportunityControllerImpl(final OpportunityService opportunityService, final ClassificationService classificationService) {
 		this.opportunityService = opportunityService;
