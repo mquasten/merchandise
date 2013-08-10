@@ -1,7 +1,5 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -17,9 +15,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.ModelRepository;
-import de.mq.mapping.util.proxy.NoModel;
 import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.util.SimplePagingImpl;
+
 
 public class OpportunityProxyFactoryTest {
 	
@@ -30,6 +28,10 @@ public class OpportunityProxyFactoryTest {
 	
 	final OpportunityProxyFactoryImpl opportunityProxyFactoryImpl = new OpportunityProxyFactoryImpl(proxyFactory, beanResolver, conversation);
 	
+	@SuppressWarnings("rawtypes")
+	final ArgumentCaptor<Class> clazzCaptor = ArgumentCaptor.forClass(Class.class);
+	final ArgumentCaptor<ModelRepository> modelRepositoryArgumentCaptor = ArgumentCaptor.forClass(ModelRepository.class);
+	
 	@Test
 	public final void createDefaultConstructor() {
 		Assert.assertNotNull(new OpportunityProxyFactoryImpl());
@@ -39,9 +41,7 @@ public class OpportunityProxyFactoryTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public final void opportunity() {
-		@SuppressWarnings("rawtypes")
-		final ArgumentCaptor<Class> clazzCaptor = ArgumentCaptor.forClass(Class.class);
-		final ArgumentCaptor<ModelRepository> modelRepositoryArgumentCaptor = ArgumentCaptor.forClass(ModelRepository.class);
+		
 		final OpportunityAO opportunityAO = Mockito.mock(OpportunityAO.class);
 		Mockito.when(proxyFactory.createProxy(clazzCaptor.capture(), modelRepositoryArgumentCaptor.capture())).thenReturn(opportunityAO);
 		
@@ -81,6 +81,8 @@ public class OpportunityProxyFactoryTest {
 		Assert.assertEquals(opportunityModelAO, opportunityProxyFactoryImpl.opportunityModel());
 		Assert.assertEquals(pagingAO, opportunityModelAO.getPaging());
 		
+		Mockito.verify(conversation).begin();
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -113,6 +115,7 @@ public class OpportunityProxyFactoryTest {
 
 			Assert.assertEquals(activityClassificationTreeAO, opportunityProxyFactoryImpl.activityClassifications());
 			Assert.assertEquals(treeNode, activityClassificationTreeAO.getTreeNode());
+			Mockito.verify(conversation).begin();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -145,6 +148,68 @@ public class OpportunityProxyFactoryTest {
 
 			Assert.assertEquals(productClassificationTreeAO, opportunityProxyFactoryImpl.productClassifications());
 			Assert.assertEquals(treeNode, productClassificationTreeAO.getTreeNode());
+			Mockito.verify(conversation).begin();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public final void keyWordModel() {
+		
+		final KeyWordModelAO keyWordModelAO = Mockito.mock(KeyWordModelAO.class);
+		Mockito.when(proxyFactory.createProxy(clazzCaptor.capture(), modelRepositoryArgumentCaptor.capture())).thenReturn(keyWordModelAO);
+		
+		Assert.assertEquals(keyWordModelAO, opportunityProxyFactoryImpl.keyWordModel());
+		Assert.assertEquals(KeyWordModelAO.class, clazzCaptor.getValue());
+		Assert.assertTrue(modelRepositoryArgumentCaptor.getValue() instanceof ModelRepository);
+		
+	}
+	
+	@SuppressWarnings({ "unchecked"})
+	@Test
+	public final void conditions() {
+		
+		final ConditionTreeAO conditionTreeAO = Mockito.mock(ConditionTreeAO.class);
+		Mockito.when(proxyFactory.createProxy(clazzCaptor.capture(), modelRepositoryArgumentCaptor.capture())).thenReturn(conditionTreeAO);
+		
+		Assert.assertEquals(conditionTreeAO, opportunityProxyFactoryImpl.conditions());
+		
+		Assert.assertEquals(ConditionTreeAO.class, clazzCaptor.getValue());
+		
+		boolean treeNodeFound=false;
+		boolean controllerFound=false;
+		for(final Object item :  ((Map<?,Object>)ReflectionTestUtils.getField(modelRepositoryArgumentCaptor.getValue(), "modelItems")).values()) {
+			
+			if (item instanceof TreeNode) {
+				treeNodeFound=true;
+				continue;
+			}
+			
+			if( item instanceof ConditionsChangedObserverableControllerImpl){
+				controllerFound=true;
+				continue;
+	   		}
+			Assert.fail("Wrong type in Reposotory " + item);
+			
+		}
+		Assert.assertTrue(treeNodeFound);
+		Assert.assertTrue(controllerFound);
+		Mockito.verify(conversation).begin();
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public final void condition() {
+		
+		final ConditionAO conditionAO = Mockito.mock(ConditionAO.class);
+		Mockito.when(proxyFactory.createProxy(clazzCaptor.capture(), modelRepositoryArgumentCaptor.capture())).thenReturn(conditionAO);
+		
+		Assert.assertEquals(conditionAO, opportunityProxyFactoryImpl.condition());
+		Assert.assertEquals(ConditionAO.class, clazzCaptor.getValue());
+		
+		Assert.assertEquals(ConditionImpl.class, modelRepositoryArgumentCaptor.getValue().get(ConditionImpl.class).getClass());
+		
 	}
 
 }
