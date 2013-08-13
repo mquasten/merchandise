@@ -104,19 +104,14 @@ class OpportunityControllerImpl {
 	}
 	
 	String addSubject(final OpportunityAO opportunityAO, final CommercialSubject commercialSubject) {
-		System.out.println("***************************************************");
-		System.out.println(commercialSubject  +" added to " + opportunityAO);
-		System.out.println("***************************************************");
 		final Opportunity opportunity = opportunityAO.getOpportunity();
 		opportunity.assignConditions(commercialSubject);
-		
-		
 		opportunityAO.notifyConditionsChanged();
 		return "opportunity.xhtml";
 	}
 	
 	
-	void addConditionValue(ConditionAO conditionAO) throws IllegalArgumentException, IllegalAccessException {
+	void addConditionValue(final ConditionAO conditionAO)  {
 		
 		if(conditionAO.getValue() == null ){
 			return;
@@ -124,14 +119,11 @@ class OpportunityControllerImpl {
 		if(conditionAO.getValue().trim().length()==0) {
 			return ; 
 		}
-		System.out.println(conditionAO.getValue());
-	
 		conditionAO.getCondition().assignValue(conditionAO.getValue());
-		
 		conditionAO.setValue(null);
 	}
 	
-	void deleteConditionValue(ConditionAO conditionAO) throws IllegalArgumentException, IllegalAccessException {
+	void deleteConditionValue(final ConditionAO conditionAO) {
 		
 		System.out.println(conditionAO.getSelectedValue());
 		if( conditionAO.getSelectedValue() == null){

@@ -14,6 +14,11 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.ClassificationService;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
+import de.mq.merchandise.opportunity.support.CommercialSubject;
+import de.mq.merchandise.opportunity.support.Condition;
+import de.mq.merchandise.opportunity.support.ConditionAO;
+import de.mq.merchandise.opportunity.support.ConditionConstants;
+import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
@@ -21,10 +26,13 @@ import de.mq.merchandise.opportunity.support.OpportunityService;
 import de.mq.merchandise.opportunity.support.PagingAO;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
+import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Paging;
 
 public class OpportunityControllerTest {
 	
+	private static final String CONDITION_VALUE = "ConditionValue";
+	private static final String KEY_WORD = "KeyWord";
 	private static final String PATTERN = "Kylie";
 	private final OpportunityService opportunityService = Mockito.mock(OpportunityService.class);
 	private final ClassificationService classificationService = Mockito.mock(ClassificationService.class);
@@ -50,6 +58,10 @@ public class OpportunityControllerTest {
 	private final ProductClassification productClassification = Mockito.mock(ProductClassification.class);
 	
 
+	private final KeyWordModelAO keyWordModel = Mockito.mock(KeyWordModelAO.class);
+	
+	private final ConditionAO conditionAO = Mockito.mock(ConditionAO.class);
+	private final Condition condition = Mockito.mock(Condition.class);
 	
 	@Before
 	public final void setup() {
@@ -75,6 +87,11 @@ public class OpportunityControllerTest {
 		products.clear();
 		products.add(productClassification);
 		Mockito.when(classificationService.productClassCollections()).thenReturn(products);
+		
+		Mockito.when(keyWordModel.getKeyWord()).thenReturn(KEY_WORD);
+		
+		Mockito.when(conditionAO.getCondition()).thenReturn(condition);
+       
 	}
 	
 	private final OpportunityControllerImpl opportunityControllerImpl = new OpportunityControllerImpl(opportunityService, classificationService);
@@ -159,8 +176,99 @@ public class OpportunityControllerTest {
 		Mockito.verify(opportunity).assignClassification(productClassification);
 		Mockito.verify(opportunityAO).notifyProductClassificationChanged();
 	}
+    
+    @Test
+    public final void addKeyWord() {
+    	opportunityControllerImpl.addKeyWord(opportunity, keyWordModel);
+    	Mockito.verify(opportunity).assignKeyWord(KEY_WORD);
+    	Mockito.verify(keyWordModel).setKeyWord(null);
+    }
+    
+    @Test
+    public final void deleteKeyWord() {
+    	opportunityControllerImpl.deleteKeyWord(opportunity, keyWordModel);
+    	Mockito.verify(keyWordModel).setSelectedKeyWord(null);
+    }
 	
-	
+    @Test
+	public final void addSubject() {
+    	final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+    	Assert.assertEquals("opportunity.xhtml", opportunityControllerImpl.addSubject(opportunityAO, commercialSubject));
+    	
+    	Mockito.verify(opportunity).assignConditions(commercialSubject);
+    	Mockito.verify(opportunityAO).notifyConditionsChanged();
+	}
+    
+    @Test
+    public final void addConditionValue()  {
+    	 Mockito.when(conditionAO.getValue()).thenReturn(CONDITION_VALUE);
+    	
+    	opportunityControllerImpl.addConditionValue(conditionAO);
+    	
+    	Mockito.verify(condition).assignValue(CONDITION_VALUE);
+    	Mockito.verify(conditionAO).setValue(null);
+    }
+    
+    @Test
+    public final void addConditionValueNull()  {
+    	Mockito.when(conditionAO.getValue()).thenReturn(null);
+    	opportunityControllerImpl.addConditionValue(conditionAO); 
+    	Mockito.verify(condition, Mockito.times(0)).assignValue(CONDITION_VALUE);
+     	Mockito.verify(conditionAO, Mockito.times(0)).setValue(null);
+    	
+    }
+    
+    @Test
+    public final void addConditionBlanks()  {
+    	Mockito.when(conditionAO.getValue()).thenReturn(" ");
+    	opportunityControllerImpl.addConditionValue(conditionAO); 
+    	Mockito.verify(condition, Mockito.times(0)).assignValue(CONDITION_VALUE);
+     	Mockito.verify(conditionAO, Mockito.times(0)).setValue(null);
+    	
+    }
+    
+        @Test
+    public final  void deleteCondition(){
+    	Mockito.when(conditionAO.getSelectedValue()).thenReturn(CONDITION_VALUE);
+    	opportunityControllerImpl.deleteConditionValue(conditionAO);
+    	
+    	Mockito.verify(condition).removeValue(CONDITION_VALUE);
+    	Mockito.verify(conditionAO).setSelectedValue(null);
+    }
+    
+    @Test
+    public final  void deleteConditionNull(){
+    	Mockito.when(conditionAO.getSelectedValue()).thenReturn(null);
+    	opportunityControllerImpl.deleteConditionValue(conditionAO);
+    	
+    	Mockito.verify(condition,  Mockito.times(0)).removeValue(CONDITION_VALUE);
+    	Mockito.verify(conditionAO,  Mockito.times(0)).setSelectedValue(null);
+    }
+    
+    @Test
+    public final void clearCondition() {
+    	
+    	final Condition condition = EntityUtil.copy(ConditionConstants.CONDITION);
+    	
+    	Mockito.when(conditionAO.getCondition()).thenReturn(condition);
+    	Mockito.when(conditionAO.getCommercialRelation()).thenReturn(ConditionConstants.CONDITION.commercialRelation());
+    	
+    	Assert.assertNotNull(condition.commercialRelation());
+    	Assert.assertNotNull(condition.calculation());
+    	Assert.assertNotNull(condition.validation());
+    	Assert.assertTrue(condition.values().size() > 0 );
+    	Assert.assertNotNull(condition.conditionType());
+    	
+    	opportunityControllerImpl.clearCondition(conditionAO);
+    	
+    	Assert.assertNull(condition.commercialRelation());
+    	Assert.assertNull(condition.calculation());
+    	Assert.assertNull(condition.validation());
+    	Assert.assertFalse(condition.values().size() > 0 );
+    	Assert.assertNull(condition.conditionType());
+    	
+    	Mockito.verify(conditionAO).setCommercialRelation(ConditionConstants.CONDITION.commercialRelation());
+    }
 	
 
 }
