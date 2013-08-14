@@ -124,8 +124,6 @@ class OpportunityControllerImpl {
 	}
 	
 	void deleteConditionValue(final ConditionAO conditionAO) {
-		
-		System.out.println(conditionAO.getSelectedValue());
 		if( conditionAO.getSelectedValue() == null){
 			return;
 		}
@@ -172,5 +170,9 @@ class OpportunityControllerImpl {
 		}
 		
 	}
+	
+	
+	
+	
 
 }
