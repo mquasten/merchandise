@@ -9,11 +9,13 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.ClassificationService;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
+import de.mq.merchandise.opportunity.support.CommercialRelation;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.Condition;
 import de.mq.merchandise.opportunity.support.ConditionAO;
@@ -269,6 +271,64 @@ public class OpportunityControllerTest {
     	
     	Mockito.verify(conditionAO).setCommercialRelation(ConditionConstants.CONDITION.commercialRelation());
     }
+    
+   @Test
+    public final void addCondition() {
+    	final Condition condition = EntityUtil.copy(ConditionConstants.CONDITION);
+    	
+    	opportunityControllerImpl.addCondition(opportunityAO, condition);
+    	Mockito.verify(opportunity).assignConditions(condition.commercialRelation().commercialSubject(), condition);
+    	Mockito.verify(opportunityAO).notifyConditionsChanged();
+    
+    }
+   
+   @Test
+   public final void onConditionNodeSelect() {
+	   final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
+	   opportunityControllerImpl.onConditionNodeSelect(commercialRelation, conditionAO);
+	   
+	   Mockito.verify(conditionAO).setCommercialRelation(commercialRelation);
+   }
+   
+   @Test
+   public final void onConditionNodeSelectWrongType() {
+	   opportunityControllerImpl.onConditionNodeSelect("dontLetMeGetMe", conditionAO);
+	   
+	   Mockito.verify(conditionAO, Mockito.times(0)).setCommercialRelation(Mockito.any(CommercialRelation.class));
+   }
+   
+   @Test
+   public final void deleteConditionCommercialRelation() {
+	   final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
+	   final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+	   Mockito.when(commercialRelation.commercialSubject()).thenReturn(commercialSubject);
+	   opportunityControllerImpl.deleteCondition(opportunityAO, commercialRelation);
+	   
+	   Mockito.verify(opportunity).remove(commercialSubject);
+	   Mockito.verify(opportunityAO).notifyConditionsChanged();
+   }
+   
+   @Test
+   public final void deleteConditionOnly() {
+	   final Condition condition = EntityUtil.copy(ConditionConstants.CONDITION);
+	   final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+	   ReflectionTestUtils.setField(condition.commercialRelation(), "commercialSubject", commercialSubject);
+	  
+	   
+	   opportunityControllerImpl.deleteCondition(opportunityAO, condition);
+	   
+	   Mockito.verify(opportunity).remove(condition.commercialRelation().commercialSubject(), condition.conditionType());
+	   Mockito.verify(opportunityAO).notifyConditionsChanged();
+   }
+   
+   @Test
+   public final void deleteConditionNothing() {
+	   opportunityControllerImpl.deleteCondition(opportunityAO, "dontLetMeGetMe");
+	   
+	 
+	   Mockito.verify(opportunityAO,  Mockito.times(0)).notifyConditionsChanged();
+	   Mockito.verifyZeroInteractions(opportunityAO);
+   }
 	
 
 }

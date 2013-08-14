@@ -69,6 +69,7 @@ class OpportunityControllerImpl {
 	void save(final Opportunity opportunity) {
 		System.out.println("save opportunity with activities:" +opportunity.activityClassifications().size());
 		System.out.println("save opportunity with product:" +opportunity.productClassifications().size());
+		
 	}
 
 	void onActivityNodeSelect(final ActivityClassification activityClassification, final OpportunityAO opportunityAO) {
@@ -160,15 +161,12 @@ class OpportunityControllerImpl {
 			opportunityAO.getOpportunity().remove(((CommercialRelation) data).commercialSubject());
 			opportunityAO.notifyConditionsChanged();
 			return;
-			
 		}
-		
 		if (data instanceof Condition) {
 			opportunityAO.getOpportunity().remove(((Condition)data).commercialRelation().commercialSubject(), ((Condition)data).conditionType());
 			opportunityAO.notifyConditionsChanged();
 			return;
 		}
-		
 	}
 	
 	
