@@ -324,10 +324,15 @@ public class OpportunityControllerTest {
    @Test
    public final void deleteConditionNothing() {
 	   opportunityControllerImpl.deleteCondition(opportunityAO, "dontLetMeGetMe");
-	   
-	 
 	   Mockito.verify(opportunityAO,  Mockito.times(0)).notifyConditionsChanged();
 	   Mockito.verifyZeroInteractions(opportunityAO);
+   }
+   
+   @Test
+   public final void save() {
+	   opportunityControllerImpl.save(opportunity);
+	   
+	   Mockito.verify(opportunityService).createOrUpdate(opportunity);
    }
 	
 

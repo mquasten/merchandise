@@ -69,7 +69,7 @@ class OpportunityControllerImpl {
 	void save(final Opportunity opportunity) {
 		System.out.println("save opportunity with activities:" +opportunity.activityClassifications().size());
 		System.out.println("save opportunity with product:" +opportunity.productClassifications().size());
-		
+		opportunityService.createOrUpdate(opportunity);
 	}
 
 	void onActivityNodeSelect(final ActivityClassification activityClassification, final OpportunityAO opportunityAO) {
