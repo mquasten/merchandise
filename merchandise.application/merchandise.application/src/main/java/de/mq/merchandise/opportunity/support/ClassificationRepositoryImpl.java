@@ -3,6 +3,7 @@ package de.mq.merchandise.opportunity.support;
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
@@ -11,13 +12,17 @@ import org.springframework.stereotype.Repository;
 @Profile("db")
 class ClassificationRepositoryImpl implements ClassificationRepository {
 	
-	private final EntityManager entityManager;
+	@PersistenceContext
+	private  EntityManager entityManager;
+	
 	
 	ClassificationRepositoryImpl(final EntityManager entityManager) {
 		this.entityManager=entityManager;
 	}
 	
-	
+	 ClassificationRepositoryImpl() {
+		entityManager=null;
+	}
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.opportunity.support.ClassificationRepository#allActivityClassifications()
 	 */

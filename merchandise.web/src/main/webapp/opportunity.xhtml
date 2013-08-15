@@ -161,7 +161,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 						icon="ui-icon ui-icon-disk"
 						
 						
-						style="float:right"   update="@form"/>
+						style="float:right"   update="@form" process="@form"   />
  </p:panelGrid>
  <in:input   title="#{message.opportunity_keyword_input_title}" submitText="#{message.opportunity_keyword_input_submit_text}" label="#{message.opportunity_keyword_input_label}"  saveAction="#{opportunityController.addKeyWord()}"/>
  <co:condition message="#{message}" addAction="#{opportunityController.addConditionValue()}"  deleteAction="#{opportunityController.deleteConditionValue()}"  saveAction="#{opportunityController.addCondition()}"/>
