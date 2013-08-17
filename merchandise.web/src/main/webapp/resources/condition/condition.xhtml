@@ -95,7 +95,7 @@
 			  <p:message for="valueTable" display="text"  />
             
             <f:facet name="footer">
-                <p:commandButton   value="#{cc.attrs.message.condition_save_action}" action="#{cc.attrs.saveAction}"  process="inputGrid"  update="inputGrid" oncomplete="handleInputRequest(xhr, status, args)"  style="float:right" />     
+                <p:commandButton   value="#{cc.attrs.message.condition_save_action}" action="#{cc.attrs.saveAction}"  process="inputGrid"  update="inputGrid" oncomplete="handleConditionRequest(xhr, status, args)"  style="float:right" />     
             </f:facet>
         </h:panelGrid>  
   

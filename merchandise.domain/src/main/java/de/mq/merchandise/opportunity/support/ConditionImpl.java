@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -44,7 +45,7 @@ class ConditionImpl implements Condition{
 	@Equals
 	private ConditionType conditionType;
 	
-	@ManyToOne(targetEntity=CommercialRelationImpl.class)
+	@ManyToOne(targetEntity=CommercialRelationImpl.class )
 	@JoinColumn(name="commercial_relation_id")
 	@Equals
 	private CommercialRelation commercialRelation; 

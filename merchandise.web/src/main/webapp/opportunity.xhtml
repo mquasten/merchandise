@@ -27,20 +27,21 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  
 		  		<p:outputLabel id="nameLabel" for="name" value="#{message.opportunity_name}" />  
                 <p:inputText id="name" label="name"  value="#{opportunity.name}" styleClass="gridInputField" >
-                   
+                   <p:ajax update="nameMessage"  process="@this"   />
                 </p:inputText>  
                     	
                 
               
-                <p:message for="name" display="text" />
+                <p:message id="nameMessage" for="name" display="text" />
                      	
              
                 
                 <p:outputLabel  for="description" value="#{message.opportunity_description}" />  
                 <p:inputTextarea  id="description" value="#{opportunity.description }" style="width:100%" >
 						<f:validateBean />
+						 <p:ajax update="descriptionMessage"  process="@this"   />
 				</p:inputTextarea >
-		  		<p:message for="description" display="text" />
+		  		<p:message id="descriptionMessage"  for="description" display="text" />
 		  		
 		  		
 		  		
@@ -81,11 +82,11 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
             						<f:selectItem itemLabel="#{message.opportunity_kind_offer}" itemValue="Offer" />  
             						<f:selectItem itemLabel="#{message.opportunity_kind_tender}" itemValue="Tender" />  
            							<f:validateBean />
-           							
+           						 <p:ajax update="kindMessage"  process="@this"   />	
 		
         		</p:selectOneMenu >  
                 
-		  		<p:message for="kind" display="text" />
+		  		<p:message id="kindMessage" for="kind" display="text" />
 		  		
 		  		<p:outputLabel  for="activities" value="#{message.opportunity_activities}" /> 
 		  		
@@ -161,7 +162,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 						icon="ui-icon ui-icon-disk"
 						
 						
-						style="float:right"   update="@form" process="@form"   />
+						style="float:right"   update="@form" process="@this"   />
  </p:panelGrid>
  <in:input   title="#{message.opportunity_keyword_input_title}" submitText="#{message.opportunity_keyword_input_submit_text}" label="#{message.opportunity_keyword_input_label}"  saveAction="#{opportunityController.addKeyWord()}"/>
  <co:condition message="#{message}" addAction="#{opportunityController.addConditionValue()}"  deleteAction="#{opportunityController.deleteConditionValue()}"  saveAction="#{opportunityController.addCondition()}"/>

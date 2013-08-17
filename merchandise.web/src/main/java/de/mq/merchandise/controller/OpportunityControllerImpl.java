@@ -66,10 +66,24 @@ class OpportunityControllerImpl {
 
 	
 
-	void save(final Opportunity opportunity) {
+	String  save(final Opportunity opportunity) {
 		System.out.println("save opportunity with activities:" +opportunity.activityClassifications().size());
 		System.out.println("save opportunity with product:" +opportunity.productClassifications().size());
+		removeNewCommercialRelationsFromConditionEspeciallyForHibernate(opportunity); 
+		
 		opportunityService.createOrUpdate(opportunity);
+		return "opportunities.xhtml";
+	}
+
+	private void removeNewCommercialRelationsFromConditionEspeciallyForHibernate(final Opportunity opportunity) {
+		for(final CommercialRelation commercialRelation : opportunity.commercialRelations()) {
+			if( commercialRelation.hasId() ) {
+				continue;
+			}
+			for(final Condition condition : commercialRelation.conditions().values()) {
+				EntityUtil.setDependency(condition, CommercialRelation.class, null);
+			}
+		}
 	}
 
 	void onActivityNodeSelect(final ActivityClassification activityClassification, final OpportunityAO opportunityAO) {
