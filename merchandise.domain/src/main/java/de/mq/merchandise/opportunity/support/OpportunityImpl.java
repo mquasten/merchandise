@@ -22,6 +22,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 import de.mq.merchandise.customer.Customer;
@@ -32,6 +33,8 @@ import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
 @Entity(name="Opportunity")
+
+@NamedQuery(name=OpportunityRepository.OPPORTUNITY_FOR_NAME_PATTERN, query="select o from Opportunity o where o.name like :name and o.customer.id = :customerId")
 public class OpportunityImpl implements Opportunity {
 	
 	
