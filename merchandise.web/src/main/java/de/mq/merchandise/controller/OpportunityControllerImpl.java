@@ -80,7 +80,10 @@ class OpportunityControllerImpl {
 		return "opportunities.xhtml";
 	}
 
-	private void removeNewCommercialRelationsFromConditionEspeciallyForHibernate(final Opportunity opportunity) {
+	/*
+	 * Ulgy nasty dirrrty, hibernate isn't able to handle (ignore!!!)  transient objects in reverse relations
+	 */
+	void removeNewCommercialRelationsFromConditionEspeciallyForHibernate(final Opportunity opportunity) {
 		for(final CommercialRelation commercialRelation : opportunity.commercialRelations()) {
 			if( commercialRelation.hasId() ) {
 				continue;
