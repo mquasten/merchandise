@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.faces.model.DataModel;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.primefaces.model.TreeNode;
@@ -53,6 +54,7 @@ public abstract class OpportunityAO implements Serializable {
 	public abstract CustomerAO getCustomer(); 
 	
 	@Getter(clazz=OpportunityImpl.class, value="kind", converter=Enum2StringConverter.class)
+	@NotNull(message="{mandatory_field}")
 	public abstract  String getKind();
 
 	@Setter(clazz=OpportunityImpl.class, value="kind" , converter=String2OpportunityKindConverter.class)

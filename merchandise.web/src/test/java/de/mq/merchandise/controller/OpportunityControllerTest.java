@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.opportunity.ClassificationService;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
@@ -23,6 +24,7 @@ import de.mq.merchandise.opportunity.support.ConditionConstants;
 import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
+import de.mq.merchandise.opportunity.support.OpportunityImpl;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.OpportunityService;
 import de.mq.merchandise.opportunity.support.PagingAO;
@@ -65,6 +67,8 @@ public class OpportunityControllerTest {
 	private final ConditionAO conditionAO = Mockito.mock(ConditionAO.class);
 	private final Condition condition = Mockito.mock(Condition.class);
 	
+	private final Conversation conversation = Mockito.mock(Conversation.class);
+	
 	@Before
 	public final void setup() {
 		opportunities.clear();
@@ -96,7 +100,7 @@ public class OpportunityControllerTest {
        
 	}
 	
-	private final OpportunityControllerImpl opportunityControllerImpl = new OpportunityControllerImpl(opportunityService, classificationService);
+	private final OpportunityControllerImpl opportunityControllerImpl = new OpportunityControllerImpl(opportunityService, classificationService, conversation);
 	
 	@Test
 	public final void opportunities() {
@@ -330,9 +334,13 @@ public class OpportunityControllerTest {
    
    @Test
    public final void save() {
-	   opportunityControllerImpl.save(opportunity);
+	   
+	   final Opportunity opportunity = EntityUtil.create(OpportunityImpl.class);
+	   Assert.assertEquals("opportunities.xhtml", opportunityControllerImpl.save(opportunity, customer));
 	   
 	   Mockito.verify(opportunityService).createOrUpdate(opportunity);
+	   Assert.assertEquals(customer, opportunity.customer());
+	   Mockito.verify(conversation).end();
    }
 	
 

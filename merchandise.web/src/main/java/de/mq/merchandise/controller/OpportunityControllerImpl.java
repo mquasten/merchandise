@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.opportunity.ClassificationService;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
@@ -26,11 +27,12 @@ class OpportunityControllerImpl {
 	
 	private final ClassificationService classificationService;
 	
+	private final Conversation conversation;
 
-
-	OpportunityControllerImpl(final OpportunityService opportunityService, final ClassificationService classificationService) {
+	OpportunityControllerImpl(final OpportunityService opportunityService, final ClassificationService classificationService, final Conversation conversation) {
 		this.opportunityService = opportunityService;
 		this.classificationService = classificationService;
+		this.conversation=conversation;
 	}
 
 	void opportunities(final OpportunityModelAO opportunityModelAO, final Customer customer) {
@@ -66,12 +68,15 @@ class OpportunityControllerImpl {
 
 	
 
-	String  save(final Opportunity opportunity) {
+	String  save(final Opportunity opportunity, final Customer customer) {
 		System.out.println("save opportunity with activities:" +opportunity.activityClassifications().size());
 		System.out.println("save opportunity with product:" +opportunity.productClassifications().size());
+		
+		EntityUtil.setDependency(opportunity, Customer.class, customer);
 		removeNewCommercialRelationsFromConditionEspeciallyForHibernate(opportunity); 
 		
 		opportunityService.createOrUpdate(opportunity);
+		conversation.end();
 		return "opportunities.xhtml";
 	}
 
