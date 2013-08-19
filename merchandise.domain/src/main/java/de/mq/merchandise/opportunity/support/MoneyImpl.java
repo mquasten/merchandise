@@ -38,6 +38,7 @@ public class MoneyImpl implements Comparable<Money>, Money {
 		return Math.round(Math.pow(10, fractionDigits) * amount()) / Math.pow(10, fractionDigits);
 	}
 
+	@Override
 	public double amount() {
 		return (double) amount / Math.pow(10, effectivFractionDigits());
 	}
