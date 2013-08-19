@@ -3,7 +3,6 @@ package de.mq.merchandise.opportunity.support;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
