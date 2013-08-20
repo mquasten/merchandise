@@ -40,6 +40,9 @@ public interface OpportunityController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ActivityClassificationTreeAO.class), @Parameter(clazz = ProductClassificationTreeAO.class)})}, clazz = OpportunityControllerImpl.class)
 	String create();
+	
+	@MethodInvocation(actions={ @ActionEvent(params={@Parameter(clazz = ActivityClassificationTreeAO.class), @Parameter(clazz = ProductClassificationTreeAO.class)} ,name="create") , @ActionEvent(params={@Parameter(clazz=OpportunityAO.class), @Parameter(clazz = OpportunityModelAO.class, el="#arg.selected.opportunity.id()", elResultType=Long.class ,skipNotReachableOnNullElException=true)}, name="change" )}, clazz = OpportunityControllerImpl.class)
+	String change();
 
 
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class, el="#arg.opportunity", elResultType=Opportunity.class), @Parameter(clazz=KeyWordModelAO.class)})}, clazz = OpportunityControllerImpl.class)

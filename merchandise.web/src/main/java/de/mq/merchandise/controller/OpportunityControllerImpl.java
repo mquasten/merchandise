@@ -67,6 +67,20 @@ class OpportunityControllerImpl {
 	}
 
 	
+	String change(final OpportunityAO opportunityAO, final Long opportunityId) {
+		System.out.println(">>>"+ opportunityId);
+		if( opportunityId == null){
+			return null;
+		}
+		
+		opportunityAO.setOpportunity(opportunityService.read(opportunityId));
+		opportunityAO.notifyConditionsChanged();
+		opportunityAO.notifyActivityClassificationChanged();
+		opportunityAO.notifyProductClassificationChanged();
+		System.out.println("change");
+		return "opportunity";
+	}
+	
 
 	String  save(final Opportunity opportunity, final Customer customer) {
 		System.out.println("save opportunity with activities:" +opportunity.activityClassifications().size());
