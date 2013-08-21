@@ -68,7 +68,6 @@ class OpportunityControllerImpl {
 
 	
 	String change(final OpportunityAO opportunityAO, final Long opportunityId) {
-		System.out.println(">>>"+ opportunityId);
 		if( opportunityId == null){
 			return null;
 		}
@@ -77,8 +76,8 @@ class OpportunityControllerImpl {
 		opportunityAO.notifyConditionsChanged();
 		opportunityAO.notifyActivityClassificationChanged();
 		opportunityAO.notifyProductClassificationChanged();
-		System.out.println("change");
-		return "opportunity";
+		
+		return "opportunity.xhtml";
 	}
 	
 

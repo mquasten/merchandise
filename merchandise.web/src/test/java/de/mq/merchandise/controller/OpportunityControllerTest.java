@@ -372,5 +372,24 @@ public class OpportunityControllerTest {
 
 		commercialRelation.assign(condition);
 	}
+	
+	@Test
+	public final void change() {
+		Mockito.when(opportunityService.read(19680528L)).thenReturn(opportunity);
+		
+		Assert.assertEquals("opportunity.xhtml", opportunityControllerImpl.change(opportunityAO, 19680528L));
+		
+		Mockito.verify(opportunityAO).setOpportunity(opportunity);
+		
+		Mockito.verify(opportunityAO).notifyConditionsChanged();
+		Mockito.verify(opportunityAO).notifyActivityClassificationChanged();
+		Mockito.verify(opportunityAO).notifyProductClassificationChanged();
+	}
+	
+	@Test
+	public final void changeIdNull() {
+		Assert.assertNull(opportunityControllerImpl.change(opportunityAO, null));
+		Mockito.verifyZeroInteractions(opportunityAO);
+	}
 
 }
