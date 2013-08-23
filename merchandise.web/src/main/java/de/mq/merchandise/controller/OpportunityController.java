@@ -45,6 +45,10 @@ public interface OpportunityController {
 	String change();
 
 
+	@MethodInvocation(actions={  @ActionEvent(params={@Parameter(clazz = OpportunityModelAO.class)} ) , @ActionEvent(params={@Parameter(clazz = OpportunityModelAO.class), @Parameter(clazz = SecurityContext.class , el="#arg.authentication.details" , elResultType=Customer.class)},name="opportunities")         }, clazz = OpportunityControllerImpl.class)
+	void delete();
+	
+	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class, el="#arg.opportunity", elResultType=Opportunity.class), @Parameter(clazz=KeyWordModelAO.class)})}, clazz = OpportunityControllerImpl.class)
 	void addKeyWord();
 	

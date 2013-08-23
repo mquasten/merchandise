@@ -80,6 +80,18 @@ class OpportunityControllerImpl {
 		return "opportunity.xhtml";
 	}
 	
+	void delete(final OpportunityModelAO opportunityModelAO){
+		if( opportunityModelAO.getSelected()==null){
+			return;
+		}
+		
+		
+		opportunityService.delete(opportunityModelAO.getSelected().getOpportunity());
+		
+		opportunityModelAO.setSelected(null);
+		
+	}
+	
 
 	String  save(final Opportunity opportunity, final Customer customer) {
 		System.out.println("save opportunity with activities:" +opportunity.activityClassifications().size());

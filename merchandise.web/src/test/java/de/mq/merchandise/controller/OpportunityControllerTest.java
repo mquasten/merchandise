@@ -391,5 +391,25 @@ public class OpportunityControllerTest {
 		Assert.assertNull(opportunityControllerImpl.change(opportunityAO, null));
 		Mockito.verifyZeroInteractions(opportunityAO);
 	}
+	
+	@Test
+	public final void delete() {
+		Mockito.when(opportunityModelAO.getSelected()).thenReturn(opportunityAO);
+		Assert.assertNotNull(opportunityModelAO.getSelected());
+		Assert.assertNotNull(opportunityModelAO.getSelected().getOpportunity());
+		opportunityControllerImpl.delete(opportunityModelAO);
+		
+		Mockito.verify(opportunityService).delete(opportunityAO.getOpportunity());
+		Mockito.verify(opportunityModelAO).setSelected(null);
+	}
+	
+	@Test
+	public final void deleteSeletedIsNull(){
+		Assert.assertNull(opportunityModelAO.getSelected());
+		opportunityControllerImpl.delete(opportunityModelAO);
+		
+		Mockito.verifyNoMoreInteractions(opportunityService);
+		Mockito.verify(opportunityModelAO, Mockito.times(0)).setSelected(Mockito.any(OpportunityAO.class));
+	}
 
 }
