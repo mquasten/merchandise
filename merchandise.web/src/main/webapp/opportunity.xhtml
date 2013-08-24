@@ -152,10 +152,18 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		   <p:message for="keywordTable" display="text" />   
 		  	
 		  
-		  
+		  <p:outputLabel  value="#{message.opportunity_files}" /> 
+		
+		 <h:form id="upload" > 
+		  <p:fileUpload  id="upload" label="Datei"  cancelLabel="abbrechen" uploadLabel="hochladen"  fileUploadListener="#{upload.handleFileUpload}"  dragDropSupport="false"  
+                   sizeLimit="2000000"  allowTypes="/(\.|\/)(gif|jpe?g|png|pdf)$/"   fileLimitMessage="Nur ein File darf hochgeladen werden"  invalidFileMessage="Falscher Datei-Typ"  auto="true"/>  
+		
+		  </h:form> 
 		  	
+		   <p:message for="upload" display="text" />   
+		 
 		  	<f:facet name="footer">
-		  			<p:button value="#{message.opportunity_cancel}"  outcome="opportunities.xhtml"  style="float:left"  />
+		  			<p:button value="#{message.opportunity_cancel}"  outcome="/opportunities.xhtml"  style="float:left"  />
  					<p:commandButton id="saveOpportunity" value="#{message.opportunity_save}" action="#{opportunityController.save()}"
 						icon="ui-icon ui-icon-disk"  style="float:right"   update="@form" process="@this, name,description,kind"   />
 		  	</f:facet>

@@ -9,7 +9,8 @@ public interface Condition extends BasicEntity {
 	enum ConditionType {
 		Quantity,
 		Unit,
-		PricePerUnit;
+		PricePerUnit,
+		Currency; 
 	}
 
 	List<String> values();
