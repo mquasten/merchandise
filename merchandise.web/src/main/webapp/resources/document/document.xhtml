@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:u="http://example.com/functions"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<head>
+
+<title>Input for an attachement a document</title>
+</head>
+<body>
+
+	<composite:interface>
+		<composite:attribute name="message" required="true" />
+		
+		<composite:attribute name="saveAction" method-signature="void f()" />  
+		<composite:attribute name="addAction" method-signature="void f()" />  
+		<composite:attribute name="deleteAction" method-signature="void f()" />  
+		
+	</composite:interface>
+
+	<composite:implementation>
+	<p:dialog header="#{cc.attrs.message.document_title}" widgetVar="documentDlg" modal="true" >  
+	
+		
+  		
+  	
+       
+        <h:panelGrid id="inputGrid" columns="1"  columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"   style="margin-bottom:10px">  
+           
+         
+            
+			 
+			 
+			 <p:dataTable  id="documentTable" var="documentVar" paginator="false"   value="#{opportunityModel.documents}"   >  
+			   	  
+                   <p:column headerText="#{message.document_attachements}">#{documentVar}</p:column> 
+                 
+                
+                   
+			   <f:facet name="footer">     
+		  	              <p:commandButton id="deleteDocument"    value="#{message.document_delete_button}" action="#{cc.attrs.deleteAction}"   process="@this documentTable"  update="@this documentTable"     />      
+			 		
+			  </f:facet>
+			   
+			   </p:dataTable>
+			 
+		
+		    
+		  <p:fileUpload update="inputGrid"  id="fileupload" label="Datei"  cancelLabel="abbrechen" uploadLabel="hochladen"  fileUploadListener="#{upload.handleFileUpload}"  dragDropSupport="false"  
+                   sizeLimit="2000000"  allowTypes="/(\.|\/)(gif|jpe?g|png|pdf)$/"   fileLimitMessage="Nur ein File darf hochgeladen werden"  invalidFileMessage="Falscher Datei-Typ"  auto="true"   >  
+			 
+		 
+		 </p:fileUpload>
+		
+			 
+            
+            
+        </h:panelGrid>  
+        
+        
+        
+  
+         
+              
+  
+</p:dialog>  
+	
+	</composite:implementation>
+</body>
+</html>

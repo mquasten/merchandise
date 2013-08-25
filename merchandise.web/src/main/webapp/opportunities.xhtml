@@ -5,6 +5,7 @@ xmlns:h="http://java.sun.com/jsf/html"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:p="http://primefaces.org/ui"
 xmlns:subject="http://java.sun.com/jsf/composite/subject"
+xmlns:d="http://java.sun.com/jsf/composite/document"
 xmlns:ui="http://java.sun.com/jsf/facelets">
    
 <h:body>
@@ -31,14 +32,16 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
                    <p:ajax event="rowSelectRadio"  update="@form" process="@this"/> 
 			   </p:dataTable>
 	
-			   <h:panelGrid id="buttonPanel" columns="3" >
+			   <h:panelGrid id="buttonPanel" columns="4" >
 			     
 			      <p:commandButton id="addButton"  action="#{opportunityController.create()}"  value="#{message.opportunities_add_button}"   style="float:left" />
-			    
+			      <p:commandButton  value="#{message.opportunities_document_button}"  oncomplete="documentDlg.show();"  rendered="#{not empty opportunitiesModel.selected}"  />  
 			       <p:commandButton id="changeButton"  action="#{opportunityController.change()}"  value="#{message.opportunities_change_button}"  update="@form"  process="@this,opportunities"  rendered="#{not empty opportunitiesModel.selected}"  />
 			      <p:commandButton id="deleteButton"  action="#{opportunityController.delete()}"  value="#{message.opportunities_delete_button}"  update="@form"  process="@this,opportunities"  rendered="#{not empty opportunitiesModel.selected}"  />
 			   </h:panelGrid>
 		
+		
+		      <d:document message="#{message}" />
 			</h:form>
 			
 		</h:panelGrid>

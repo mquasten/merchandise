@@ -1,7 +1,6 @@
 package de.mq.merchandise.controller;
 
 import java.io.File;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +28,7 @@ public class UploadController {
 			}
 
 			out.flush();
+			
 			System.out.println(event.getFile().getFileName() + "... finished");
 
 		} catch (final IOException ex) {
