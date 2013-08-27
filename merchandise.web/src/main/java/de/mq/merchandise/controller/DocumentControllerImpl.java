@@ -7,15 +7,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.primefaces.event.FileUploadEvent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+
+import de.mq.merchandise.opportunity.support.CommercialSubject;
+import de.mq.merchandise.opportunity.support.DocumentsAware;
 
 
-@Component("upload")
-@Scope("singleton")
-public class UploadController {
 
-	public void handleFileUpload(final FileUploadEvent event) {
+class DocumentControllerImpl {
+
+	void handleFileUpload(final FileUploadEvent event) {
 
 		File targetFolder = new File("c:\\tmp");
 		try (final InputStream inputStream = event.getFile().getInputstream(); final OutputStream out = new FileOutputStream(new File(targetFolder, event.getFile().getFileName()))) {
@@ -36,5 +36,14 @@ public class UploadController {
 		}
 
 	}
+	
+	
+	void addAttachement(final DocumentsAware documentAware, final String name ) {
+		
+		System.out.println(documentAware);
+		System.out.println(name);
+		documentAware.assignDocument(name, CommercialSubject.DocumentType.Link, "opportunity".getBytes());
+	}
+	
 
 }

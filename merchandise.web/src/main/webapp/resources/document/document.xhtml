@@ -49,7 +49,7 @@
 			 
 		
 		    
-		  <p:fileUpload update="inputGrid"  id="fileupload" label="Datei"  cancelLabel="abbrechen" uploadLabel="hochladen"  fileUploadListener="#{upload.handleFileUpload}"  dragDropSupport="false"  
+		  <p:fileUpload update="inputGrid"  id="fileupload" label="Datei"  cancelLabel="abbrechen" uploadLabel="hochladen"  fileUploadListener="#{documentController.addOpportunityAttachement}"  dragDropSupport="false"  
                    sizeLimit="2000000"  allowTypes="/(\.|\/)(gif|jpe?g|png|pdf)$/"   fileLimitMessage="Nur ein File darf hochgeladen werden"  invalidFileMessage="Falscher Datei-Typ"  auto="true"   >  
 			 
 		 
