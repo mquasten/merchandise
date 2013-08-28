@@ -12,5 +12,7 @@ public interface DocumentController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = FileUploadEvent.class , originIndex=0) }, name="handleFileUpload"), @ActionEvent(params={@Parameter(clazz = OpportunityAO.class , el="#arg.opportunity", elResultType=DocumentsAware.class) , @Parameter(clazz = FileUploadEvent.class , originIndex=0, el="#arg.file.fileName", elResultType=String.class)}, name="addAttachement")}, clazz = DocumentControllerImpl.class)
 	void addOpportunityAttachement(final  FileUploadEvent fileUploadEvent);
+	
+
 
 }

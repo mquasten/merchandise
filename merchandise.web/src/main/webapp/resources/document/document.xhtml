@@ -34,11 +34,21 @@
             
 			 
 			 
-			 <p:dataTable  id="documentTable" var="documentVar" paginator="false"   value="#{opportunityModel.documents}"   >  
-			   	  
-                   <p:column headerText="#{message.document_attachements}">#{documentVar}</p:column> 
-                 
-                
+			 <p:dataTable  id="documentTable" var="documentVar" paginator="false"   value="#{opportunity.documents}"  selection="#{documentModel.selected}" >  
+			   	   <p:column selectionMode="single" style="width:2%" />  
+                  
+                   
+                   <p:column headerText="#{message.document_attachements}">
+                   <p:lightBox iframe="false" >  
+                      
+    					<h:outputLink value="http://localhost:5984/opportunities/19680528/kylie.jpg" title="#{documentVar}">  
+        					<h:outputText value="#{documentVar}"/>  
+   						 </h:outputLink>  
+   					
+					</p:lightBox>  
+					
+                  </p:column>
+                   <p:ajax event="rowSelectRadio"  update="documentTable" process="@this"/> 
                    
 			   <f:facet name="footer">     
 		  	              <p:commandButton id="deleteDocument"    value="#{message.document_delete_button}" action="#{cc.attrs.deleteAction}"   process="@this documentTable"  update="@this documentTable"     />      

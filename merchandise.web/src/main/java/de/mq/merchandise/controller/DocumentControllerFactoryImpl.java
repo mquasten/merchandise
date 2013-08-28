@@ -14,11 +14,14 @@ public class DocumentControllerFactoryImpl {
 	@Autowired
 	private WebProxyFactory webProxyFactory;
 	
+	
 	@Bean(name="documentController")
 	@Scope("singleton")
 	public DocumentController opportunityController() {
 		return  webProxyFactory.webModell(DocumentController.class, new DocumentControllerImpl());
 	   
 	}
+	
+	
 
 }

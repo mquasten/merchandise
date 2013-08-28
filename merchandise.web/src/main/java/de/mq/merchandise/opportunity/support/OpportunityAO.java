@@ -72,8 +72,8 @@ public abstract class OpportunityAO implements Serializable {
 	@GetterProxyCollection(clazz=OpportunityImpl.class, name = "procuctClassifications", proxyClass = ProductclassificationAO.class , converter=HibernateProxyConverter.class)
 	public abstract Collection<ProductclassificationAO> getProcuctClassifications();
 	
-	
-	
+	@Getter( clazz=OpportunityImpl.class,  value = "storedDocuments", converter=Map2SimpleMapDataModel.class )
+	public abstract DataModel<String> getDocuments(); 
 	
 	
 	@GetterDomain(clazz=OpportunityImpl.class)

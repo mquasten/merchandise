@@ -43,6 +43,7 @@ class DocumentControllerImpl {
 		System.out.println(documentAware);
 		System.out.println(name);
 		documentAware.assignDocument(name, CommercialSubject.DocumentType.Link, "opportunity".getBytes());
+		
 	}
 	
 
