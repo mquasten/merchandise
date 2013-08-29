@@ -21,7 +21,7 @@ import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.customer.support.PersonConstants;
-import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
+import de.mq.merchandise.opportunity.support.DocumentsAware.DocumentType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})

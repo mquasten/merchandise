@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -15,11 +14,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.NamedQuery;
-
-
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import de.mq.merchandise.customer.Customer;
@@ -32,6 +29,8 @@ import de.mq.merchandise.util.Equals;
 @NamedQuery(name=CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN, query="select s from CommercialSubject s where s.name like :name and s.customer.id = :customerId")
 public class CommercialSubjectImpl implements  CommercialSubject {
 	
+	static final String URL = "/subjects/%s/%s";
+
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -134,6 +133,17 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 	@Override
 	public boolean equals(Object obj) {
 		 return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(CommercialSubject.class).isEquals();
+	}
+
+	@Override
+	public void assignDocument(final String name) {
+		assignDocument(name, DocumentType.Link, urlForName(name).getBytes() );
+	}
+
+	@Override
+	public String urlForName(String name) {
+		EntityUtil.mandatoryGuard(name, "name");
+		return String.format(URL, id(), name );
 	}
 	
 

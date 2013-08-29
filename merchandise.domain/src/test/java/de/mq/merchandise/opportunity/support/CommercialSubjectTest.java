@@ -10,10 +10,11 @@ import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
+import de.mq.merchandise.opportunity.support.DocumentsAware.DocumentType;
 import de.mq.merchandise.util.EntityUtil;
 
 public class CommercialSubjectTest {
+	private static final String IMAGE = "kylie.jpg";
 	private static final String PATH = "artists";
 	private static final byte[] DOCUMENT = "http://www.dolls.de/content".getBytes();
 	private static final String DOCUMENT_NAME = "escorts";
@@ -130,6 +131,26 @@ public class CommercialSubjectTest {
 		}
 		Assert.assertEquals(PATH + ".pdf", DocumentType.PDF.key(PATH));
 		Assert.assertEquals(PATH, DocumentType.Link.key(PATH));
+	}
+	
+	@Test
+	public final void urlForName(){
+		final CommercialSubject commercialSubject = EntityUtil.create(CommercialSubjectImpl.class);
+		ReflectionTestUtils.setField(commercialSubject, "id" , ID);
+		Assert.assertEquals(String.format(CommercialSubjectImpl.URL, ID, IMAGE ), commercialSubject.urlForName(IMAGE));
+	}
+	
+	@Test
+	public final void assignLink(){
+		final CommercialSubject commercialSubject = EntityUtil.create(CommercialSubjectImpl.class);
+		ReflectionTestUtils.setField(commercialSubject, "id" , ID);
+		commercialSubject.assignDocument(IMAGE);
+		
+		Assert.assertEquals(1, commercialSubject.documents().size());
+		Assert.assertEquals(IMAGE, commercialSubject.documents().keySet().iterator().next());
+		
+		Assert.assertEquals(String.format(CommercialSubjectImpl.URL, ID, IMAGE ),new String(commercialSubject.documents().values().iterator().next()));
+		
 	}
 	
 }

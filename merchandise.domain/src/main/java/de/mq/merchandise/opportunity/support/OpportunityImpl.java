@@ -27,7 +27,6 @@ import javax.persistence.OneToMany;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
-import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
@@ -38,6 +37,8 @@ import de.mq.merchandise.util.Equals;
 public class OpportunityImpl implements Opportunity {
 	
 	
+	static final String URL = "/opportunities/%s/%s";
+
 	private static final long serialVersionUID = 1L;
 
 	@GeneratedValue
@@ -269,6 +270,19 @@ public class OpportunityImpl implements Opportunity {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void assignDocument(final String name) {
+		assignDocument(name, DocumentType.Link, urlForName(name).getBytes() );
+		
+	}
+
+	@Override
+	public String urlForName(final String name) {
+		EntityUtil.mandatoryGuard(name, "name");
+		
+		return String.format(URL, id(), name );
 	}
 
 }

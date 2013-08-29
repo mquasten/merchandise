@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.PersonConstants;
-import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
+import de.mq.merchandise.opportunity.support.DocumentsAware.DocumentType;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 

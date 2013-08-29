@@ -6,15 +6,17 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.test.context.junit4.statements.SpringFailOnTimeout;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.opportunity.support.CommercialSubject.DocumentType;
+import de.mq.merchandise.opportunity.support.DocumentsAware.DocumentType;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
 public class OpportunityTest {
 	
+	private static final String IMAGE = "kylie.jpg";
 	private static final String KEYWORD = "keyword";
 	private static final String DOCUMENT_NAME = "document";
 	private static final byte[] DOCUMENT = "documentsInput".getBytes();
@@ -279,8 +281,26 @@ public class OpportunityTest {
 		
 		Assert.assertEquals(1, relations.size());
 		Assert.assertEquals(1, relations.iterator().next().conditions().values().size());
+	}
+	
+	
+	@Test
+	public final void urlForName() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		ReflectionTestUtils.setField(opportunity, "id", ID);
+		Assert.assertEquals(String.format(OpportunityImpl.URL, ID, IMAGE), opportunity.urlForName(IMAGE));
 		
+	}
+	
+	@Test
+	public final void assignLink() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		ReflectionTestUtils.setField(opportunity, "id", ID);
+		opportunity.assignDocument(IMAGE);
 		
+		Assert.assertEquals(1, opportunity.documents().size());
+		Assert.assertEquals(IMAGE, opportunity.documents().keySet().iterator().next());
+		Assert.assertEquals(String.format(OpportunityImpl.URL, ID, IMAGE), new String(opportunity.documents().values().iterator().next()));
 	}
 	
 }
