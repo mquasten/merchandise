@@ -21,7 +21,11 @@ public class OpportunityServiceImpl extends BasicServiceImpl<Opportunity> implem
 	
 	@Override
 	public final Collection<Opportunity> opportunities(final Customer customer, final String patternForName, final Paging paging) {
-		return ((OpportunityRepository) repository).forNamePattern(customer, patternForName, paging);
+		 final Collection<Opportunity> results = ((OpportunityRepository) repository).forNamePattern(customer, patternForName, paging);
+		 for(final DocumentsAware document : results){
+			 document.documents().size();
+		 }
+		 return results;
 		
 	}
 

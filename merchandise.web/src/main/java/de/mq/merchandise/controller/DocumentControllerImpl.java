@@ -8,12 +8,15 @@ import java.io.OutputStream;
 
 import org.primefaces.event.FileUploadEvent;
 
-import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.DocumentsAware;
+import de.mq.merchandise.opportunity.support.Opportunity;
+import de.mq.merchandise.opportunity.support.OpportunityAO;
 
 
 
 class DocumentControllerImpl {
+	
+	static final String URL_ROOT="http://localhost:5984/%s"; 
 
 	void handleFileUpload(final FileUploadEvent event) {
 
@@ -38,13 +41,21 @@ class DocumentControllerImpl {
 	}
 	
 	
-	void addAttachement(final DocumentsAware documentAware, final String name ) {
+	void addAttachement(final OpportunityAO opportunityAO, final Opportunity selected, final String name ) {
 		
-		System.out.println(documentAware);
-		System.out.println(name);
-		documentAware.assignDocument(name, CommercialSubject.DocumentType.Link, "opportunity".getBytes());
+		opportunityAO.setOpportunity(selected);
+		System.out.println("******************************");
+		System.out.println(opportunityAO.getOpportunity().id());
+		System.out.println("******************************");
+		opportunityAO.getOpportunity().assignDocument(name);
 		
 	}
 	
+	
+	String url(final  DocumentsAware documentAware, final String name) {
+		
+		System.out.println("url:" +String.format(URL_ROOT, documentAware.urlForName(name)));
+		return String.format(URL_ROOT, documentAware.urlForName(name));
+	}
 
 }

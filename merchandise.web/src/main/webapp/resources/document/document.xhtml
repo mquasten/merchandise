@@ -41,13 +41,14 @@
                    <p:column headerText="#{message.document_attachements}">
                    <p:lightBox iframe="false" >  
                       
-    					<h:outputLink value="http://localhost:5984/opportunities/19680528/kylie.jpg" title="#{documentVar}">  
+    					<h:outputLink value="#{documentController.url(documentVar)}" title="#{documentVar}">  
         					<h:outputText value="#{documentVar}"/>  
    						 </h:outputLink>  
    					
 					</p:lightBox>  
 					
                   </p:column>
+                 
                    <p:ajax event="rowSelectRadio"  update="documentTable" process="@this"/> 
                    
 			   <f:facet name="footer">     
