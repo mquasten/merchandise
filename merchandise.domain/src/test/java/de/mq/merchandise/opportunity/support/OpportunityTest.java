@@ -6,12 +6,11 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.test.context.junit4.statements.SpringFailOnTimeout;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.opportunity.support.DocumentsAware.DocumentType;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
+import de.mq.merchandise.opportunity.support.DocumentsAware.DocumentType;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
 public class OpportunityTest {
