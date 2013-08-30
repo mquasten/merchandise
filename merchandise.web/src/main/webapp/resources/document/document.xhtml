@@ -15,9 +15,7 @@
 	<composite:interface>
 		<composite:attribute name="message" required="true" />
 		
-		<composite:attribute name="saveAction" method-signature="void f()" />  
-		<composite:attribute name="addAction" method-signature="void f()" />  
-		<composite:attribute name="deleteAction" method-signature="void f()" />  
+		
 		
 	</composite:interface>
 
@@ -34,7 +32,7 @@
             
 			 
 			 
-			 <p:dataTable  id="documentTable" var="documentVar" paginator="false"   value="#{opportunity.documents}"  selection="#{documentModel.selected}" >  
+			 <p:dataTable  id="documentTable" var="documentVar" paginator="false"   value="#{documentModel.documents}"  selection="#{documentModel.selected}" >  
 			   	   <p:column selectionMode="single" style="width:2%" />  
                   
                    
@@ -52,7 +50,7 @@
                    <p:ajax event="rowSelectRadio"  update="documentTable" process="@this"/> 
                    
 			   <f:facet name="footer">     
-		  	              <p:commandButton id="deleteDocument"    value="#{message.document_delete_button}" action="#{cc.attrs.deleteAction}"   process="@this documentTable"  update="@this documentTable"     />      
+		  	              <p:commandButton id="deleteDocument"    value="#{message.document_delete_button}" action="#{documentController.removeAttachement}"   process="@this documentTable"  update="@this documentTable"   rendered="#{not empty documentModel.selected}"  />      
 			 		
 			  </f:facet>
 			   

@@ -8,9 +8,8 @@ import java.io.OutputStream;
 
 import org.primefaces.event.FileUploadEvent;
 
+import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.DocumentsAware;
-import de.mq.merchandise.opportunity.support.Opportunity;
-import de.mq.merchandise.opportunity.support.OpportunityAO;
 
 
 
@@ -41,21 +40,24 @@ class DocumentControllerImpl {
 	}
 	
 	
-	void addAttachement(final OpportunityAO opportunityAO, final Opportunity selected, final String name ) {
-		
-		opportunityAO.setOpportunity(selected);
-		System.out.println("******************************");
-		System.out.println(opportunityAO.getOpportunity().id());
-		System.out.println("******************************");
-		opportunityAO.getOpportunity().assignDocument(name);
-		
+	void addAttachement(final DocumentsAware document,  final String name ) {
+		document.assignDocument(name);
 	}
 	
 	
 	String url(final  DocumentsAware documentAware, final String name) {
-		
-		System.out.println("url:" +String.format(URL_ROOT, documentAware.urlForName(name)));
 		return String.format(URL_ROOT, documentAware.urlForName(name));
+	}
+	
+	
+	void assign(final DocumentModelAO documentModelAO, final DocumentsAware document) {
+		documentModelAO.setSelected(null);
+		documentModelAO.setDocument(document);
+	}
+	
+	
+	void removeAttachement(final DocumentsAware document , final String name ) {
+		document.removeDocument(name, DocumentsAware.DocumentType.Link);
 	}
 
 }
