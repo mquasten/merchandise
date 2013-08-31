@@ -50,12 +50,7 @@ class DocumentControllerImpl {
 	
 	
 	String url(final  DocumentsAware documentAware, final String name) {
-		
-		
 		final String url = documentAware.urlForName(name);
-		System.out.println("******************************");
-		System.out.println(url);
-		System.out.println("******************************");
 		if( url == null){
 			return "" ;
 		}
@@ -81,8 +76,6 @@ class DocumentControllerImpl {
 	
 	void addLink(final DocumentModelAO documentModelAO) {
 		
-		System.out.println( documentModelAO.getSelected());
-		
 		if (documentModelAO.getSelected() == null){
 			return;
 		}
@@ -94,15 +87,14 @@ class DocumentControllerImpl {
 		final String name = documentModelAO.getSelected().trim().replaceFirst("(http|HTTP).*[.]", "");
 		
 		documentModelAO.getDocument().assignWebLink(name);
-		System.out.println(documentModelAO.getDocument().urlForName(name));
+		
 		documentModelAO.setSelected(null);
-		System.out.println(documentModelAO.getDocument().urlForName(name));
+		
 		
 	}
 	
 	
 	void size(final String name , final DocumentModelAO documentModelAO){
-		System.out.println(name);
 		
 			try {
 				BufferedImage bufferedImage = ImageIO.read(new URL(url(documentModelAO.getDocument(), name)));
