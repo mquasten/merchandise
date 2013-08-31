@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.PersonConstants;
-import de.mq.merchandise.opportunity.support.DocumentsAware.DocumentType;
+
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
@@ -33,7 +33,7 @@ public class OpportunityIntegrationTest {
 	private static final String KEY_WORD = "EscortService";
 	private static final String PRODUCT_ID = "P-01";
 	private static final String ACTIVITY_ID = "A-01";
-	private static final byte[] DOCUMENT_CONTENT = "nicoles pictures and videos".getBytes();
+	
 	private static final String LINK = "nicole";
 	@PersistenceContext()
 	private EntityManager entityManager;
@@ -70,7 +70,7 @@ public class OpportunityIntegrationTest {
        
 		opportunity.assignClassification(activityClassification);
 		opportunity.assignClassification(procuctClassification);
-		opportunity.assignDocument(LINK, DocumentType.Link, DOCUMENT_CONTENT);
+		opportunity.assignWebLink(LINK);
 		opportunity.assignKeyWord(KEY_WORD);
 		final List<String> values = new ArrayList<>();
 		values.add(UNIT_HOUR);
@@ -91,7 +91,7 @@ public class OpportunityIntegrationTest {
 		
 		Assert.assertEquals(1, result.documents().size());
 		Assert.assertEquals(LINK, result.documents().keySet().iterator().next());
-		Assert.assertEquals(new String(DOCUMENT_CONTENT),  new String(result.documents().values().iterator().next()));
+		Assert.assertEquals(String.format(OpportunityImpl.WWW_URL, LINK),  new String(result.documents().values().iterator().next()));
 		
 		Assert.assertEquals(1,result.activityClassifications().size());
 		Assert.assertEquals(ACTIVITY_ID, result.activityClassifications().iterator().next().id());

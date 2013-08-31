@@ -37,6 +37,8 @@ import de.mq.merchandise.util.Equals;
 public class OpportunityImpl implements Opportunity {
 	
 	
+	static final String WWW_URL = "http://www.%s";
+
 	static final String URL = "/opportunities/%s/%s";
 
 	private static final long serialVersionUID = 1L;
@@ -152,14 +154,16 @@ public class OpportunityImpl implements Opportunity {
 	}
 
 	@Override
-	public void assignDocument(final String name, final DocumentType documentType, byte[] document) {
-		storedDocuments.put(documentType.key(name), document);
+	public void assignWebLink(final String name) {
+		EntityUtil.mandatoryGuard(name, "name");
+		final String key = name.trim().replaceFirst("(http|HTTP).*[.]", "");
+		storedDocuments.put(key, String.format(WWW_URL, key).getBytes());
 		
 	}
 
 	@Override
-	public void removeDocument(final String name, final DocumentType documentType) {
-		storedDocuments.remove(documentType.key(name));		
+	public void removeDocument(final String name) {
+		storedDocuments.remove(name);		
 	}
 	
 	@Override
@@ -274,15 +278,20 @@ public class OpportunityImpl implements Opportunity {
 
 	@Override
 	public void assignDocument(final String name) {
-		assignDocument(name, DocumentType.Link, urlForName(name).getBytes() );
+		EntityUtil.mandatoryGuard(name, "name");
+		storedDocuments.put(name, String.format(URL, id(), name ).getBytes() );
 		
 	}
 
 	@Override
 	public String urlForName(final String name) {
-		EntityUtil.mandatoryGuard(name, "name");
-		
-		return String.format(URL, id(), name );
+		if( ! storedDocuments.containsKey(name)){
+			return null;
+		}
+		return new String(storedDocuments.get(name));
 	}
+	
+	
+	
 
 }

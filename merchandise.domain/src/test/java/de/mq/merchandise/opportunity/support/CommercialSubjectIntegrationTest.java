@@ -21,14 +21,14 @@ import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.customer.support.PersonConstants;
-import de.mq.merchandise.opportunity.support.DocumentsAware.DocumentType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
 public class CommercialSubjectIntegrationTest {
 	
 	
-	private static final String DOCUMENT_CONTENT = "Inhalt vom pdf";
+	private static final String WEB_LINK = "kylie.com";
+	
 	@PersistenceContext()
 	private EntityManager entityManager;
 	private final List<BasicEntity> waste  = new ArrayList<BasicEntity>();
@@ -60,7 +60,7 @@ public class CommercialSubjectIntegrationTest {
 	public final void persist() {
 		
 	    CommercialSubject commercialSubject = new CommercialSubjectImpl(customer, "NAME" , "DESCRIPTION");
-	    commercialSubject.assignDocument("test", DocumentType.PDF, DOCUMENT_CONTENT.getBytes());
+	    commercialSubject.assignWebLink(WEB_LINK);
 	    commercialSubject = entityManager.merge(commercialSubject);
 	    waste.add(commercialSubject);
 	    entityManager.flush();
@@ -69,8 +69,8 @@ public class CommercialSubjectIntegrationTest {
 	    Assert.assertEquals(commercialSubject, result);
 	    Assert.assertEquals(1, result.documents().size());
 	    Assert.assertEquals(customer, result.customer());
-	    Assert.assertEquals("test.pdf", result.documents().keySet().iterator().next());
-	    Assert.assertEquals(DOCUMENT_CONTENT ,new String(result.documents().values().iterator().next()));
+	    Assert.assertEquals(WEB_LINK, result.documents().keySet().iterator().next());
+	    Assert.assertEquals(String.format(CommercialSubjectImpl.WWW_URL, WEB_LINK) ,new String(result.documents().values().iterator().next()));
 	  
 	 
 	    entityManager.refresh(customer);

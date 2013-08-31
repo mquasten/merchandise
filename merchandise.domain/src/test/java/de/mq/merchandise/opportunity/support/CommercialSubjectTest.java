@@ -1,5 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,12 +11,12 @@ import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.opportunity.support.DocumentsAware.DocumentType;
 import de.mq.merchandise.util.EntityUtil;
 
 public class CommercialSubjectTest {
+	private static final String WEB_LINK = "kylie.com";
 	private static final String IMAGE = "kylie.jpg";
-	private static final String PATH = "artists";
+
 	private static final byte[] DOCUMENT = "http://www.dolls.de/content".getBytes();
 	private static final String DOCUMENT_NAME = "escorts";
 	private static final long ID = 19680528L;
@@ -59,18 +60,18 @@ public class CommercialSubjectTest {
 	}
 	
 	@Test
-	public final void assignDocument() {
+	public final void assignWebLink() {
 		final Customer customer = Mockito.mock(Customer.class);
 		final DocumentsAware commercialSubject = new CommercialSubjectImpl(customer , NAME , DESCRIPTION);
 		
-		commercialSubject.assignDocument(DOCUMENT_NAME, DocumentType.Link, DOCUMENT);
+		commercialSubject.assignWebLink(WEB_LINK);
 		
 		@SuppressWarnings("unchecked")
 		Map<String, byte[]> results = (Map<String, byte[]>) ReflectionTestUtils.getField(commercialSubject, "storedDocuments");
 		
 		Assert.assertEquals(1, results.size());
-		Assert.assertEquals(DOCUMENT_NAME,  results.keySet().iterator().next());
-		Assert.assertEquals(DOCUMENT,  results.values().iterator().next());
+		Assert.assertEquals(WEB_LINK,  results.keySet().iterator().next());
+		Assert.assertEquals(String.format(CommercialSubjectImpl.WWW_URL, WEB_LINK),  new String(results.values().iterator().next()));
 		
 	}
 	
@@ -82,7 +83,7 @@ public class CommercialSubjectTest {
 		results.put(DOCUMENT_NAME, DOCUMENT);
 		
 		ReflectionTestUtils.setField(commercialSubject, "storedDocuments", results);
-	    commercialSubject.removeDocument(DOCUMENT_NAME, DocumentType.Link);
+	    commercialSubject.removeDocument(DOCUMENT_NAME);
 		Assert.assertTrue(results.isEmpty());
 	}  
 	
@@ -124,20 +125,23 @@ public class CommercialSubjectTest {
 		Assert.assertFalse(new CommercialSubjectImpl(customer, NAME, DESCRIPTION).equals(new CommercialSubjectImpl(customer, "???", DESCRIPTION)));
 	}
 	
-	@Test
-	public final void documentType() {
-		for(final DocumentType documentType : DocumentType.values()){
-			Assert.assertEquals(documentType, DocumentType.valueOf(documentType.name()));
-		}
-		Assert.assertEquals(PATH + ".pdf", DocumentType.PDF.key(PATH));
-		Assert.assertEquals(PATH, DocumentType.Link.key(PATH));
-	}
+	
 	
 	@Test
 	public final void urlForName(){
 		final CommercialSubject commercialSubject = EntityUtil.create(CommercialSubjectImpl.class);
 		ReflectionTestUtils.setField(commercialSubject, "id" , ID);
+		Map<String,byte[]> docs = new HashMap<>();
+		docs.put(IMAGE, String.format(CommercialSubjectImpl.URL, ID, IMAGE ).getBytes());
+		ReflectionTestUtils.setField(commercialSubject, "storedDocuments", docs);
 		Assert.assertEquals(String.format(CommercialSubjectImpl.URL, ID, IMAGE ), commercialSubject.urlForName(IMAGE));
+	}
+	
+	@Test
+	public final void urlForNameNotFound(){
+		final CommercialSubject commercialSubject = EntityUtil.create(CommercialSubjectImpl.class);
+		Assert.assertNull(commercialSubject.urlForName(IMAGE));
+		
 	}
 	
 	@Test
@@ -150,6 +154,15 @@ public class CommercialSubjectTest {
 		Assert.assertEquals(IMAGE, commercialSubject.documents().keySet().iterator().next());
 		
 		Assert.assertEquals(String.format(CommercialSubjectImpl.URL, ID, IMAGE ),new String(commercialSubject.documents().values().iterator().next()));
+		
+	}
+	
+	@Test
+	public final void assignWebLinkUrl() {
+		final CommercialSubject opportunity = EntityUtil.create(CommercialSubjectImpl.class);
+		opportunity.assignWebLink(WEB_LINK);
+		Assert.assertEquals(String.format(OpportunityImpl.WWW_URL, WEB_LINK), opportunity.urlForName(WEB_LINK));
+		Assert.assertTrue(opportunity.urlForName("kylie.com").startsWith("http://"));
 		
 	}
 	

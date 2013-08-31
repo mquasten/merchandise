@@ -21,8 +21,11 @@ public interface DocumentController {
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = DocumentModelAO.class ), @Parameter(clazz=DocumentsAware.class, originIndex=0) })}, clazz = DocumentControllerImpl.class)
 	void assign(final DocumentsAware documentAware );
 	
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = DocumentModelAO.class , el ="#arg.document", elResultType=DocumentsAware.class), @Parameter(clazz=DocumentModelAO.class, el="#arg.selected", elResultType=String.class) })}, clazz = DocumentControllerImpl.class)
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = DocumentModelAO.class ), @Parameter(clazz=DocumentModelAO.class, el="#arg.selected", elResultType=String.class) })}, clazz = DocumentControllerImpl.class)
 	void removeAttachement();
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = DocumentModelAO.class )})}, clazz = DocumentControllerImpl.class)
+	void addLink();
 
 }
 

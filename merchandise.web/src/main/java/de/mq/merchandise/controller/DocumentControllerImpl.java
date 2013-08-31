@@ -46,7 +46,21 @@ class DocumentControllerImpl {
 	
 	
 	String url(final  DocumentsAware documentAware, final String name) {
-		return String.format(URL_ROOT, documentAware.urlForName(name));
+		
+		
+		final String url = documentAware.urlForName(name);
+		System.out.println("******************************");
+		System.out.println(url);
+		System.out.println("******************************");
+		if( url == null){
+			return "" ;
+		}
+		
+		if(url.trim().toLowerCase().startsWith("http")){
+			return url;
+		}
+		
+		return String.format(URL_ROOT, url);
 	}
 	
 	
@@ -56,8 +70,30 @@ class DocumentControllerImpl {
 	}
 	
 	
-	void removeAttachement(final DocumentsAware document , final String name ) {
-		document.removeDocument(name, DocumentsAware.DocumentType.Link);
+	void removeAttachement(final DocumentModelAO documentModelAO , final String name ) {
+		documentModelAO.getDocument().removeDocument(name);
+		documentModelAO.setSelected(null);
+	}
+	
+	void addLink(final DocumentModelAO documentModelAO) {
+		
+		System.out.println( documentModelAO.getSelected());
+		
+		if (documentModelAO.getSelected() == null){
+			return;
+		}
+		
+		if (documentModelAO.getSelected().trim().length() == 0 ) {
+			return;
+		}
+		
+		final String name = documentModelAO.getSelected().trim().replaceFirst("(http|HTTP).*[.]", "");
+		
+		documentModelAO.getDocument().assignWebLink(name);
+		System.out.println(documentModelAO.getDocument().urlForName(name));
+		documentModelAO.setSelected(null);
+		System.out.println(documentModelAO.getDocument().urlForName(name));
+		
 	}
 
 }

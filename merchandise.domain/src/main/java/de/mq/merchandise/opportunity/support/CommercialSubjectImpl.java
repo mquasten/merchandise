@@ -30,6 +30,8 @@ import de.mq.merchandise.util.Equals;
 public class CommercialSubjectImpl implements  CommercialSubject {
 	
 	static final String URL = "/subjects/%s/%s";
+	
+	static final String WWW_URL = "http://www.%s";
 
 	private static final long serialVersionUID = 1L;
 	
@@ -83,8 +85,10 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 	 * @see de.mq.merchandise.opportunity.support.CommercialSubject#assignDocument(java.lang.String, byte[])
 	 */
 	@Override
-	public  void assignDocument(final String name, final DocumentType documentType, final byte[] document ) {
-		storedDocuments.put(documentType.key(name), document);
+	public  void assignWebLink(final String name) {
+		EntityUtil.mandatoryGuard(name, "name");
+		final String key = name.trim().replaceFirst("(http|HTTP).*[.]", "");
+		storedDocuments.put(key, String.format(WWW_URL, key).getBytes());
 	}
 	
 	
@@ -92,8 +96,10 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 	 * @see de.mq.merchandise.opportunity.support.CommercialSubject#remove(java.lang.String)
 	 */
 	@Override
-	public  void removeDocument(final String name, final DocumentType documentType) {
-		storedDocuments.remove(documentType.key(name));
+	public  void removeDocument(final String name) {
+		EntityUtil.mandatoryGuard(name, "name");
+		storedDocuments.remove(name);
+		
 	}
 	
 	/* (non-Javadoc)
@@ -137,13 +143,17 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 
 	@Override
 	public void assignDocument(final String name) {
-		assignDocument(name, DocumentType.Link, urlForName(name).getBytes() );
+		EntityUtil.mandatoryGuard(name, "name");
+		storedDocuments.put(name, String.format(URL, id(), name ).getBytes() );
 	}
 
 	@Override
 	public String urlForName(String name) {
 		EntityUtil.mandatoryGuard(name, "name");
-		return String.format(URL, id(), name );
+		if( !storedDocuments.containsKey(name)){
+			return null;
+		}
+		return new String(storedDocuments.get(name));
 	}
 	
 

@@ -1,6 +1,8 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -10,15 +12,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
-import de.mq.merchandise.opportunity.support.DocumentsAware.DocumentType;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
 public class OpportunityTest {
 	
+	private static final String WEB_LINK = "kylie.com";
 	private static final String IMAGE = "kylie.jpg";
 	private static final String KEYWORD = "keyword";
-	private static final String DOCUMENT_NAME = "document";
-	private static final byte[] DOCUMENT = "documentsInput".getBytes();
+	
 	private static final long ID = 19680528L;
 	private static final String DESCRIPTION = "Description for artists";
 	private static final String NAME = "Artists";
@@ -74,11 +75,11 @@ public class OpportunityTest {
 	@Test
 	public final void documents() {
 		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
-		opportunity.assignDocument(DOCUMENT_NAME, DocumentType.PDF, DOCUMENT);
+		opportunity.assignWebLink(WEB_LINK);
 		Assert.assertEquals(1, opportunity.documents().size());
-		Assert.assertEquals(DocumentType.PDF.key(DOCUMENT_NAME), opportunity.documents().keySet().iterator().next());
-		Assert.assertEquals(DOCUMENT, opportunity.documents().values().iterator().next());
-		opportunity.removeDocument(DOCUMENT_NAME, DocumentType.PDF);
+		Assert.assertEquals(WEB_LINK, opportunity.documents().keySet().iterator().next());
+		Assert.assertEquals(String.format(OpportunityImpl.WWW_URL,WEB_LINK), new String(opportunity.documents().values().iterator().next()));
+		opportunity.removeDocument(WEB_LINK);
 		Assert.assertTrue(opportunity.documents().isEmpty());
 	}
 	
@@ -287,8 +288,18 @@ public class OpportunityTest {
 	public final void urlForName() {
 		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
 		ReflectionTestUtils.setField(opportunity, "id", ID);
+		Map<String,byte[]> docs = new HashMap<>();
+		docs.put(IMAGE, String.format(OpportunityImpl.URL, ID, IMAGE).getBytes());
+		ReflectionTestUtils.setField(opportunity , "storedDocuments", docs);
+		
 		Assert.assertEquals(String.format(OpportunityImpl.URL, ID, IMAGE), opportunity.urlForName(IMAGE));
 		
+	}
+	
+	@Test
+	public final void urlForNameNotFound() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		Assert.assertNull(opportunity.urlForName(IMAGE));
 	}
 	
 	@Test
@@ -300,6 +311,16 @@ public class OpportunityTest {
 		Assert.assertEquals(1, opportunity.documents().size());
 		Assert.assertEquals(IMAGE, opportunity.documents().keySet().iterator().next());
 		Assert.assertEquals(String.format(OpportunityImpl.URL, ID, IMAGE), new String(opportunity.documents().values().iterator().next()));
+	}
+	
+	@Test
+	public final void assignWebLink() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		opportunity.assignWebLink(WEB_LINK);
+		Assert.assertEquals(String.format(OpportunityImpl.WWW_URL, WEB_LINK), opportunity.urlForName(WEB_LINK));
+		Assert.assertTrue(opportunity.urlForName("kylie.com").startsWith("http://"));
+		
+		System.out.println(opportunity.urlForName("kylie.com"));
 	}
 	
 }
