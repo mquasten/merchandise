@@ -26,6 +26,9 @@ public interface DocumentController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = DocumentModelAO.class )})}, clazz = DocumentControllerImpl.class)
 	void addLink();
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = String.class , originIndex=0 ), @Parameter(clazz = DocumentModelAO.class )})}, clazz = DocumentControllerImpl.class)
+	void size(final String name);
 
 }
 

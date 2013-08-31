@@ -38,15 +38,18 @@
                    
                    <p:column headerText="#{message.document_attachements}">
                    
-                   <p:lightBox iframe="true"   style=".ui-lightbox-content-wrapper" >  
+                   <p:lightBox>  
                         
-    					<h:outputLink value="#{documentController.url(documentVar)}" title="#{documentVar}" >  
+    					<h:outputLink value="#{documentController.size(documentVar)}" title="#{documentVar}" >  
         					<h:outputText value="#{documentVar}"/>  
         					
    						 </h:outputLink>  
    						 
    						
-   						 
+   						 <f:facet name="inline">  
+        						<p:media value="#{documentController.url(documentVar)}" width="#{documentModel.width}" height="#{documentModel.height}"  player="real"  />  
+        						
+    					</f:facet>  
    						
 					</p:lightBox>  
 					
@@ -60,9 +63,7 @@
                    <p:ajax event="rowSelectRadio"  update="@this,documentTable" process="@this"/> 
                    
 			   <f:facet name="footer">   
-			   				 <h:outputLabel  for="webLink" value="#{cc.attrs.message.document_web_link_label}" />  
-			    		    <p:inputText  id="webLink"     value="#{documentModel.selected}" /> 
-			  				<p:commandButton id="addLink"    value="#{message.document_add_link_button}" action="#{documentController.addLink}"   process="@this webLink"  update="@this documentTable"     />    
+			   				
 		  	              <p:commandButton id="deleteDocument"    value="#{message.document_delete_button}" action="#{documentController.removeAttachement}"   process="@this documentTable"  update="documentTable @this"   rendered="#{not empty documentModel.selected}"  />      
 			 		
 			  </f:facet>
@@ -78,7 +79,11 @@
 		 </p:fileUpload>
 		
 			 
-            
+         <p:panelGrid columns="3">
+          <h:outputLabel  for="webLink" value="#{cc.attrs.message.document_web_link_label}" />  
+			    		    <p:inputText  id="webLink"     value="#{documentModel.selected}" /> 
+			  				<p:commandButton id="addLink"    value="#{message.document_add_link_button}" action="#{documentController.addLink}"   process="inputGrid"  update="inputGrid"     />    
+         </p:panelGrid>   
             
         </h:panelGrid>  
         

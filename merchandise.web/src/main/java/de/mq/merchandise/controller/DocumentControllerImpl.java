@@ -1,10 +1,14 @@
 package de.mq.merchandise.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 import org.primefaces.event.FileUploadEvent;
 
@@ -94,6 +98,36 @@ class DocumentControllerImpl {
 		documentModelAO.setSelected(null);
 		System.out.println(documentModelAO.getDocument().urlForName(name));
 		
+	}
+	
+	
+	void size(final String name , final DocumentModelAO documentModelAO){
+		System.out.println(name);
+		
+			try {
+				BufferedImage bufferedImage = ImageIO.read(new URL(url(documentModelAO.getDocument(), name)));
+				final double scale = Math.max(scale(bufferedImage.getHeight(), 800), scale(bufferedImage.getWidth(), 1600));
+				
+				documentModelAO.setWidth(  new Double(bufferedImage.getWidth() /scale).intValue());
+				
+				documentModelAO.setHeight(new Double(bufferedImage.getHeight()/scale).intValue());
+				
+				
+			} catch (Exception e) {
+				documentModelAO.setWidth(1600);
+				documentModelAO.setHeight(800);
+			}
+	
+	}
+
+
+	private double scale(int size, int max) {
+		
+		
+		if(size > max){
+			return (double)size/max;
+		}
+		return 1.0d;
 	}
 
 }
