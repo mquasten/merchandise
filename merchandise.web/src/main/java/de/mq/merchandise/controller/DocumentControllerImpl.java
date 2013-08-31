@@ -19,6 +19,8 @@ import de.mq.merchandise.opportunity.support.DocumentsAware;
 
 class DocumentControllerImpl {
 	
+	static final int MAX_HEIGHT = 800;
+	static final int MAX_WIDTH = 1600;
 	static final String URL_ROOT="http://localhost:5984/%s"; 
 
 	void handleFileUpload(final FileUploadEvent event) {
@@ -98,7 +100,7 @@ class DocumentControllerImpl {
 		
 			try {
 				BufferedImage bufferedImage = ImageIO.read(new URL(url(documentModelAO.getDocument(), name)));
-				final double scale = Math.max(scale(bufferedImage.getHeight(), 800), scale(bufferedImage.getWidth(), 1600));
+				final double scale = Math.max(scale(bufferedImage.getHeight(), 800), scale(bufferedImage.getWidth(), MAX_WIDTH));
 				
 				documentModelAO.setWidth(  new Double(bufferedImage.getWidth() /scale).intValue());
 				
@@ -106,8 +108,8 @@ class DocumentControllerImpl {
 				
 				
 			} catch (Exception e) {
-				documentModelAO.setWidth(1600);
-				documentModelAO.setHeight(800);
+				documentModelAO.setWidth(MAX_WIDTH);
+				documentModelAO.setHeight(MAX_HEIGHT);
 			}
 	
 	}
