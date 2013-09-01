@@ -4,6 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
+	xmlns:d="http://java.sun.com/jsf/composite/document"
 	xmlns:u="http://example.com/functions"
 	xmlns:composite="http://java.sun.com/jsf/composite">
 <head>
@@ -38,21 +39,8 @@
                    
                    <p:column headerText="#{message.document_attachements}">
                    
-                   <p:lightBox>  
-                        
-    					<h:outputLink value="#{documentController.size(documentVar)}" title="#{documentVar}" >  
-        					<h:outputText value="#{documentVar}"/>  
-        					
-   						 </h:outputLink>  
-   						 
-   						
-   						 <f:facet name="inline">  
-        						<p:media value="#{documentController.url(documentVar)}" width="#{documentModel.width}" height="#{documentModel.height}"  player="real"  />  
-        						
-    					</f:facet>  
-   						
-					</p:lightBox>  
-					
+                  
+					<h:outputText value="#{documentVar}"/> 
 					
 					
 					
@@ -63,6 +51,17 @@
                    <p:ajax event="rowSelectRadio"  update="@this,documentTable" process="@this"/> 
                    
 			   <f:facet name="footer">   
+			   
+			   
+			   			 
+                        
+    					<p:commandButton value="show"     action="#{documentController.size(documentModel.selected)}" rendered="#{not empty documentModel.selected}" oncomplete="showDocumentDlg.show();"  process="@this documentTable"  update="documentTable @this" />
+    					 
+    					 <d:showDocument message="#{message}" url="#{documentController.url(documentModel.selected)}" width="#{documentModel.width}" height="#{documentModel.height}" />
+        					
+    				
+    					
+        				
 			   				
 		  	              <p:commandButton id="deleteDocument"    value="#{message.document_delete_button}" action="#{documentController.removeAttachement}"   process="@this documentTable"  update="documentTable @this"   rendered="#{not empty documentModel.selected}"  />      
 			 		

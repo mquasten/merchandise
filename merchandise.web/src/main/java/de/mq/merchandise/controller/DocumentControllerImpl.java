@@ -19,8 +19,8 @@ import de.mq.merchandise.opportunity.support.DocumentsAware;
 
 class DocumentControllerImpl {
 	
-	static final int MAX_HEIGHT = 800;
-	static final int MAX_WIDTH = 1600;
+	static final int MAX_HEIGHT = 850;
+	static final int MAX_WIDTH = 1650;
 	static final String URL_ROOT="http://localhost:5984/%s"; 
 
 	void handleFileUpload(final FileUploadEvent event) {
@@ -54,13 +54,13 @@ class DocumentControllerImpl {
 	String url(final  DocumentsAware documentAware, final String name) {
 		final String url = documentAware.urlForName(name);
 		if( url == null){
-			return "" ;
+			return "         " ;
 		}
 		
 		if(url.trim().toLowerCase().startsWith("http")){
 			return url;
 		}
-		
+		System.out.println(String.format(URL_ROOT, url));
 		return String.format(URL_ROOT, url);
 	}
 	
@@ -97,14 +97,16 @@ class DocumentControllerImpl {
 	
 	
 	void size(final String name , final DocumentModelAO documentModelAO){
-		
+		System.out.println("*************************************************");
 			try {
-				BufferedImage bufferedImage = ImageIO.read(new URL(url(documentModelAO.getDocument(), name)));
-				final double scale = Math.max(scale(bufferedImage.getHeight(), 800), scale(bufferedImage.getWidth(), MAX_WIDTH));
 				
-				documentModelAO.setWidth(  new Double(bufferedImage.getWidth() /scale).intValue());
+				final BufferedImage bufferedImage = ImageIO.read(new URL(url(documentModelAO.getDocument(), name)));
+			
+				final double scale = Math.max(scale(bufferedImage.getHeight(), MAX_HEIGHT), scale(bufferedImage.getWidth(), MAX_WIDTH));
+			
+				documentModelAO.setWidth(  new Double(((double)bufferedImage.getWidth()) /scale).intValue());
 				
-				documentModelAO.setHeight(new Double(bufferedImage.getHeight()/scale).intValue());
+				documentModelAO.setHeight(new Double(((double)bufferedImage.getHeight())/scale).intValue());
 				
 				
 			} catch (Exception e) {
