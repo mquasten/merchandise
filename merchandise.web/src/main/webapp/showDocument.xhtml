@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+xmlns:ui="http://java.sun.com/jsf/facelets">
+   
+<h:body>
+  
+  <f:metadata>
+      	
+      	<f:viewParam name="selectMode" value="#{pageModel.selectMode}" /> 		
+  	</f:metadata>
+
+  <ui:composition template="masterlayout.xhtml" >
+  
+  <ui:define name="content">
+     
+      
+	  <p:panelGrid id="page" columns="1" >
+	  		<p:media value="#{documentController.url(documentModel.selected)}"   player="quicktime"  width="#{documentModel.width}" height="#{documentModel.height}" /> 
+	
+		<f:facet name="header">
+	 		<h:outputText value="#{documentModel.selected}" />
+	       <p:button value="cancel" outcome="uploadDocument.xhtml" style="float:left"/>
+	   </f:facet>    
+	</p:panelGrid>
+	
+	</ui:define>
+	
+	</ui:composition>
+	</h:body>
+	</html>

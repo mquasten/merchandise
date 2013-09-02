@@ -91,8 +91,9 @@ public class OpportunityProxyFactoryImpl {
 	}
 	
 	@Bean(name="documentModel")
-	@Scope("session")
+	@Scope("conversation")
 	public DocumentModelAO documentModel() {
+		conversation.begin();
 		return proxyFactory.createProxy(DocumentModelAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("document", EntityUtil.create(OpportunityImpl.class)).withBeanResolver(beanResolver).build());
 	}
 	

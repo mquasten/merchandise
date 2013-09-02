@@ -1,33 +1,32 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:d="http://java.sun.com/jsf/composite/document"
-	xmlns:u="http://example.com/functions"
-	xmlns:composite="http://java.sun.com/jsf/composite">
-<head>
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+xmlns:subject="http://java.sun.com/jsf/composite/subject"
+xmlns:ui="http://java.sun.com/jsf/facelets">
+   
+<h:body>
+  
+  <f:metadata>
+      	
+      	<f:viewParam name="selectMode" value="#{pageModel.selectMode}" /> 		
+  	</f:metadata>
 
-<title>Input for an attachement a document</title>
-</head>
-<body>
-
-	<composite:interface>
-		<composite:attribute name="message" required="true" />
-		
-		
-		
-	</composite:interface>
-
-	<composite:implementation>
-	<p:dialog header="#{cc.attrs.message.document_title}" widgetVar="documentDlg" modal="true" >  
+  <ui:composition template="masterlayout.xhtml" >
+  
+  <ui:define name="content">
+      <h2 style="text-align: center"><h:outputText value="#{message.document_title}" /></h2>
+	  <p:panelGrid id="page" columns="1" styleClass="positionCentered">
+		  
+		 <h:form>
 	
 		
   		
   	
        
-        <h:panelGrid id="inputGrid" columns="1"  columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"   style="margin-bottom:10px">  
+        <p:panelGrid id="inputGrid" columns="1"  columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"   style="margin-bottom:10px">  
            
          
             
@@ -55,9 +54,9 @@
 			   
 			   			 
                         
-    					<p:commandButton value="show"     action="#{documentController.size(documentModel.selected)}" rendered="#{not empty documentModel.selected}" oncomplete="showDocumentDlg.show();"  process="@this documentTable"  update="documentTable @this" />
+    					<p:commandButton value="show"     action="#{documentController.size(documentModel.selected)}" rendered="#{not empty documentModel.selected}"   process="@this documentTable"  update="documentTable @this" />
     					 
-    					 <d:showDocument message="#{message}" url="#{documentController.url(documentModel.selected)}" width="#{documentModel.width}" height="#{documentModel.height}" />
+    					
         					
     				
     					
@@ -71,7 +70,7 @@
 			 
 		
 		    
-		  <p:fileUpload update="inputGrid"  id="fileupload" label="Datei"  cancelLabel="abbrechen" uploadLabel="hochladen"  fileUploadListener="#{documentController.addOpportunityAttachement}"  dragDropSupport="false"  
+		  <p:fileUpload update="@form"  id="fileupload" label="Datei"  cancelLabel="abbrechen" uploadLabel="hochladen"  fileUploadListener="#{documentController.addOpportunityAttachement}"  dragDropSupport="false"  
                    sizeLimit="2000000"  allowTypes="/(\.|\/)(gif|jpe?g|png|pdf)$/"   fileLimitMessage="Nur ein File darf hochgeladen werden"  invalidFileMessage="Falscher Datei-Typ"  auto="true"   >  
 			 
 		 
@@ -79,21 +78,30 @@
 		
 			 
          <p:panelGrid columns="3">
-          <h:outputLabel  for="webLink" value="#{cc.attrs.message.document_web_link_label}" />  
+          <h:outputLabel  for="webLink" value="#{message.document_web_link_label}" />  
 			    		    <p:inputText  id="webLink"     value="#{documentModel.selected}" /> 
 			  				<p:commandButton id="addLink"    value="#{message.document_add_link_button}" action="#{documentController.addLink}"   process="inputGrid"  update="inputGrid"     />    
          </p:panelGrid>   
-            
-        </h:panelGrid>  
+         
+         
+        </p:panelGrid>  
         
         
         
   
          
               
-  
-</p:dialog>  
-	
-	</composite:implementation>
-</body>
+  	
+
+		  
+		 <f:facet name="footer">
+             <p:button  outcome="opportunities.xhtml" value="cancel" style="float:left"  />
+         </f:facet>    
+	</h:form>	  
+   </p:panelGrid>
+		   
+   </ui:define>
+    	
+   </ui:composition>
+</h:body>
 </html>

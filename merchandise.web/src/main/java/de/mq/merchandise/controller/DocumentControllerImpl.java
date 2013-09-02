@@ -19,7 +19,7 @@ import de.mq.merchandise.opportunity.support.DocumentsAware;
 
 class DocumentControllerImpl {
 	
-	static final int MAX_HEIGHT = 850;
+	static final int MAX_HEIGHT = 800;
 	static final int MAX_WIDTH = 1650;
 	static final String URL_ROOT="http://localhost:5984/%s"; 
 
@@ -65,9 +65,11 @@ class DocumentControllerImpl {
 	}
 	
 	
-	void assign(final DocumentModelAO documentModelAO, final DocumentsAware document) {
+	String assign(final DocumentModelAO documentModelAO, final DocumentsAware document) {
 		documentModelAO.setSelected(null);
 		documentModelAO.setDocument(document);
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+		return "uploadDocument.xhtml";
 	}
 	
 	
@@ -96,34 +98,19 @@ class DocumentControllerImpl {
 	}
 	
 	
-	void size(final String name , final DocumentModelAO documentModelAO){
-		System.out.println("*************************************************");
-			try {
-				
-				final BufferedImage bufferedImage = ImageIO.read(new URL(url(documentModelAO.getDocument(), name)));
-			
-				final double scale = Math.max(scale(bufferedImage.getHeight(), MAX_HEIGHT), scale(bufferedImage.getWidth(), MAX_WIDTH));
-			
-				documentModelAO.setWidth(  new Double(((double)bufferedImage.getWidth()) /scale).intValue());
-				
-				documentModelAO.setHeight(new Double(((double)bufferedImage.getHeight())/scale).intValue());
-				
-				
-			} catch (Exception e) {
-				documentModelAO.setWidth(MAX_WIDTH);
-				documentModelAO.setHeight(MAX_HEIGHT);
-			}
-	
-	}
-
-
-	private double scale(int size, int max) {
-		
-		
-		if(size > max){
-			return (double)size/max;
+	String size(final String name , final DocumentModelAO documentModelAO){
+		if(name.toLowerCase().endsWith("jpg")|| name.toLowerCase().endsWith("jepg")||name.toLowerCase().endsWith("png")||name.toLowerCase().endsWith("tif")||name.toLowerCase().endsWith("gif") ){
+				documentModelAO.setWidth(null);
+				documentModelAO.setHeight(null);
+		}else {
+			documentModelAO.setWidth(MAX_WIDTH);
+			documentModelAO.setHeight(MAX_HEIGHT);
 		}
-		return 1.0d;
+				
+		
+			
+	   return "showDocument.xhtml?faces-redirect=true&selectMode=true";
 	}
+
 
 }
