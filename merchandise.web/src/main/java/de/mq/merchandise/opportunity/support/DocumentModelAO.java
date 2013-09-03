@@ -29,6 +29,14 @@ public abstract class DocumentModelAO implements Serializable {
 	@Setter(value = "selected")
 	public abstract void setSelected(final String selected);
 	
+	
+	@Getter(value = "link")
+	public abstract String getLink();
+
+	@Setter(value = "link")
+	public abstract void setLink(final String link);
+	
+	
 	@Setter(value = "width")
 	public abstract void  setWidth(Integer width);
 	@Getter(value = "width")

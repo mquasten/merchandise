@@ -1,14 +1,10 @@
 package de.mq.merchandise.controller;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
 
 import org.primefaces.event.FileUploadEvent;
 
@@ -69,7 +65,7 @@ class DocumentControllerImpl {
 		documentModelAO.setSelected(null);
 		documentModelAO.setDocument(document);
 		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
-		return "uploadDocument.xhtml";
+		return "uploadDocument.xhtml?faces-redirect=true&selectMode=true";
 	}
 	
 	
@@ -79,20 +75,20 @@ class DocumentControllerImpl {
 	}
 	
 	void addLink(final DocumentModelAO documentModelAO) {
-		
-		if (documentModelAO.getSelected() == null){
+		System.out.println("******************" +documentModelAO.getLink());
+		if (documentModelAO.getLink() == null){
 			return;
 		}
 		
-		if (documentModelAO.getSelected().trim().length() == 0 ) {
+		if (documentModelAO.getLink().trim().length() == 0 ) {
 			return;
 		}
 		
-		final String name = documentModelAO.getSelected().trim().replaceFirst("(http|HTTP).*[.]", "");
+		final String name = documentModelAO.getLink().trim().replaceFirst("(http|HTTP).*[.]", "");
 		
 		documentModelAO.getDocument().assignWebLink(name);
 		
-		documentModelAO.setSelected(null);
+		documentModelAO.setLink(null);
 		
 		
 	}
