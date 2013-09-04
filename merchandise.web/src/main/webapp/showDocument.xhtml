@@ -22,9 +22,15 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 	  		<p:media value="#{documentController.url(documentModel.selected)}"   player="quicktime"  width="#{documentModel.width}" height="#{documentModel.height}" /> 
 	
 		<f:facet name="header">
-	 		<h:outputText value="#{documentModel.selected}" />
-	       <p:button value="cancel" outcome="uploadDocument.xhtml" style="float:left"/>
+	 		
+	       <h:link  outcome="uploadDocument.xhtml"> 
+	             <h:graphicImage url="cross.png" />
+	      </h:link>
+	       <h:outputText value="&nbsp;" />
+	      <h:outputText value="#{documentModel.selected}" />
 	   </f:facet>    
+	   
+	  
 	</p:panelGrid>
 	
 	</ui:define>
