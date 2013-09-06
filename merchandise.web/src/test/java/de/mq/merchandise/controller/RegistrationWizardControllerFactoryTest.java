@@ -7,8 +7,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import de.mq.mapping.util.proxy.Conversation;
 import de.mq.merchandise.customer.CustomerService;
-import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.model.support.WebProxyFactory;
 import de.mq.merchandise.util.ValidationService;
 

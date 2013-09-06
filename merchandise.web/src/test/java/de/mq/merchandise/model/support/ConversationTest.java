@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import de.mq.mapping.util.proxy.Conversation;
 import de.mq.merchandise.customer.Customer;
 
 public class ConversationTest {

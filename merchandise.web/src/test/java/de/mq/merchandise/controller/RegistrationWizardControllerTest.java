@@ -7,12 +7,12 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.primefaces.event.FlowEvent;
 
+import de.mq.mapping.util.proxy.Conversation;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.customer.Person;
 import de.mq.merchandise.model.Registration;
 import de.mq.merchandise.model.Registration.Kind;
-import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.util.ValidationService;
 
 public class RegistrationWizardControllerTest {
