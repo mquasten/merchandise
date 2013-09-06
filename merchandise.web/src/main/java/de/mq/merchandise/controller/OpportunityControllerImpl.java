@@ -3,8 +3,9 @@ package de.mq.merchandise.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.mq.mapping.util.proxy.Conversation;
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.model.support.Conversation;
+
 import de.mq.merchandise.opportunity.ClassificationService;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;

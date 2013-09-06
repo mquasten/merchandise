@@ -2,6 +2,8 @@ package de.mq.merchandise.model.support;
 
 import java.util.Map;
 
+import de.mq.mapping.util.proxy.Conversation;
+
 
 
 public  class SimpleConversationImpl extends AbstractConversation implements Conversation {

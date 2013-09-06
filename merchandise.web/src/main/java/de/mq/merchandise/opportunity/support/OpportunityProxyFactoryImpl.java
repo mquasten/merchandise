@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Scope;
 
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
+import de.mq.mapping.util.proxy.Conversation;
 import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
-import de.mq.merchandise.model.support.Conversation;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.SimplePagingImpl;
 
@@ -92,8 +92,7 @@ public class OpportunityProxyFactoryImpl {
 	
 	@Bean(name="documentModel")
 	@Scope("conversation")
-	public DocumentModelAO documentModel() {
-		conversation.begin();
+	public DocumentModelAO documentModel() {	
 		return proxyFactory.createProxy(DocumentModelAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("document", EntityUtil.create(OpportunityImpl.class)).withBeanResolver(beanResolver).build());
 	}
 	

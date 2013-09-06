@@ -25,7 +25,13 @@ public class CommercialSubjectServiceImpl extends BasicServiceImpl<CommercialSub
 	
 	@Override
 	public final Collection<CommercialSubject> subjects(final Customer customer, final String patternForName, final Paging paging) {
-		return ((CommercialSubjectRepository) repository).forNamePattern(customer, patternForName, paging);
+		Collection<CommercialSubject>  results = ((CommercialSubjectRepository) repository).forNamePattern(customer, patternForName, paging);
+		
+		 for(final DocumentsAware document : results){
+			 System.out.println("****");
+			 document.documents().size();
+		 }
+		 return results;
 		
 	}
 

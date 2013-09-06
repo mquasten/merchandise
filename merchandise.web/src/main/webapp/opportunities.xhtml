@@ -35,7 +35,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 			   <h:panelGrid id="buttonPanel" columns="4" >
 			     
 			      <p:commandButton id="addButton"  action="#{opportunityController.create()}"  value="#{message.opportunities_add_button}"   style="float:left" />
-			      <p:commandButton  value="#{message.opportunities_document_button}"   action="#{documentController.assign(opportunitiesModel.selected.opportunity)}"  rendered="#{not empty opportunitiesModel.selected}"   update="@form"  process="@this,opportunities"  />  
+			      <p:commandButton  value="#{message.opportunities_document_button}"   action="#{documentController.assignFromOpportunity()}"  rendered="#{not empty opportunitiesModel.selected}"   update="@form"  process="@this,opportunities"  />  
 			       <p:commandButton id="changeButton"  action="#{opportunityController.change()}"  value="#{message.opportunities_change_button}"  update="@form"  process="@this,opportunities"  rendered="#{not empty opportunitiesModel.selected}"  />
 			      <p:commandButton id="deleteButton"  action="#{opportunityController.delete()}"  value="#{message.opportunities_delete_button}"  update="@form"  process="@this,opportunities"  rendered="#{not empty opportunitiesModel.selected}"  />
 			   </h:panelGrid>

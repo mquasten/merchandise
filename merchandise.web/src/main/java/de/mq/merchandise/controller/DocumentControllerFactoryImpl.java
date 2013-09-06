@@ -15,6 +15,8 @@ public class DocumentControllerFactoryImpl {
 	private WebProxyFactory webProxyFactory;
 	
 	
+	
+	
 	@Bean(name="documentController")
 	@Scope("singleton")
 	public DocumentController opportunityController() {
