@@ -18,7 +18,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
   <ui:define name="content">
       <h2 style="text-align: center"><h:outputText value="#{message.document_title}" /></h2>
 	   <h:form>
-	  <p:panelGrid id="page" columns="1" styleClass="positionCentered">
+	  <h:panelGrid id="page" columns="1" styleClass="positionCentered">
 		  
 		
 	
@@ -26,7 +26,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
   		
   	
        
-        <p:panelGrid id="inputGrid" columns="1"  columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"   style="margin-bottom:10px">  
+        <h:panelGrid id="inputGrid" columns="1"  columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"   style="margin-bottom:10px">  
            
          
             
@@ -77,14 +77,18 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		 </p:fileUpload>
 		
 			 
-         <p:panelGrid columns="3">
+         <h:panelGrid  columns="3">
           <h:outputLabel  for="webLink" value="#{message.document_web_link_label}" />  
-			    		    <p:inputText  id="webLink"     value="#{documentModel.link}" /> 
-			  				<p:commandButton id="addLink"    value="#{message.document_add_link_button}" action="#{documentController.addLink}"   process="inputGrid"  update="inputGrid"     />    
-         </p:panelGrid>   
+			    		    <p:inputText  id="webLink"     value="#{documentModel.link}"  >
+			    		      <p:ajax update="addLink" event="keyup"  />
+			    		    </p:inputText> 
+			    		    <h:panelGrid id="addLink">
+			  				<p:commandButton  value="#{message.document_add_link_button}" action="#{documentController.addLink}"   process="inputGrid"  update="@form"   rendered="#{not empty documentModel.link}"  />    
+			  				</h:panelGrid>
+         </h:panelGrid>   
          
          
-        </p:panelGrid>  
+        </h:panelGrid>  
         
         
         
@@ -101,7 +105,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
              <p:commandButton  action="#{documentController.cancelUpLoad()}" value="#{message.document_cancel_button}" style="float:left" process="@this"  update="@this"  />
          </f:facet>    
    
-   </p:panelGrid>
+   </h:panelGrid>
 	</h:form>	   
    </ui:define>
     	
