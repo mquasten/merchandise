@@ -46,5 +46,19 @@ public abstract class DocumentModelAO implements Serializable {
 	public abstract void  setHeight(Integer height);
 	@Getter(value = "height")
 	public abstract Integer  getHeight();
+	
+	@Getter(value = "returnFromUpload")
+	public abstract String getReturnFromUpload();
+	
+	
+	@Setter(value = "returnFromUpload")
+	public abstract void setReturnFromUpload(String url);
+	
+	@Getter(value = "returnFromShowAttachement")
+	public abstract String getReturnFromShowAttachement();
+	
+	
+	@Setter(value = "returnFromShowAttachement")
+	public abstract void setReturnFromShowAttachement(String url);
 
 }

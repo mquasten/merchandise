@@ -8,11 +8,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
+import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 
 import org.primefaces.event.FileUploadEvent;
 
 
+import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.DocumentsAware;
 import de.mq.merchandise.util.EntityUtil;
@@ -31,6 +33,14 @@ class DocumentControllerImpl {
 	static final int MAX_WIDTH = 1625;
 	static final String URL_ROOT="http://localhost:5984/%s"; 
 
+	
+	private final FacesContextFactory facesContextFactory;
+	
+	DocumentControllerImpl(final FacesContextFactory facesContextFactory) {
+		this.facesContextFactory=facesContextFactory;
+	}
+	
+	
 	void handleFileUpload(final FileUploadEvent event) {
 
 		File targetFolder = new File("c:\\tmp");
@@ -55,12 +65,7 @@ class DocumentControllerImpl {
 	
 	
 	void addAttachement(final DocumentsAware document,  final String name ) {
-		
-		System.out.println("*********************");
-		System.out.println(document);
-		
 	
-		
 		document.assignDocument(name);
 	}
 	
@@ -81,6 +86,7 @@ class DocumentControllerImpl {
 	
 	String assign(final DocumentModelAO documentModelAO, final DocumentsAware document) {
 		
+		documentModelAO.setReturnFromUpload(facesContextFactory.facesContext().getViewRoot().getViewId());
 		System.out.println(document);
 		System.out.println(document.getClass());
 		
@@ -119,7 +125,7 @@ class DocumentControllerImpl {
 		documentModelAO.setWidth(MAX_WIDTH);
 		documentModelAO.setHeight(MAX_HEIGHT);
 		
-		
+		documentModelAO.setReturnFromShowAttachement(facesContextFactory.facesContext().getViewRoot().getViewId());
 	
 		final BufferedImage image = ImageIO.read(new URL(url(documentModelAO.getDocument(), documentModelAO.getSelected() )));
 		if ( image == null ){
@@ -135,6 +141,13 @@ class DocumentControllerImpl {
 			
 		
 	   return SHOW_DOCUMENT_URL;
+	}
+	
+	
+	String cancelUpLoad(final String page){
+		System.out.println("????" + page);
+		return page;
+		
 	}
 
 

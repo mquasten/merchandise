@@ -32,6 +32,9 @@ public interface DocumentController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={ @Parameter(clazz = DocumentModelAO.class )})}, clazz = DocumentControllerImpl.class)
 	String showAttachement();
+	
+	@MethodInvocation(actions={@ActionEvent(params={ @Parameter(clazz = DocumentModelAO.class , el="#arg.returnFromUpload" , elResultType=String.class)}, endConversation=false)}, clazz = DocumentControllerImpl.class)
+	String cancelUpLoad();
 
 }
 

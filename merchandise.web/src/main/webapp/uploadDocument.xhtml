@@ -17,9 +17,10 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
   
   <ui:define name="content">
       <h2 style="text-align: center"><h:outputText value="#{message.document_title}" /></h2>
+	   <h:form>
 	  <p:panelGrid id="page" columns="1" styleClass="positionCentered">
 		  
-		 <h:form>
+		
 	
 		
   		
@@ -94,13 +95,14 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 
 		  
 		
-	</h:form>	  
+		  
 	
 	 <f:facet name="footer">
-             <p:button  outcome="opportunities.xhtml" value="#{message.document_cancel_button}" style="float:left"  />
+             <p:commandButton  action="#{documentController.cancelUpLoad()}" value="#{message.document_cancel_button}" style="float:left" process="@this"  update="@this"  />
          </f:facet>    
+   
    </p:panelGrid>
-		   
+	</h:form>	   
    </ui:define>
     	
    </ui:composition>
