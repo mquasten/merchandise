@@ -8,16 +8,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
-import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 
 import org.primefaces.event.FileUploadEvent;
 
-
 import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.DocumentsAware;
-import de.mq.merchandise.util.EntityUtil;
 
 
 
@@ -28,6 +25,7 @@ class DocumentControllerImpl {
 	
 	
 	
+	static final String UPLOAD_DOCUMENT_URL_REDIRECT = "uploadDocument.xhtml?faces-redirect=true&selectMode=true";
 	private static final String SHOW_DOCUMENT_URL = "showDocument.xhtml?faces-redirect=true&selectMode=true";
 	static final int MAX_HEIGHT = 800;
 	static final int MAX_WIDTH = 1625;
@@ -65,7 +63,6 @@ class DocumentControllerImpl {
 	
 	
 	void addAttachement(final DocumentsAware document,  final String name ) {
-	
 		document.assignDocument(name);
 	}
 	
@@ -79,7 +76,6 @@ class DocumentControllerImpl {
 		if(url.trim().toLowerCase().startsWith("http")){
 			return url;
 		}
-		System.out.println(String.format(URL_ROOT, url));
 		return String.format(URL_ROOT, url);
 	}
 	
@@ -92,8 +88,8 @@ class DocumentControllerImpl {
 		
 		
 		documentModelAO.setSelected(null);
-		documentModelAO.setDocument(EntityUtil.copy(document));
-		return "uploadDocument.xhtml?faces-redirect=true&selectMode=true";
+		documentModelAO.setDocument(document);
+		return UPLOAD_DOCUMENT_URL_REDIRECT;
 	}
 	
 	
@@ -111,7 +107,8 @@ class DocumentControllerImpl {
 			return;
 		}
 		
-		final String name = documentModelAO.getLink().trim().replaceFirst("(http|HTTP).*[.]", "");
+		final String name = documentModelAO.getLink().trim().replaceFirst("(http|HTTP)([:]//){0,1}([wW]{3}[.]){0,1}",  "");
+		
 		
 		documentModelAO.getDocument().assignWebLink(name);
 		
@@ -145,7 +142,6 @@ class DocumentControllerImpl {
 	
 	
 	String cancelUpLoad(final String page){
-		System.out.println("????" + page);
 		return page;
 		
 	}
