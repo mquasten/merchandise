@@ -1,9 +1,6 @@
 package de.mq.merchandise.controller;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
