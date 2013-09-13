@@ -6,9 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
 
 import org.primefaces.event.FileUploadEvent;
 
@@ -21,12 +18,13 @@ import de.mq.merchandise.opportunity.support.DocumentsAware;
 class DocumentControllerImpl {
 	
 	
+	private final ResourceOperations resourceOperations; 
 	
 	
 	
 	
 	static final String UPLOAD_DOCUMENT_URL_REDIRECT = "uploadDocument.xhtml?faces-redirect=true&selectMode=true";
-	private static final String SHOW_DOCUMENT_URL = "showDocument.xhtml?faces-redirect=true&selectMode=true";
+	static final String SHOW_DOCUMENT_URL_REDIRECT = "showDocument.xhtml?faces-redirect=true&selectMode=true";
 	static final int MAX_HEIGHT = 800;
 	static final int MAX_WIDTH = 1625;
 	static final String URL_ROOT="http://localhost:5984/%s"; 
@@ -34,8 +32,9 @@ class DocumentControllerImpl {
 	
 	private final FacesContextFactory facesContextFactory;
 	
-	DocumentControllerImpl(final FacesContextFactory facesContextFactory) {
+	DocumentControllerImpl(final FacesContextFactory facesContextFactory, final ResourceOperations resourceOperations) {
 		this.facesContextFactory=facesContextFactory;
+		this.resourceOperations=resourceOperations;
 	}
 	
 	
@@ -118,26 +117,27 @@ class DocumentControllerImpl {
 	}
 	
 	
-	String showAttachement(final DocumentModelAO documentModelAO) throws IOException{
-		documentModelAO.setWidth(MAX_WIDTH);
-		documentModelAO.setHeight(MAX_HEIGHT);
+	String showAttachement(final DocumentModelAO documentModelAO)  {
 		
+		documentModelAO.setWidth(MAX_WIDTH);
+		documentModelAO.setHeight(MAX_HEIGHT);	
 		documentModelAO.setReturnFromShowAttachement(facesContextFactory.facesContext().getViewRoot().getViewId());
 	
-		final BufferedImage image = ImageIO.read(new URL(url(documentModelAO.getDocument(), documentModelAO.getSelected() )));
+		final BufferedImage image =resourceOperations.readImage(url(documentModelAO.getDocument(), documentModelAO.getSelected() ));
 		if ( image == null ){
-				return SHOW_DOCUMENT_URL;
+			
+			return SHOW_DOCUMENT_URL_REDIRECT;
 		}
 			
+		
 		if(image.getWidth()> MAX_WIDTH) {
 			final double scale = ((double)MAX_WIDTH) / image.getWidth();
 			documentModelAO.setWidth((int) (image.getWidth()*scale));
 			documentModelAO.setHeight((int) (image.getHeight()*scale));
-				
 		}
 			
-		
-	   return SHOW_DOCUMENT_URL;
+	
+	   return SHOW_DOCUMENT_URL_REDIRECT;
 	}
 	
 	

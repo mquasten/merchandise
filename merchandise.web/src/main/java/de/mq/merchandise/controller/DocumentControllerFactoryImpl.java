@@ -18,11 +18,14 @@ public class DocumentControllerFactoryImpl {
 	@Autowired
 	private FacesContextFactory facesContextFactory;
 	
+	@Autowired
+	private ResourceOperations resourceOperations;
+	
 	
 	@Bean(name="documentController")
 	@Scope("singleton")
 	public DocumentController opportunityController() {
-		return  webProxyFactory.webModell(DocumentController.class, new DocumentControllerImpl(facesContextFactory));
+		return  webProxyFactory.webModell(DocumentController.class, new DocumentControllerImpl(facesContextFactory, resourceOperations));
 	   
 	}
 	

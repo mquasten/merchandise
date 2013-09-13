@@ -1,5 +1,10 @@
 package de.mq.merchandise.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
@@ -21,9 +26,13 @@ public class DocumentControllerTest {
 
 	private static final String DOCUMENT_NAME = "kylie.jpg";
 
+	private static final String CALL_SHOW_FROM = "document.xhtml";
+
 	private final FacesContextFactory facesContextFactory = Mockito.mock(FacesContextFactory.class);
 	
-	private final DocumentControllerImpl documentController = new DocumentControllerImpl(facesContextFactory);
+	private final ResourceOperations resourceOperations = Mockito.mock(ResourceOperations.class);
+	
+	private final DocumentControllerImpl documentController = new DocumentControllerImpl(facesContextFactory,resourceOperations);
 	private final DocumentsAware documentsAware = Mockito.mock(DocumentsAware.class);
 	private final DocumentModelAO documentModelAO = Mockito.mock(DocumentModelAO.class);
 	
@@ -122,6 +131,69 @@ public class DocumentControllerTest {
 	@Test
 	public final void cancelUpload() {
 		Assert.assertEquals(CALL_UPLOAD_FROM, documentController.cancelUpLoad(CALL_UPLOAD_FROM));
+	}
+	
+	@Test
+	public final void showAttachement()  {
+		final BufferedImage image = Mockito.mock(BufferedImage.class);
+		Mockito.when(image.getWidth()).thenReturn(DocumentControllerImpl.MAX_WIDTH*5/3);
+		Mockito.when(image.getHeight()).thenReturn(DocumentControllerImpl.MAX_HEIGHT);
+		
+		initForShowAttachements(image);
+		
+		Assert.assertEquals(DocumentControllerImpl.SHOW_DOCUMENT_URL_REDIRECT, documentController.showAttachement(documentModelAO));
+		
+		Mockito.verify(documentModelAO).setWidth(DocumentControllerImpl.MAX_WIDTH);
+		Mockito.verify(documentModelAO).setHeight(DocumentControllerImpl.MAX_HEIGHT);
+		Mockito.verify(documentModelAO).setReturnFromShowAttachement(CALL_SHOW_FROM);
+		
+		
+		Mockito.verify(documentModelAO).setWidth(DocumentControllerImpl.MAX_WIDTH);
+		Mockito.verify(documentModelAO).setHeight(DocumentControllerImpl.MAX_HEIGHT*3/5);
+		
+		
+	}
+
+	private void initForShowAttachements(final BufferedImage bufferedImage)  {
+		String url = String.format("/opportunities/%s/%s", 19680528, DOCUMENT_NAME);
+        final FacesContext facesContext = Mockito.mock(FacesContext.class);
+		Mockito.when(facesContextFactory.facesContext()).thenReturn(facesContext);
+		final UIViewRoot viewRoot = Mockito.mock(UIViewRoot.class);
+		Mockito.when(facesContext.getViewRoot()).thenReturn(viewRoot);
+		Mockito.when(viewRoot.getViewId()).thenReturn(CALL_SHOW_FROM);
+		
+		Mockito.when(documentModelAO.getDocument()).thenReturn(documentsAware);
+		Mockito.when(documentModelAO.getSelected()).thenReturn(DOCUMENT_NAME);
+		Mockito.when(documentsAware.urlForName(DOCUMENT_NAME)).thenReturn(url);
+		Mockito.when(resourceOperations.readImage(String.format(DocumentControllerImpl.URL_ROOT, url))).thenReturn(bufferedImage);
+		
+	}
+	
+	@Test
+	public final void showAttachementNoImage()  {
+		initForShowAttachements(null);
+		
+		Assert.assertEquals(DocumentControllerImpl.SHOW_DOCUMENT_URL_REDIRECT, documentController.showAttachement(documentModelAO));
+
+		Mockito.verify(documentModelAO).setWidth(DocumentControllerImpl.MAX_WIDTH);
+		Mockito.verify(documentModelAO).setHeight(DocumentControllerImpl.MAX_HEIGHT);
+		Mockito.verify(documentModelAO).setReturnFromShowAttachement(CALL_SHOW_FROM);
+		
+	}
+	
+	@Test
+	public final void showAttachementSmalImage()  {
+		final BufferedImage image = Mockito.mock(BufferedImage.class);
+		Mockito.when(image.getWidth()).thenReturn(DocumentControllerImpl.MAX_WIDTH/2);
+		Mockito.when(image.getHeight()).thenReturn(DocumentControllerImpl.MAX_HEIGHT/2);
+		
+		initForShowAttachements(image);
+		
+		Assert.assertEquals(DocumentControllerImpl.SHOW_DOCUMENT_URL_REDIRECT, documentController.showAttachement(documentModelAO));
+		Mockito.verify(documentModelAO).setWidth(DocumentControllerImpl.MAX_WIDTH);
+		Mockito.verify(documentModelAO).setHeight(DocumentControllerImpl.MAX_HEIGHT);
+		Mockito.verify(documentModelAO).setReturnFromShowAttachement(CALL_SHOW_FROM);
+		
 	}
 
 }
