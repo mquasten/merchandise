@@ -15,10 +15,8 @@ import de.mq.merchandise.model.support.String2LongConverter;
 
 public abstract class ConditionAO implements Serializable {
 	
-	
 	private static final long serialVersionUID = 1L;
 
-	
 	@Getter(clazz=ConditionImpl.class, value = "id", converter=Number2StringConverter.class)
 	public abstract String getId();
 	
