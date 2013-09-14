@@ -24,9 +24,8 @@ public class DocumentControllerFactoryImpl {
 	
 	@Bean(name="documentController")
 	@Scope("singleton")
-	public DocumentController opportunityController() {
+	public DocumentController documentController() {
 		return  webProxyFactory.webModell(DocumentController.class, new DocumentControllerImpl(facesContextFactory, resourceOperations));
-	   
 	}
 	
 	

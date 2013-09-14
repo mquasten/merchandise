@@ -90,13 +90,6 @@ public class OpportunityProxyFactoryImpl {
 		 return proxyFactory.createProxy(ConditionAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(ConditionImpl.class)).build());
 	}
 	
-	@Bean(name="documentModel")
-	@Scope("conversation")
-	public DocumentModelAO documentModel() {	
-		
-		System.out.println("???????????????? Create DocumentModel ????????????????????");
-		return proxyFactory.createProxy(DocumentModelAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("document", EntityUtil.create(OpportunityImpl.class)).withBeanResolver(beanResolver).build());
-	}
 	
 	
 }

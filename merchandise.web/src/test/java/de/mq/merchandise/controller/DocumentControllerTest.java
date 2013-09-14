@@ -9,6 +9,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.model.support.FacesContextFactory;
@@ -191,6 +193,18 @@ public class DocumentControllerTest {
 		Mockito.verify(documentModelAO).setHeight(DocumentControllerImpl.MAX_HEIGHT);
 		Mockito.verify(documentModelAO).setReturnFromShowAttachement(CALL_SHOW_FROM);
 		
+	}
+	
+	@Test
+	public final void handleUpload() {
+		final FileUploadEvent fileUploadEvent = Mockito.mock(FileUploadEvent.class);
+		final UploadedFile file = Mockito.mock(UploadedFile.class);
+		Mockito.when(file.getFileName()).thenReturn(DOCUMENT_NAME);
+		
+		Mockito.when(fileUploadEvent.getFile()).thenReturn(file);
+		documentController.handleFileUpload(fileUploadEvent, 19680528L);
+		
+	    Mockito.verify(resourceOperations).uploadFile(file, DOCUMENT_NAME);
 	}
 
 }

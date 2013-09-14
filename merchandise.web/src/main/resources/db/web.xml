@@ -77,14 +77,14 @@
 	<filter-name>PrimeFaces FileUpload Filter</filter-name>
 	<filter-class>org.primefaces.webapp.filter.FileUploadFilter
 	</filter-class>
-	<init-param>
+	<!--  init-param>
 		<param-name>thresholdSize</param-name>
 		<param-value>1024</param-value>
-	</init-param>
-	<init-param>
+	</init-param-->
+	<!--  init-param>
 		<param-name>uploadDirectory</param-name>
 		<param-value>C:\tmp</param-value>
-	</init-param>
+	</init-param-->
 </filter>
 	<filter-mapping>
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>
