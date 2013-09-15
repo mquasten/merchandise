@@ -18,7 +18,7 @@ import org.springframework.web.client.ResourceAccessException;
 @Component
 public class ResourceTemplateImpl implements ResourceOperations{
 
-	private final File targetFolder = new File("c:\\tmp" );;
+	final static File TARGET_FOLDER = new File("c:\\tmp" );;
 	
 	@Override
 	public BufferedImage readImage(final String url) {
@@ -33,7 +33,7 @@ public class ResourceTemplateImpl implements ResourceOperations{
 	public void uploadFile(final UploadedFile uploadedFile, final String targetFileName){
 		
 		
-		try (final InputStream inputStream = uploadedFile.getInputstream(); final OutputStream out = new FileOutputStream(new File(targetFolder , targetFileName))) {
+		try (final InputStream inputStream = uploadedFile.getInputstream(); final OutputStream out = new FileOutputStream(new File(TARGET_FOLDER , targetFileName))) {
 		
 			int read = 0;
 			byte[] bytes = new byte[1024];
@@ -46,7 +46,7 @@ public class ResourceTemplateImpl implements ResourceOperations{
 			
 
 		} catch (final IOException ex) {
-			throw new IllegalArgumentException(ex);
+			throw new  ResourceAccessException("Unable to access resource: ", ex ); 
 		}
 
 	}
