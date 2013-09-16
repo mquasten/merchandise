@@ -4,6 +4,12 @@ import de.mq.merchandise.BasicEntity;
 
 public interface DocumentRepository {
 
-	public abstract String revisionFor(final BasicEntity basicEntity);
+	/**
+	 * Gets the current revion for the given entity.
+	 * Couch db needs this for every operation as an url parameter
+	 * @param basicEntity the entity for which the revions is needed
+	 * @return the revison for the given entity
+	 */
+	String revisionFor(final BasicEntity basicEntity);
 
 }
