@@ -1,10 +1,16 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
 
@@ -14,33 +20,42 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 	
 	private static final String ID_PARAMETER = "id";
 	private static final String ENTITY_PARAMETER = "entity";
+	private static final String NAME_PARAMETER = "name";
 	private static final String REVISION_KEY_JSON = "_rev";
+	private static final String REVISION_KEY = "rev";
 	private final RestOperations restOperations;
+	
 
 	@Autowired
-	public DocumentRestRepositoryImpl(final RestOperations restOperations) {
+	public DocumentRestRepositoryImpl(final RestOperations restOperations, final RestOperations restOperations2) {
 		this.restOperations = restOperations;
 	}
 	
-	private final  String URL = "http://localhost:5984/{%s}/{%s}";
+	private final String URL = "http://localhost:5984/{%s}/{%s}";
+	
+	final String ATTACHEMENT_URL = String.format(URL + "/{%s}?rev={%s}" , ENTITY_PARAMETER, ID_PARAMETER,  NAME_PARAMETER, REVISION_KEY);
+			
+			
+	
+	final String ENTITY_URL  = String.format(URL, ENTITY_PARAMETER, ID_PARAMETER);
 	
 	
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public final String revisionFor(final BasicEntity basicEntity){
-		final String url = String.format(URL, ENTITY_PARAMETER, ID_PARAMETER);
+		//final String url = String.format(URL, ENTITY_PARAMETER, ID_PARAMETER);
 		final Map<String, Object> params = new HashMap<>();
 		params.put(ID_PARAMETER, basicEntity.id());
 		params.put(ENTITY_PARAMETER, entity(basicEntity));
 		
 		try {
-			revisionFromMap(restOperations.getForObject(url,HashMap.class, params));
+			revisionFromMap(restOperations.getForObject(ENTITY_URL,HashMap.class, params));
 		} catch (final HttpClientErrorException ex){
 			throwExceptionIfNot404(ex);
-			restOperations.put(url, new HashMap<String,Object>()  , params);
+			restOperations.put(ENTITY_URL, new HashMap<String,Object>()  , params);
 		}
-		return revisionFromMap( restOperations.getForObject(url,HashMap.class, params)) ;
+		return revisionFromMap( restOperations.getForObject(ENTITY_URL,HashMap.class, params)) ;
 	}
 
 
@@ -73,6 +88,31 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 		if( ex.getStatusCode() != HttpStatus.NOT_FOUND) {
 			throw ex;
 		}
+	}
+	
+	
+	public final void assign(final BasicEntity entity, final String name, final String path2File) {
+		final Map<String, Object> params = new HashMap<>();
+		params.put(ID_PARAMETER, entity.id());
+		params.put(ENTITY_PARAMETER, entity(entity));
+		params.put(NAME_PARAMETER, name);
+		params.put(REVISION_KEY, revisionFor(entity));
+		
+		
+		final HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.IMAGE_JPEG);
+
+	
+		try {
+			
+			restOperations.put(ATTACHEMENT_URL, new HttpEntity<Object>( FileCopyUtils.copyToByteArray(new File(path2File)),headers), params);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+		
+		
 	}
 
 }

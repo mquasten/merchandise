@@ -11,5 +11,8 @@ public interface DocumentRepository {
 	 * @return the revison for the given entity
 	 */
 	String revisionFor(final BasicEntity basicEntity);
+	
+	
+      void assign(final BasicEntity entity, final String name, final String path2File);
 
 }

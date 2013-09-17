@@ -30,5 +30,13 @@ public class DocumentRepositoryIntegrationTest {
 		}
 
 	}
+	
+	@Test
+	public final void upload() {
+		final Opportunity opportunity = new OpportunityImpl();
+		ReflectionTestUtils.setField(opportunity, "id", 4711L);
+		
+		documentRepository.assign(opportunity, "Kylie-Doll.jpg", "src/test/resources/Kylie-Doll.jpg");
+	}
 
 }

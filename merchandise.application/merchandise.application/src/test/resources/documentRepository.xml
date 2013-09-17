@@ -14,15 +14,19 @@
 	
 
     <bean class="de.mq.merchandise.opportunity.support.DocumentRestRepositoryImpl"	 />
+   
 	
-	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" >
     <property name="messageConverters">
         <list>
             <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
                 <property name="supportedMediaTypes" value="application/json" />
-            </bean>           
+            </bean>          
+            <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
         </list>
     </property>
 </bean>
+
+
+</beans>
 	
-	</beans>
