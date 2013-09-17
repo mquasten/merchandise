@@ -26,6 +26,7 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 	
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public final String revisionFor(final BasicEntity basicEntity){
 		final String url = String.format(URL, ENTITY_PARAMETER, ID_PARAMETER);
@@ -34,15 +35,25 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 		params.put(ENTITY_PARAMETER, entity(basicEntity));
 		
 		try {
-		    restOperations.headForHeaders(url, params);
+			revisionFromMap(restOperations.getForObject(url,HashMap.class, params));
 		} catch (final HttpClientErrorException ex){
 			throwExceptionIfNot404(ex);
 			restOperations.put(url, new HashMap<String,Object>()  , params);
 		}
-		@SuppressWarnings("unchecked")
-		final Map<String,String> results = restOperations.getForObject(url,HashMap.class, params);
-		
-		return results.get(REVISION_KEY_JSON) ;
+		return revisionFromMap( restOperations.getForObject(url,HashMap.class, params)) ;
+	}
+
+
+	private String revisionFromMap(final Map<String, String> results) {
+		revisionExistsGuard(results);
+		return results.get(REVISION_KEY_JSON);
+	}
+
+
+	private void revisionExistsGuard(final Map<String, String> results) {
+		if( ! results.containsKey(REVISION_KEY_JSON)){
+			throw new IllegalArgumentException(REVISION_KEY_JSON + " not found in result");
+		}
 	}
 
 
