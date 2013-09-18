@@ -32,7 +32,6 @@ public class ResourceTemplateImpl implements ResourceOperations{
 	
 	public void uploadFile(final UploadedFile uploadedFile, final String targetFileName){
 		
-		
 		try (final InputStream inputStream = uploadedFile.getInputstream(); final OutputStream out = new FileOutputStream(new File(TARGET_FOLDER , targetFileName))) {
 		
 			int read = 0;

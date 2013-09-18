@@ -1,5 +1,8 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.io.File;
+import java.io.InputStream;
+
 import de.mq.merchandise.BasicEntity;
 
 public interface DocumentRepository {
@@ -13,6 +16,6 @@ public interface DocumentRepository {
 	String revisionFor(final BasicEntity basicEntity);
 	
 	
-      void assign(final BasicEntity entity, final String name, final String path2File);
+      void assign(final BasicEntity entity, final String name, final InputStream is);
 
 }

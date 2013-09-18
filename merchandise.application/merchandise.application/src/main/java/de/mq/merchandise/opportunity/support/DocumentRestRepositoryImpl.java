@@ -2,8 +2,11 @@ package de.mq.merchandise.opportunity.support;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.collections.map.MultiValueMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -11,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
 
@@ -91,25 +95,17 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 	}
 	
 	
-	public final void assign(final BasicEntity entity, final String name, final String path2File) {
+	public final void assign(final BasicEntity entity, final String name, final InputStream is ) {
 		final Map<String, Object> params = new HashMap<>();
 		params.put(ID_PARAMETER, entity.id());
 		params.put(ENTITY_PARAMETER, entity(entity));
 		params.put(NAME_PARAMETER, name);
 		params.put(REVISION_KEY, revisionFor(entity));
+		final HttpHeaders requestHeaders = new HttpHeaders();
+		requestHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		
+		restOperations.put(ATTACHEMENT_URL, new HttpEntity<>(is, requestHeaders), params);
 		
-		final HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.IMAGE_JPEG);
-
-	
-		try {
-			
-			restOperations.put(ATTACHEMENT_URL, new HttpEntity<Object>( FileCopyUtils.copyToByteArray(new File(path2File)),headers), params);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 			
 		
 		

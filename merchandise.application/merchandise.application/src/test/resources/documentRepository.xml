@@ -22,7 +22,7 @@
             <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
                 <property name="supportedMediaTypes" value="application/json" />
             </bean>          
-            <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+          <bean class="de.mq.merchandise.opportunity.support.SimpleFileHttpMessageConverter" />
         </list>
     </property>
 </bean>

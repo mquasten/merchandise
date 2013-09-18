@@ -1,5 +1,9 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -32,11 +36,11 @@ public class DocumentRepositoryIntegrationTest {
 	}
 	
 	@Test
-	public final void upload() {
+	public final void upload() throws FileNotFoundException {
+		
 		final Opportunity opportunity = new OpportunityImpl();
 		ReflectionTestUtils.setField(opportunity, "id", 4711L);
-		
-		documentRepository.assign(opportunity, "Kylie-Doll.jpg", "src/test/resources/Kylie-Doll.jpg");
+		documentRepository.assign(opportunity, "Kylie-Doll",  new FileInputStream("src/test/resources/Kylie-Doll.jpg"));
 	}
 
 }
