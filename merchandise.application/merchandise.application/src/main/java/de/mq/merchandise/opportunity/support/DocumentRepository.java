@@ -1,6 +1,5 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.io.File;
 import java.io.InputStream;
 
 import de.mq.merchandise.BasicEntity;

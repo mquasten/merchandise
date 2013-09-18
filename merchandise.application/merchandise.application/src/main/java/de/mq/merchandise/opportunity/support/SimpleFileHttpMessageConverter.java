@@ -1,16 +1,11 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.activation.FileTypeMap;
-import javax.activation.MimetypesFileTypeMap;
 
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -18,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-import org.springframework.web.client.ResourceAccessException;
 
 public class SimpleFileHttpMessageConverter implements   HttpMessageConverter<InputStream> {
 
