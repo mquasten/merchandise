@@ -1,6 +1,5 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,7 +13,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
-public class SimpleFileHttpMessageConverter implements   HttpMessageConverter<InputStream> {
+public class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessageConverter<MediaTypeInputStream> {
 
 	@Override
 	public boolean canRead(Class<?> clazz, MediaType mediaType) {
@@ -24,43 +23,39 @@ public class SimpleFileHttpMessageConverter implements   HttpMessageConverter<In
 	@Override
 	public boolean canWrite(Class<?> clazz, MediaType mediaType) {
 		System.out.println("????");
-		return clazz.equals(FileInputStream.class);
+		return clazz.equals(MediaTypeInputStreamImpl.class);
 	}
 
 	@Override
 	public List<MediaType> getSupportedMediaTypes() {
-		System.out.println("????");
 		final List<MediaType> results = new ArrayList<>();
-		
 		results.add(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE));
 		return results;
 	}
 
 	@Override
-	public InputStream read(Class<? extends InputStream> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+	public MediaTypeInputStream read(Class<? extends MediaTypeInputStream> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
 		throw new IOException("Read is not supported");
 	}
 
 	@Override
-	public void write(final InputStream inputStream, MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+	public void write(final MediaTypeInputStream mediaTypeInputStream, final MediaType contentType, final HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
 		
-		System.out.println("***************************");
-		
-	  //outputMessage.getHeaders().setContentType(MediaType.IMAGE_JPEG);
-		
-		//outputMessage.getHeaders().setContentType(MediaType.parseMediaType(new MimetypesFileTypeMap(inputStream)));
-		try ( final OutputStream out =outputMessage.getBody()) {
+		outputMessage.getHeaders().setContentType(mediaTypeInputStream.mediaType());
+		int size=0;
+		try (final InputStream inputStream= mediaTypeInputStream.inputStream(); final OutputStream out =outputMessage.getBody()) {
 			
 			int read = 0;
 			byte[] bytes = new byte[1024];
 
 			while ((read = inputStream.read(bytes)) != -1) {
+				size+=read;
 				out.write(bytes, 0, read);
 			}
 
 			out.flush();
+			outputMessage.getHeaders().setContentLength(size);
 			
-System.out.println("***");
 		} 
 		
 	}

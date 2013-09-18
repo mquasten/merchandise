@@ -1,6 +1,5 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,7 +88,7 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 	}
 	
 	
-	public final void assign(final BasicEntity entity, final String name, final InputStream is ) {
+	public final void assign(final BasicEntity entity, final String name, final MediaTypeInputStream mediaTypeInputStream ) {
 		final Map<String, Object> params = new HashMap<>();
 		params.put(ID_PARAMETER, entity.id());
 		params.put(ENTITY_PARAMETER, entity(entity));
@@ -98,7 +97,7 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 		final HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		
-		restOperations.put(ATTACHEMENT_URL, new HttpEntity<>(is, requestHeaders), params);
+		restOperations.put(ATTACHEMENT_URL, new HttpEntity<>(mediaTypeInputStream, requestHeaders), params);
 		
 			
 		

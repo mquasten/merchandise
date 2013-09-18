@@ -40,7 +40,7 @@ public class DocumentRepositoryIntegrationTest {
 		
 		final Opportunity opportunity = new OpportunityImpl();
 		ReflectionTestUtils.setField(opportunity, "id", 4711L);
-		documentRepository.assign(opportunity, "Kylie-Doll",  new FileInputStream("src/test/resources/Kylie-Doll.jpg"));
+		documentRepository.assign(opportunity, "Kylie-Doll.jpg",  new MediaTypeInputStreamImpl(new FileInputStream("src/test/resources/Kylie-Doll.jpg"), "image/jpeg"));
 	}
 
 }
