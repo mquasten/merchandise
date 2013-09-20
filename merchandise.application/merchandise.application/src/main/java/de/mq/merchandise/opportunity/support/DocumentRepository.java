@@ -14,5 +14,8 @@ public interface DocumentRepository {
 	
 	
       void assign(final BasicEntity entity, final String name, final  MediaTypeInputStream mediaTypeInputStream );
+      
+      
+      void delete(final BasicEntity entity, final String name);
 
 }

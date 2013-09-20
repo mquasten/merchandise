@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
 
@@ -77,31 +77,46 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 		if (basicEntity instanceof CommercialSubject) {
 			return "subjects";
 		}
-		throw new IllegalArgumentException("Not supported entity type for documents " + basicEntity.getClass());
+		throw new InvalidDataAccessApiUsageException("Not supported entity type for documents " + basicEntity.getClass());
 	}
 
 
 	private void throwExceptionIfNot404(final HttpClientErrorException ex) {
 		if( ex.getStatusCode() != HttpStatus.NOT_FOUND) {
-			throw ex;
+			throw new DataAccessResourceFailureException(ex.getStatusText(), ex);
 		}
 	}
 	
 	
 	public final void assign(final BasicEntity entity, final String name, final MediaTypeInputStream mediaTypeInputStream ) {
+		try {
+			restOperations.put(ATTACHEMENT_URL, mediaTypeInputStream, attachementParameters(entity, name)); 
+		} catch(final HttpClientErrorException ex){
+			throwExceptionIfNotConflicted(ex);
+			throw new OptimisticLockingFailureException(String.valueOf(entity.id()), ex);
+		}
+		
+	}
+
+
+	private Map<String, Object> attachementParameters(final BasicEntity entity, final String name) {
 		final Map<String, Object> params = new HashMap<>();
 		params.put(ID_PARAMETER, entity.id());
 		params.put(ENTITY_PARAMETER, entity(entity));
 		params.put(NAME_PARAMETER, name);
 		params.put(REVISION_KEY, revisionFor(entity));
-		final HttpHeaders requestHeaders = new HttpHeaders();
-		requestHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		
-		restOperations.put(ATTACHEMENT_URL, new HttpEntity<>(mediaTypeInputStream, requestHeaders), params);
-		
-			
-		
-		
+		return params;
+	}
+
+
+	private void throwExceptionIfNotConflicted(final HttpClientErrorException ex) {
+		if(ex.getStatusCode() != HttpStatus.CONFLICT) {
+			throw new DataAccessResourceFailureException(ex.getStatusText(), ex);
+		}
+	}
+	
+	public final void delete(final BasicEntity entity, final String name) {
+		restOperations.delete(ATTACHEMENT_URL, attachementParameters(entity, name));
 	}
 
 }
