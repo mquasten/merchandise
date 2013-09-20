@@ -13,7 +13,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
-public class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessageConverter<MediaTypeInputStream> {
+class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessageConverter<InputStream> {
 
 	@Override
 	public boolean canRead(Class<?> clazz, MediaType mediaType) {
@@ -22,28 +22,31 @@ public class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   Htt
 
 	@Override
 	public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-		System.out.println("????");
-		return clazz.equals(MediaTypeInputStreamImpl.class);
+		return  InputStream.class.isAssignableFrom(clazz);
+		
 	}
 
 	@Override
 	public List<MediaType> getSupportedMediaTypes() {
 		final List<MediaType> results = new ArrayList<>();
-		results.add(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE));
+		results.add(MediaType.IMAGE_JPEG);
+		results.add(MediaType.IMAGE_GIF);
+		results.add(MediaType.IMAGE_PNG);
+		results.add(MediaType.parseMediaType("application/pdf"));
 		return results;
 	}
 
 	@Override
-	public MediaTypeInputStream read(Class<? extends MediaTypeInputStream> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+	public InputStream read(Class<? extends InputStream> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
 		throw new IOException("Read is not supported");
 	}
 
 	@Override
-	public void write(final MediaTypeInputStream mediaTypeInputStream, final MediaType contentType, final HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+	public void write(final InputStream inputStream, final MediaType contentType, final HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
 		
-		outputMessage.getHeaders().setContentType(mediaTypeInputStream.mediaType());
+		//outputMessage.getHeaders().setContentType(mediaTypeInputStream.mediaType());
 		int size=0;
-		try (final InputStream inputStream= mediaTypeInputStream.inputStream(); final OutputStream out =outputMessage.getBody()) {
+		try ( final OutputStream out =outputMessage.getBody()) {
 			
 			int read = 0;
 			byte[] bytes = new byte[1024];

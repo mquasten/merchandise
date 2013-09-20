@@ -1,7 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -21,6 +21,7 @@ import org.springframework.web.client.RestOperations;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/documentRepository.xml" })
+
 public class DocumentRepositoryIntegrationTest {
 
 	private static final String URL = "http://localhost:5984/opportunities/4711";
@@ -64,16 +65,18 @@ public class DocumentRepositoryIntegrationTest {
 
 	@Test
 	public final void upload() throws FileNotFoundException {
-
+		
+		final InputStream inputStream = getClass().getResourceAsStream("/Kylie-Doll.jpg");
 		final Opportunity opportunity = new OpportunityImpl();
 		ReflectionTestUtils.setField(opportunity, "id", 4711L);
-		documentRepository.assign(opportunity, "Kylie-Doll.jpg", new MediaTypeInputStreamImpl(new FileInputStream("src/test/resources/Kylie-Doll.jpg"), "image/jpeg"));
+		documentRepository.assign(opportunity, "Kylie-Doll.jpg", inputStream, MediaType.IMAGE_JPEG);
+		Assert.assertEquals(MediaType.IMAGE_JPEG, restTemplate.headForHeaders(URL + "/Kylie-Doll.jpg").getContentType());
 	}
 
 	@Test
 	public final void delete() throws FileNotFoundException {
 		upload();
-		Assert.assertEquals(MediaType.IMAGE_JPEG, restTemplate.headForHeaders(URL + "/Kylie-Doll.jpg").getContentType());
+		
 		final Opportunity opportunity = new OpportunityImpl();
 		ReflectionTestUtils.setField(opportunity, "id", 4711L);
 

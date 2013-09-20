@@ -1,5 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
 
@@ -38,21 +42,23 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 	
 	
 	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public final String revisionFor(final BasicEntity basicEntity){
-		//final String url = String.format(URL, ENTITY_PARAMETER, ID_PARAMETER);
+		
 		final Map<String, Object> params = new HashMap<>();
 		params.put(ID_PARAMETER, basicEntity.id());
 		params.put(ENTITY_PARAMETER, entity(basicEntity));
 		
 		try {
-			revisionFromMap(restOperations.getForObject(ENTITY_URL,HashMap.class, params));
+			
+			revisionFromMap(restOperations.getForObject(ENTITY_URL,Map.class,  params));
 		} catch (final HttpClientErrorException ex){
 			throwExceptionIfNot404(ex);
 			restOperations.put(ENTITY_URL, new HashMap<String,Object>()  , params);
 		}
-		return revisionFromMap( restOperations.getForObject(ENTITY_URL,HashMap.class, params)) ;
+		return revisionFromMap( restOperations.getForObject(ENTITY_URL,Map.class, params)) ;
 	}
 
 
@@ -88,14 +94,21 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 	}
 	
 	
-	public final void assign(final BasicEntity entity, final String name, final MediaTypeInputStream mediaTypeInputStream ) {
+	public final void assign(final BasicEntity entity, final String name, final InputStream inputStream, final MediaType mediaType ) {
 		try {
-			restOperations.put(ATTACHEMENT_URL, mediaTypeInputStream, attachementParameters(entity, name)); 
+			restOperations.put(ATTACHEMENT_URL, new HttpEntity<InputStream>(inputStream, headerForMediaType(mediaType)), attachementParameters(entity, name)); 
 		} catch(final HttpClientErrorException ex){
 			throwExceptionIfNotConflicted(ex);
 			throw new OptimisticLockingFailureException(String.valueOf(entity.id()), ex);
 		}
 		
+	}
+
+
+	private HttpHeaders headerForMediaType(final MediaType mediaType) {
+		final HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(mediaType);
+		return httpHeaders;
 	}
 
 

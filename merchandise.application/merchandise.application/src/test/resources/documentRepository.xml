@@ -21,7 +21,8 @@
         <list>
             <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
                 <property name="supportedMediaTypes" value="application/json" />
-            </bean>          
+            </bean>   
+            
           <bean class="de.mq.merchandise.opportunity.support.SimpleMediaTypeInputStreamHttpMessageConverterImpl" />
         </list>
     </property>
