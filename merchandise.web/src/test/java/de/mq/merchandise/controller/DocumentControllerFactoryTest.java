@@ -10,6 +10,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.model.support.WebProxyFactory;
+import de.mq.merchandise.opportunity.support.ResourceOperations;
 
 public class DocumentControllerFactoryTest {
 	

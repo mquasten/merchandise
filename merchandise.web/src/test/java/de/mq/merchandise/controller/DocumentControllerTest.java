@@ -1,6 +1,9 @@
 package de.mq.merchandise.controller;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -8,6 +11,7 @@ import javax.faces.context.FacesContext;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -16,6 +20,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.DocumentsAware;
+import de.mq.merchandise.opportunity.support.ResourceOperations;
 
 public class DocumentControllerTest {
 	
@@ -133,7 +138,7 @@ public class DocumentControllerTest {
 	}
 	
 	@Test
-	public final void showAttachement()  {
+	public final void showAttachement() throws IOException  {
 		final BufferedImage image = Mockito.mock(BufferedImage.class);
 		Mockito.when(image.getWidth()).thenReturn(DocumentControllerImpl.MAX_WIDTH*5/3);
 		Mockito.when(image.getHeight()).thenReturn(DocumentControllerImpl.MAX_HEIGHT);
@@ -164,6 +169,7 @@ public class DocumentControllerTest {
 		Mockito.when(documentModelAO.getDocument()).thenReturn(documentsAware);
 		Mockito.when(documentModelAO.getSelected()).thenReturn(DOCUMENT_NAME);
 		Mockito.when(documentsAware.urlForName(DOCUMENT_NAME)).thenReturn(url);
+		
 		Mockito.when(resourceOperations.readImage(String.format(DocumentControllerImpl.URL_ROOT, url))).thenReturn(bufferedImage);
 		
 	}
@@ -196,15 +202,17 @@ public class DocumentControllerTest {
 	}
 	
 	@Test
-	public final void handleUpload() {
+	public final void handleUpload() throws IOException {
 		final FileUploadEvent fileUploadEvent = Mockito.mock(FileUploadEvent.class);
 		final UploadedFile file = Mockito.mock(UploadedFile.class);
 		Mockito.when(file.getFileName()).thenReturn(DOCUMENT_NAME);
 		
 		Mockito.when(fileUploadEvent.getFile()).thenReturn(file);
 		documentController.handleFileUpload(fileUploadEvent, 19680528L);
-		
-	    Mockito.verify(resourceOperations).uploadFile(file, DOCUMENT_NAME);
+		final ArgumentCaptor<OutputStream> os = ArgumentCaptor.forClass(OutputStream.class);
+		final ArgumentCaptor<InputStream> iscapture = ArgumentCaptor.forClass(InputStream.class);
+	    Mockito.verify(resourceOperations).copy(iscapture.capture(), os.capture());
+	    Assert.assertEquals(file.getInputstream(), iscapture.getValue());
 	}
 
 }

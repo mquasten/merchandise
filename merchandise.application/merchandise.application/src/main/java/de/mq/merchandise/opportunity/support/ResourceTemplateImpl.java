@@ -1,8 +1,7 @@
-package de.mq.merchandise.controller;
+package de.mq.merchandise.opportunity.support;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,7 +9,6 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import org.primefaces.model.UploadedFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -18,37 +16,44 @@ import org.springframework.web.client.ResourceAccessException;
 @Component
 public class ResourceTemplateImpl implements ResourceOperations{
 
-	final static File TARGET_FOLDER = new File("c:\\tmp" );;
+	static final int BUFFER_SIZE = 1024;
+
 	
-	@Override
+	
+	
 	public BufferedImage readImage(final String url) {
 		try {
 			return ImageIO.read(new URL(url));
 		} catch (final IOException ex) {
-			throw new  ResourceAccessException("Unable to access resource: " + url , ex);
+			throw new  ResourceAccessException("Unable to access resource: " , ex);
 		}
+		
 	}
 	
 	
-	public void uploadFile(final UploadedFile uploadedFile, final String targetFileName){
+	public int copy(final InputStream inputStream, final OutputStream os ){
 		
-		try (final InputStream inputStream = uploadedFile.getInputstream(); final OutputStream out = new FileOutputStream(new File(TARGET_FOLDER , targetFileName))) {
-		
+		try  {
+		   
 			int read = 0;
-			byte[] bytes = new byte[1024];
-
+			byte[] bytes = new byte[BUFFER_SIZE];
+            int size=0;
 			while ((read = inputStream.read(bytes)) != -1) {
-				out.write(bytes, 0, read);
+				os.write(bytes, 0, read);
+				size+=read;
 			}
 
-			out.flush();
-			
+			os.flush();
+		    return size;
 
 		} catch (final IOException ex) {
 			throw new  ResourceAccessException("Unable to access resource: ", ex ); 
 		}
 
 	}
+
+
+
 	
 	
 }

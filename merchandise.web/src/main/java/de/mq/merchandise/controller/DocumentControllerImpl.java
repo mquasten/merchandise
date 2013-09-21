@@ -1,12 +1,15 @@
 package de.mq.merchandise.controller;
 
 import java.awt.image.BufferedImage;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.primefaces.event.FileUploadEvent;
 
 import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.DocumentsAware;
+import de.mq.merchandise.opportunity.support.ResourceOperations;
 
 
 
@@ -33,11 +36,14 @@ class DocumentControllerImpl {
 	}
 	
 	
-	void handleFileUpload(final FileUploadEvent event, final Long OpportunityId) {
+	void handleFileUpload(final FileUploadEvent event, final Long OpportunityId) throws IOException {
 
-		resourceOperations.uploadFile(event.getFile(), event.getFile().getFileName());
-	}
 	
+	try(final FileOutputStream outputStream = new FileOutputStream(event.getFile().getFileName()) )  {
+		
+		resourceOperations.copy(event.getFile().getInputstream(), outputStream);
+	}
+	}
 	
 	void addAttachement(final DocumentsAware document,  final String name ) {
 		document.assignDocument(name);
@@ -92,7 +98,7 @@ class DocumentControllerImpl {
 	}
 	
 	
-	String showAttachement(final DocumentModelAO documentModelAO)  {
+	String showAttachement(final DocumentModelAO documentModelAO)   {
 		
 		documentModelAO.setWidth(MAX_WIDTH);
 		documentModelAO.setHeight(MAX_HEIGHT);	
@@ -114,6 +120,9 @@ class DocumentControllerImpl {
 	
 	   return SHOW_DOCUMENT_URL_REDIRECT;
 	}
+
+
+	
 	
 	
 	String cancelUpLoad(final String page){
