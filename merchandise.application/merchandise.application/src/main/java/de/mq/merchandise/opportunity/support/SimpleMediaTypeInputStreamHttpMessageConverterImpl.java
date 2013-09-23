@@ -2,11 +2,9 @@ package de.mq.merchandise.opportunity.support;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -14,10 +12,11 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
-@SuppressWarnings("unused")
+
 class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessageConverter<InputStream> {
 	
 	
+	static final MediaType MEDIA_TYPE_PDF = MediaType.parseMediaType("application/pdf");
 	private final ResourceOperations resourceOperations;
 	
 	SimpleMediaTypeInputStreamHttpMessageConverterImpl(final ResourceOperations resourceOperations) {
@@ -30,9 +29,17 @@ class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessag
 	}
 
 	@Override
-	public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-		return  InputStream.class.isAssignableFrom(clazz);
-		
+	public boolean canWrite(final Class<?> clazz, final MediaType mediaType) {
+		return  InputStream.class.isAssignableFrom(clazz) && supports(mediaType);
+	}
+
+	boolean supports(final MediaType mediaType) {
+		for(MediaType m : getSupportedMediaTypes()){
+			if( mediaType.isCompatibleWith(m) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -41,13 +48,13 @@ class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessag
 		results.add(MediaType.IMAGE_JPEG);
 		results.add(MediaType.IMAGE_GIF);
 		results.add(MediaType.IMAGE_PNG);
-		results.add(MediaType.parseMediaType("application/pdf"));
+		results.add(MEDIA_TYPE_PDF);
 		return results;
 	}
 
 	@Override
 	public InputStream read(Class<? extends InputStream> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
-		throw new IOException("Read is not supported");
+		throw new HttpMessageNotReadableException("Read is not supported");
 	}
 
 	@Override

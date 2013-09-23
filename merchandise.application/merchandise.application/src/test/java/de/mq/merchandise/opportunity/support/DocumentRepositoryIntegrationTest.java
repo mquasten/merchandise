@@ -8,6 +8,7 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import org.springframework.web.client.RestOperations;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/documentRepository.xml" })
-
+@Ignore
 public class DocumentRepositoryIntegrationTest {
 
 	private static final String URL = "http://localhost:5984/opportunities/4711";
