@@ -1,22 +1,16 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 
 import junit.framework.Assert;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.ResourceAccessException;
 
 public class ResourceTemplateTest {
