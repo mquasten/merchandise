@@ -2,9 +2,11 @@ package de.mq.merchandise.opportunity.support;
 
 import java.util.Map;
 
+import de.mq.merchandise.BasicEntity;
 
 
-public interface DocumentsAware {
+
+public interface DocumentsAware extends BasicEntity {
 	
 	
 
