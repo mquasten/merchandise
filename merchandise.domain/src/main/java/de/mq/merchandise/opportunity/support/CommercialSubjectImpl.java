@@ -53,7 +53,7 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 	@ElementCollection(fetch=FetchType.LAZY)
 	@CollectionTable(name="commercial_subject_documents",joinColumns=@JoinColumn(name="commercial_subject_id"))
     @MapKeyColumn(name="document_name", length=250)
-	@Column(name="stored_document" , length=100 )
+	@Column(name="stored_document" , length=250 )
   //  @Lob()
 	private Map<String,String> storedDocuments=new HashMap<>();
 	

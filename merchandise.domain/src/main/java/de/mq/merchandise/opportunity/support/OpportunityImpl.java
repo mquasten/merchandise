@@ -81,7 +81,7 @@ public class OpportunityImpl implements Opportunity {
 	@ElementCollection(fetch=FetchType.LAZY)
 	@CollectionTable(name="opportunity_documents", joinColumns=@JoinColumn(name="opportunity_id" ) )
 	@MapKeyColumn(name="document_name", length=250)
-	@Column(name="stored_document" ,length=100 )
+	@Column(name="stored_document" ,length=250 )
 	//@Lob()
 	private Map<String,String> storedDocuments=new HashMap<>();
 	
