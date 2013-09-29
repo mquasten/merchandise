@@ -52,6 +52,7 @@ class DocumentControllerImpl {
 	
 	String url(final  DocumentsAware documentAware, final String name) {
 		final String url = documentAware.urlForName(name);
+		
 		if( url == null){
 			return null ;
 		}
@@ -91,6 +92,8 @@ class DocumentControllerImpl {
 		final String name = documentModelAO.getLink().trim().replaceFirst("(http|HTTP)([:]//){0,1}([wW]{3}[.]){0,1}",  "");
 		
 		
+		documentService.assignLink(documentModelAO.getDocument(), name);
+		
 		documentModelAO.getDocument().assignWebLink(name);
 		
 		documentModelAO.setLink(null);
@@ -116,6 +119,9 @@ class DocumentControllerImpl {
 			final double scale = ((double)MAX_WIDTH) / image.getWidth();
 			documentModelAO.setWidth((int) (image.getWidth()*scale));
 			documentModelAO.setHeight((int) (image.getHeight()*scale));
+		} else {
+			documentModelAO.setWidth(image.getWidth());
+			documentModelAO.setHeight(image.getHeight());
 		}
 			
 	

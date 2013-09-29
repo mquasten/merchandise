@@ -52,10 +52,10 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 	
 	@ElementCollection(fetch=FetchType.LAZY)
 	@CollectionTable(name="commercial_subject_documents",joinColumns=@JoinColumn(name="commercial_subject_id"))
-    @MapKeyColumn(name="document_name", length=50)
-	@Column(name="stored_document" )
+    @MapKeyColumn(name="document_name", length=250)
+	@Column(name="stored_document" , length=100 )
   //  @Lob()
-	private Map<String,byte[]> storedDocuments=new HashMap<>();
+	private Map<String,String> storedDocuments=new HashMap<>();
 	
 	protected CommercialSubjectImpl() {
 		
@@ -87,7 +87,7 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 	public  void assignWebLink(final String name) {
 		EntityUtil.mandatoryGuard(name, "name");
 		final String key = name.trim().replaceFirst("(http|HTTP).*[.]", "");
-		storedDocuments.put(key, String.format(WWW_URL, key).getBytes());
+		storedDocuments.put(key, String.format(WWW_URL, key));
 	}
 	
 	
@@ -126,7 +126,7 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 	}
 	
 	@Override
-	public final Map<String, byte[]> documents() {
+	public final Map<String, String> documents() {
 		return Collections.unmodifiableMap(storedDocuments);
 	}
 
@@ -143,7 +143,7 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 	@Override
 	public void assignDocument(final String name) {
 		EntityUtil.mandatoryGuard(name, "name");
-		storedDocuments.put(name, String.format(URL, id(), name ).getBytes() );
+		storedDocuments.put(name, String.format(URL, id(), name ) );
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 		if( !storedDocuments.containsKey(name)){
 			return null;
 		}
-		return new String(storedDocuments.get(name));
+		return storedDocuments.get(name);
 	}
 	
 

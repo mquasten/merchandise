@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessag
 	static final MediaType MEDIA_TYPE_PDF = MediaType.parseMediaType("application/pdf");
 	private final ResourceOperations resourceOperations;
 	
+	@Autowired
 	SimpleMediaTypeInputStreamHttpMessageConverterImpl(final ResourceOperations resourceOperations) {
 		this.resourceOperations=resourceOperations;
 	}

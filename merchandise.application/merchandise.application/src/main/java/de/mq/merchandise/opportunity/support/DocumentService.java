@@ -13,4 +13,7 @@ public interface DocumentService {
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	void delete(DocumentsAware documentAware, String name);
 
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	void assignLink(DocumentsAware documentAware, String name);
+
 }

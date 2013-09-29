@@ -65,9 +65,9 @@
                 <property name="supportedMediaTypes" value="application/json" />
             </bean>       
             
-            <bean class="de.mq.merchandise.opportunity.support.SimpleMediaTypeInputStreamHttpMessageConverterImpl">
-          		<constructor-arg ref="resourceTemplate"/>
-          </bean>    
+            <bean class="de.mq.merchandise.opportunity.support.SimpleMediaTypeInputStreamHttpMessageConverterImpl" />
+          		
+         
         </list>
     </property>
     

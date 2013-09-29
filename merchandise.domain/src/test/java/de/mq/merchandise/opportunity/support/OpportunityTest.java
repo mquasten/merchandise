@@ -288,8 +288,8 @@ public class OpportunityTest {
 	public final void urlForName() {
 		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
 		ReflectionTestUtils.setField(opportunity, "id", ID);
-		Map<String,byte[]> docs = new HashMap<>();
-		docs.put(IMAGE, String.format(OpportunityImpl.URL, ID, IMAGE).getBytes());
+		Map<String,String> docs = new HashMap<>();
+		docs.put(IMAGE, String.format(OpportunityImpl.URL, ID, IMAGE));
 		ReflectionTestUtils.setField(opportunity , "storedDocuments", docs);
 		
 		Assert.assertEquals(String.format(OpportunityImpl.URL, ID, IMAGE), opportunity.urlForName(IMAGE));

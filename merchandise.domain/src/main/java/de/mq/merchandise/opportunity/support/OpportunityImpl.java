@@ -80,10 +80,10 @@ public class OpportunityImpl implements Opportunity {
 	
 	@ElementCollection(fetch=FetchType.LAZY)
 	@CollectionTable(name="opportunity_documents", joinColumns=@JoinColumn(name="opportunity_id" ) )
-	@MapKeyColumn(name="document_name", length=50)
-	@Column(name="stored_document"  )
+	@MapKeyColumn(name="document_name", length=250)
+	@Column(name="stored_document" ,length=100 )
 	//@Lob()
-	private Map<String,byte[]> storedDocuments=new HashMap<>();
+	private Map<String,String> storedDocuments=new HashMap<>();
 	
 	protected OpportunityImpl() {
 		
@@ -148,7 +148,7 @@ public class OpportunityImpl implements Opportunity {
 	}
 
 	@Override
-	public Map<String, byte[]> documents() {
+	public Map<String, String> documents() {
 		return Collections.unmodifiableMap(storedDocuments);
 	}
 
@@ -156,7 +156,7 @@ public class OpportunityImpl implements Opportunity {
 	public void assignWebLink(final String name) {
 		EntityUtil.mandatoryGuard(name, "name");
 		final String key = name.trim().replaceFirst("(http|HTTP).*[.]", "");
-		storedDocuments.put(key, String.format(WWW_URL, key).getBytes());
+		storedDocuments.put(key, String.format(WWW_URL, key));
 		
 	}
 
@@ -278,7 +278,7 @@ public class OpportunityImpl implements Opportunity {
 	@Override
 	public void assignDocument(final String name) {
 		EntityUtil.mandatoryGuard(name, "name");
-		storedDocuments.put(name, String.format(URL, id(), name ).getBytes() );
+		storedDocuments.put(name, String.format(URL, id(), name ));
 		
 	}
 
@@ -287,7 +287,7 @@ public class OpportunityImpl implements Opportunity {
 		if( ! storedDocuments.containsKey(name)){
 			return null;
 		}
-		return new String(storedDocuments.get(name));
+		return storedDocuments.get(name);
 	}
 	
 	

@@ -10,7 +10,7 @@ public interface DocumentsAware extends BasicEntity {
 	
 	
 
-	Map<String, byte[]> documents();
+	Map<String, String> documents();
 
 	void assignWebLink(final String name);
 	

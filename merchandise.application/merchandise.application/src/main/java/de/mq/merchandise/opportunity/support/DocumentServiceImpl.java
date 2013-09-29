@@ -37,6 +37,14 @@ public class DocumentServiceImpl implements DocumentService {
 		
 		documentEntityRepository.save(document);
 	}
+	
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public final  void assignLink(DocumentsAware documentAware,  final String name) {
+		final DocumentsAware document = documentEntityRepository.forId(documentAware.id(), documentAware.getClass());
+		document.assignWebLink(name);
+		documentEntityRepository.save(document);
+	}
 
 
 	@Override

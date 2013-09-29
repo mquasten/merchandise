@@ -21,8 +21,8 @@ public class Document2SimpleMapDataModelTest {
 	@Test
 	public final void convert() {
 		final DocumentsAware documentsAware = Mockito.mock(DocumentsAware.class);
-		final Map<String,byte[]> documents = new HashMap<>();
-		documents.put(IMAGE_KEY, " ".getBytes());
+		final Map<String,String> documents = new HashMap<>();
+		documents.put(IMAGE_KEY, " ");
 		Mockito.when(documentsAware.documents()).thenReturn(documents);
 		
 		@SuppressWarnings("unchecked")

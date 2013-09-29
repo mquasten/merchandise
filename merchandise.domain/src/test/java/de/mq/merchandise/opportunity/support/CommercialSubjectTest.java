@@ -67,7 +67,7 @@ public class CommercialSubjectTest {
 		commercialSubject.assignWebLink(WEB_LINK);
 		
 		@SuppressWarnings("unchecked")
-		Map<String, byte[]> results = (Map<String, byte[]>) ReflectionTestUtils.getField(commercialSubject, "storedDocuments");
+		Map<String, String> results = (Map<String,String>) ReflectionTestUtils.getField(commercialSubject, "storedDocuments");
 		
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals(WEB_LINK,  results.keySet().iterator().next());
@@ -131,9 +131,10 @@ public class CommercialSubjectTest {
 	public final void urlForName(){
 		final CommercialSubject commercialSubject = EntityUtil.create(CommercialSubjectImpl.class);
 		ReflectionTestUtils.setField(commercialSubject, "id" , ID);
-		Map<String,byte[]> docs = new HashMap<>();
-		docs.put(IMAGE, String.format(CommercialSubjectImpl.URL, ID, IMAGE ).getBytes());
+		Map<String,String> docs = new HashMap<>();
+		docs.put(IMAGE, String.format(CommercialSubjectImpl.URL, ID, IMAGE ));
 		ReflectionTestUtils.setField(commercialSubject, "storedDocuments", docs);
+		
 		Assert.assertEquals(String.format(CommercialSubjectImpl.URL, ID, IMAGE ), commercialSubject.urlForName(IMAGE));
 	}
 	

@@ -119,9 +119,10 @@ public class DocumentControllerTest {
 		Mockito.when(documentModelAO.getDocument()).thenReturn(documentsAware);
 		documentController.addLink(documentModelAO);
 		
-		Mockito.verify(documentModelAO).getDocument();
+		Mockito.verify(documentModelAO, Mockito.atLeast(1)).getDocument();
 		Mockito.verify(documentsAware).assignWebLink("kylie.de");
 		Mockito.verify(documentModelAO).setLink(null);
+		Mockito.verify(documentService).assignLink(documentModelAO.getDocument(), WEB_LINK);
 		
 		
 	}
