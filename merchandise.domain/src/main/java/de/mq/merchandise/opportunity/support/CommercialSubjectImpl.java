@@ -13,7 +13,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.NamedQuery;
@@ -55,7 +54,7 @@ public class CommercialSubjectImpl implements  CommercialSubject {
 	@CollectionTable(name="commercial_subject_documents",joinColumns=@JoinColumn(name="commercial_subject_id"))
     @MapKeyColumn(name="document_name", length=50)
 	@Column(name="stored_document" )
-    @Lob()
+  //  @Lob()
 	private Map<String,byte[]> storedDocuments=new HashMap<>();
 	
 	protected CommercialSubjectImpl() {

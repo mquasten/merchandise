@@ -1,6 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -11,8 +12,12 @@ import org.springframework.stereotype.Repository;
 class DocumentEntityRepositoryImpl implements DocumentEntityRepository {
 	
 	
+	@PersistenceContext
 	private final EntityManager entityManger; 
 	
+	DocumentEntityRepositoryImpl(){
+         this.entityManger=null;
+	}
 	
 	DocumentEntityRepositoryImpl(final EntityManager entityManger) {
 		this.entityManger=entityManger;

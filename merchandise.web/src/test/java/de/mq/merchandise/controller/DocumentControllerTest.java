@@ -15,13 +15,16 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
+import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
+import de.mq.merchandise.opportunity.support.DocumentService;
 import de.mq.merchandise.opportunity.support.DocumentsAware;
 import de.mq.merchandise.opportunity.support.ResourceOperations;
 
+@SuppressWarnings("unused")
 public class DocumentControllerTest {
 	
 	private static final String CALL_UPLOAD_FROM = "opportunities.xhtml";
@@ -36,7 +39,10 @@ public class DocumentControllerTest {
 	
 	private final ResourceOperations resourceOperations = Mockito.mock(ResourceOperations.class);
 	
-	private final DocumentControllerImpl documentController = new DocumentControllerImpl(facesContextFactory,resourceOperations);
+	
+	private final DocumentService documentService = Mockito.mock(DocumentService.class);
+	
+	private final DocumentControllerImpl documentController = new DocumentControllerImpl(facesContextFactory,documentService,resourceOperations);
 	private final DocumentsAware documentsAware = Mockito.mock(DocumentsAware.class);
 	private final DocumentModelAO documentModelAO = Mockito.mock(DocumentModelAO.class);
 	
@@ -47,9 +53,14 @@ public class DocumentControllerTest {
 	}
 	
 	@Test
-	public final void addAttachement() {
-		documentController.addAttachement(documentsAware, DOCUMENT_NAME);
+	public final void addAttachement() throws IOException {
+		final InputStream is = Mockito.mock(InputStream.class);
+		final UploadedFile uploadedFile = Mockito.mock(UploadedFile.class);
+		Mockito.when(uploadedFile.getFileName()).thenReturn(DOCUMENT_NAME);
+		Mockito.when(uploadedFile.getInputstream()).thenReturn(is);
+		documentController.addAttachement(documentsAware, uploadedFile);
 		Mockito.verify(documentsAware).assignDocument(DOCUMENT_NAME);
+		Mockito.verify(documentService).upload(documentsAware, uploadedFile.getFileName(), uploadedFile.getInputstream() , MediaType.IMAGE_JPEG_VALUE);
 	}
 	
 	
@@ -94,7 +105,7 @@ public class DocumentControllerTest {
 	public final void removeAttachement() {
 		Mockito.when(documentModelAO.getDocument()).thenReturn(documentsAware);
 		documentController.removeAttachement(documentModelAO, DOCUMENT_NAME);
-		Mockito.verify(documentModelAO).getDocument();
+		Mockito.verify(documentModelAO,Mockito.atLeastOnce()).getDocument();
 		Mockito.verify(documentsAware).removeDocument(DOCUMENT_NAME);
 		Mockito.verify(documentModelAO).setSelected(null);
 		
@@ -201,18 +212,6 @@ public class DocumentControllerTest {
 		
 	}
 	
-	@Test
-	public final void handleUpload() throws IOException {
-		final FileUploadEvent fileUploadEvent = Mockito.mock(FileUploadEvent.class);
-		final UploadedFile file = Mockito.mock(UploadedFile.class);
-		Mockito.when(file.getFileName()).thenReturn(DOCUMENT_NAME);
-		
-		Mockito.when(fileUploadEvent.getFile()).thenReturn(file);
-		documentController.handleFileUpload(fileUploadEvent, 19680528L);
-		final ArgumentCaptor<OutputStream> os = ArgumentCaptor.forClass(OutputStream.class);
-		final ArgumentCaptor<InputStream> iscapture = ArgumentCaptor.forClass(InputStream.class);
-	    Mockito.verify(resourceOperations).copy(iscapture.capture(), os.capture());
-	    Assert.assertEquals(file.getInputstream(), iscapture.getValue());
-	}
+	
 
 }

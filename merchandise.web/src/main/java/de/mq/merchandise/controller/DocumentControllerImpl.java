@@ -1,13 +1,14 @@
 package de.mq.merchandise.controller;
 
 import java.awt.image.BufferedImage;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
-import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
+import de.mq.merchandise.opportunity.support.DocumentService;
 import de.mq.merchandise.opportunity.support.DocumentsAware;
 import de.mq.merchandise.opportunity.support.ResourceOperations;
 
@@ -19,6 +20,7 @@ class DocumentControllerImpl {
 	private final ResourceOperations resourceOperations; 
 	
 	
+	private final DocumentService documentService;
 	
 	
 	static final String UPLOAD_DOCUMENT_URL_REDIRECT = "uploadDocument.xhtml?faces-redirect=true&selectMode=true";
@@ -30,23 +32,21 @@ class DocumentControllerImpl {
 	
 	private final FacesContextFactory facesContextFactory;
 	
-	DocumentControllerImpl(final FacesContextFactory facesContextFactory, final ResourceOperations resourceOperations) {
+	DocumentControllerImpl(final FacesContextFactory facesContextFactory, final DocumentService documentService, final ResourceOperations resourceOperations) {
 		this.facesContextFactory=facesContextFactory;
+		this.documentService=documentService;
 		this.resourceOperations=resourceOperations;
 	}
 	
 	
-	void handleFileUpload(final FileUploadEvent event, final Long OpportunityId) throws IOException {
-
 	
-	try(final FileOutputStream outputStream = new FileOutputStream(event.getFile().getFileName()) )  {
-		
-		resourceOperations.copy(event.getFile().getInputstream(), outputStream);
-	}
-	}
 	
-	void addAttachement(final DocumentsAware document,  final String name ) {
-		document.assignDocument(name);
+	void addAttachement(final DocumentsAware document, final UploadedFile file ) throws IOException  {
+		System.out.println("addAttachement...");
+		try(final InputStream inputStream = file.getInputstream()) {
+			documentService.upload(document, file.getFileName(), inputStream, file.getContentType());
+			document.assignDocument(file.getFileName());
+		} 
 	}
 	
 	
@@ -74,6 +74,7 @@ class DocumentControllerImpl {
 	
 	
 	void removeAttachement(final DocumentModelAO documentModelAO , final String name ) {
+		documentService.delete(documentModelAO.getDocument(), name);
 		documentModelAO.getDocument().removeDocument(name);
 		documentModelAO.setSelected(null);
 	}

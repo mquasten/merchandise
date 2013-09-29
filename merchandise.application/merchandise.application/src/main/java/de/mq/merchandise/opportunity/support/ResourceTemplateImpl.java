@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 
 
-@Component
+@Component("resourceTemplate")
 public class ResourceTemplateImpl implements ResourceOperations{
 
 	static final int BUFFER_SIZE = 1024;

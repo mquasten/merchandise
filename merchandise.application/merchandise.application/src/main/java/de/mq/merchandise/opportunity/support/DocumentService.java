@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 public interface DocumentService {
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-	public abstract void upload(DocumentsAware documentAware, String name, InputStream inputStream);
+	void upload(DocumentsAware documentAware, String name, InputStream inputStream, final String contentType);
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-	public abstract void delete(DocumentsAware documentAware, String name);
+	void delete(DocumentsAware documentAware, String name);
 
 }

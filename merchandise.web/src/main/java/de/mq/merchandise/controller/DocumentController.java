@@ -1,6 +1,7 @@
 package de.mq.merchandise.controller;
 
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 import de.mq.mapping.util.proxy.ActionEvent;
 import de.mq.mapping.util.proxy.MethodInvocation;
@@ -12,7 +13,7 @@ import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 
 public interface DocumentController {
 	
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = FileUploadEvent.class , originIndex=0), @Parameter(clazz = DocumentModelAO.class, el="#arg.document.id()"  , elResultType=Long.class ) }, name="handleFileUpload"), @ActionEvent(params={ @Parameter(clazz = DocumentModelAO.class , el="#arg.document", elResultType=DocumentsAware.class) , @Parameter(clazz = FileUploadEvent.class , originIndex=0, el="#arg.file.fileName", elResultType=String.class)}, name="addAttachement")}, clazz = DocumentControllerImpl.class)
+	@MethodInvocation(actions={ @ActionEvent(params={ @Parameter(clazz = DocumentModelAO.class , el="#arg.document", elResultType=DocumentsAware.class) , @Parameter(clazz = FileUploadEvent.class , originIndex=0, el="#arg.file", elResultType=UploadedFile.class)}, name="addAttachement")}, clazz = DocumentControllerImpl.class)
 	void addAttachement(final  FileUploadEvent fileUploadEvent);
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = DocumentModelAO.class , el="#arg.document" , elResultType=DocumentsAware.class), @Parameter(clazz=DocumentModelAO.class,  el="#arg.selected" , elResultType=String.class ) })}, clazz = DocumentControllerImpl.class)
