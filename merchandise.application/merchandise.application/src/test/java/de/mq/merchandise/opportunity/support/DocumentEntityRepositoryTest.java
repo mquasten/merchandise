@@ -38,5 +38,10 @@ public class DocumentEntityRepositoryTest {
 		documentEntityRepository.save(opportunity);
 		Mockito.verify(entityManager).merge(opportunity);
 	}
+	
+	@Test
+	public final void defaultConstructor() {
+		Assert.assertNotNull(new DocumentEntityRepositoryImpl());
+	}
 
 }

@@ -47,5 +47,9 @@ public class ClassificationRepositoryTest {
 		Assert.assertEquals(productClassifications, classificationRepository.allProductClassifications());
 		
 	}
+	@Test
+	public final void defaultConstructor() {
+		Assert.assertNotNull(new ClassificationRepositoryImpl());
+	}
 
 }
