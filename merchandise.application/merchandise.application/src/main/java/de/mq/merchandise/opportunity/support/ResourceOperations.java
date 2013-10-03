@@ -1,6 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -28,6 +29,16 @@ public interface ResourceOperations {
 	 */
 	 int copy(final InputStream inputStream,  final OutputStream outputStream);
 	
+	
+	 /**
+	  * Open a file for the given path
+	  * @param path the path of the file
+	  * @return the file to the given path
+	  */
+	 File file(final String path);
+
+
+	 OutputStream outputStream(final String path);
 	
 
 }

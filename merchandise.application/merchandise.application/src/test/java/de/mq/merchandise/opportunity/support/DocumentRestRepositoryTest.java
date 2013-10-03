@@ -67,7 +67,7 @@ public class DocumentRestRepositoryTest {
 	public final void revisionFor() {
 
        
-		Assert.assertEquals(revision, documentRepository.revisionFor(basicEntity));
+		Assert.assertEquals(revision, ((DocumentRestRepositoryImpl)documentRepository).revisionFor(basicEntity));
 		Assert.assertEquals(DocumentRestRepositoryImpl.ENTITY_URL, urlCaptor.getValue());
 		Assert.assertEquals(Map.class, responseTypeCaptor.getValue());
 		Assert.assertEquals(2,  parameterCaptor.getValue().size());
@@ -80,7 +80,7 @@ public class DocumentRestRepositoryTest {
 		basicEntity = Mockito.mock(CommercialSubjectImpl.class);
 		Mockito.when(basicEntity.id()).thenReturn(id);
 		
-		Assert.assertEquals(revision, documentRepository.revisionFor(basicEntity));
+		Assert.assertEquals(revision, ((DocumentRestRepositoryImpl)documentRepository).revisionFor(basicEntity));
 		Assert.assertEquals(DocumentRestRepositoryImpl.ENTITY_URL, urlCaptor.getValue());
 		Assert.assertEquals(Map.class, responseTypeCaptor.getValue());
 		Assert.assertEquals(2,  parameterCaptor.getValue().size());
@@ -93,21 +93,21 @@ public class DocumentRestRepositoryTest {
 	public final void revisionForNotDefinedResource() {
 		basicEntity = Mockito.mock(Customer.class);
 		Mockito.when(basicEntity.id()).thenReturn(id);
-		documentRepository.revisionFor(basicEntity);
+		((DocumentRestRepositoryImpl)documentRepository).revisionFor(basicEntity);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test(expected=IllegalArgumentException.class)
 	public final void revisionForBadJsonResult(){
 		Mockito.when(restOperations.getForObject(urlCaptor.capture(), responseTypeCaptor.capture(), parameterCaptor.capture())).thenReturn(new HashMap<String, String>());
-		documentRepository.revisionFor(basicEntity);
+		((DocumentRestRepositoryImpl)documentRepository).revisionFor(basicEntity);
 	}
 	
 	@SuppressWarnings("unchecked")
     @Test(expected=DataAccessResourceFailureException.class)
 	public final void revisionForServerError(){
 		Mockito.when(restOperations.getForObject(urlCaptor.capture(), responseTypeCaptor.capture(), parameterCaptor.capture())).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
-		documentRepository.revisionFor(basicEntity);
+		((DocumentRestRepositoryImpl)documentRepository).revisionFor(basicEntity);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -138,7 +138,7 @@ public class DocumentRestRepositoryTest {
 	  
 		
 		
-		Assert.assertEquals(revision, documentRepository.revisionFor(basicEntity));
+		Assert.assertEquals(revision, ((DocumentRestRepositoryImpl)documentRepository).revisionFor(basicEntity));
 		@SuppressWarnings("rawtypes")
 		ArgumentCaptor<Map> jsonMapCaptor = ArgumentCaptor.forClass(Map.class);
 		Mockito.verify(restOperations).put(urlCaptor.capture(), jsonMapCaptor.capture(), parameterCaptor.capture());

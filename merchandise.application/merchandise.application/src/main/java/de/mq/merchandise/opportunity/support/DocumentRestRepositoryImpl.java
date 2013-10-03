@@ -44,8 +44,8 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 	static final String ENTITY_URL = String.format(URL, ENTITY_PARAMETER, ID_PARAMETER);
 
 	@SuppressWarnings("unchecked")
-	@Override
-	public final String revisionFor(final BasicEntity basicEntity) {
+
+	final String revisionFor(final BasicEntity basicEntity) {
 
 		final Map<String, Object> params = new HashMap<>();
 		params.put(ID_PARAMETER, basicEntity.id());

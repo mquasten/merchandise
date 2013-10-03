@@ -8,15 +8,7 @@ import de.mq.merchandise.BasicEntity;
 
 public interface DocumentRepository {
 
-	/**
-	 * Gets the current revision for the given entity. Couch db needs this for
-	 * every operation as a query parameter. If the resource doesN#t exists , it will be created
-	 * 
-	 * @param basicEntity
-	 *            the entity for which the revisions is needed
-	 * @return the revision for the given entity
-	 */
-	String revisionFor(final BasicEntity basicEntity);
+	
 
 	/**
 	 * Add image to the Resource that is defined by the given entity.

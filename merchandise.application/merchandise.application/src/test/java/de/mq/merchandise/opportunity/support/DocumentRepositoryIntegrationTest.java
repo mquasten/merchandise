@@ -54,10 +54,10 @@ public class DocumentRepositoryIntegrationTest {
 
 		final Opportunity opportunity = new OpportunityImpl();
 		ReflectionTestUtils.setField(opportunity, "id", 4711L);
-		final String rev = documentRepository.revisionFor(opportunity);
+		final String rev = ((DocumentRestRepositoryImpl)documentRepository).revisionFor(opportunity);
 		Assert.assertNotNull(rev);
 		for (int i = 0; i < 10; i++) {
-			Assert.assertEquals(rev, documentRepository.revisionFor(opportunity));
+			Assert.assertEquals(rev, ((DocumentRestRepositoryImpl)documentRepository).revisionFor(opportunity));
 		}
 
 	}
