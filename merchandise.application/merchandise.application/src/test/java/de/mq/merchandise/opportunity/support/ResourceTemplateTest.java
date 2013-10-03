@@ -1,7 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.awt.image.BufferedImage;
-import java.io.FilePermission;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -111,6 +110,10 @@ public class ResourceTemplateTest {
 		Files.readAllBytes(Paths.get(TMP_FILE));
 		Files.delete(Paths.get(TMP_FILE));
 
+	}
+	@Test(expected=ResourceAccessException.class)
+	public final void outputStreamException() {
+		resourceOperations.outputStream("////");
 	}
 
 }
