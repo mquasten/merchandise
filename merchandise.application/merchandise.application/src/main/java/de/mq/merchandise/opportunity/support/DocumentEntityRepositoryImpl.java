@@ -35,7 +35,7 @@ class DocumentEntityRepositoryImpl implements DocumentEntityRepository {
 
 	private void entityExistsGuard(final Long id, final DocumentsAware result) {
 		if ( result == null){
-			throw new InvalidDataAccessApiUsageException("CommercialSubject not found: " + id);
+			throw new InvalidDataAccessApiUsageException("Entity not found: " + id);
 		}
 	}
 	
