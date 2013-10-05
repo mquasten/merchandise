@@ -15,13 +15,13 @@ public class DocumentFileRepositoryTest {
 	
 	private static final long ID = 19680528L;
 
-	private static final String DIR_PATH = String.format(DocumentFileRepositoryImpl.DOCUMENT_FOLDER,DocumentRepository.OPPORTUNITIES_ENTITY, ID);
+	private static final String DIR_PATH = String.format(DocumentFileRepositoryMock.DOCUMENT_FOLDER,DocumentRepository.OPPORTUNITIES_ENTITY, ID);
 
 	private static final String DOCUMENT_NAME = "kylie.jpg";
 
 	private final ResourceOperations resourceOperations = Mockito.mock(ResourceOperations.class);
 	
-	private final DocumentRepository documentRepository = new DocumentFileRepositoryImpl(resourceOperations);
+	private final DocumentRepository documentRepository = new DocumentFileRepositoryMock(resourceOperations);
 	
 	private Opportunity opportunity = Mockito.mock(Opportunity.class);
 	
@@ -32,7 +32,7 @@ public class DocumentFileRepositoryTest {
 	private final File file = Mockito.mock(File.class);
 	
 	private OutputStream outputStream = Mockito.mock(OutputStream.class);
-	final String FILE_PATH = String.format(DocumentFileRepositoryImpl.DOCUMENT_FILE, DocumentRepository.OPPORTUNITIES_ENTITY, ID, DOCUMENT_NAME);
+	final String FILE_PATH = String.format(DocumentFileRepositoryMock.DOCUMENT_FILE, DocumentRepository.OPPORTUNITIES_ENTITY, ID, DOCUMENT_NAME);
 	
 	@Before
 	public final void setup() {

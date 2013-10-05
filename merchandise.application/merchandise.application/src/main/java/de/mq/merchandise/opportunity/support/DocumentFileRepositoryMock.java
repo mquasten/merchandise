@@ -16,7 +16,7 @@ import de.mq.merchandise.BasicEntity;
 
 @Repository
 @Profile("mock")
-public class DocumentFileRepositoryImpl implements DocumentRepository {
+public class DocumentFileRepositoryMock implements DocumentRepository {
 	
 	static final String DOCUMENT_FOLDER = "/tmp/%s/%s";
 	
@@ -26,7 +26,7 @@ public class DocumentFileRepositoryImpl implements DocumentRepository {
 
 	
 	@Autowired
-	public DocumentFileRepositoryImpl(final ResourceOperations resourceOperations) {
+	public DocumentFileRepositoryMock(final ResourceOperations resourceOperations) {
 		this.resourceOperations = resourceOperations;
 	}
 
