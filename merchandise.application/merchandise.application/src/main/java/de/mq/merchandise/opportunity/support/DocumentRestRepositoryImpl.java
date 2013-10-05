@@ -23,8 +23,7 @@ import de.mq.merchandise.BasicEntity;
 @Profile("db")
 public class DocumentRestRepositoryImpl implements DocumentRepository {
 
-	static final String SUBJECTS_ENTITY = "subjects";
-	static final String OPPORTUNITIES_ENTITY = "opportunities";
+	
 	static final String ID_PARAMETER = "id";
 	static final String ENTITY_PARAMETER = "entity";
 	static final String NAME_PARAMETER = "name";
