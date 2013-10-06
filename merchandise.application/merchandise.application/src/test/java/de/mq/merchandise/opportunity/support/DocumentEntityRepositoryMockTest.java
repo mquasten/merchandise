@@ -17,7 +17,7 @@ public class DocumentEntityRepositoryMockTest {
 	
 	
 	private static final long ID = 19680528L;
-	private DocumentEntityRepository documentEntityRepository = new DocumentEntityRepositoryMock();
+	private DocumentEntityRepository documentEntityRepository = new DocumentEntityRepositoryMock(null, null);
 	private final Opportunity opportunity =  EntityUtil.create(OpportunityImpl.class);
 	
 	@Test

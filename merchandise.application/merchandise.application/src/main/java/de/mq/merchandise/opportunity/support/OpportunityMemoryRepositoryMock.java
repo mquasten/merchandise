@@ -18,7 +18,7 @@ import de.mq.merchandise.util.Paging;
 import de.mq.merchandise.util.Parameter;
 import de.mq.merchandise.util.ParameterImpl;
 
-@Repository
+@Repository()
 @Profile("mock")
 public class OpportunityMemoryRepositoryMock extends AbstractPagingMemoryRepository<Opportunity> implements OpportunityRepository {
 
@@ -29,6 +29,7 @@ public class OpportunityMemoryRepositoryMock extends AbstractPagingMemoryReposit
 	
 	@PostConstruct
 	void init() {
+		System.out.println("contruct OpportunityMemoryRepositoryMock" );
 		final Customer customer = customerMemoryReposioryMock.forId(CustomerMemoryReposioryMock.DEFAULT_CUSTOMER_ID);
 		for(final Opportunity opportunity : DEFAULT_OPPORTUNITIES){
 			EntityUtil.setId(opportunity, randomId());

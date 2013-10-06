@@ -20,9 +20,9 @@ import de.mq.merchandise.opportunity.ResourceOperations;
 @Profile("mock")
 public class DocumentFileRepositoryMock implements DocumentRepository {
 	
-	static final String DOCUMENT_FOLDER = "/tmp/%s/%s";
+	 static final String DOCUMENT_FOLDER = "/tmp/%s/%s";
 	
-	static final String DOCUMENT_FILE = DOCUMENT_FOLDER+"/%s";
+	public static final String DOCUMENT_FILE = DOCUMENT_FOLDER+"/%s";
 	
 	private final  ResourceOperations resourceOperations;
 

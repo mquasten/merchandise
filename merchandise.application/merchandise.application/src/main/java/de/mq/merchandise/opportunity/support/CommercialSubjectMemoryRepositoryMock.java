@@ -18,8 +18,8 @@ import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Paging;
 import de.mq.merchandise.util.Parameter;
 import de.mq.merchandise.util.ParameterImpl;
-
-@Repository
+             
+@Repository()
 @Profile("mock")
 public class CommercialSubjectMemoryRepositoryMock extends AbstractPagingMemoryRepository<CommercialSubject> implements CommercialSubjectRepository {
 

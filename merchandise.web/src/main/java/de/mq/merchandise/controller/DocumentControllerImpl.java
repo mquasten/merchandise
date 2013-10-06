@@ -27,7 +27,7 @@ class DocumentControllerImpl {
 	static final String SHOW_DOCUMENT_URL_REDIRECT = "showDocument.xhtml?faces-redirect=true&selectMode=true";
 	static final int MAX_HEIGHT = 800;
 	static final int MAX_WIDTH = 1625;
-	static final String URL_ROOT="http://localhost:5984/%s"; 
+	static final String URL_ROOT="http://localhost:8080/merchandise.web/attachements/%s"; 
 
 	
 	private final FacesContextFactory facesContextFactory;

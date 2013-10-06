@@ -80,6 +80,10 @@ public abstract  class AbstractPagingMemoryRepository<T>  implements BasicReposi
 		return storedValues.get(id);
 	}
 	
+	
+	public final Collection<T> entities() {
+		return storedValues.values();
+	}
 
 	
 	
