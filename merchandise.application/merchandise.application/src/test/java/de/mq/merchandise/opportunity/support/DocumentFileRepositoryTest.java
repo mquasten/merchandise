@@ -11,6 +11,9 @@ import org.mockito.Mockito;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.ResourceAccessException;
 
+import de.mq.merchandise.opportunity.ResourceOperations;
+
+
 public class DocumentFileRepositoryTest {
 	
 	private static final long ID = 19680528L;

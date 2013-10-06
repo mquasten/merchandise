@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.client.ResourceAccessException;
 
 import de.mq.merchandise.BasicEntity;
+import de.mq.merchandise.opportunity.ResourceOperations;
+
 
 @Repository
 @Profile("mock")

@@ -6,7 +6,7 @@ import org.springframework.http.MediaType;
 
 import de.mq.merchandise.BasicEntity;
 
-public interface DocumentRepository {
+interface DocumentRepository {
 
 	
 

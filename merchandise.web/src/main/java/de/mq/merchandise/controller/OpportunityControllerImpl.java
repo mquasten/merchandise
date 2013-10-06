@@ -7,6 +7,7 @@ import de.mq.mapping.util.proxy.Conversation;
 import de.mq.merchandise.customer.Customer;
 
 import de.mq.merchandise.opportunity.ClassificationService;
+import de.mq.merchandise.opportunity.OpportunityService;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
 import de.mq.merchandise.opportunity.support.ActivityClassificationTreeAO;
 import de.mq.merchandise.opportunity.support.CommercialRelation;
@@ -17,7 +18,6 @@ import de.mq.merchandise.opportunity.support.KeyWordModelAO;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
-import de.mq.merchandise.opportunity.support.OpportunityService;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
 import de.mq.merchandise.util.EntityUtil;

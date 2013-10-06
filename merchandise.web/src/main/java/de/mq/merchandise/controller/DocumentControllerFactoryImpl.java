@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Scope;
 
 import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.model.support.WebProxyFactory;
+import de.mq.merchandise.opportunity.ResourceOperations;
 import de.mq.merchandise.opportunity.support.DocumentService;
-import de.mq.merchandise.opportunity.support.ResourceOperations;
 
 @Configuration
 public class DocumentControllerFactoryImpl {

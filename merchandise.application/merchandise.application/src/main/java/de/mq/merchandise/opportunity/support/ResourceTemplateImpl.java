@@ -14,6 +14,8 @@ import javax.imageio.ImageIO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 
+import de.mq.merchandise.opportunity.ResourceOperations;
+
 
 @Component()
 public class ResourceTemplateImpl implements ResourceOperations{

@@ -10,9 +10,9 @@ import org.mockito.Mockito;
 
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.opportunity.OpportunityService;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.opportunity.support.OpportunityRepository;
-import de.mq.merchandise.opportunity.support.OpportunityService;
 import de.mq.merchandise.opportunity.support.OpportunityServiceImpl;
 import de.mq.merchandise.util.Paging;
 

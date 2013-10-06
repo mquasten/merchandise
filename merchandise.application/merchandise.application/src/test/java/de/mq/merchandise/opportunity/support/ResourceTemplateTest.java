@@ -15,6 +15,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.web.client.ResourceAccessException;
 
+import de.mq.merchandise.opportunity.ResourceOperations;
+
 public class ResourceTemplateTest {
 
 	private static final String TMP_FILE = "/tmp/test.txt";

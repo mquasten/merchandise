@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.opportunity.OpportunityService;
 import de.mq.merchandise.util.BasicServiceImpl;
 import de.mq.merchandise.util.Paging;
 

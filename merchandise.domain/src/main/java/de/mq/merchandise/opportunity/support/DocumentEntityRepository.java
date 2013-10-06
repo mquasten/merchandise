@@ -6,7 +6,7 @@ package de.mq.merchandise.opportunity.support;
  * @author mquasten
  *
  */
-public interface DocumentEntityRepository {
+interface DocumentEntityRepository {
 
 	/**
 	 * Get the entity by its id. 

@@ -7,10 +7,10 @@ import java.io.InputStream;
 import org.primefaces.model.UploadedFile;
 
 import de.mq.merchandise.model.support.FacesContextFactory;
+import de.mq.merchandise.opportunity.ResourceOperations;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.DocumentService;
 import de.mq.merchandise.opportunity.support.DocumentsAware;
-import de.mq.merchandise.opportunity.support.ResourceOperations;
 
 
 

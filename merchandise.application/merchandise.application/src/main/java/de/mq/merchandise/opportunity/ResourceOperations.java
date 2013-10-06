@@ -1,4 +1,4 @@
-package de.mq.merchandise.opportunity.support;
+package de.mq.merchandise.opportunity;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
