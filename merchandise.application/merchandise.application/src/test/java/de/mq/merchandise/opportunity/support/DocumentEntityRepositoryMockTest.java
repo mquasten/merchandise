@@ -1,13 +1,9 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
-
+import org.mockito.Mockito;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -17,39 +13,60 @@ public class DocumentEntityRepositoryMockTest {
 	
 	
 	private static final long ID = 19680528L;
-	private DocumentEntityRepository documentEntityRepository = new DocumentEntityRepositoryMock(null, null);
+	
+	
+	private final OpportunityRepository opportunityRepository = Mockito.mock(OpportunityRepository.class);
+	private final CommercialSubjectRepository commercialSubjectRepository = Mockito.mock(CommercialSubjectRepository.class);
+	
+	private DocumentEntityRepository documentEntityRepository = new DocumentEntityRepositoryMock(opportunityRepository, commercialSubjectRepository);
 	private final Opportunity opportunity =  EntityUtil.create(OpportunityImpl.class);
+	private final CommercialSubject subject =  EntityUtil.create(CommercialSubjectImpl.class);
 	
 	@Test
-	public final void forId() {
-		final Map <UUID,DocumentsAware> storedDocuments = new HashMap<>();
-		final UUID uuid = new UUID(ID, OpportunityImpl.class.hashCode());
+	public final void forIdOpportunitiy() {
 		
+		    Mockito.when(opportunityRepository.forId(ID)).thenReturn(opportunity);
 		
-		storedDocuments.put(uuid, opportunity);
-		ReflectionTestUtils.setField(documentEntityRepository, "storedDocuments", storedDocuments);
+			Assert.assertEquals(opportunity, documentEntityRepository.forId(ID, OpportunityImpl.class));
+			Mockito.verify(opportunityRepository).forId(ID);
+	}
+	
+	@Test
+	public final void forIdOSubject() {
 		
+		    Mockito.when(commercialSubjectRepository.forId(ID)).thenReturn(subject);
 		
-		Assert.assertEquals(opportunity, documentEntityRepository.forId(19680528L, OpportunityImpl.class));
+			Assert.assertEquals(subject, documentEntityRepository.forId(ID, CommercialSubjectImpl.class));
+			Mockito.verify(commercialSubjectRepository).forId(ID);
 	}
 	
 	
 	@Test(expected=InvalidDataAccessApiUsageException.class)
-	public final void forIdNotFound() {
-		documentEntityRepository.forId(ID, OpportunityImpl.class);
+	public final void forIdRepositoryNotFound() {
+		documentEntityRepository.forId(ID, Opportunity.class);
 	}
 
 	
 	@Test
-	public final void save() {
+	public final void saveOpportunity() {
 		ReflectionTestUtils.setField(opportunity, "id", ID);
 		documentEntityRepository.save(opportunity);
+		Mockito.verify(opportunityRepository).save(opportunity);
 		
-		@SuppressWarnings("unchecked")
-		final Map<UUID,DocumentsAware> storedDocuments = (Map<UUID, DocumentsAware>) ReflectionTestUtils.getField(documentEntityRepository, "storedDocuments");
-	    Assert.assertEquals(1, storedDocuments.size()) ;
-	    
-	    Assert.assertEquals(new UUID(ID, OpportunityImpl.class.hashCode()), storedDocuments.keySet().iterator().next());
-	    Assert.assertEquals(opportunity, storedDocuments.values().iterator().next());
+		
+		
 	}
+	
+	@Test
+	public final void saveSubject() {
+		ReflectionTestUtils.setField(subject, "id", ID);
+		documentEntityRepository.save(subject);
+		Mockito.verify(commercialSubjectRepository).save(subject);
+	}
+	
+	@Test
+	public final void defaultconstructor() {
+		Assert.assertNotNull(new DocumentEntityRepositoryMock());
+	}
+
 }

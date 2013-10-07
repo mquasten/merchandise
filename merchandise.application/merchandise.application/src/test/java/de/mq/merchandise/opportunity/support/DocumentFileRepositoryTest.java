@@ -8,10 +8,13 @@ import java.io.OutputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.ResourceAccessException;
 
+import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.opportunity.ResourceOperations;
+import de.mq.merchandise.util.EntityUtil;
 
 
 public class DocumentFileRepositoryTest {
@@ -20,6 +23,8 @@ public class DocumentFileRepositoryTest {
 
 	private static final String DIR_PATH = String.format(DocumentFileRepositoryMock.DOCUMENT_FOLDER,DocumentRepository.OPPORTUNITIES_ENTITY, ID);
 
+	private static final String DIR_PATH2 = String.format(DocumentFileRepositoryMock.DOCUMENT_FOLDER,DocumentRepository.SUBJECTS_ENTITY, ID);
+	
 	private static final String DOCUMENT_NAME = "kylie.jpg";
 
 	private final ResourceOperations resourceOperations = Mockito.mock(ResourceOperations.class);
@@ -27,6 +32,8 @@ public class DocumentFileRepositoryTest {
 	private final DocumentRepository documentRepository = new DocumentFileRepositoryMock(resourceOperations);
 	
 	private Opportunity opportunity = Mockito.mock(Opportunity.class);
+	
+	private CommercialSubject subject = Mockito.mock(CommercialSubject.class);
 	
 	private InputStream inputStream = Mockito.mock(InputStream.class);
 	
@@ -40,6 +47,7 @@ public class DocumentFileRepositoryTest {
 	@Before
 	public final void setup() {
 		Mockito.when(opportunity.id()).thenReturn(ID);
+		Mockito.when(subject.id()).thenReturn(ID);
 		
 	}
 	
@@ -52,6 +60,20 @@ public class DocumentFileRepositoryTest {
 		
 		Mockito.verify(dir).mkdirs();
 		Mockito.verify(resourceOperations).copy(inputStream, outputStream);
+	}
+	
+	
+	@Test
+	public final void assignSubject() {
+		Mockito.when(resourceOperations.file(DIR_PATH2)).thenReturn(dir);
+		Mockito.when(resourceOperations.outputStream(FILE_PATH)).thenReturn(outputStream);
+		
+		documentRepository.assign(subject, DOCUMENT_NAME, inputStream, MediaType.IMAGE_JPEG);
+	}
+	
+	@Test(expected=InvalidDataAccessApiUsageException.class)
+	public final void assignWrongEntity()  {
+		documentRepository.assign(EntityUtil.create(CustomerImpl.class), DOCUMENT_NAME, inputStream, MediaType.IMAGE_JPEG);
 	}
 	
 	@Test

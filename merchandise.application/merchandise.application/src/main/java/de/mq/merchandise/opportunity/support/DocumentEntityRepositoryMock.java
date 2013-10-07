@@ -2,69 +2,65 @@ package de.mq.merchandise.opportunity.support;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
-import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
+import de.mq.merchandise.BasicRepository;
+
 @Repository
 @Profile("mock")
 public class DocumentEntityRepositoryMock  implements DocumentEntityRepository{
 	
 	
-	private final Map<UUID,DocumentsAware>  storedDocuments = new HashMap<>(); 
-
-	private final OpportunityMemoryRepositoryMock opportunityRepository;
 	
-	private final CommercialSubjectMemoryRepositoryMock commercialSubjectRepository;
+	
+	
+	private final Map<Class<? extends DocumentsAware>, BasicRepository<? extends DocumentsAware, Long> > repositories = new HashMap<>();
+	
+	DocumentEntityRepositoryMock() {
+		
+	}
+	
+	
 	
 	@Autowired
-	DocumentEntityRepositoryMock(OpportunityMemoryRepositoryMock opportunityRepository, CommercialSubjectMemoryRepositoryMock commercialSubjectRepository) {
+	DocumentEntityRepositoryMock(final OpportunityRepository opportunityRepository, final CommercialSubjectRepository commercialSubjectRepository) {
+		repositories.put(OpportunityImpl.class, opportunityRepository);
+		repositories.put(CommercialSubjectImpl.class, commercialSubjectRepository);
 		
-		this.opportunityRepository = opportunityRepository;
-		this.commercialSubjectRepository = commercialSubjectRepository;
 	}
 
 	
-	
-	@PostConstruct
-	void init() {
-		System.out.println("contruct DocumentEntityRepositoryMock" );
-		for(final Opportunity opportunity :opportunityRepository.entities()) {
-			System.out.println("add opportunity:" + opportunity.id());
-			storedDocuments.put(uuid(opportunity.id(), opportunity.getClass()), opportunity);
-		}
-		for(final CommercialSubject commercialSubject: commercialSubjectRepository.entities()){
-			System.out.println("add supject:" + commercialSubject.id());
-			storedDocuments.put(uuid(commercialSubject.id(), commercialSubject.getClass()), commercialSubject);
-		}
-	}
 	
 
 	@Override
 	public DocumentsAware forId(final Long id, final Class<? extends DocumentsAware> clazz) {
-		return  storedDocuments.get(entityExistsGuard(id, uuid(id, clazz)));
+		entityTypeGuard(clazz);
+		return (DocumentsAware) repositories.get(clazz).forId(id);
 	}
 
-	private UUID uuid(final Long id, final Class<? extends DocumentsAware> clazz) {
-		return new UUID(id, clazz.hashCode());
-	}
 
-	private UUID entityExistsGuard(final Long id, final UUID uuid) {
-		if ( ! storedDocuments.containsKey(uuid) ) {
-			throw new InvalidDataAccessApiUsageException("Entity not found: " + id);
+
+
+	private void entityTypeGuard(final Class<? extends DocumentsAware> clazz) {
+		if( ! repositories.containsKey(clazz)){
+			throw new InvalidDataAccessApiUsageException("Wrong type " + clazz + "not spported"  );
 		}
-		return uuid;
 	}
 
+	
+
+	
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void save(final DocumentsAware entity) {
-		
-		storedDocuments.put(uuid(entity.id(), entity.getClass()), entity);
+		entityTypeGuard(entity.getClass());
+		((BasicRepository<DocumentsAware, Long>) repositories.get(entity.getClass())).save(entity);
 	}
-
+	
+	
 }
