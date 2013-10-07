@@ -1,6 +1,5 @@
 package de.mq.merchandise;
 
-import de.mq.merchandise.opportunity.support.DocumentsAware;
 
 
 public interface BasicRepository<T,V> {
