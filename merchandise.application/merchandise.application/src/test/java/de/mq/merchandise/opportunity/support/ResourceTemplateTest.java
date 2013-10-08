@@ -117,5 +117,15 @@ public class ResourceTemplateTest {
 	public final void outputStreamException() {
 		resourceOperations.outputStream("////");
 	}
+	
+	@Test
+	public final void inputStream() throws IOException {
+		Assert.assertEquals(137, resourceOperations.inputStream(ONE_PIXEL_IMAGE_URL.replace("file:", "")).read());
+	}
+	
+	@Test(expected=ResourceAccessException.class)
+	public final void inputstreamException() {
+		resourceOperations.inputStream("////");
+	}
 
 }

@@ -39,6 +39,8 @@ public interface ResourceOperations {
 
 
 	 OutputStream outputStream(final String path);
+	 
+	 InputStream inputStream(final String path);
 	
 
 }

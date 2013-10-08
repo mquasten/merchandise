@@ -2,6 +2,7 @@ package de.mq.merchandise.opportunity.support;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -68,6 +69,17 @@ public class ResourceTemplateImpl implements ResourceOperations{
 	public OutputStream outputStream(final String path) {
 		try {
 			return new FileOutputStream(path);
+		} catch (final FileNotFoundException ex) {
+			throw new  ResourceAccessException("Unable to access resource: ", ex ); 
+		}
+	}
+
+
+	@Override
+	public InputStream inputStream(final String path) {
+		
+		try {
+			return new FileInputStream(path);
 		} catch (final FileNotFoundException ex) {
 			throw new  ResourceAccessException("Unable to access resource: ", ex ); 
 		}

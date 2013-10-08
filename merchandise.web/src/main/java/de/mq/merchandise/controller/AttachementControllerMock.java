@@ -4,7 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,8 @@ public class AttachementControllerMock {
 	@RequestMapping("/{entity}/{id}/{file}.{ext}")
 	public void  content(@PathVariable String entity,@PathVariable Long id, @PathVariable String file, @PathVariable String ext, HttpServletResponse response) throws FileNotFoundException, IOException {
 		System.out.println("************Controller**************");
-	    try ( final InputStream inputStream = new FileInputStream(resourceOperations.file(String.format(DocumentFileRepositoryMock.DOCUMENT_FILE, entity, id, file+ "." + ext))) ) {
-	    	resourceOperations.copy(inputStream, response.getOutputStream());
+	    try ( final InputStream inputStream = resourceOperations.inputStream(String.format(DocumentFileRepositoryMock.DOCUMENT_FILE, entity, id, file+ "." + ext)); final OutputStream outputStream = response.getOutputStream(); ) {
+			resourceOperations.copy(inputStream, outputStream);
 	    }
 	    
 		
