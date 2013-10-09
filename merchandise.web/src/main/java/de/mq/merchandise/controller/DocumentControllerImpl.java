@@ -17,6 +17,9 @@ import de.mq.merchandise.opportunity.support.DocumentsAware;
 class DocumentControllerImpl {
 	
 	
+	private static final String PDF_EXT = ".pdf";
+
+
 	private final ResourceOperations resourceOperations; 
 	
 	
@@ -108,11 +111,24 @@ class DocumentControllerImpl {
 		documentModelAO.setHeight(MAX_HEIGHT);	
 		documentModelAO.setReturnFromShowAttachement(facesContextFactory.facesContext().getViewRoot().getViewId());
 	
-		final BufferedImage image =resourceOperations.readImage(url(documentModelAO.getDocument(), documentModelAO.getSelected() ));
+		
+		
+		
+		String url = url(documentModelAO.getDocument(), documentModelAO.getSelected() );
+		
+		
+		if( url.toLowerCase().endsWith(PDF_EXT)){
+			return SHOW_DOCUMENT_URL_REDIRECT;
+		}
+		
+		final BufferedImage image =resourceOperations.readImage(url);
+		
+		
+		
 		if ( image == null ){
 			
 			return SHOW_DOCUMENT_URL_REDIRECT;
-		}
+		} 
 			
 		
 		if(image.getWidth()> MAX_WIDTH) {
