@@ -29,7 +29,7 @@ public class HSQLDatabaseSetup implements BeanFactoryPostProcessor, ApplicationL
 		if ( ! isHSQL(ds) ) {
 			return;
 		}
-		process(ds, "docs/lobs.sql");
+		//process(ds, "docs/lobs.sql");
 		process(ds, "docs/products.sql"); 
 		process(ds, "docs/activities.sql"); 
 		

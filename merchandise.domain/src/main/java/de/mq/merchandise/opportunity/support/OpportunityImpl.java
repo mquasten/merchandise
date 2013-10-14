@@ -38,7 +38,7 @@ public class OpportunityImpl implements Opportunity {
 	
 	static final String WWW_URL = "http://www.%s";
 
-	static final String URL = "/opportunities/%s/%s";
+	static final String URL = "/" + Resource.Opportunity.urlPart() + "/%s/%s";
 
 	private static final long serialVersionUID = 1L;
 

@@ -28,7 +28,7 @@ import de.mq.merchandise.util.Equals;
 @NamedQuery(name=CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN, query="select s from CommercialSubject s where s.name like :name and s.customer.id = :customerId")
 public class CommercialSubjectImpl implements  CommercialSubject {
 	
-	static final String URL = "/subjects/%s/%s";
+	static final String URL = "/" + Resource.Subject.urlPart() + "/%s/%s";
 	
 	static final String WWW_URL = "http://www.%s";
 
