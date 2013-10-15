@@ -30,7 +30,6 @@ public class EntityContextRepositoryImpl extends AbstractRepository<EntityContex
 	}
 	
 
-
 	@Override
 	protected Class<? extends EntityContext> entityImplementationClass() {
 		return EntityContextImpl.class;
