@@ -4,16 +4,26 @@ import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
+@Entity(name="EntityContext" )
+@Table(name="entity_context")
+@NamedQueries({
+@NamedQuery(name = EntityContextRepository.ENTITYCONTEXT_FOR_RESOURCE, query = "select e from EntityContext e where resource=:resource")	
+	
+})
 class EntityContextImpl  implements EntityContext{
 
 	private static final long serialVersionUID = 101881563574996229L;

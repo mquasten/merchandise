@@ -37,6 +37,7 @@
 	<class>de.mq.merchandise.opportunity.support.AbstractClassification</class>
 	<class>de.mq.merchandise.opportunity.support.ProductClassificationImpl</class>
 	<class>de.mq.merchandise.opportunity.support.ActivityClassificationImpl</class>
+	<class>de.mq.merchandise.opportunity.support.EntityContextImpl</class>
 	
 		<!--  properties>
 		    <property name="eclipselink.weaving" value="false" />
