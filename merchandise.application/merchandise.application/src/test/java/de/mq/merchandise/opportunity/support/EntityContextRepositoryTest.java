@@ -1,6 +1,5 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
