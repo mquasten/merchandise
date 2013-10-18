@@ -37,7 +37,7 @@ public class EntityContextRepositoryImpl extends AbstractRepository<EntityContex
 
 
 	@Override
-	public Collection<EntityContext> fetch(Resource resource, Paging paging) {
+	public Collection<EntityContext> fetch(final Resource resource, Paging paging) {
 		return  pagingUtil.countAndQuery(entityManager, EntityContext.class, paging, ENTITYCONTEXT_FOR_RESOURCE, new ParameterImpl<Resource>(PARAMETER_RESOURCE, resource ));
 	}
 

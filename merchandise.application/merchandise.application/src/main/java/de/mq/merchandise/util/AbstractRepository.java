@@ -35,7 +35,7 @@ public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 	}
 
 	
-	protected  abstract Class<? extends T> entityImplementationClass();
+	protected abstract Class<? extends T> entityImplementationClass();
 	
 
 	
