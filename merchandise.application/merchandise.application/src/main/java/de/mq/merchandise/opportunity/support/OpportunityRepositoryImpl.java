@@ -40,7 +40,7 @@ public class OpportunityRepositoryImpl extends AbstractRepository<Opportunity, L
 	 * @see de.mq.merchandise.opportunity.support.OpportunityRepository#forNamePattern(de.mq.merchandise.customer.Customer, java.lang.String, de.mq.merchandise.util.Paging)
 	 */
 	@Override
-	public Collection<Opportunity> forNamePattern(final Customer customer, final String namePattern, final Paging paging ) {
+	public final Collection<Opportunity> forNamePattern(final Customer customer, final String namePattern, final Paging paging ) {
 		
 		return pagingUtil.countAndQuery(entityManager, Opportunity.class, paging, OPPORTUNITY_FOR_NAME_PATTERN, new ParameterImpl<String>(PARAMETER_OPPORTUNITY_NAME, namePattern ), new ParameterImpl<Long>(PARAMETER_CUSTOMER_ID, customer.id() ));
 	}

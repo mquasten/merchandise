@@ -16,7 +16,7 @@ public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 	 */
 	
 	@Override
-	public T save(final T commercialSubject) {
+	public final T save(final T commercialSubject) {
 		return entityManager.merge(commercialSubject);
 	}
 
@@ -25,7 +25,7 @@ public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 	 */
 	
 	@Override
-	public void delete(final V id ) {
+	public final  void delete(final V id ) {
 		final T existing = (T) entityManager.find(entityImplementationClass(),  id);
 		if( existing==null){
 			return;
@@ -39,7 +39,7 @@ public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 	
 
 	
-	public T forId(final V id) {
+	public final T forId(final V id) {
 		return entityManager.find(entityImplementationClass(), id);
 		
 	}
