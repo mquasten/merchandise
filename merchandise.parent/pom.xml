@@ -37,7 +37,7 @@
 		<servlet-api.version>3.0.1</servlet-api.version>
 		<primefaces.version>3.4.2</primefaces.version>
 		<maven-jetty-plugin.version>6.1.15</maven-jetty-plugin.version>
-		<tika.version>1.0</tika.version>
+		<aspectj.version>1.6.11</aspectj.version>
 		<mapping.util.version>0.0.1-SNAPSHOT</mapping.util.version>
 		<merchandise.version>0.0.1-SNAPSHOT</merchandise.version>
 		
@@ -133,6 +133,13 @@
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+ 
 		
 		<dependency>
 			<groupId>cglib</groupId>

@@ -5,12 +5,14 @@ import java.util.Collection;
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import de.mq.merchandise.util.AbstractRepository;
 import de.mq.merchandise.util.Paging;
 import de.mq.merchandise.util.PagingUtil;
 import de.mq.merchandise.util.ParameterImpl;
 
+@Repository
 public class EntityContextRepositoryImpl extends AbstractRepository<EntityContext, Long> implements  EntityContextRepository{
 
 	
