@@ -38,7 +38,7 @@ public class DocumentChangedAspectImpl {
 	}
 
 	@AfterReturning(value = "execution(* de.mq.merchandise.util.AbstractRepository.delete(..)) && target(bean) && args(id) ", argNames = "id,bean")
-	public final void entityContextDelete(final Long id, final BasicRepository<DocumentsAware, Long> bean) {
+	public final void entityContextDelete(final Long id, final BasicRepository<?, ?> bean) {
 
 		final Method method = ReflectionUtils.findMethod(bean.getClass(), "entityImplementationClass");
 		methodExistsGuard(bean, method);
@@ -52,9 +52,9 @@ public class DocumentChangedAspectImpl {
 
 	}
 
-	private void methodExistsGuard(final BasicRepository<DocumentsAware, Long> bean, final Method method) {
+	private void methodExistsGuard(final BasicRepository<?, ?> bean, final Method method) {
 		if (method == null) {
-			throw new IllegalArgumentException("Method  entityImplementationClass() not fond on repository implementation: " + bean.getClass());
+			throw new IllegalArgumentException("Method entityImplementationClass() not fond on repository implementation: " + bean.getClass());
 		}
 	}
 
