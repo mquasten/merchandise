@@ -5,6 +5,6 @@ import java.util.Map;
 
 public interface DocumentIndexRepository {
 
-	public   Map<Long,String> revisionsforIds(final Collection<EntityContext> ids);
+	Map<Long,String> revisionsforIds(final Collection<EntityContext> ids);
 
 }

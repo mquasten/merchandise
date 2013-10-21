@@ -43,9 +43,7 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 				resource=entityContext.resource();
 			}
 			
-			if( resource!=entityContext.resource()){
-				throw new IllegalArgumentException("EntityContexts should have the same resource");
-			}
+			sameResourceGuard(resource, entityContext);
 			keys.add(String.valueOf(entityContext.reourceId()));
 		}
 		
@@ -55,6 +53,7 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 		idMap.put(KEY_ATTRIBUTE_NAME, keys);
 		
 		for(final Map<String, ? > row : (List<Map<String,?>>) ((Map<String, ?>) restOperations.postForObject(URL, idMap, Map.class, resource.urlPart())).get(ROWS_ATTRIBUTE_NAME) ){
+		
 			if(! row.containsKey(VALUE_ATTRIBUTE_NAME)){
 				continue;
 			}
@@ -64,6 +63,12 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 		}
 		return results;
 		
+	}
+
+	private void sameResourceGuard(final Resource resource, final EntityContext entityContext) {
+		if( resource!=entityContext.resource()){
+			throw new IllegalArgumentException("EntityContexts should have the same resource");
+		}
 	}
 
 }
