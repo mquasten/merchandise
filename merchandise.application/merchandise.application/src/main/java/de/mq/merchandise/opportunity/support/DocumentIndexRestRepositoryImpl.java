@@ -1,5 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +25,8 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 	}
 	
 	static final String URL = "http://localhost:5984/{entity}/_all_docs";
+	
+	static final String URL_UPDATE = "http://localhost:5984/{entity}/_bulk_docs";
 	
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.opportunity.support.DocumentIndexRepository#revisionsforIds(java.util.Collection)
@@ -70,5 +73,19 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 			throw new IllegalArgumentException("EntityContexts should have the same resource");
 		}
 	}
+	
+	public final void updateDocuments(final Collection<Object> aos)  {
+		final Map<String,Collection<Object>>  root = new HashMap<>();
+		root.put("docs", aos);
+		
+		
+		
+		
+			System.out.println(restOperations.postForObject(URL_UPDATE, root ,List.class, Resource.Opportunity.urlPart()));
+		
+	}
+	
+	
+	
 
 }
