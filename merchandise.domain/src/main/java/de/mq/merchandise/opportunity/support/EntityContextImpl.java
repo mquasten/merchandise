@@ -1,6 +1,8 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -14,6 +16,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
@@ -55,6 +60,8 @@ class EntityContextImpl  implements EntityContext{
 	private Date created;
 	
 	
+	@Transient
+	private Map<Class<?>, Object> references = new HashMap<>();
 	
 	EntityContextImpl(final Long resourceId, final Resource resource, boolean delete) {
 		this.id=null;
@@ -135,6 +142,34 @@ class EntityContextImpl  implements EntityContext{
 	@Override
 	public final int hashCode() {
 		return EntityUtil.equalsBuilder().withSource(this).buildHashCode();
+	}
+	
+	@Override
+	public final <T> void assign(final Class<T> clazz, final T reference){
+		instanceOfGuard(clazz, reference);
+		
+		references.put(clazz, reference);
+	}
+
+	private <T> void instanceOfGuard(final Class<T> clazz, final T reference) {
+		if (! clazz.isInstance(reference) ) {
+			throw new IllegalArgumentException("Assigned Object isn't an instance of class " + clazz );
+		}
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public final  <T>  T reference(final Class<T> clazz) {
+		
+		if(!references.containsKey(clazz)){
+			throw new IllegalStateException("Object isn't assigned to key " + clazz);
+		}
+		return (T) references.get(clazz);
+	}
+	
+	@Override
+	public final boolean containsReference(final Class<?> clazz) {
+		return ( references.get(clazz) != null); 
 	}
 
 }

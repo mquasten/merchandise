@@ -37,4 +37,25 @@ public interface EntityContext extends BasicEntity{
 	 */
 	Date created();
 
+	/**
+	 * An EntityContext can have 0 ..n references, EntityClasses, Models
+	 * @param clazz the Class or The Interface is the key
+	 * @param reference the reference stored assigned to the key
+	 */
+	<T> void assign(Class<T> clazz, T reference);
+
+	/**
+	 * Get the reference assigned to the key, or throw an IllegalArgumentException, if the reference isn't assigned
+	 * @param clazz the interface/class used as key
+	 * @return the stored reference
+	 */
+	<T> T reference(Class<T> clazz);
+
+	/**
+	 * Checks if a reference is stored under the given key class
+	 * @param clazz the interface/class used as key, for which should be checked if the reference is assigned
+	 * @return true if the reference is aware else false
+	 */
+	boolean containsReference(Class<?> clazz);
+
 }

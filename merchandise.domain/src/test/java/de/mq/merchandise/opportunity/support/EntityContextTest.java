@@ -1,10 +1,13 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.util.Date;
+import java.util.Map;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.util.EntityUtil;
@@ -56,6 +59,62 @@ public class EntityContextTest {
 	public final void hashCodeCheck() {
 		final EntityContext entityContext = new EntityContextImpl(ID, Resource.Subject, true);
 		Assert.assertEquals(entityContext.resource().hashCode() + entityContext.reourceId().hashCode()+ Boolean.TRUE.hashCode() + entityContext.created().hashCode(), entityContext.hashCode());
+	}
+	
+	@Test
+	public final void assign() {
+		final EntityContext entityContext = new EntityContextImpl(ID, Resource.Subject, true);
+		final Opportunity opportunity = Mockito.mock(Opportunity.class);
+		entityContext.assign(Opportunity.class, opportunity);
+		
+		
+		final Map<Class<? extends Object>, Object> results =  getReferenceMap(entityContext);
+		
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(Opportunity.class, results.keySet().iterator().next());
+		Assert.assertEquals(opportunity, results.values().iterator().next());
+		
+		
+	}
+
+
+	
+	@SuppressWarnings("unchecked")
+	private Map<Class<? extends Object>, Object> getReferenceMap(final EntityContext entityContext) {
+		return (Map<Class<? extends Object>, Object>) ReflectionTestUtils.getField(entityContext, "references");
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void assignWrongType() {
+		ReflectionTestUtils.invokeMethod(EntityUtil.create(EntityContextImpl.class), "assign", Opportunity.class , EntityUtil.create(CommercialSubjectImpl.class) );
+	}
+	
+	@Test
+	public final void reference() {
+		final EntityContext entityContext = new EntityContextImpl(ID, Resource.Subject, true);
+		final Opportunity opportunity = Mockito.mock(Opportunity.class);
+		final Map<Class<? extends Object>,Object> results =  getReferenceMap(entityContext);
+		results.put(Opportunity.class, opportunity);
+		
+		Assert.assertEquals(opportunity, entityContext.reference(Opportunity.class));
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public final void referenceNotFound() {
+		final EntityContext entityContext = new EntityContextImpl(ID, Resource.Subject);
+		entityContext.reference(Opportunity.class);
+	}
+	
+	@Test
+	public final void containsReference() {
+		final EntityContext entityContext = new EntityContextImpl(ID, Resource.Subject);
+		Assert.assertFalse(entityContext.containsReference(Opportunity.class));
+		
+		final Map<Class<? extends Object>,Object> results =  getReferenceMap(entityContext);
+		final Opportunity opportunity = Mockito.mock(Opportunity.class);
+		results.put(Opportunity.class, opportunity);
+		
+		Assert.assertTrue(entityContext.containsReference(Opportunity.class));
 	}
 
 }
