@@ -72,12 +72,18 @@ public class DocumentIndexRepositoryIntegrationTest {
 		
 		final OpportunityIndexAO indexAO = proxyFactory.createProxy(OpportunityIndexAO.class, new ModelRepositoryBuilderImpl().withDomain(opportunity).withBeanResolver(beanResolver).build());
 		
-		final Collection<Object> aos = new ArrayList<>();
-		aos.add(indexAO);
+		Collection<EntityContext> entityContexts = new ArrayList<>();
+	
+		final EntityContext entityContext = new EntityContextImpl(4711L, Resource.Opportunity);
 
+		entityContext.assign(OpportunityIndexAO.class, indexAO);
 		
+		entityContexts.add(entityContext);
+		entityContexts.add(entityContext);
 		
-		documentIndexRepository.updateDocuments(aos);
+		final Collection<Long> processed = documentIndexRepository.updateDocuments(entityContexts);
+		Assert.assertEquals(1, processed.size());
+		Assert.assertEquals(4711L, (long) processed.iterator().next());
 		
 	}
 	

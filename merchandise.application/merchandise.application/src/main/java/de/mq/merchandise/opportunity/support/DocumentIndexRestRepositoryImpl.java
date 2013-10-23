@@ -74,15 +74,44 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 		}
 	}
 	
-	public final void updateDocuments(final Collection<Object> aos)  {
+	
+	@Override
+	public final Collection<Long> updateDocuments(final Collection<EntityContext> entityContexts)  {
+		final  Map<Long,String> revisions = revisionsforIds(entityContexts);
+		final Map<Long, Object> aoMap = new HashMap<>();
+		Resource resource=null;
+		for(final EntityContext entityContext: entityContexts){
+			if( resource == null){
+				resource=entityContext.resource();
+			}
+			
+			sameResourceGuard(resource, entityContext);
+			final OpportunityIndexAO reference = entityContext.reference(OpportunityIndexAO.class);
+			if( revisions.containsKey(entityContext.reourceId())){
+				reference.setRevision(revisions.get(entityContext.reourceId()));
+			}
+			if( entityContext.isForDeleteRow()){
+				reference.setDeleted(true);
+			}
+			aoMap.put(entityContext.reourceId(), reference);
+		}
+		
 		final Map<String,Collection<Object>>  root = new HashMap<>();
-		root.put("docs", aos);
+		root.put("docs", aoMap.values());
 		
 		
+		final Collection<Long> processed = new HashSet<>();
+		@SuppressWarnings("unchecked")
+	    final List<Map<String,?>> results = restOperations.postForObject(URL_UPDATE, root ,List.class, Resource.Opportunity.urlPart());
+		for(final Map<String,?> result : results){
+			System.out.println(result);
+			if( ! result.containsKey("ok")){
+				continue;
+			}
+			processed.add(Long.valueOf((String) result.get(ID_ATTRIBUTE_NAME)));
+		}
 		
-		
-			System.out.println(restOperations.postForObject(URL_UPDATE, root ,List.class, Resource.Opportunity.urlPart()));
-		
+		return processed;
 	}
 	
 	
