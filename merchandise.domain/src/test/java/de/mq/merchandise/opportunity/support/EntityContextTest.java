@@ -7,7 +7,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.util.EntityUtil;

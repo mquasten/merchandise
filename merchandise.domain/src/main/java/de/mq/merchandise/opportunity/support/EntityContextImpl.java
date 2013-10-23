@@ -18,8 +18,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
