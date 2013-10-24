@@ -25,6 +25,7 @@ import de.mq.mapping.util.proxy.support.BeanConventionCGLIBProxyFactory;
 import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
 import de.mq.mapping.util.proxy.support.SimpleReflectionBeanResolverImpl;
 import de.mq.merchandise.customer.support.CustomerImpl;
+import de.mq.merchandise.opportunity.support.EntityContext.State;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 import de.mq.merchandise.util.EntityUtil;
 
@@ -63,27 +64,40 @@ public class DocumentIndexRepositoryIntegrationTest {
 	}
 	
 	@Test
-	public final void updateDocuments() throws JsonGenerationException, JsonMappingException, IOException {
+	public final void updateDocuments() throws JsonGenerationException, JsonMappingException, IOException, InterruptedException {
 		final DocumentIndexRepository documentIndexRepository = new  DocumentIndexRestRepositoryImpl(restOperations);
 		final AOProxyFactory proxyFactory = new  BeanConventionCGLIBProxyFactory();
 		final BeanResolver beanResolver = new SimpleReflectionBeanResolverImpl();
 		final Opportunity opportunity = new OpportunityImpl(EntityUtil.create(CustomerImpl.class), "Pets for you", "Nicoles special escort service", Kind.ProductOrService);
 		ReflectionTestUtils.setField(opportunity, "id", 4711L);
 		
-		final OpportunityIndexAO indexAO = proxyFactory.createProxy(OpportunityIndexAO.class, new ModelRepositoryBuilderImpl().withDomain(opportunity).withBeanResolver(beanResolver).build());
+		final RevisionAware indexAO = proxyFactory.createProxy(OpportunityIndexAO.class, new ModelRepositoryBuilderImpl().withDomain(opportunity).withBeanResolver(beanResolver).build());
 		
 		Collection<EntityContext> entityContexts = new ArrayList<>();
 	
 		final EntityContext entityContext = new EntityContextImpl(4711L, Resource.Opportunity);
 
-		entityContext.assign(OpportunityIndexAO.class, indexAO);
+		entityContext.assign(RevisionAware.class, indexAO);
 		
-		entityContexts.add(entityContext);
+		
+		EntityContextImpl clone = new EntityContextImpl(entityContext.reourceId(), entityContext.resource());
+		clone.assign(RevisionAware.class, indexAO);
+		entityContexts.add(clone);
 		entityContexts.add(entityContext);
 		
-		final Collection<Long> processed = documentIndexRepository.updateDocuments(entityContexts);
-		Assert.assertEquals(1, processed.size());
-		Assert.assertEquals(4711L, (long) processed.iterator().next());
+		documentIndexRepository.updateDocuments(entityContexts);
+		
+		int counter=0;
+		for(EntityContext result : entityContexts){
+			State state = (State) ReflectionTestUtils.getField(result, "state");
+			if(counter==0){
+				Assert.assertEquals(State.Skipped, state);
+			} else {
+				Assert.assertEquals(State.Ok, state);
+			}
+			counter++;
+		}
+		Assert.assertEquals(2, counter);
 		
 	}
 	

@@ -7,6 +7,6 @@ public interface DocumentIndexRepository {
 
 	Map<Long,String> revisionsforIds(final Collection<EntityContext> ids);
 	
-	Collection<Long> updateDocuments(final Collection<EntityContext> entityContext);
+	void updateDocuments(final Collection<EntityContext> entityContext);
 
 }

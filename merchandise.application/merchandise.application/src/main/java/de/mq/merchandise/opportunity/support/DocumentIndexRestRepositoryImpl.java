@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.client.RestOperations;
+
+import de.mq.merchandise.opportunity.support.EntityContext.State;
 
 public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository {
 
@@ -17,11 +20,17 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 	static final String VALUE_ATTRIBUTE_NAME = "value";
 	static final String ROWS_ATTRIBUTE_NAME = "rows";
 	static final String KEY_ATTRIBUTE_NAME = "keys";
+	static final String ERROR_ATTRIBUTE_NAME = "error";
 	final RestOperations restOperations;
+	
+	private Map<String,State> states = new HashMap<>(); 
 	
 	@Autowired
 	DocumentIndexRestRepositoryImpl(final RestOperations restOperations) {
 		this.restOperations=restOperations;
+		for(final State state : State.values() ){
+			states.put(state.name().toLowerCase(), state);
+		}
 	}
 	
 	static final String URL = "http://localhost:5984/{entity}/_all_docs";
@@ -42,11 +51,7 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 		final Collection<String> keys = new HashSet<>();
 		Resource resource=null;
 		for(final EntityContext entityContext : entityContexts ){
-			if( resource == null){
-				resource=entityContext.resource();
-			}
-			
-			sameResourceGuard(resource, entityContext);
+			resource = assignResource(resource, entityContext);
 			keys.add(String.valueOf(entityContext.reourceId()));
 		}
 		
@@ -68,6 +73,14 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 		
 	}
 
+	private Resource assignResource(final Resource resource, final EntityContext entityContext) {
+		if( resource == null){
+			return entityContext.resource();
+		}
+		sameResourceGuard(resource, entityContext);
+		return resource;
+	}
+
 	private void sameResourceGuard(final Resource resource, final EntityContext entityContext) {
 		if( resource!=entityContext.resource()){
 			throw new IllegalArgumentException("EntityContexts should have the same resource");
@@ -76,45 +89,65 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 	
 	
 	@Override
-	public final Collection<Long> updateDocuments(final Collection<EntityContext> entityContexts)  {
+	public final void updateDocuments(final Collection<EntityContext> entityContexts)  {
 		final  Map<Long,String> revisions = revisionsforIds(entityContexts);
 		final Map<Long, Object> aoMap = new HashMap<>();
+		final Map<Long, EntityContext> entityContextMap = new HashMap<>();
 		Resource resource=null;
 		for(final EntityContext entityContext: entityContexts){
-			if( resource == null){
-				resource=entityContext.resource();
-			}
+			resource = assignResource(resource, entityContext);
 			
-			sameResourceGuard(resource, entityContext);
-			final OpportunityIndexAO reference = entityContext.reference(OpportunityIndexAO.class);
+			final RevisionAware reference = entityContext.reference(RevisionAware.class);
 			if( revisions.containsKey(entityContext.reourceId())){
 				reference.setRevision(revisions.get(entityContext.reourceId()));
 			}
 			if( entityContext.isForDeleteRow()){
 				reference.setDeleted(true);
 			}
+			
+			if(entityContextMap.containsKey(entityContext.reourceId())){
+				entityContextMap.get(entityContext.reourceId()).assign(State.Skipped);
+			}
+			
+			entityContextMap.put(entityContext.reourceId(), entityContext);
 			aoMap.put(entityContext.reourceId(), reference);
+			
 		}
 		
 		final Map<String,Collection<Object>>  root = new HashMap<>();
 		root.put("docs", aoMap.values());
 		
-		
-		final Collection<Long> processed = new HashSet<>();
-		@SuppressWarnings("unchecked")
-	    final List<Map<String,?>> results = restOperations.postForObject(URL_UPDATE, root ,List.class, Resource.Opportunity.urlPart());
-		for(final Map<String,?> result : results){
-			System.out.println(result);
-			if( ! result.containsKey("ok")){
-				continue;
-			}
-			processed.add(Long.valueOf((String) result.get(ID_ATTRIBUTE_NAME)));
+	    for(final Map<String,?> result : processPostRequest(resource, root)){
+			System.out.println(result);	
+			idExistsInEntityContextsGuard(entityContextMap, Long.valueOf((String) result.get(ID_ATTRIBUTE_NAME)));
+			entityContextMap.get(Long.valueOf((String) result.get(ID_ATTRIBUTE_NAME))).assign(state((String) result.get(ERROR_ATTRIBUTE_NAME))); 
 		}
 		
-		return processed;
+	}
+
+	private void idExistsInEntityContextsGuard(final Map<Long, EntityContext> entityContextMap, final Long id) {
+		if(!entityContextMap.containsKey(id)){
+			throw new IllegalStateException("Id in Result didn't match to entityContexts");
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Map<String,?>> processPostRequest(Resource resource, final Map<String, Collection<Object>> root) {
+		return restOperations.postForObject(URL_UPDATE, root ,List.class, resource.urlPart());
 	}
 	
 	
+	State state(final String error){
+		if(error==null){
+			return State.Ok;
+		}
+		final State result = states.get(error.trim().toLowerCase());
+		if( result==null){
+			return State.Unkown;
+		}
+		return result;
+		
+	}
 	
 
 }

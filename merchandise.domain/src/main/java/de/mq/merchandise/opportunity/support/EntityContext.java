@@ -11,6 +11,24 @@ import de.mq.merchandise.BasicEntity;
  *
  */
 public interface EntityContext extends BasicEntity{
+	
+	enum State{
+		New(false),
+		Conflict(false),
+		Forbidden(false),
+		Unauthorized(false), 
+		Unkown(false),
+		Ok(true),
+		Skipped(true);
+		private boolean finished;
+		State(boolean finished) {
+			this.finished=finished;
+		}
+		
+		boolean finised() {
+			return finished;
+		}
+	}
 
 
 	/**
@@ -57,5 +75,16 @@ public interface EntityContext extends BasicEntity{
 	 * @return true if the reference is aware else false
 	 */
 	boolean containsReference(Class<?> clazz);
+
+	/**
+	 * Change the State, if an Error occurs
+	 * @param state the state of the Entity
+	 */
+	void assign(State state);
+	
+	
+
+
+	boolean finished();
 
 }

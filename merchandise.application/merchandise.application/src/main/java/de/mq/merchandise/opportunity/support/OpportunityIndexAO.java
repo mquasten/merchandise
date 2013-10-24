@@ -14,13 +14,18 @@ import de.mq.mapping.util.proxy.support.Number2StringConverter;
 
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
-public abstract class OpportunityIndexAO  implements Serializable{
+public abstract class OpportunityIndexAO  implements Serializable, RevisionAware{
 	
 	private static final long serialVersionUID = 1L;
 
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.opportunity.support.RevisionAware#getId()
+	 */
+	
 	@Getter(clazz = OpportunityImpl.class, value = "id", converter = Number2StringConverter.class)
 	@JsonProperty("_id")
 	public abstract String getId(); 
+
 	
 	@Getter(clazz = OpportunityImpl.class, value = "name")
 	@JsonProperty("name")
@@ -38,6 +43,10 @@ public abstract class OpportunityIndexAO  implements Serializable{
 	@JsonProperty("_rev")
 	public abstract String getRevison(); 
 	
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.opportunity.support.RevisionAware#setRevision(java.lang.String)
+	 */
+	@Override
 	@Setter(clazz=NoModel.class, value="revision")
 	public abstract void setRevision(final String revision);
 	

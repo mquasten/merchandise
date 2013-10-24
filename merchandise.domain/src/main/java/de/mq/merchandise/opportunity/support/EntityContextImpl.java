@@ -57,6 +57,8 @@ class EntityContextImpl  implements EntityContext{
 	@Basic(optional=false)
 	private Date created;
 	
+	@Enumerated
+	private State state = State.New ; 
 	
 	@Transient
 	private Map<Class<?>, Object> references = new HashMap<>();
@@ -169,5 +171,18 @@ class EntityContextImpl  implements EntityContext{
 	public final boolean containsReference(final Class<?> clazz) {
 		return ( references.get(clazz) != null); 
 	}
+	
+	@Override
+	public final void assign(final State state){
+		EntityUtil.notNullGuard(state, "state");
+		this.state=state;
+	}
 
+	@Override
+	public boolean finished() {
+		EntityUtil.notNullGuard(state, "state");
+		return state.finised();
+	}
+
+	
 }
