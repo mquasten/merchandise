@@ -1,6 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ import de.mq.merchandise.opportunity.support.EntityContext.State;
 
 public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository {
 
+	static final String DOCS_ATTRIBUTE = "docs";
 	static final String REV_ATTRIBUTE_NAME = "rev";
 	static final String ID_ATTRIBUTE_NAME = "id";
 	static final String VALUE_ATTRIBUTE_NAME = "value";
@@ -115,10 +117,13 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 		}
 		
 		final Map<String,Collection<Object>>  root = new HashMap<>();
-		root.put("docs", aoMap.values());
+	
+		/*  new ArrayList<>(...) to be able to test it:  needed because implementations from sun/oracle will be crap nearly every time, 
+		 * like Britney S. will be crap every time, without Everytime, there is hope that she die in bath, or she will be reincadinated there like sun in oracle ?  */
+		root.put(DOCS_ATTRIBUTE, new ArrayList<>(aoMap.values()));
+		
 		
 	    for(final Map<String,?> result : processPostRequest(resource, root)){
-			System.out.println(result);	
 			idExistsInEntityContextsGuard(entityContextMap, Long.valueOf((String) result.get(ID_ATTRIBUTE_NAME)));
 			entityContextMap.get(Long.valueOf((String) result.get(ID_ATTRIBUTE_NAME))).assign(state((String) result.get(ERROR_ATTRIBUTE_NAME))); 
 		}

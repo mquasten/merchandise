@@ -11,7 +11,10 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestOperations;
+
+import de.mq.merchandise.opportunity.support.EntityContext.State;
 
 public class DocumentIndexRepositoryTest {
 	
@@ -30,18 +33,22 @@ public class DocumentIndexRepositoryTest {
 	
 	@Test
 	public void revisionsforIds() {
-		final Collection<String> keys = new HashSet<>();
-		keys.add(String.valueOf(entityContextCreateOrUpdate.reourceId()));
-	    final Map<String,Object> idMap = new HashMap<>();
-		idMap.put(DocumentIndexRestRepositoryImpl.KEY_ATTRIBUTE_NAME, keys);
 		entityContexts.add(entityContextCreateOrUpdate);
-		Mockito.when(restOperations.postForObject(DocumentIndexRestRepositoryImpl.URL,idMap, Map.class,Resource.Opportunity.urlPart())).thenReturn(resultMap(String.valueOf(entityContextCreateOrUpdate.reourceId()), REVISION));
+		Mockito.when(restOperations.postForObject(DocumentIndexRestRepositoryImpl.URL,idMap(), Map.class,Resource.Opportunity.urlPart())).thenReturn(resultMap(String.valueOf(entityContextCreateOrUpdate.reourceId()), REVISION));
 		
 		final Map<Long,String> results = documentIndexRepository.revisionsforIds(entityContexts);
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals(entityContextCreateOrUpdate.reourceId(), results.keySet().iterator().next());
 		Assert.assertEquals(REVISION, results.values().iterator().next());
 		
+	}
+
+	private Map<String, Object> idMap() {
+		final Collection<String> keys = new HashSet<>();
+		keys.add(String.valueOf(entityContextCreateOrUpdate.reourceId()));
+	    final Map<String,Object> idMap = new HashMap<>();
+		idMap.put(DocumentIndexRestRepositoryImpl.KEY_ATTRIBUTE_NAME, keys);
+		return idMap;
 	}
 	
 	@Test
@@ -62,10 +69,7 @@ public class DocumentIndexRepositoryTest {
 	
 	@Test
 	public void revisionsforIdWithoutRevision() {
-		final Collection<String> keys = new HashSet<>();
-		keys.add(String.valueOf(entityContextCreateOrUpdate.reourceId()));
-	    final Map<String,Object> idMap = new HashMap<>();
-		idMap.put(DocumentIndexRestRepositoryImpl.KEY_ATTRIBUTE_NAME, keys);
+		final Map<String, Object> idMap = idMap();
 		entityContexts.add(entityContextCreateOrUpdate);
 		Mockito.when(restOperations.postForObject(DocumentIndexRestRepositoryImpl.URL,idMap, Map.class,Resource.Opportunity.urlPart())).thenReturn(resultMap(String.valueOf(entityContextCreateOrUpdate.reourceId()), null));
 		
@@ -94,6 +98,38 @@ public class DocumentIndexRepositoryTest {
 		
 		
 		return results;
+		
+	}
+	
+	@Test
+	public final void updateDocuments() {
+		final Collection<EntityContext> entityContexts = new ArrayList<>(); 
+		final RevisionAware revisionAware=Mockito.mock(RevisionAware.class);
+		entityContextCreateOrUpdate.assign(RevisionAware.class, revisionAware);
+		ReflectionTestUtils.setField(entityContextCreateOrUpdate, "state", State.New);
+		entityContexts.add(entityContextCreateOrUpdate);
+		
+		final Collection<Object> aos = new ArrayList<>();
+		aos.add(revisionAware);
+		final Map<String,Collection<?>> rows = new HashMap<>();
+		rows.put(DocumentIndexRestRepositoryImpl.DOCS_ATTRIBUTE, aos);
+		final List<Object> results = new ArrayList<>();
+		final Map<String,Object> result = new HashMap<>();
+		result.put(DocumentIndexRestRepositoryImpl.ID_ATTRIBUTE_NAME, ""+ entityContextCreateOrUpdate.reourceId());
+		results.add(result);
+		
+		Mockito.when(restOperations.postForObject(DocumentIndexRestRepositoryImpl.URL_UPDATE, rows, List.class, Resource.Opportunity.urlPart())).thenReturn(results);
+		
+		
+		Mockito.when(restOperations.postForObject(DocumentIndexRestRepositoryImpl.URL,idMap(), Map.class,Resource.Opportunity.urlPart())).thenReturn(resultMap(String.valueOf(entityContextCreateOrUpdate.reourceId()), REVISION));
+		
+		
+	
+		
+		documentIndexRepository.updateDocuments(entityContexts);
+		
+		Assert.assertEquals(State.Ok, ReflectionTestUtils.getField(entityContextCreateOrUpdate, "state"));
+		Mockito.verify(revisionAware).setRevision(REVISION);
 		
 	}
 
