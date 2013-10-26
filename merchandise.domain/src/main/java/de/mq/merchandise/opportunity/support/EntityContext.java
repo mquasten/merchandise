@@ -13,20 +13,34 @@ import de.mq.merchandise.BasicEntity;
 public interface EntityContext extends BasicEntity{
 	
 	enum State{
-		New(false),
-		Conflict(false),
-		Forbidden(false),
-		Unauthorized(false), 
-		Unkown(false),
-		Ok(true),
-		Skipped(true);
-		private boolean finished;
-		State(boolean finished) {
+		New(false,false,false),
+		Conflict(false,true,true),
+		Forbidden(false,true,true),
+		Unauthorized(false,true,true), 
+		Unkown(false,true,true),
+		Ok(true,true,false),
+		Skipped(true,true,false);
+		
+		private final boolean finished;
+		private final boolean assignable;
+		private final boolean error;
+		
+		State(final boolean finished, final boolean assignable, final boolean error) {
 			this.finished=finished;
+			this.assignable=assignable;
+			this.error=error;
 		}
 		
 		boolean finised() {
 			return finished;
+		}
+		
+		boolean assignable() {
+			return assignable;
+		}
+		
+		boolean error() {
+			return error;
 		}
 	}
 

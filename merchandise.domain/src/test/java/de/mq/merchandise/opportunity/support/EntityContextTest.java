@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import de.mq.merchandise.opportunity.support.EntityContext.State;
 import de.mq.merchandise.util.EntityUtil;
 
 public class EntityContextTest {
@@ -115,5 +116,86 @@ public class EntityContextTest {
 		
 		Assert.assertTrue(entityContext.containsReference(Opportunity.class));
 	}
+	
+	@Test
+	public final void assignState() {
+		final EntityContext entityContext = new EntityContextImpl(ID, Resource.Subject);
+		Assert.assertNull( ReflectionTestUtils.getField(entityContext, "lastErrorDate"));
+		Assert.assertEquals(0, ReflectionTestUtils.getField(entityContext, "errorCounter"));
+		entityContext.assign(State.Conflict);
+		
+		
+		final Date lastErrorDate = (Date) ReflectionTestUtils.getField(entityContext, "lastErrorDate");
+		Assert.assertTrue(Math.abs(lastErrorDate.getTime() - new Date().getTime() ) < 50);
+		Assert.assertEquals(1, ReflectionTestUtils.getField(entityContext, "errorCounter"));
+	}
+	
+	@Test
+	public final void assignStateNoError() {
+		final EntityContext entityContext = new EntityContextImpl(ID, Resource.Subject);
+		entityContext.assign(State.Skipped);
+		Assert.assertNull( ReflectionTestUtils.getField(entityContext, "lastErrorDate"));
+		Assert.assertEquals(0, ReflectionTestUtils.getField(entityContext, "errorCounter"));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void assignNotAllowed() {
+		new EntityContextImpl(ID, Resource.Subject).assign(State.New);
+	}
+	
+	@Test
+	public final void finised() {
+		final EntityContext entityContext = new EntityContextImpl(ID, Resource.Subject);
+		for(final State state : State.values()){
+			if( ! state.assignable()){
+				continue;
+			}
+			entityContext.assign(state);
+			Assert.assertEquals(state.finised(), entityContext.finished());
+		}
+	}
 
+	@Test
+	public final void staes() {
+		int count=0;
+		for(final State state : State.values()){
+			Assert.assertEquals(state, State.valueOf(state.name()));
+			count++;
+		}
+		
+		Assert.assertEquals(7, count);
+		
+		Assert.assertFalse(State.New.assignable());
+		Assert.assertFalse(State.New.error());
+		Assert.assertFalse(State.New.finised());
+		
+		
+		Assert.assertTrue(State.Conflict.assignable());
+		Assert.assertTrue(State.Conflict.error());
+		Assert.assertFalse(State.Conflict.finised());
+		
+		
+		Assert.assertTrue(State.Unauthorized.assignable());
+		Assert.assertTrue(State.Unauthorized.error());
+		Assert.assertFalse(State.Unauthorized.finised());
+		
+		
+		Assert.assertTrue(State.Forbidden.assignable());
+		Assert.assertTrue(State.Forbidden.error());
+		Assert.assertFalse(State.Forbidden.finised());
+		
+		Assert.assertTrue(State.Unkown.assignable());
+		Assert.assertTrue(State.Unkown.error());
+		Assert.assertFalse(State.Unkown.finised());
+		
+		Assert.assertTrue(State.Ok.assignable());
+		Assert.assertFalse(State.Ok.error());
+		Assert.assertTrue(State.Ok.finised());
+		
+		Assert.assertTrue(State.Skipped.assignable());
+		Assert.assertFalse(State.Skipped.error());
+		Assert.assertTrue(State.Skipped.finised());
+
+		
+	}
 }

@@ -38,6 +38,7 @@ class EntityContextImpl  implements EntityContext{
 	
 	@Basic(optional=false)
 	@Equals
+	@Column(name="resource_id")
 	private Long resourceId;
 	
 
@@ -59,6 +60,14 @@ class EntityContextImpl  implements EntityContext{
 	
 	@Enumerated
 	private State state = State.New ; 
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="last_error")
+	private Date lastErrorDate;
+	
+	@Basic(optional=false)
+	@Column(name="error_counter")
+	private int errorCounter=0;
 	
 	@Transient
 	private Map<Class<?>, Object> references = new HashMap<>();
@@ -175,7 +184,18 @@ class EntityContextImpl  implements EntityContext{
 	@Override
 	public final void assign(final State state){
 		EntityUtil.notNullGuard(state, "state");
+	    stateIsAssignableGuard(state);
 		this.state=state;
+		if( state.error()){
+			this.lastErrorDate=new Date();
+			errorCounter++;
+		}
+	}
+
+	private void stateIsAssignableGuard(final State state) {
+		if( ! state.assignable() ) {
+	    	throw new IllegalArgumentException("State " +state + " isn't assignabe");
+	    }
 	}
 
 	@Override
@@ -183,6 +203,8 @@ class EntityContextImpl  implements EntityContext{
 		EntityUtil.notNullGuard(state, "state");
 		return state.finised();
 	}
+	
+	
 
 	
 }
