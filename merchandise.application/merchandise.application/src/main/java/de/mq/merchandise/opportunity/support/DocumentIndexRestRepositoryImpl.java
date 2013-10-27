@@ -1,7 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.web.client.RestOperations;
 
 import de.mq.merchandise.opportunity.support.EntityContext.State;
@@ -93,6 +91,11 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 	@Override
 	public final void updateDocuments(final Collection<EntityContext> entityContexts)  {
 		final  Map<Long,String> revisions = revisionsforIds(entityContexts);
+		
+		if( entityContexts.isEmpty()){
+			return;
+		}
+		
 		final Map<Long, Object> aoMap = new HashMap<>();
 		final Map<Long, EntityContext> entityContextMap = new HashMap<>();
 		Resource resource=null;
@@ -120,7 +123,7 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 	
 		/*  new ArrayList<>(...) to be able to test it:  needed because implementations from sun/oracle will be crap nearly every time, 
 		 * like Britney S. will be crap every time, without Everytime, there is hope that she die in bath, or she will be reincadinated there like sun in oracle ?  */
-		root.put(DOCS_ATTRIBUTE, new ArrayList<>(aoMap.values()));
+		root.put(DOCS_ATTRIBUTE, new HashSet<>(aoMap.values()));
 		
 		
 	    for(final Map<String,?> result : processPostRequest(resource, root)){
@@ -138,6 +141,7 @@ public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository 
 
 	@SuppressWarnings("unchecked")
 	private List<Map<String,?>> processPostRequest(Resource resource, final Map<String, Collection<Object>> root) {
+		
 		return restOperations.postForObject(URL_UPDATE, root ,List.class, resource.urlPart());
 	}
 	
