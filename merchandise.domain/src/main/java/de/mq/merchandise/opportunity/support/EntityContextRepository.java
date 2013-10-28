@@ -12,7 +12,9 @@ import de.mq.merchandise.util.Paging;
  */
 public interface EntityContextRepository   extends BasicRepository<EntityContext, Long>{
 	
-	static final String ENTITYCONTEXT_FOR_RESOURCE = "entityContextFprResource";
+	static final String ENTITYCONTEXT_FOR_RESOURCE = "entityContextForResource";
+	
+	static final String ENTITYCONTEXT_AGGREGATION ="entityContextAggregation";
 	
 	static final String PARAMETER_RESOURCE= "resource";
 	

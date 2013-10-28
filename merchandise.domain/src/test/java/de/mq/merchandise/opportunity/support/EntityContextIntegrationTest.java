@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import junit.framework.Assert;
@@ -65,6 +66,27 @@ public class EntityContextIntegrationTest {
 	    }
 	    System.out.println(results.size());
 	}
+	
+	
+	@Test
+	@Transactional()
+	@Rollback(false)
+	public final void aggregationQuery() {
+		for(long i=1; i <= 10; i++){
+			final EntityContext entityContext = new EntityContextImpl(i, Resource.Opportunity);
+			waste.add(entityManager.merge(entityContext));
+		}
+		
+		final Query query =   entityManager.createNamedQuery(EntityContextRepository.ENTITYCONTEXT_AGGREGATION);
+		final EntityContextAggregation result =  (EntityContextAggregation) query.getSingleResult();
+		
+		Assert.assertEquals(10, result.counter());
+		Assert.assertNotNull(result.minDate());
+	
+		 
+	}
+	
+	
 	
 	
 

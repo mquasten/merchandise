@@ -1,6 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -14,6 +15,7 @@ import de.mq.merchandise.util.EntityUtil;
 
 public class EntityContextTest {
 	
+	private static final int COUNT = 4711;
 	private static final Long ID = 196828L;
 
 	@Test
@@ -197,5 +199,20 @@ public class EntityContextTest {
 		Assert.assertTrue(State.Skipped.finised());
 
 		
+	}
+	
+	@Test
+	public final void entityAggregation() {
+		final Date date = new GregorianCalendar(1968, 04, 28).getTime();
+		final EntityContextAggregation entityContextAggregation = new EntityContextAggregationImpl(COUNT, date);
+		Assert.assertEquals(date, entityContextAggregation.minDate());
+		Assert.assertEquals(COUNT, entityContextAggregation.counter());
+	}
+	
+	@Test
+	public final void entityAggregationDefaults(){
+		final EntityContextAggregation entityContextAggregation = new EntityContextAggregationImpl(null, null);
+		Assert.assertEquals(0, entityContextAggregation.counter());
+		Assert.assertTrue((new Date().getTime()  -entityContextAggregation.minDate().getTime()) < 5 );
 	}
 }

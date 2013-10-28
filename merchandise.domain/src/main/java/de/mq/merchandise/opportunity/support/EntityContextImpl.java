@@ -24,8 +24,8 @@ import de.mq.merchandise.util.Equals;
 @Entity(name="EntityContext" )
 @Table(name="entity_context")
 @NamedQueries({
-@NamedQuery(name = EntityContextRepository.ENTITYCONTEXT_FOR_RESOURCE, query = "select e from EntityContext e where resource=:resource")	
-	
+@NamedQuery(name = EntityContextRepository.ENTITYCONTEXT_FOR_RESOURCE, query = "select e from EntityContext e where resource=:resource"),	
+@NamedQuery(name =  EntityContextRepository.ENTITYCONTEXT_AGGREGATION,  query = "select  new de.mq.merchandise.opportunity.support.EntityContextAggregationImpl(count(distinct e.resourceId) ,  min(e.created))  from EntityContext e")	
 })
 class EntityContextImpl  implements EntityContext{
 
@@ -205,6 +205,36 @@ class EntityContextImpl  implements EntityContext{
 	}
 	
 	
+	
 
+	
+}
+
+
+class EntityContextAggregationImpl implements EntityContextAggregation {
+	
+	private Number counter;
+	
+	private Date date;
+	
+	public EntityContextAggregationImpl(final Number counter, final Date date) {
+		this.counter=counter;
+		this.date=date;
+	}
+	
+	public long counter(){
+		if(this.counter==null){
+			return 0;
+		}
+		return this.counter.longValue();
+	}
+	
+	public Date minDate() {
+		if( this.date==null){
+			return new Date();
+		}
+		return this.date;
+	}
+	
 	
 }
