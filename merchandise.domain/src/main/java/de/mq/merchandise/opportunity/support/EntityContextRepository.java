@@ -25,4 +25,9 @@ public interface EntityContextRepository   extends BasicRepository<EntityContext
 	 * @return a collection with EntityContexts
 	 */
 	Collection<EntityContext> fetch(final Resource resource , final Paging paging); 
+	/**
+	 * AggregationInformation , count distinct resourceId and min(create)
+	 * @return the aggregation information
+	 */
+	EntityContextAggregation aggregation();
 }

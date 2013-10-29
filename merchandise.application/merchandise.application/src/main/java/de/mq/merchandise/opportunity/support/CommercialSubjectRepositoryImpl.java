@@ -44,4 +44,6 @@ public class CommercialSubjectRepositoryImpl extends AbstractRepository<Commerci
 	protected Class<? extends CommercialSubject> entityImplementationClass() {
 		return CommercialSubjectImpl.class;
 	}
+
+	
 }

@@ -1,5 +1,7 @@
 package de.mq.merchandise;
 
+import de.mq.merchandise.opportunity.support.EntityContextAggregation;
+
 
 
 public interface BasicRepository<T,V> {
@@ -25,6 +27,8 @@ public interface BasicRepository<T,V> {
 		 * @return the entity or null if not found
 		 */
 		T forId(final V id);
+
+	
 
 		
 		

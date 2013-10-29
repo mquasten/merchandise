@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import junit.framework.Assert;
 
@@ -59,6 +60,15 @@ public class EntityContextRepositoryTest {
 	@Test
 	public final void defaultConstructor() {
 		Assert.assertNotNull(new EntityContextRepositoryImpl());
+	}
+	
+	@Test
+	public final void aggregation() {
+		final Query query = Mockito.mock(Query.class);
+		final EntityContextAggregation entityContextAggregation = Mockito.mock(EntityContextAggregation.class);
+		Mockito.when(entityManager.createNamedQuery(EntityContextRepository.ENTITYCONTEXT_AGGREGATION)).thenReturn(query);
+		Mockito.when(query.getSingleResult()).thenReturn(entityContextAggregation);
+		Assert.assertEquals(entityContextAggregation, entityContextRepository.aggregation());
 	}
 
 }

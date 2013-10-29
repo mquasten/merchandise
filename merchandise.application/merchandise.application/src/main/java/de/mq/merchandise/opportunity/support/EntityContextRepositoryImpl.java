@@ -3,6 +3,7 @@ package de.mq.merchandise.opportunity.support;
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -41,6 +42,13 @@ public class EntityContextRepositoryImpl extends AbstractRepository<EntityContex
 	@Override
 	public Collection<EntityContext> fetch(final Resource resource, Paging paging) {
 		return  pagingUtil.countAndQuery(entityManager, EntityContext.class, paging, ENTITYCONTEXT_FOR_RESOURCE, new ParameterImpl<Resource>(PARAMETER_RESOURCE, resource ));
+	}
+	
+	@Override
+	public final EntityContextAggregation aggregation() {
+		final Query query = entityManager.createNamedQuery(ENTITYCONTEXT_AGGREGATION);
+		return (EntityContextAggregation) query.getSingleResult();
+		
 	}
 
 }
