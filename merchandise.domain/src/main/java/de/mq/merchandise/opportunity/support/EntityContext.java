@@ -100,5 +100,8 @@ public interface EntityContext extends BasicEntity{
 
 
 	boolean finished();
+	
+	
+	boolean error();
 
 }
