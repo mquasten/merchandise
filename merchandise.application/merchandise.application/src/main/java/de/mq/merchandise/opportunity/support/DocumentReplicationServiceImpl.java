@@ -17,20 +17,32 @@ import de.mq.merchandise.util.SimplePagingImpl;
 
 public class DocumentReplicationServiceImpl {
 	
-	private int minCount=50;
+	private final int minCount=50;
 	
-	private int minAgeSec=300;
+	private final int minAgeSec=300;
 	
-	private EntityContextRepository entityContextRepository;
+	private final int maxProcess = 100;
 	
+	private final  int maxDelete = 200;
 	
-	private BasicRepository<BasicEntity, Long> basicRepository;
-	
-	private AOProxyFactory proxyFactory; 
-	
-	private BeanResolver beanResolver;
+	private final EntityContextRepository entityContextRepository;
 	
 	
+	private  final BasicRepository<BasicEntity, Long> basicRepository;
+	
+	private final AOProxyFactory proxyFactory; 
+	
+	private final BeanResolver beanResolver;
+	
+	public DocumentReplicationServiceImpl(final EntityContextRepository entityContextRepository,  final AOProxyFactory proxyFactory, final BeanResolver beanResolver, final DocumentIndexRepository documentIndexRepository, final BasicRepository<BasicEntity, Long> basicRepository) {
+		this.entityContextRepository = entityContextRepository;
+		this.proxyFactory = proxyFactory;
+		this.beanResolver = beanResolver;
+		this.documentIndexRepository = documentIndexRepository;
+		this.basicRepository=basicRepository;
+	}
+
+
 	private DocumentIndexRepository documentIndexRepository;
 	
 	public final void replicate() {
@@ -52,17 +64,30 @@ public class DocumentReplicationServiceImpl {
 	
 	
 	private void doReplication() {
-		final Map<Long,EntityContext> entityContexts = new HashMap<Long,EntityContext>();
-		final Set<EntityContext> inDenStaub = new HashSet<EntityContext>();
-		filter(entityContexts, inDenStaub);
-		for(final EntityContext entityContext : entityContexts.values()){
+		final Map<Long,EntityContext> entityContextsForReplication = new HashMap<Long,EntityContext>();
+		final Set<EntityContext> skippedEntityContexts = new HashSet<EntityContext>();
+		filter(entityContextsForReplication, skippedEntityContexts);
+		enhance(entityContextsForReplication);
+		final Set<EntityContext> entityContexts = new HashSet<>();
+		entityContexts.addAll(entityContextsForReplication.values());
+		documentIndexRepository.updateDocuments(entityContexts);
+		entityContexts.addAll(skippedEntityContexts);
+		saveOrDeleteEntityContext(entityContexts);
+		
+		replicate();
+	}
+
+
+	private void enhance(final Map<Long, EntityContext> entityContextsForReplication) {
+		for(final EntityContext entityContext : entityContextsForReplication.values()){
 			final BasicEntity entity = basicRepository.forId(entityContext.reourceId());
 			final RevisionAware reference = proxyFactory.createProxy(OpportunityIndexAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(entity).build());
 			entityContext.assign(RevisionAware.class, reference);
 		}
-		final Set<EntityContext> pocessed = new HashSet<>();
-		documentIndexRepository.updateDocuments(pocessed);
-		pocessed.addAll(inDenStaub);
+	}
+
+
+	private void saveOrDeleteEntityContext(final Set<EntityContext> pocessed) {
 		for(final EntityContext entityContext : pocessed){
 			if (! entityContext.finished() ) {
 				continue;
@@ -73,8 +98,6 @@ public class DocumentReplicationServiceImpl {
 			}
 			entityContextRepository.delete(entityContext.id());
 		}
-		
-		replicate();
 	}
 
 
@@ -100,7 +123,11 @@ public class DocumentReplicationServiceImpl {
 		    }
 			
 		    distinctResources.put(entityContext.reourceId(), entityContext);
-		    if(distinctResources.size()>=100){
+		    if(distinctResources.size()>= maxProcess){
+		    	return true;
+		    }
+		    
+		    if(dupplicateIds.size() >= maxDelete){
 		    	return true;
 		    }
 		}

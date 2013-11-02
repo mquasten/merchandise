@@ -207,7 +207,7 @@ class EntityContextImpl  implements EntityContext{
 	@Override
 	public boolean error() {
 		EntityUtil.notNullGuard(state, "state");
-		return state.error();
+		return this.state.error();
 	}
 	
 	

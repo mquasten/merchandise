@@ -215,4 +215,18 @@ public class EntityContextTest {
 		Assert.assertEquals(0, entityContextAggregation.counter());
 		Assert.assertTrue((new Date().getTime()  -entityContextAggregation.minDate().getTime()) < 5 );
 	}
+	
+	@Test
+	public final void error() {
+		final EntityContext entityContext = new EntityContextImpl(ID, Resource.Subject);
+		for(final State state : State.values()){
+			if(! state.assignable()){
+				continue;
+			}
+		
+			entityContext.assign(state);
+			Assert.assertEquals(state.error(), entityContext.error());
+		}
+		
+	}
 }
