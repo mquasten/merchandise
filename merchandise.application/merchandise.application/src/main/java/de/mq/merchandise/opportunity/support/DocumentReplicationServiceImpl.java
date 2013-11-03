@@ -15,26 +15,26 @@ import de.mq.merchandise.opportunity.support.EntityContext.State;
 import de.mq.merchandise.util.Paging;
 import de.mq.merchandise.util.SimplePagingImpl;
 
-public class DocumentReplicationServiceImpl {
+public class DocumentReplicationServiceImpl implements DocumentReplicationService {
 	
-	private final int minCount=50;
+	static final int minCount=50;
 	
-	private final int minAgeSec=300;
+	static final int minAgeSec=300;
 	
-	private final int maxProcess = 100;
+	static final int maxProcess = 100;
 	
-	private final  int maxDelete = 200;
+	static final  int maxDelete = 200;
 	
 	private final EntityContextRepository entityContextRepository;
 	
 	
-	private  final BasicRepository<BasicEntity, Long> basicRepository;
+	private  final BasicRepository<? extends BasicEntity, Long> basicRepository;
 	
 	private final AOProxyFactory proxyFactory; 
 	
 	private final BeanResolver beanResolver;
 	
-	public DocumentReplicationServiceImpl(final EntityContextRepository entityContextRepository,  final AOProxyFactory proxyFactory, final BeanResolver beanResolver, final DocumentIndexRepository documentIndexRepository, final BasicRepository<BasicEntity, Long> basicRepository) {
+	public DocumentReplicationServiceImpl(final EntityContextRepository entityContextRepository,  final AOProxyFactory proxyFactory, final BeanResolver beanResolver, final DocumentIndexRepository documentIndexRepository, final BasicRepository<? extends BasicEntity, Long> basicRepository) {
 		this.entityContextRepository = entityContextRepository;
 		this.proxyFactory = proxyFactory;
 		this.beanResolver = beanResolver;
@@ -45,6 +45,10 @@ public class DocumentReplicationServiceImpl {
 
 	private DocumentIndexRepository documentIndexRepository;
 	
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.opportunity.support.DocumentReplicationService#replicate()
+	 */
+	@Override
 	public final void replicate() {
 		
 		
@@ -70,6 +74,7 @@ public class DocumentReplicationServiceImpl {
 		enhance(entityContextsForReplication);
 		final Set<EntityContext> entityContexts = new HashSet<>();
 		entityContexts.addAll(entityContextsForReplication.values());
+		
 		documentIndexRepository.updateDocuments(entityContexts);
 		entityContexts.addAll(skippedEntityContexts);
 		saveOrDeleteEntityContext(entityContexts);
@@ -80,8 +85,7 @@ public class DocumentReplicationServiceImpl {
 
 	private void enhance(final Map<Long, EntityContext> entityContextsForReplication) {
 		for(final EntityContext entityContext : entityContextsForReplication.values()){
-			final BasicEntity entity = basicRepository.forId(entityContext.reourceId());
-			final RevisionAware reference = proxyFactory.createProxy(OpportunityIndexAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(entity).build());
+			final RevisionAware reference = proxyFactory.createProxy(OpportunityIndexAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(basicRepository.forId(entityContext.reourceId())).build());
 			entityContext.assign(RevisionAware.class, reference);
 		}
 	}
@@ -103,7 +107,7 @@ public class DocumentReplicationServiceImpl {
 
 	private void filter(final Map<Long, EntityContext> entityContexts, final Set<EntityContext> inDenStaub) {
 		final Paging paging = new SimplePagingImpl(100, "id");
-		for(int page =0;  page< paging.pageSize(); page++){
+		for(int page =0;  page< paging.maxPages() ; page++){
 			if( filterRow(paging,entityContexts, inDenStaub) ) {
 				break;
 			}
