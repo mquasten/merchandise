@@ -7,6 +7,6 @@ public interface RevisionAware {
 	
 	void setDeleted(final boolean deleted);
 
-	
+	void setId(Long id);
 
 }

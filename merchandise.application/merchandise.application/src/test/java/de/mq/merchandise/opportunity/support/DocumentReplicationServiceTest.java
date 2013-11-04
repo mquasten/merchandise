@@ -63,15 +63,29 @@ public class DocumentReplicationServiceTest {
 		Mockito.when(entityContext.reourceId()).thenReturn(1L);
 		Mockito.when(entityContext.resource()).thenReturn(Resource.Opportunity);
 		
+		
+		
+		final EntityContext entityContextDelete = Mockito.mock(EntityContext.class);
+		Mockito.when(entityContextDelete.id()).thenReturn(2L);
+		Mockito.when(entityContextDelete.hasId()).thenReturn(true);
+		Mockito.when(entityContextDelete.reourceId()).thenReturn(2L);
+		Mockito.when(entityContextDelete.resource()).thenReturn(Resource.Opportunity);
+		Mockito.when(entityContextDelete.isForDeleteRow()).thenReturn(true);
+		
 	
 		entityContexts.add(entityContext);
+		entityContexts.add(entityContextDelete);
 		
 		
 		final ArgumentCaptor<Class> clazzArgumentCaptor = ArgumentCaptor.forClass(Class.class) ;
 		final ArgumentCaptor<ModelRepository> modelRepositoryArgumentCaptor = ArgumentCaptor.forClass(ModelRepository.class) ;
 		final OpportunityIndexAO opportunityIndexAO = Mockito.mock(OpportunityIndexAO.class);
+		final OpportunityIndexAO opportunityIndexAODelete = Mockito.mock(OpportunityIndexAO.class);
 		
 		Mockito.when(entityContext.reference(RevisionAware.class)).thenReturn(opportunityIndexAO);
+		
+		
+		Mockito.when(entityContextDelete.reference(RevisionAware.class)).thenReturn(opportunityIndexAODelete);
 		
 		Mockito.when(proxyFactory.createProxy(clazzArgumentCaptor.capture(), modelRepositoryArgumentCaptor.capture())).thenReturn(opportunityIndexAO);
 		
@@ -105,8 +119,17 @@ public class DocumentReplicationServiceTest {
 			public Void answer(final InvocationOnMock invocation) throws Throwable {
 				
 				for(final EntityContext entityContext  : (Collection<EntityContext>) invocation.getArguments()[0]) {
+					if( entityContext.id()==1){
 					entityContext.assign(State.Ok);
 					Mockito.when(entityContext.finished()).thenReturn(true);
+					}
+					if( entityContext.id()==2){
+						entityContext.assign(State.Conflict);
+						Mockito.when(entityContext.finished()).thenReturn(true);
+						Mockito.when(entityContext.error()).thenReturn(true);
+					}
+					
+					System.out.println(entityContext.id());
 				}
 				return null;
 			}
@@ -120,15 +143,30 @@ public class DocumentReplicationServiceTest {
 	
 		
 		Assert.assertEquals(OpportunityIndexAO.class, clazzArgumentCaptor.getValue());
-		final ModelRepository modelRepository = modelRepositoryArgumentCaptor.getValue();
+	//	final ModelRepository modelRepository = modelRepositoryArgumentCaptor.getValue();
+		int i=0;
+		for(ModelRepository modelRepository : modelRepositoryArgumentCaptor.getAllValues()){
 	
 		Map<?,Opportunity> entities  =  (Map<?, Opportunity>) ReflectionTestUtils.getField(modelRepository, "modelItems");
 		Assert.assertEquals(1, entities.size());
-		Assert.assertEquals(opportunity, entities.values().iterator().next());
+		final Opportunity entity = entities.values().iterator().next();
+		if(i==0){
+			Assert.assertEquals(opportunity, entities.values().iterator().next());
+		}
 		
+		if( i==1) {
+			Assert.assertEquals(2, entity.id());
+		}
+		
+		
+		i++;
+		}
 		Mockito.verify(documentIndexRepository).updateDocuments(entityContexts);
 		Mockito.verify(entityContext).assign(State.Ok);
+		Mockito.verify(entityContextDelete).assign(State.Conflict);
 		Mockito.verify(entityContextRepository).delete(1L);
+		Mockito.verify(entityContextRepository).save(entityContextDelete);
+		
 	}
 	
 	

@@ -6,12 +6,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
 import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.BasicRepository;
 import de.mq.merchandise.opportunity.support.EntityContext.State;
+import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Paging;
 import de.mq.merchandise.util.SimplePagingImpl;
 
@@ -85,21 +87,31 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 
 	private void enhance(final Map<Long, EntityContext> entityContextsForReplication) {
 		for(final EntityContext entityContext : entityContextsForReplication.values()){
-			final RevisionAware reference = proxyFactory.createProxy(OpportunityIndexAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(basicRepository.forId(entityContext.reourceId())).build());
-			entityContext.assign(RevisionAware.class, reference);
+			if( entityContext.isForDeleteRow()){
+				final BasicEntity entity = EntityUtil.create(Resource.Opportunity.entityClass());
+				EntityUtil.setId(entity, entityContext.reourceId());
+				entityContext.assign(RevisionAware.class , proxyFactory.createProxy(OpportunityIndexAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(entity).build()));
+			} else {
+				
+				entityContext.assign(RevisionAware.class, proxyFactory.createProxy(OpportunityIndexAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(basicRepository.forId(entityContext.reourceId())).build()));
+			}
+			
 		}
 	}
 
 
 	private void saveOrDeleteEntityContext(final Set<EntityContext> pocessed) {
 		for(final EntityContext entityContext : pocessed){
+		//	System.out.println(entityContext.finished());
 			if (! entityContext.finished() ) {
 				continue;
 			}
+			
 			if( entityContext.error() ) {
 				entityContextRepository.save(entityContext);
 				continue;
 			}
+			
 			entityContextRepository.delete(entityContext.id());
 		}
 	}
