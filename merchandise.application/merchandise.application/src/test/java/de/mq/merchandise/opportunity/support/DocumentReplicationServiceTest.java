@@ -42,7 +42,7 @@ public class DocumentReplicationServiceTest {
 	//final Paging paging = Mockito.mock(Paging.class);
 	
 	
-	final Collection<EntityContext> entityContexts = new HashSet<>();
+	final Collection<EntityContext> entityContexts = new ArrayList<>();
 	
 	
 	
@@ -72,9 +72,17 @@ public class DocumentReplicationServiceTest {
 		Mockito.when(entityContextDelete.resource()).thenReturn(Resource.Opportunity);
 		Mockito.when(entityContextDelete.isForDeleteRow()).thenReturn(true);
 		
+		
+		final EntityContext entityContextDuplicate = Mockito.mock(EntityContext.class);
+		Mockito.when(entityContextDuplicate.id()).thenReturn(3L);
+		Mockito.when(entityContextDuplicate.hasId()).thenReturn(true);
+		Mockito.when(entityContextDuplicate.reourceId()).thenReturn(1L);
+		Mockito.when(entityContextDuplicate.resource()).thenReturn(Resource.Opportunity);
+		
 	
 		entityContexts.add(entityContext);
 		entityContexts.add(entityContextDelete);
+		entityContexts.add(entityContextDuplicate);
 		
 		
 		final ArgumentCaptor<Class> clazzArgumentCaptor = ArgumentCaptor.forClass(Class.class) ;
@@ -100,7 +108,7 @@ public class DocumentReplicationServiceTest {
 
 			@Override
 			public Collection<EntityContext> answer(InvocationOnMock invocation) throws Throwable {
-				// TODO Auto-generated method stub
+		
 				final Paging paging = (Paging) invocation.getArguments()[1];
 				paging.assignRowCounter(1L);
 			
@@ -118,18 +126,24 @@ public class DocumentReplicationServiceTest {
 			@Override
 			public Void answer(final InvocationOnMock invocation) throws Throwable {
 				
+				Mockito.when(entityContext.finished()).thenReturn(true);
 				for(final EntityContext entityContext  : (Collection<EntityContext>) invocation.getArguments()[0]) {
+				
 					if( entityContext.id()==1){
-					entityContext.assign(State.Ok);
-					Mockito.when(entityContext.finished()).thenReturn(true);
+					   Assert.fail("Entity should be skipped, filtered id: " + entityContext.id());
 					}
 					if( entityContext.id()==2){
 						entityContext.assign(State.Conflict);
 						Mockito.when(entityContext.finished()).thenReturn(true);
 						Mockito.when(entityContext.error()).thenReturn(true);
 					}
+					if( entityContext.id()==3){
+						entityContext.assign(State.Ok);
+						Mockito.when(entityContext.finished()).thenReturn(true);
+					   
+					}
 					
-					System.out.println(entityContext.id());
+					
 				}
 				return null;
 			}
@@ -161,11 +175,15 @@ public class DocumentReplicationServiceTest {
 		
 		i++;
 		}
-		Mockito.verify(documentIndexRepository).updateDocuments(entityContexts);
-		Mockito.verify(entityContext).assign(State.Ok);
+		Mockito.verify(documentIndexRepository).updateDocuments(new HashSet(entityContexts));
+		Mockito.verify(entityContext).assign(State.Skipped);
 		Mockito.verify(entityContextDelete).assign(State.Conflict);
-		Mockito.verify(entityContextRepository).delete(1L);
+		Mockito.verify(entityContextRepository).delete(3L);
+		Mockito.verify(entityContextDuplicate).assign(State.Ok);
 		Mockito.verify(entityContextRepository).save(entityContextDelete);
+		Mockito.verify(entityContextRepository).delete(1L);
+		
+		
 		
 	}
 	

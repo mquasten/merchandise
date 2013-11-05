@@ -78,7 +78,9 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 		entityContexts.addAll(entityContextsForReplication.values());
 		
 		documentIndexRepository.updateDocuments(entityContexts);
+		
 		entityContexts.addAll(skippedEntityContexts);
+		
 		saveOrDeleteEntityContext(entityContexts);
 		
 		replicate();
@@ -101,14 +103,18 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 
 
 	private void saveOrDeleteEntityContext(final Set<EntityContext> pocessed) {
+		
+		
 		for(final EntityContext entityContext : pocessed){
-		//	System.out.println(entityContext.finished());
+		
 			if (! entityContext.finished() ) {
+			
 				continue;
 			}
 			
 			if( entityContext.error() ) {
 				entityContextRepository.save(entityContext);
+				
 				continue;
 			}
 			
@@ -133,6 +139,7 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 		
 		for(final EntityContext entityContext: entityContextRepository.fetch(Resource.Opportunity, paging)){
 		    if( distinctResources.containsKey(entityContext.reourceId())){
+		    	
 		    	final EntityContext skippedEntityContext = distinctResources.get(entityContext.reourceId());
 		    	skippedEntityContext.assign(State.Skipped);
 				dupplicateIds.add(skippedEntityContext);
