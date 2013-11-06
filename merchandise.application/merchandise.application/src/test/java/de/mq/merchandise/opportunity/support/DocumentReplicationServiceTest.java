@@ -187,6 +187,101 @@ public class DocumentReplicationServiceTest {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Test
+	public final void replicateCounterReached() {
+		Mockito.when(entityContextAggregation.counter()).thenReturn((long) (DocumentReplicationServiceImpl.maxProcess *10), 0L);
+		Mockito.when(entityContextAggregation.minDate()).thenReturn(new Date());
+		
+		Mockito.when(entityContextRepository.aggregation()).thenReturn(entityContextAggregation);
+		for( long i=1; i < DocumentReplicationServiceImpl.maxProcess *10   ; i++){
+		final EntityContext entityContext = Mockito.mock(EntityContext.class);
+		Mockito.when(entityContext.id()).thenReturn(i);
+		Mockito.when(entityContext.hasId()).thenReturn(true);
+		Mockito.when(entityContext.reourceId()).thenReturn(i);
+		Mockito.when(entityContext.resource()).thenReturn(Resource.Opportunity);
+		final Opportunity opportunity = Mockito.mock(Opportunity.class);
+		Mockito.when(basicRepository.forId(i)).thenReturn(opportunity);
+		entityContexts.add(entityContext);
+		}
+		
+		
+		final boolean callOnMe[] = {false};
+		Mockito.when(entityContextRepository.fetch(Mockito.any(Resource.class), Mockito.any(Paging.class))).thenAnswer(new Answer<Collection<EntityContext>>() {
+
+			@Override
+			public Collection<EntityContext> answer(InvocationOnMock invocation) throws Throwable {
+		
+				Assert.assertEquals(Resource.Opportunity, invocation.getArguments()[0]);
+				if(!callOnMe[0]){
+					callOnMe[0]=true;
+					return entityContexts;
+				}
+				return new ArrayList<>();
+			} });
+		
+		final OpportunityIndexAO opportunityIndexAO = Mockito.mock(OpportunityIndexAO.class);
+		Mockito.when(proxyFactory.createProxy((Class<?>) Mockito.any(), (ModelRepository) Mockito.anyObject())).thenReturn(opportunityIndexAO);
+		
+		Mockito.doAnswer(new Answer<Void>() {
+
+			
+			@Override
+			public Void answer(final InvocationOnMock invocation) throws Throwable {
+				
+				
+				for(final EntityContext entityContext  : (Collection<EntityContext>) invocation.getArguments()[0]) {
+				
+					
+					if(entityContext.id() <  DocumentReplicationServiceImpl.maxProcess){
+						entityContext.assign(State.Ok);
+						Mockito.when(entityContext.finished()).thenReturn(true);
+					}  
+					
+					
+					
+				}
+				return null;
+			}
+		}).when(documentIndexRepository).updateDocuments(Mockito.anyCollection());
+		
+		
+		documentReplicationService.replicate();
+		
+		
+		
+		final Collection<EntityContext> results = idsLessThan(entityContexts, DocumentReplicationServiceImpl.maxProcess);
+		
+		Mockito.verify(documentIndexRepository).updateDocuments(results);
 	
+		for(EntityContext result: entityContexts){
+			if( result.id() < DocumentReplicationServiceImpl.maxProcess){
+				Mockito.verify(entityContextRepository).delete(result.id());
+				Mockito.verify(result).assign(State.Ok);
+			}else {
+				Mockito.verify(result, Mockito.never()).assign(Mockito.any(State.class));
+				Mockito.verify(entityContextRepository, Mockito.never()).delete(result.id());
+				Mockito.verify(entityContextRepository, Mockito.never()).save(result);
+			}
+			
+		}
+		
+		
+	}
+	
+	
+	
+	private Collection<EntityContext>idsLessThan(final Collection<EntityContext> entityContexts, final long maxId) {
+		final Collection<EntityContext> results = new HashSet<>();
+		for(final EntityContext entityContext : entityContexts){
+			if( entityContext.id() > maxId){
+				continue;
+			}
+			results.add(entityContext);
+		}
+	
+		return results;
+		
+	}
 
 }

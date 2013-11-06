@@ -56,14 +56,17 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 		
 		final EntityContextAggregation aggregation = entityContextRepository.aggregation();
 		
-		
+	
 		if((aggregation.counter() >= minCount )) {
+			
 			doReplication();
 		} 
 		
-		if( new Date().getTime() - aggregation.minDate().getTime() >= minAgeSec ){
+		
+		if( new Date().getTime() - aggregation.minDate().getTime() >= minAgeSec*1000 ){
+			
 			doReplication();
-		}
+		} 
 		
 		
 	}
@@ -84,6 +87,7 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 		saveOrDeleteEntityContext(entityContexts);
 		
 		replicate();
+		
 	}
 
 
@@ -99,6 +103,7 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 			}
 			
 		}
+		
 	}
 
 
@@ -146,6 +151,7 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 		    }
 			
 		    distinctResources.put(entityContext.reourceId(), entityContext);
+		    
 		    if(distinctResources.size()>= maxProcess){
 		    	return true;
 		    }
