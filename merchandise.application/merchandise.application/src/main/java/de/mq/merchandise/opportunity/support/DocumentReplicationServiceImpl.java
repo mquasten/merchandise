@@ -78,11 +78,13 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 		filter(entityContextsForReplication, skippedEntityContexts);
 		enhance(entityContextsForReplication);
 		final Set<EntityContext> entityContexts = new HashSet<>();
+		
 		entityContexts.addAll(entityContextsForReplication.values());
+	
+		documentIndexRepository.updateDocuments(new HashSet<>(entityContexts));
 		
-		documentIndexRepository.updateDocuments(entityContexts);
-		
-		entityContexts.addAll(skippedEntityContexts);
+	
+		entityContexts.addAll(new HashSet<>(skippedEntityContexts));
 		
 		saveOrDeleteEntityContext(entityContexts);
 		
@@ -113,16 +115,18 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 		for(final EntityContext entityContext : pocessed){
 		
 			if (! entityContext.finished() ) {
-			
-				continue;
-			}
-			
-			if( entityContext.error() ) {
-				entityContextRepository.save(entityContext);
 				
 				continue;
 			}
 			
+			if( entityContext.error() ) {
+			
+				entityContextRepository.save(entityContext);
+				
+				continue;
+			}
+		
+		
 			entityContextRepository.delete(entityContext.id());
 		}
 	}
@@ -144,7 +148,6 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 		
 		for(final EntityContext entityContext: entityContextRepository.fetch(Resource.Opportunity, paging)){
 		    if( distinctResources.containsKey(entityContext.reourceId())){
-		    	
 		    	final EntityContext skippedEntityContext = distinctResources.get(entityContext.reourceId());
 		    	skippedEntityContext.assign(State.Skipped);
 				dupplicateIds.add(skippedEntityContext);
