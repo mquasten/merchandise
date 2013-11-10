@@ -1,8 +1,13 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -77,16 +82,15 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 		final Set<EntityContext> skippedEntityContexts = new HashSet<EntityContext>();
 		filter(entityContextsForReplication, skippedEntityContexts);
 		enhance(entityContextsForReplication);
-		final Set<EntityContext> entityContexts = new HashSet<>();
-		
-		entityContexts.addAll(entityContextsForReplication.values());
+		final Collection<EntityContext> entityContexts = sortById(entityContextsForReplication.values());
 	
-		documentIndexRepository.updateDocuments(new HashSet<>(entityContexts));
+		documentIndexRepository.updateDocuments(entityContexts);
 		
 	
-		entityContexts.addAll(new HashSet<>(skippedEntityContexts));
+		//entityContexts.addAll(new HashSet<>(skippedEntityContexts));
 		
 		saveOrDeleteEntityContext(entityContexts);
+		saveOrDeleteEntityContext(sortById(skippedEntityContexts));
 		
 		replicate();
 		
@@ -109,7 +113,7 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 	}
 
 
-	private void saveOrDeleteEntityContext(final Set<EntityContext> pocessed) {
+	private void saveOrDeleteEntityContext(final Collection<EntityContext> pocessed) {
 		
 		
 		for(final EntityContext entityContext : pocessed){
@@ -163,10 +167,30 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 		    	return true;
 		    }
 		}
+		
 		return false;
 	}
 
 
+  Collection<EntityContext>  sortById(Collection<EntityContext> entityContexts) {
+		final List<EntityContext> toBeSorted = new ArrayList<>(entityContexts);
+		
+		Collections.sort(toBeSorted, new Comparator<EntityContext>(){
+
+			@Override
+			public int compare(final EntityContext o1, final EntityContext o2) {
+				
+				if(( o1.hasId()) && (o2.hasId())) {
+						return (int) Math.signum(o1.id() - o2.id());
+				} else {
+					return  (int) Math.signum(o1.created().getTime() - o2.created().getTime()); 
+				}
+				
+			}});
+		
+		return Collections.unmodifiableList(toBeSorted);
+		
+	}
 	
 	
 

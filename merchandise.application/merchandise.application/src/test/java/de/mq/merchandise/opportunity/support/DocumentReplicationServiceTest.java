@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -22,6 +20,7 @@ import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.ModelRepository;
 import de.mq.merchandise.BasicRepository;
 import de.mq.merchandise.opportunity.support.EntityContext.State;
+import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Paging;
 
 public class DocumentReplicationServiceTest {
@@ -105,22 +104,7 @@ public class DocumentReplicationServiceTest {
 		
 		Mockito.when(basicRepository.forId(1L)).thenReturn(opportunity);
 		
-		final boolean callOnMe[] = {false};
-		Mockito.when(entityContextRepository.fetch(Mockito.any(Resource.class), Mockito.any(Paging.class))).thenAnswer(new Answer<Collection<EntityContext>>() {
-
-			@Override
-			public Collection<EntityContext> answer(InvocationOnMock invocation) throws Throwable {
-		
-				final Paging paging = (Paging) invocation.getArguments()[1];
-				paging.assignRowCounter(1L);
-			
-				Assert.assertEquals(Resource.Opportunity, invocation.getArguments()[0]);
-				if(!callOnMe[0]){
-					callOnMe[0]=true;
-					return entityContexts;
-				}
-				return new ArrayList<>();
-			} });
+		fetchRows();
 		
 		
 		Mockito.doAnswer(new Answer<Void>() {
@@ -178,9 +162,11 @@ public class DocumentReplicationServiceTest {
 		i++;
 		}
 		
-		final Set<EntityContext> results = new HashSet<>();
+		final Collection<EntityContext> results = new ArrayList<>();
 		results.add(entityContextDelete);
 		results.add(entityContextDuplicate);
+		
+		
 		
 		Mockito.verify(documentIndexRepository).updateDocuments(results);
 		Mockito.verify(entityContext).assign(State.Skipped);
@@ -192,6 +178,25 @@ public class DocumentReplicationServiceTest {
 		
 		
 		
+	}
+
+	private void fetchRows() {
+		final boolean callOnMe[] = {false};
+		Mockito.when(entityContextRepository.fetch(Mockito.any(Resource.class), Mockito.any(Paging.class))).thenAnswer(new Answer<Collection<EntityContext>>() {
+
+			@Override
+			public Collection<EntityContext> answer(InvocationOnMock invocation) throws Throwable {
+		
+				final Paging paging = (Paging) invocation.getArguments()[1];
+				paging.assignRowCounter(1L);
+			
+				Assert.assertEquals(Resource.Opportunity, invocation.getArguments()[0]);
+				if(!callOnMe[0]){
+					callOnMe[0]=true;
+					return entityContexts;
+				}
+				return new ArrayList<>();
+			} });
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -213,19 +218,8 @@ public class DocumentReplicationServiceTest {
 		}
 		
 		
-		final boolean callOnMe[] = {false};
-		Mockito.when(entityContextRepository.fetch(Mockito.any(Resource.class), Mockito.any(Paging.class))).thenAnswer(new Answer<Collection<EntityContext>>() {
-
-			@Override
-			public Collection<EntityContext> answer(InvocationOnMock invocation) throws Throwable {
+		fetchRows();
 		
-				Assert.assertEquals(Resource.Opportunity, invocation.getArguments()[0]);
-				if(!callOnMe[0]){
-					callOnMe[0]=true;
-					return entityContexts;
-				}
-				return new ArrayList<>();
-			} });
 		
 		final OpportunityIndexAO opportunityIndexAO = Mockito.mock(OpportunityIndexAO.class);
 		Mockito.when(proxyFactory.createProxy((Class<?>) Mockito.any(), (ModelRepository) Mockito.anyObject())).thenReturn(opportunityIndexAO);
@@ -279,7 +273,7 @@ public class DocumentReplicationServiceTest {
 	
 	
 	private Collection<EntityContext>idsLessThan(final Collection<EntityContext> entityContexts, final long maxId) {
-		final Collection<EntityContext> results = new HashSet<>();
+		final Collection<EntityContext> results = new ArrayList<>();
 		for(final EntityContext entityContext : entityContexts){
 			if( entityContext.id() > maxId){
 				continue;
@@ -300,7 +294,7 @@ public class DocumentReplicationServiceTest {
 		
 		Mockito.when(entityContextAggregation.minDate()).thenReturn(new GregorianCalendar(1968,04,28).getTime(), new Date());
 		
-		final Collection<EntityContext> processed = new HashSet<>();
+		final Collection<EntityContext> processed = new ArrayList<>();
 		
 		Mockito.when(entityContextRepository.aggregation()).thenReturn(entityContextAggregation);
 		for( long i=1; i < DocumentReplicationServiceImpl.maxProcess *10   ; i++){
@@ -320,20 +314,8 @@ public class DocumentReplicationServiceTest {
 		
 		}
 		
-		final boolean callOnMe[] = {false};
-		Mockito.when(entityContextRepository.fetch(Mockito.any(Resource.class), Mockito.any(Paging.class))).thenAnswer(new Answer<Collection<EntityContext>>() {
-
-			@Override
-			public Collection<EntityContext> answer(InvocationOnMock invocation) throws Throwable {
-	
-				Assert.assertEquals(Resource.Opportunity, invocation.getArguments()[0]);
-				if(!callOnMe[0]){
-					callOnMe[0]=true;
-				
-					return entityContexts;
-				}
-				return new ArrayList<>();
-			} });
+		fetchRows();
+		
 		
 		final OpportunityIndexAO opportunityIndexAO = Mockito.mock(OpportunityIndexAO.class);
 		Mockito.when(proxyFactory.createProxy((Class<?>) Mockito.any(), (ModelRepository) Mockito.anyObject())).thenReturn(opportunityIndexAO);
@@ -403,5 +385,59 @@ public class DocumentReplicationServiceTest {
 	   
 		
 	}
+	
+	@Test
+	public final void sortByIdWithIds() {
+		
+		
+		entityContexts.add(withId(2));
+		entityContexts.add(withId(1));
+		
+		long id = 0; 
+		for(final EntityContext entityContext : ((DocumentReplicationServiceImpl)documentReplicationService).sortById(entityContexts)) {
+			Assert.assertTrue(id < entityContext.id());
+			id=entityContext.id();
+		}
+		
+		
+		
+	}
+	
+	@Test
+	public final void sortByIdWithoutIds() throws InterruptedException {
+
+		
+		entityContexts.add(withId(1L));
+		Thread.sleep(100);
+		entityContexts.add(EntityUtil.create(EntityContextImpl.class));
+		
+		
+		boolean likeAVirgin=true;
+		for(final EntityContext entityContext : ((DocumentReplicationServiceImpl)documentReplicationService).sortById(entityContexts)) {
+			Assert.assertEquals(likeAVirgin, entityContext.hasId());
+			likeAVirgin=false;
+		}
+		
+		entityContexts.clear();
+		entityContexts.add(EntityUtil.create(EntityContextImpl.class));
+		Thread.sleep(100);
+		entityContexts.add(withId(1L));
+		
+		
+		likeAVirgin=false;
+		for(final EntityContext entityContext : ((DocumentReplicationServiceImpl)documentReplicationService).sortById(entityContexts)) {
+			Assert.assertEquals(likeAVirgin, entityContext.hasId());
+			likeAVirgin=true;
+		}
+		
+	}
+
+	private EntityContext withId(final long id ) {
+		final EntityContext entityContext = EntityUtil.create(EntityContextImpl.class);
+		EntityUtil.setId(entityContext, id);
+		return entityContext;
+	}
+	
+	
 
 }
