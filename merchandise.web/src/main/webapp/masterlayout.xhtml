@@ -32,6 +32,10 @@ xmlns:ui="http://java.sun.com/jsf/facelets" >
         		         <p:menuitem value="#{message.menu_edit_subjects}" url="/subjects.xhtml" /> 
         		          <p:menuitem value="#{message.menu_edit_opportunities}" url="/opportunities.xhtml" />  
         		   </p:submenu>
+        		   
+        		   <p:submenu label="#{message.menu_order}" icon="ui-icon-search">
+        		   <p:menuitem value="#{message.menu_order_opportunity_search}" url="/opportunitySearch.xhtml" />   
+        		   </p:submenu>
         		   </p:menubar>
         		  </h:form>
         </ui:insert>
