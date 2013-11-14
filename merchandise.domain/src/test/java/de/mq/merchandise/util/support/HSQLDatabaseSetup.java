@@ -32,6 +32,7 @@ public class HSQLDatabaseSetup implements BeanFactoryPostProcessor, ApplicationL
 		//process(ds, "docs/lobs.sql");
 		process(ds, "docs/products.sql"); 
 		process(ds, "docs/activities.sql"); 
+		process(ds, "docs/postgis.sql"); 
 		
 	}
 	private boolean isHSQL(final DataSource ds) {
