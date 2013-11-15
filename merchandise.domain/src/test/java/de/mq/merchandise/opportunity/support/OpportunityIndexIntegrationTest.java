@@ -62,7 +62,7 @@ public class OpportunityIndexIntegrationTest {
 	public final void create() {
 		
 		final Customer customer  = entityManager.merge(PersonConstants.customer());
-		final CommercialSubject commercialSubject = entityManager.merge(new CommercialSubjectImpl(customer, "Krupp'sche Geschäfte", "Ihr Prinzip und ihre Folgen für die Allemeinheit"));
+		final CommercialSubject commercialSubject = entityManager.merge(new CommercialSubjectImpl(customer, "Krupp'sche Geschäfte", "Ihr Prinzip und ihre Folgen für die Allgemeinheit"));
 		final Opportunity opportunity = entityManager.merge(new OpportunityImpl(customer,"Wintergewitter" , "Gescheitertes Date von Friedrich und Hermann", Kind.Tender));
 		
 		final OpportunityIndexImpl opportunityIndex = entityManager.merge(new OpportunityIndexImpl(opportunity));
