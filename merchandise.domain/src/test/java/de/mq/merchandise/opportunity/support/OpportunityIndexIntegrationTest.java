@@ -66,7 +66,7 @@ public class OpportunityIndexIntegrationTest {
 		final Opportunity opportunity = entityManager.merge(new OpportunityImpl(customer,"Wintergewitter" , "Gescheitertes Date von Friedrich und Hermann", Kind.Tender));
 		
 		final OpportunityIndexImpl opportunityIndex = entityManager.merge(new OpportunityIndexImpl(opportunity));
-		//waste.add(opportunityIndex);
+		waste.add(opportunityIndex);
 		waste.add(opportunity);
 		waste.add(commercialSubject);
 		waste.add(customer);
