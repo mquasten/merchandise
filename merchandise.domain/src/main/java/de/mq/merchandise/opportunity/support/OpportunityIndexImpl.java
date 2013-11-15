@@ -30,11 +30,11 @@ class OpportunityIndexImpl implements OpportunityIndex{
 	
 
 	
-	@Column(name="search_vector" , length=10000, insertable=false, updatable=false)
+	@Column(name="search_vector" , insertable=false, updatable=false,  columnDefinition="TSVECTOR")
 	@Basic(fetch=FetchType.LAZY)
 	private String searchVector;
 	
-	@Column(name="geo_coordinatates" , length=100,  insertable=false, updatable=false  , columnDefinition="GEOGRAPHY(Point)")
+	@Column(name="geo_coordinates" ,insertable=false, updatable=false  , columnDefinition="GEOGRAPHY(Point)")
 	@Basic(fetch=FetchType.LAZY)
 	private String geometry;
 	
