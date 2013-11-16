@@ -27,7 +27,7 @@ import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
-@Ignore
+
 public class OpportunityIndexIntegrationTest {
 	
 	private static final double LONGITUDE = 44.5858333;
@@ -86,17 +86,21 @@ public class OpportunityIndexIntegrationTest {
 		Assert.assertEquals(opportunityIndex, result);
 		Assert.assertEquals(result.id(), result.opportunity().id());
 		
-		final String searchSql="select i from OpportunityIndex i where st_distance(i.geometry, ST_GeometryFromText(:geometry) ) < :distance)";
-		final TypedQuery<OpportunityIndex> typedQuery = entityManager.createQuery(searchSql, OpportunityIndex.class);
+		final String searchSql="select  distinct i.opportunity from OpportunityIndex i where st_distance(i.geometry, ST_GeometryFromText(:geometry) ) < :distance  and checkvector(i.searchVector,to_tsquery(:pattern))=true ";
+		System.out.println(searchSql);
+		final TypedQuery<Opportunity> typedQuery = entityManager.createQuery(searchSql, Opportunity.class);
 		typedQuery.setParameter("geometry", longitudeLatitudeToText(LONGITUDE2, LATITUDE2));
 		typedQuery.setParameter("distance", 150 * 1e3);
-		for(final OpportunityIndex  index : typedQuery.getResultList()) {
-			if( index.opportunity().equals(opportunity) ) {
-				Assert.assertEquals(opportunity.id(), index.id());
+		typedQuery.setParameter("pattern", "FRIEDRICH|PAULUS");
+		for(final Opportunity  res : typedQuery.getResultList()) {
+			if( res.equals(opportunity) ) {
+				System.out.println(res.name());
+				Assert.assertEquals(opportunity.id(), res.id());
 				return;
 			}
 		}
 		Assert.fail("At least one row should be returned");
+	
 		
 	}
 
