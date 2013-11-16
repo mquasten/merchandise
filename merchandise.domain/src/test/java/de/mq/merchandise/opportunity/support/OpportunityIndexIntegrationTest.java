@@ -27,7 +27,7 @@ import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
-
+@Ignore
 public class OpportunityIndexIntegrationTest {
 	
 	private static final double LONGITUDE = 44.5858333;
