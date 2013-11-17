@@ -13,6 +13,7 @@ public class OpportunityGeoLocationIndexImpl extends AbstractOpportunityIndex {
 
 	
 	OpportunityGeoLocationIndexImpl(final Opportunity opportunity) {
+		//:TODO use id from address when location adress is assignable to an opportunity
 		super(new Double( Math.random() * 1e12).longValue(), opportunity);
 	}
 	
