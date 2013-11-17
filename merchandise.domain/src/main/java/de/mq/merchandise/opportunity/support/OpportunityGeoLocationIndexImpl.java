@@ -6,15 +6,16 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
 
+import de.mq.merchandise.contact.CityAddress;
+
 @Entity(name="OpportunityGeoLocationIndex")
 @Table(name="opportunity_gis_index")
 public class OpportunityGeoLocationIndexImpl extends AbstractOpportunityIndex {
 
 
 	
-	OpportunityGeoLocationIndexImpl(final Opportunity opportunity) {
-		//:TODO use id from address when location adress is assignable to an opportunity
-		super(new Double( Math.random() * 1e12).longValue(), opportunity);
+	OpportunityGeoLocationIndexImpl(final Opportunity opportunity, final CityAddress address) {
+		super(address.id(), opportunity);
 	}
 	
 	private OpportunityGeoLocationIndexImpl() {

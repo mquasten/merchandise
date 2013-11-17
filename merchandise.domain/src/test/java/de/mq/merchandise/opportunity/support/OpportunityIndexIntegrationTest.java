@@ -17,6 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.BasicEntity;
+import de.mq.merchandise.contact.CityAddress;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.PersonConstants;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
@@ -34,6 +36,7 @@ import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 //@Ignore
 public class OpportunityIndexIntegrationTest {
 	
+	private static final long ADDRESS_ID = 19680528L;
 	private static final double LONGITUDE = 44.5858333;
 	private static final double LATITUDE = 48.8047222;
 	
@@ -48,9 +51,12 @@ public class OpportunityIndexIntegrationTest {
 	@Autowired
 	private DataSource dataSource;
 	
+	private CityAddress address = Mockito.mock(CityAddress.class);
+	
 	@Before
-	public  void datasourceCheck() {
+	public  void before() {
 		isHSQL=false;
+		Mockito.when(address.id()).thenReturn(ADDRESS_ID);
 		try (final Connection con = dataSource.getConnection()) {
 			
 			if( con.getMetaData().getDriverName().startsWith("HSQL")){
@@ -92,7 +98,7 @@ public class OpportunityIndexIntegrationTest {
 		
 		final OpportunityIndex opportunityIndexFullTextSearch = entityManager.merge(new OpportunityFullTextSearchIndexImpl(opportunity));
 		
-		final OpportunityIndex opportunityGeoLocationIndex =  entityManager.merge(new OpportunityGeoLocationIndexImpl(opportunity));
+		final OpportunityIndex opportunityGeoLocationIndex =  entityManager.merge(new OpportunityGeoLocationIndexImpl(opportunity, address));
 		
 		
 		waste.add(opportunityIndexFullTextSearch);
