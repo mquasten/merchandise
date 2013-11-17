@@ -2,6 +2,7 @@ package de.mq.merchandise.opportunity.support;
 
 import de.mq.merchandise.BasicEntity;
 
+
 /**
  * Assigns some special postgress fields to an opportunity.
  * the fields are for geocoding and full text search and they are only used in bulk opperations.
@@ -16,5 +17,6 @@ public interface OpportunityIndex extends BasicEntity{
  * @return the opportunity for the inde
  */
  Opportunity opportunity();
+ 
 
 }

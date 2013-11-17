@@ -1,5 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,13 +9,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.sql.DataSource;
 
 import junit.framework.Assert;
 
 import org.junit.After;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -27,7 +31,7 @@ import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
-@Ignore
+//@Ignore
 public class OpportunityIndexIntegrationTest {
 	
 	private static final double LONGITUDE = 44.5858333;
@@ -39,7 +43,28 @@ public class OpportunityIndexIntegrationTest {
 	private EntityManager entityManager;
 	private final List<BasicEntity> waste  = new ArrayList<BasicEntity>();
 	
+	private boolean isHSQL=false;;
 	
+	@Autowired
+	private DataSource dataSource;
+	
+	@Before
+	public  void datasourceCheck() {
+		isHSQL=false;
+		try (final Connection con = dataSource.getConnection()) {
+			
+			if( con.getMetaData().getDriverName().startsWith("HSQL")){
+				isHSQL=true;
+				return;
+			}
+				
+			
+		} catch (final SQLException ex) {
+			 System.err.println(ex.getMessage());
+			
+		}
+		
+	}
 	
 	
 	@After
@@ -65,33 +90,54 @@ public class OpportunityIndexIntegrationTest {
 		final CommercialSubject commercialSubject = entityManager.merge(new CommercialSubjectImpl(customer, "Krupp'sche Geschäfte", "Ihr Prinzip und ihre Folgen für die Allgemeinheit"));
 		final Opportunity opportunity = entityManager.merge(new OpportunityImpl(customer,"Wintergewitter" , "Gescheitertes Date von Friedrich und Hermann", Kind.Tender));
 		
-		final OpportunityIndexImpl opportunityIndex = entityManager.merge(new OpportunityIndexImpl(opportunity));
-		waste.add(opportunityIndex);
+		final OpportunityIndex opportunityIndexFullTextSearch = entityManager.merge(new OpportunityFullTextSearchIndexImpl(opportunity));
+		
+		final OpportunityIndex opportunityGeoLocationIndex =  entityManager.merge(new OpportunityGeoLocationIndexImpl(opportunity));
+		
+		
+		waste.add(opportunityIndexFullTextSearch);
+		waste.add(opportunityGeoLocationIndex);
 		waste.add(opportunity);
 		waste.add(commercialSubject);
 		waste.add(customer);
 		waste.add(customer.person());
 		
-		final String updateSql="update OpportunityIndex set geometry = ST_GeometryFromText(:geometry), searchVector = to_tsvector(coalesce(:name,'') || ' ' || coalesce(:description,'')) where id = :id";
+		final String updateSqlTS="update OpportunityFullTextSearchIndex set  searchVector = to_tsvector(coalesce(:name,'') || ' ' || coalesce(:description,'')) where id = :id";
 		
-		final Query query = entityManager.createQuery(updateSql);
-		query.setParameter("geometry",  longitudeLatitudeToText(LONGITUDE, LATITUDE));
-		query.setParameter("id", opportunity.id());
-		query.setParameter("name", opportunity.name());
-		query.setParameter("description", opportunity.description());
-		Assert.assertEquals(1, query.executeUpdate());
-		final OpportunityIndexImpl result = entityManager.find(OpportunityIndexImpl.class, opportunityIndex.id());
+		final Query queryTS = entityManager.createQuery(updateSqlTS);
+
+		queryTS.setParameter("id", opportunity.id());
+		queryTS.setParameter("name", opportunity.name());
+		queryTS.setParameter("description", opportunity.description());
 		
-		Assert.assertEquals(opportunity, result.opportunity());
-		Assert.assertEquals(opportunityIndex, result);
-		Assert.assertEquals(result.id(), result.opportunity().id());
+		if( ! isHSQL) {
+		   Assert.assertEquals(1, queryTS.executeUpdate());
+		}
+		findAndCheckOpportunityIndex(opportunity, opportunityIndexFullTextSearch);
 		
-		final String searchSql="select  distinct i.opportunity from OpportunityIndex i where st_distance(i.geometry, ST_GeometryFromText(:geometry) ) < :distance  and checkvector(i.searchVector,to_tsquery(:pattern))=true ";
+		
+		
+		final String updateSqlGIS="update OpportunityGeoLocationIndex set  geometry = ST_GeometryFromText(:geometry) where id = :id";
+		
+		final Query queryGIS = entityManager.createQuery(updateSqlGIS);
+		queryGIS.setParameter("geometry",  longitudeLatitudeToText(LONGITUDE, LATITUDE));
+		queryGIS.setParameter("id",opportunityGeoLocationIndex.id());
+		if (! isHSQL){
+			Assert.assertEquals(1, queryGIS.executeUpdate());
+		}
+		
+		findAndCheckOpportunityIndex(opportunity, opportunityGeoLocationIndex);	
+		
+		
+		if( isHSQL){
+			return;
+		}
+		final String searchSql="select  distinct  o from Opportunity o where  exists(select 1 from OpportunityFullTextSearchIndex ts where checkvector(ts.searchVector, to_tsquery(:pattern))=true and o.id=ts.opportunity.id) and exists(select 1 from OpportunityGeoLocationIndex gis  where  st_distance(gis.geometry, ST_GeometryFromText(:geometry) ) < :distance  and o.id = gis.opportunity.id )";
 		System.out.println(searchSql);
 		final TypedQuery<Opportunity> typedQuery = entityManager.createQuery(searchSql, Opportunity.class);
 		typedQuery.setParameter("geometry", longitudeLatitudeToText(LONGITUDE2, LATITUDE2));
 		typedQuery.setParameter("distance", 150 * 1e3);
-		typedQuery.setParameter("pattern", "FRIEDRICH|PAULUS");
+		typedQuery.setParameter("pattern", "HERMANN&FRIEDRICH&DATE&WINTERGEWITTER");
 		for(final Opportunity  res : typedQuery.getResultList()) {
 			if( res.equals(opportunity) ) {
 				System.out.println(res.name());
@@ -99,13 +145,24 @@ public class OpportunityIndexIntegrationTest {
 				return;
 			}
 		}
-		Assert.fail("At least one row should be returned");
+		Assert.fail("At least one row should be returned"); 
 	
+
+	}
+
+	private void findAndCheckOpportunityIndex(final Opportunity opportunity, final OpportunityIndex opportunityIndex) {
+		final OpportunityIndex result = entityManager.find(AbstractOpportunityIndex.class, opportunityIndex.id());
 		
+		Assert.assertEquals(opportunity, result.opportunity());
+		Assert.assertEquals(opportunityIndex, result);
+		Assert.assertEquals(opportunity.id(), result.opportunity().id());
+		Assert.assertEquals(opportunityIndex.id(), result.id());
 	}
 
 	private String longitudeLatitudeToText(final double longitude, final double  latitude) {
 		return String.format("Point(%s %s)", longitude, latitude);
 	}
+	
+	
 
 }
