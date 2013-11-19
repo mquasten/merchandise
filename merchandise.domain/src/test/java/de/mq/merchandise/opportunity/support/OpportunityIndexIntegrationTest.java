@@ -15,9 +15,9 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -26,19 +26,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.BasicEntity;
-import de.mq.merchandise.contact.CityAddress;
+import de.mq.merchandise.contact.Address;
+import de.mq.merchandise.contact.ContactBuilderFactory;
+import de.mq.merchandise.contact.support.ContactBuilderFactoryImpl;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.PersonConstants;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
-//@Ignore
 public class OpportunityIndexIntegrationTest {
-	
-	private static final long ADDRESS_ID = 19680528L;
-	private static final double LONGITUDE = 44.5858333;
-	private static final double LATITUDE = 48.8047222;
 	
 	private static final double LONGITUDE2= 43.046111;
 	private static final double LATITUDE2 = 48.494444;
@@ -46,17 +43,20 @@ public class OpportunityIndexIntegrationTest {
 	private EntityManager entityManager;
 	private final List<BasicEntity> waste  = new ArrayList<BasicEntity>();
 	
+	private final List<String> indexWaste = new ArrayList<>();
+	private ContactBuilderFactory contactBuilderFactory = new ContactBuilderFactoryImpl();
+	
 	private boolean isHSQL=false;;
 	
 	@Autowired
 	private DataSource dataSource;
 	
-	private CityAddress address = Mockito.mock(CityAddress.class);
+	private final Address address = contactBuilderFactory.addressBuilder().withCity("Stalingrad").withZipCode("99999").withHouseNumber("unkownn").withStreet("unkown").withCoordinates(contactBuilderFactory.coordinatesBuilder().withLongitude(44.5858333).withLatitude(48.8047222).build()).build();
 	
 	@Before
 	public  void before() {
 		isHSQL=false;
-		Mockito.when(address.id()).thenReturn(ADDRESS_ID);
+		
 		try (final Connection con = dataSource.getConnection()) {
 			
 			if( con.getMetaData().getDriverName().startsWith("HSQL")){
@@ -75,6 +75,15 @@ public class OpportunityIndexIntegrationTest {
 	
 	@After
     public final void clean() {
+		for(String id : indexWaste){
+			final OpportunityIndex inDenStaub= entityManager.find(AbstractOpportunityIndex.class, id);
+			if( inDenStaub == null){
+				continue;
+			}
+			entityManager.remove(inDenStaub);
+			entityManager.flush();
+		}
+		
     	for(final BasicEntity entity : waste){
     		
     		final BasicEntity find = entityManager.find(entity.getClass(), entity.id());
@@ -95,14 +104,18 @@ public class OpportunityIndexIntegrationTest {
 		final Customer customer  = entityManager.merge(PersonConstants.customer());
 		final CommercialSubject commercialSubject = entityManager.merge(new CommercialSubjectImpl(customer, "Krupp'sche Geschäfte", "Ihr Prinzip und ihre Folgen für die Allgemeinheit"));
 		final Opportunity opportunity = entityManager.merge(new OpportunityImpl(customer,"Wintergewitter" , "Gescheitertes Date von Friedrich und Hermann", Kind.Tender));
+		final Address cityAddress = entityManager.merge(address);
 		
 		final OpportunityIndex opportunityIndexFullTextSearch = entityManager.merge(new OpportunityFullTextSearchIndexImpl(opportunity));
 		
-		final OpportunityIndex opportunityGeoLocationIndex =  entityManager.merge(new OpportunityGeoLocationIndexImpl(opportunity, address));
+		final OpportunityIndex opportunityGeoLocationIndex =  entityManager.merge(new OpportunityGeoLocationIndexImpl(opportunity, cityAddress));
 		
 		
-		waste.add(opportunityIndexFullTextSearch);
-		waste.add(opportunityGeoLocationIndex);
+		
+		indexWaste.add(opportunityIndexFullTextSearch.id());
+		indexWaste.add(opportunityGeoLocationIndex.id());
+		
+		waste.add(cityAddress);
 		waste.add(opportunity);
 		waste.add(commercialSubject);
 		waste.add(customer);
@@ -112,7 +125,7 @@ public class OpportunityIndexIntegrationTest {
 		
 		final Query queryTS = entityManager.createQuery(updateSqlTS);
 
-		queryTS.setParameter("id", opportunity.id());
+		queryTS.setParameter("id", opportunityIndexFullTextSearch.id());
 		queryTS.setParameter("name", opportunity.name());
 		queryTS.setParameter("description", opportunity.description());
 		
@@ -126,7 +139,7 @@ public class OpportunityIndexIntegrationTest {
 		final String updateSqlGIS="update OpportunityGeoLocationIndex set  geometry = ST_GeometryFromText(:geometry) where id = :id";
 		
 		final Query queryGIS = entityManager.createQuery(updateSqlGIS);
-		queryGIS.setParameter("geometry",  longitudeLatitudeToText(LONGITUDE, LATITUDE));
+		queryGIS.setParameter("geometry",  longitudeLatitudeToText(address.coordinates().longitude(), address.coordinates().latitude()));
 		queryGIS.setParameter("id",opportunityGeoLocationIndex.id());
 		if (! isHSQL){
 			Assert.assertEquals(1, queryGIS.executeUpdate());

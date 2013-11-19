@@ -1,6 +1,8 @@
 package de.mq.merchandise.opportunity.support;
 
-import de.mq.merchandise.BasicEntity;
+import java.io.Serializable;
+
+
 
 
 /**
@@ -10,13 +12,18 @@ import de.mq.merchandise.BasicEntity;
  * @author mquasten
  *
  */
-public interface OpportunityIndex extends BasicEntity{
+interface OpportunityIndex extends Serializable {
 
 /**
  * The opportunity related to the index
  * @return the opportunity for the inde
  */
  Opportunity opportunity();
+ 
+ /**
+  * The id as a uuid string
+  */
+ String id();
  
 
 }

@@ -1,7 +1,10 @@
 package de.mq.merchandise.opportunity.support;
 
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -17,26 +20,32 @@ import de.mq.merchandise.util.Equals;
 
 @Entity(name="OpportunityIndex")
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-abstract class AbstractOpportunityIndex implements OpportunityIndex{
+abstract class AbstractOpportunityIndex implements OpportunityIndex {
 	
 	private static final long serialVersionUID = 1L;
 
 	@ManyToOne(targetEntity = OpportunityImpl.class, fetch = FetchType.LAZY,cascade={CascadeType.PERSIST, CascadeType.MERGE}, optional=false)
 	@JoinColumn(name = "opportunity_id")
-	@Equals
 	private final  Opportunity opportunity;
 	@Id
-	private final Long id; 
+	@Column(length=50)
+	@Equals
+	private final String id; 
 	
 
 	
-	protected AbstractOpportunityIndex(final Long id, final Opportunity opportunity) {
+	AbstractOpportunityIndex(final Opportunity opportunity, final long leastSignificatantId) {
+		this.id=new UUID(opportunity.id(), leastSignificatantId).toString();
 		this.opportunity=opportunity;
-		this.id=id;
+	}
+	
+	protected AbstractOpportunityIndex() {
+		id=null;
+		opportunity=null;
 	}
 	
 	
-	@Override
+	
 	public final Opportunity opportunity() {
 		return opportunity;
 		
@@ -52,18 +61,13 @@ abstract class AbstractOpportunityIndex implements OpportunityIndex{
 		 return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(OpportunityIndex.class).isEquals();
 	}
 	
-	@Override
-	public long id() {
-		EntityUtil.idAware(id);
+	
+	public String id() {
 		return id;
 	}
 
 
-	@Override
-	public boolean hasId() {
-		return id != null;
-	}
-
+	
 
 	
 }

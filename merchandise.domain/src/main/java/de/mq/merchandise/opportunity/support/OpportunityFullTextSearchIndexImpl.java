@@ -8,20 +8,21 @@ import javax.persistence.Table;
 
 @Entity(name="OpportunityFullTextSearchIndex")
 @Table(name="opportunity_ts_index")
-public class OpportunityFullTextSearchIndexImpl extends AbstractOpportunityIndex {
+public class OpportunityFullTextSearchIndexImpl extends AbstractOpportunityIndex  {
 
 	OpportunityFullTextSearchIndexImpl(final Opportunity opportunity) {
-		super(opportunity.id(), opportunity);
+		super(opportunity, 0L);
 	}
 	
+	@SuppressWarnings("unused")
 	private OpportunityFullTextSearchIndexImpl() {
-		super(null,null);
+		super();
 	}
 	
 
 	private static final long serialVersionUID = 1L;
 	
-	@Column(name="search_vector" , insertable=false, updatable=false ,  columnDefinition="TSVECTOR" )
+	@Column(name="search_vector" , insertable=false, updatable=false  ,  columnDefinition="TSVECTOR" )
 	@Basic(fetch=FetchType.LAZY)
 	private String searchVector;
 
