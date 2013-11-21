@@ -71,7 +71,7 @@ public class DocumentIndexRepositoryIntegrationTest {
 		final Opportunity opportunity = new OpportunityImpl(EntityUtil.create(CustomerImpl.class), "Pets for you", "Nicoles special escort service", Kind.ProductOrService);
 		ReflectionTestUtils.setField(opportunity, "id", 4711L);
 		
-		final RevisionAware indexAO = proxyFactory.createProxy(OpportunityIndexAO.class, new ModelRepositoryBuilderImpl().withDomain(opportunity).withBeanResolver(beanResolver).build());
+		final RevisionAware indexAO = proxyFactory.createProxy(OpportunityIndexCouchDBAO.class, new ModelRepositoryBuilderImpl().withDomain(opportunity).withBeanResolver(beanResolver).build());
 		
 		Collection<EntityContext> entityContexts = new ArrayList<>();
 	

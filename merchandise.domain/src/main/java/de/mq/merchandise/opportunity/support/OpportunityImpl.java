@@ -1,5 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,7 +24,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
+import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
@@ -83,6 +86,9 @@ public class OpportunityImpl implements Opportunity {
 	@Column(name="stored_document" ,length=250 )
 	//@Lob()
 	private Map<String,String> storedDocuments=new HashMap<>();
+	
+	@Transient
+	private Collection<Address> addresses= new ArrayList<>();
 	
 	protected OpportunityImpl() {
 		
@@ -289,6 +295,17 @@ public class OpportunityImpl implements Opportunity {
 		return storedDocuments.get(name);
 	}
 	
+	@Override
+	public final Collection<Address> addresses() {
+		return Collections.unmodifiableCollection(addresses);
+		
+	}
+	
+	@Override
+	public final void assign(final Address address){
+		addresses.remove(address);
+		addresses.add(address);
+	}
 	
 	
 

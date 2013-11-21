@@ -102,10 +102,10 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 			if( entityContext.isForDeleteRow()){
 				final BasicEntity entity = EntityUtil.create(Resource.Opportunity.entityClass());
 				EntityUtil.setId(entity, entityContext.reourceId());
-				entityContext.assign(RevisionAware.class , proxyFactory.createProxy(OpportunityIndexAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(entity).build()));
+				entityContext.assign(RevisionAware.class , proxyFactory.createProxy(OpportunityIndexCouchDBAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(entity).build()));
 			} else {
 				
-				entityContext.assign(RevisionAware.class, proxyFactory.createProxy(OpportunityIndexAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(basicRepository.forId(entityContext.reourceId())).build()));
+				entityContext.assign(RevisionAware.class, proxyFactory.createProxy(OpportunityIndexCouchDBAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(basicRepository.forId(entityContext.reourceId())).build()));
 			}
 			
 		}

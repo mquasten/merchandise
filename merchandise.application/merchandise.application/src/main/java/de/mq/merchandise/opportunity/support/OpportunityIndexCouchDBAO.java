@@ -14,7 +14,7 @@ import de.mq.mapping.util.proxy.support.Number2StringConverter;
 
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
-public abstract class OpportunityIndexAO  implements Serializable, RevisionAware{
+public abstract class OpportunityIndexCouchDBAO  implements Serializable, RevisionAware{
 	
 	private static final long serialVersionUID = 1L;
 

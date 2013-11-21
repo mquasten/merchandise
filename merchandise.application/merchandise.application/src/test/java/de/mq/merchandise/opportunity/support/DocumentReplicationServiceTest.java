@@ -88,8 +88,8 @@ public class DocumentReplicationServiceTest {
 		
 		final ArgumentCaptor<Class> clazzArgumentCaptor = ArgumentCaptor.forClass(Class.class) ;
 		final ArgumentCaptor<ModelRepository> modelRepositoryArgumentCaptor = ArgumentCaptor.forClass(ModelRepository.class) ;
-		final OpportunityIndexAO opportunityIndexAO = Mockito.mock(OpportunityIndexAO.class);
-		final OpportunityIndexAO opportunityIndexAODelete = Mockito.mock(OpportunityIndexAO.class);
+		final OpportunityIndexCouchDBAO opportunityIndexAO = Mockito.mock(OpportunityIndexCouchDBAO.class);
+		final OpportunityIndexCouchDBAO opportunityIndexAODelete = Mockito.mock(OpportunityIndexCouchDBAO.class);
 		
 		Mockito.when(entityContext.reference(RevisionAware.class)).thenReturn(opportunityIndexAO);
 		
@@ -142,7 +142,7 @@ public class DocumentReplicationServiceTest {
 		
 	
 		
-		Assert.assertEquals(OpportunityIndexAO.class, clazzArgumentCaptor.getValue());
+		Assert.assertEquals(OpportunityIndexCouchDBAO.class, clazzArgumentCaptor.getValue());
 	//	final ModelRepository modelRepository = modelRepositoryArgumentCaptor.getValue();
 		int i=0;
 		for(ModelRepository modelRepository : modelRepositoryArgumentCaptor.getAllValues()){
@@ -221,7 +221,7 @@ public class DocumentReplicationServiceTest {
 		fetchRows();
 		
 		
-		final OpportunityIndexAO opportunityIndexAO = Mockito.mock(OpportunityIndexAO.class);
+		final OpportunityIndexCouchDBAO opportunityIndexAO = Mockito.mock(OpportunityIndexCouchDBAO.class);
 		Mockito.when(proxyFactory.createProxy((Class<?>) Mockito.any(), (ModelRepository) Mockito.anyObject())).thenReturn(opportunityIndexAO);
 		
 		Mockito.doAnswer(new Answer<Void>() {
@@ -317,7 +317,7 @@ public class DocumentReplicationServiceTest {
 		fetchRows();
 		
 		
-		final OpportunityIndexAO opportunityIndexAO = Mockito.mock(OpportunityIndexAO.class);
+		final OpportunityIndexCouchDBAO opportunityIndexAO = Mockito.mock(OpportunityIndexCouchDBAO.class);
 		Mockito.when(proxyFactory.createProxy((Class<?>) Mockito.any(), (ModelRepository) Mockito.anyObject())).thenReturn(opportunityIndexAO);
 		
 		Mockito.doAnswer(new Answer<Void>() {

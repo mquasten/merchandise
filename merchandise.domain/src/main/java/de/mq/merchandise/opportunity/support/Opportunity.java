@@ -3,6 +3,7 @@ package de.mq.merchandise.opportunity.support;
 import java.util.Collection;
 
 import de.mq.merchandise.BasicEntity;
+import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 
@@ -52,6 +53,10 @@ public interface Opportunity extends BasicEntity, DocumentsAware{
 	void remove(final CommercialSubject commercialSubject);
 
 	void remove(CommercialSubject commercialSubject, ConditionType conditionType);
+
+	Collection<Address> addresses();
+
+	void assign(Address address);
  
 	
 
