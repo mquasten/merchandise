@@ -1,6 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.util.Collection;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -50,9 +50,10 @@ private final AOProxyFactory proxyFactory = new  BeanConventionCGLIBProxyFactory
 		
 		 final OpportunityIndexPostgreSqlAO ao = proxyFactory.createProxy(OpportunityIndexPostgreSqlAO.class, new ModelRepositoryBuilderImpl().withDomain(opportunity).withBeanResolver(beanResolver).build());
 		 Assert.assertEquals(String.format("%s %s %s %s %s", opportunity.name(), opportunity.description(), opportunity.customer().person().name(), KEYWORD , opportunity.kind()), ao.getTS());
-	     final Collection<String> points = ao.getPoints();
-	     Assert.assertEquals(1, points.size());
-	     Assert.assertEquals(String.format("POINT(%s %s)", coordinates.longitude(), coordinates.latitude()), points.iterator().next());
+	     final Map<Address, String> pointMap = ao.getPoints();
+	     Assert.assertEquals(1, pointMap.size());
+	     Assert.assertEquals(String.format("POINT(%s %s)", coordinates.longitude(), coordinates.latitude()), pointMap.values().iterator().next());
+	     Assert.assertEquals(address, pointMap.keySet().iterator().next());
 	}
 
 }

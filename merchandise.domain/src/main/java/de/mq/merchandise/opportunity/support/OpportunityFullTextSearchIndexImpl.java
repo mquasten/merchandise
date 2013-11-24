@@ -25,6 +25,9 @@ public class OpportunityFullTextSearchIndexImpl extends AbstractOpportunityIndex
 	@Column(name="search_vector" , insertable=false, updatable=false  ,  columnDefinition="TSVECTOR" )
 	@Basic(fetch=FetchType.LAZY)
 	private String searchVector;
+	
+	
+	
 
 	
 }
