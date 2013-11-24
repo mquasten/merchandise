@@ -4,6 +4,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -16,7 +17,7 @@ import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.contact.Coordinates;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.Person;
-
+@Ignore
 public class OpportunityIndexPostgreSqlAOTest {
 	
 private static final String KEYWORD = "Begleitung";
