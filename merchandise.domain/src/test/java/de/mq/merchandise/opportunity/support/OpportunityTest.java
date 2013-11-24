@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
@@ -23,6 +24,7 @@ public class OpportunityTest {
 	private static final long ID = 19680528L;
 	private static final String DESCRIPTION = "Description for artists";
 	private static final String NAME = "Artists";
+	final Address address = Mockito.mock(Address.class);
 	
 	private final Customer customer = Mockito.mock(Customer.class);
 
@@ -319,8 +321,33 @@ public class OpportunityTest {
 		opportunity.assignWebLink(WEB_LINK);
 		Assert.assertEquals(String.format(OpportunityImpl.WWW_URL, WEB_LINK), opportunity.urlForName(WEB_LINK));
 		Assert.assertTrue(opportunity.urlForName("kylie.com").startsWith("http://"));
+	
+	}
+	
+	@Test
+	public final void addresses() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		final Collection<Address> addresses = addresses(opportunity);
+		Assert.assertTrue(opportunity.addresses().isEmpty());
+	
+		addresses.add(address);
+		Assert.assertFalse(opportunity.addresses().isEmpty());
+		Assert.assertEquals(address, opportunity.addresses().iterator().next());
+	}
+
+	@SuppressWarnings("unchecked")
+	private Collection<Address> addresses(final Opportunity opportunity) {
+		return  (Collection<Address>) ReflectionTestUtils.getField(opportunity, "addresses");
+	}
+	
+	@Test
+	public final void assignAddress() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		Assert.assertTrue(addresses(opportunity).isEmpty());
+		opportunity.assign(address);
+		Assert.assertFalse(addresses(opportunity).isEmpty());
+		Assert.assertEquals(address, addresses(opportunity).iterator().next());
 		
-		System.out.println(opportunity.urlForName("kylie.com"));
 	}
 	
 }

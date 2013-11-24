@@ -22,7 +22,6 @@ import de.mq.merchandise.contact.ContactBuilderFactory;
 import de.mq.merchandise.contact.support.ContactBuilderFactoryImpl;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.PersonConstants;
-
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
