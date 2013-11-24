@@ -17,6 +17,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.BasicEntity;
+import de.mq.merchandise.contact.Address;
+import de.mq.merchandise.contact.ContactBuilderFactory;
+import de.mq.merchandise.contact.support.ContactBuilderFactoryImpl;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.PersonConstants;
 
@@ -39,6 +42,8 @@ public class OpportunityIntegrationTest {
 	private EntityManager entityManager;
 	private final List<BasicEntity> waste  = new ArrayList<BasicEntity>();
 	
+	private ContactBuilderFactory contactBuilderFactory = new ContactBuilderFactoryImpl();
+	
 	@After
     public final void clean() {
     	for(final BasicEntity entity : waste){
@@ -56,12 +61,13 @@ public class OpportunityIntegrationTest {
 	@Transactional()
 	@Rollback(false)
 	public final void persitOpportunity() {
+		
 		final Customer customer  = entityManager.merge(PersonConstants.customer());
 		final CommercialSubject commercialSubject = entityManager.merge(new CommercialSubjectImpl(customer, "EscortService++", null));
 		
 		final ActivityClassification activityClassification = entityManager.find(ActivityClassificationImpl.class, ACTIVITY_ID);
 		final ProductClassification procuctClassification =entityManager.find(ProductClassificationImpl.class, PRODUCT_ID);
-		
+		final Address address = contactBuilderFactory.addressBuilder().withCity("Wegberg").withZipCode("41844").withHouseNumber("4").withStreet("Am Telt").withCoordinates(contactBuilderFactory.coordinatesBuilder().withLongitude(6).withLatitude(54).build()).build();
 		waste.add(customer);
 		waste.add(commercialSubject);
 		
@@ -72,6 +78,7 @@ public class OpportunityIntegrationTest {
 		opportunity.assignClassification(procuctClassification);
 		opportunity.assignWebLink(LINK);
 		opportunity.assignKeyWord(KEY_WORD);
+		opportunity.assign(address);
 		final List<String> values = new ArrayList<>();
 		values.add(UNIT_HOUR);
 		values.add(UNIT_DAY);
@@ -114,6 +121,10 @@ public class OpportunityIntegrationTest {
 		Assert.assertEquals(2, result.commercialRelations().iterator().next().conditions().values().iterator().next().values().size());
 		Assert.assertTrue(result.commercialRelations().iterator().next().conditions().values().iterator().next().values().contains(UNIT_HOUR));
 		Assert.assertTrue(result.commercialRelations().iterator().next().conditions().values().iterator().next().values().contains(UNIT_DAY));
+		
+		Assert.assertEquals(1, result.addresses().size());
+		Assert.assertEquals(address, result.addresses().iterator().next());
+		System.out.println(">>>" + result.addresses().iterator().next().id());
 		
 	}
 	
