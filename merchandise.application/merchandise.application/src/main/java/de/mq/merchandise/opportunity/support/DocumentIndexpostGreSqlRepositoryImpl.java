@@ -21,6 +21,13 @@ public class DocumentIndexpostGreSqlRepositoryImpl  implements DocumentIndexRepo
 	
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	DocumentIndexpostGreSqlRepositoryImpl(final EntityManager entityManager){
+		this.entityManager=entityManager;
+	}
+	public DocumentIndexpostGreSqlRepositoryImpl(){
+		super();
+	}
 
 	@Override
 	public Map<Long, String> revisionsforIds(Collection<EntityContext> ids) {
@@ -46,10 +53,14 @@ public class DocumentIndexpostGreSqlRepositoryImpl  implements DocumentIndexRepo
 			return;
 		}
 		final Opportunity opportunity= entityManager.find(OpportunityImpl.class, entityContext.reourceId());
+		
+		
+		
 		final OpportunityIndex  tsIndex = entityManager.merge(new OpportunityFullTextSearchIndexImpl(opportunity));
 		final OpportunityIndexPostgreSqlAO ao = (OpportunityIndexPostgreSqlAO) entityContext.reference(RevisionAware.class);
 		final Query updateTsQuery = entityManager.createQuery(UPDATE_SQL_TS);
 		updateTsQuery.setParameter("id", tsIndex.id());
+		
 		updateTsQuery.setParameter("ts", ao.getTS());
 		
 		if( updateTsQuery.executeUpdate() !=1 ) {
@@ -67,8 +78,8 @@ public class DocumentIndexpostGreSqlRepositoryImpl  implements DocumentIndexRepo
 				return;
 			}
 			
-		}
-		entityContext.assign(State.Ok);
+		} 
+		entityContext.assign(State.Ok); 
 		
 	}
 	
