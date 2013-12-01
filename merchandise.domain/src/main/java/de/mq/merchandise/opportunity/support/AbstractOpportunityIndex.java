@@ -22,7 +22,7 @@ import de.mq.merchandise.util.Equals;
 
 @Entity(name="OpportunityIndex")
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-@NamedQueries(@NamedQuery(name = DocumentIndexRepository.INDEX_BY_OPPORTUNITY_ID, query = "Select i from OpportunityIndex i where i.opportunity.id=:id"))
+@NamedQueries(@NamedQuery(name = OpportunityIndexRepository.INDEX_BY_OPPORTUNITY_ID, query = "Select i from OpportunityIndex i where i.opportunity.id=:id"))
 abstract class AbstractOpportunityIndex implements OpportunityIndex {
 	
 	private static final long serialVersionUID = 1L;

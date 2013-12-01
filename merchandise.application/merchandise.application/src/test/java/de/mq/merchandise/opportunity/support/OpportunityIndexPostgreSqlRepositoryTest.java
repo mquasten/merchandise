@@ -11,7 +11,7 @@ import javax.persistence.TypedQuery;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class DocumentIndexpostGreSqlRepositoryTest {
+public class OpportunityIndexPostgreSqlRepositoryTest {
 	
 	private static final String INDEX_ID = "ID";
 
@@ -19,7 +19,7 @@ public class DocumentIndexpostGreSqlRepositoryTest {
 
 	private EntityManager entityManager = Mockito.mock(EntityManager.class);
 	
-	private DocumentIndexRepository documentIndexRepository = new DocumentIndexpostGreSqlRepositoryImpl(entityManager);
+	private OpportunityIndexRepository documentIndexRepository = new OpportunityIndexpostGreSqlRepositoryImpl(entityManager);
 	
 	
 	@Test
@@ -34,7 +34,7 @@ public class DocumentIndexpostGreSqlRepositoryTest {
 		entityContexts.add(updateEntityContext);
 		@SuppressWarnings("unchecked")
 		TypedQuery<OpportunityIndex> indexQuery = Mockito.mock(TypedQuery.class);
-		Mockito.when(entityManager.createNamedQuery(DocumentIndexpostGreSqlRepositoryImpl.INDEX_BY_OPPORTUNITY_ID, OpportunityIndex.class)).thenReturn(indexQuery);
+		Mockito.when(entityManager.createNamedQuery(OpportunityIndexpostGreSqlRepositoryImpl.INDEX_BY_OPPORTUNITY_ID, OpportunityIndex.class)).thenReturn(indexQuery);
 		final List<OpportunityIndex>  indexes = new ArrayList<>();
 		final OpportunityIndex opportunityIndex = Mockito.mock(OpportunityIndex.class);
 		Mockito.when(opportunityIndex.id()).thenReturn(INDEX_ID);
@@ -47,7 +47,7 @@ public class DocumentIndexpostGreSqlRepositoryTest {
 		Mockito.when(entityManager.merge(Mockito.any(OpportunityFullTextSearchIndexImpl.class))).thenReturn(tsIndex);
 		
 		final Query updateTsQuery  = Mockito.mock(Query.class);
-		Mockito.when(entityManager.createQuery(DocumentIndexpostGreSqlRepositoryImpl.UPDATE_SQL_TS)).thenReturn(updateTsQuery);
+		Mockito.when(entityManager.createQuery(OpportunityIndexpostGreSqlRepositoryImpl.UPDATE_SQL_TS)).thenReturn(updateTsQuery);
 		
 		documentIndexRepository.updateDocuments(entityContexts);
 		
@@ -56,7 +56,7 @@ public class DocumentIndexpostGreSqlRepositoryTest {
 		Mockito.verify(entityManager).remove(opportunityIndex);
 		Mockito.verify(entityManager).find(OpportunityImpl.class, ID);
 		Mockito.verify(entityManager).merge(Mockito.any(OpportunityFullTextSearchIndexImpl.class));
-		Mockito.verify(entityManager).createQuery(DocumentIndexpostGreSqlRepositoryImpl.UPDATE_SQL_TS);
+		Mockito.verify(entityManager).createQuery(OpportunityIndexpostGreSqlRepositoryImpl.UPDATE_SQL_TS);
 		Mockito.verify(updateEntityContext).reference(RevisionAware.class);
 		
 		Mockito.verify(updateTsQuery).setParameter("id", tsIndex.id());

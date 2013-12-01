@@ -3,7 +3,7 @@ package de.mq.merchandise.opportunity.support;
 import java.util.Collection;
 import java.util.Map;
 
-public interface DocumentIndexRepository {
+public interface OpportunityIndexRepository {
 	
 	public final static String INDEX_BY_OPPORTUNITY_ID = "indexByOpportunityId";
 

@@ -41,7 +41,7 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 	
 	private final BeanResolver beanResolver;
 	
-	public DocumentReplicationServiceImpl(final EntityContextRepository entityContextRepository,  final AOProxyFactory proxyFactory, final BeanResolver beanResolver, final DocumentIndexRepository documentIndexRepository, final BasicRepository<? extends BasicEntity, Long> basicRepository) {
+	public DocumentReplicationServiceImpl(final EntityContextRepository entityContextRepository,  final AOProxyFactory proxyFactory, final BeanResolver beanResolver, final OpportunityIndexRepository documentIndexRepository, final BasicRepository<? extends BasicEntity, Long> basicRepository) {
 		this.entityContextRepository = entityContextRepository;
 		this.proxyFactory = proxyFactory;
 		this.beanResolver = beanResolver;
@@ -50,7 +50,7 @@ public class DocumentReplicationServiceImpl implements DocumentReplicationServic
 	}
 
 
-	private DocumentIndexRepository documentIndexRepository;
+	private OpportunityIndexRepository documentIndexRepository;
 	
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.opportunity.support.DocumentReplicationService#replicate()

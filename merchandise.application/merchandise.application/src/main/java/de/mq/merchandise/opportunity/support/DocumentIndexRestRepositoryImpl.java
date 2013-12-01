@@ -12,7 +12,7 @@ import org.springframework.web.client.RestOperations;
 
 import de.mq.merchandise.opportunity.support.EntityContext.State;
 
-public class DocumentIndexRestRepositoryImpl implements DocumentIndexRepository {
+public class DocumentIndexRestRepositoryImpl implements OpportunityIndexRepository {
 
 	static final String DOCS_ATTRIBUTE = "docs";
 	static final String REV_ATTRIBUTE_NAME = "rev";

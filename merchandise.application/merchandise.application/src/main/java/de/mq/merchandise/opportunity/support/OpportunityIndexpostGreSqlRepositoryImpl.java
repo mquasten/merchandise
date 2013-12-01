@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.opportunity.support.EntityContext.State;
 
-public class DocumentIndexpostGreSqlRepositoryImpl  implements DocumentIndexRepository {
+public class OpportunityIndexpostGreSqlRepositoryImpl  implements OpportunityIndexRepository {
 	
 	static final String UPDATE_SQL_TS="update OpportunityFullTextSearchIndex set  searchVector = to_tsvector(:ts) where id = :id";
 	
@@ -22,10 +22,10 @@ public class DocumentIndexpostGreSqlRepositoryImpl  implements DocumentIndexRepo
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	DocumentIndexpostGreSqlRepositoryImpl(final EntityManager entityManager){
+	OpportunityIndexpostGreSqlRepositoryImpl(final EntityManager entityManager){
 		this.entityManager=entityManager;
 	}
-	public DocumentIndexpostGreSqlRepositoryImpl(){
+	public OpportunityIndexpostGreSqlRepositoryImpl(){
 		super();
 	}
 

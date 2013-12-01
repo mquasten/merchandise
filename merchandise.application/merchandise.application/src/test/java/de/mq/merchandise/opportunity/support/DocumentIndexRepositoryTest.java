@@ -24,7 +24,7 @@ public class DocumentIndexRepositoryTest {
 
 	private final RestOperations restOperations = Mockito.mock(RestOperations.class);
 	
-	private final  DocumentIndexRepository  documentIndexRepository = new DocumentIndexRestRepositoryImpl(restOperations);
+	private final  OpportunityIndexRepository  documentIndexRepository = new DocumentIndexRestRepositoryImpl(restOperations);
 	
 	private final EntityContext entityContextUpdate = new EntityContextImpl(19680528L, Resource.Opportunity, false);
 	

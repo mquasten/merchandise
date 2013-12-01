@@ -45,7 +45,7 @@ public class DocumentIndexRepositoryIntegrationTest {
 	
 	@Test
 	public final void revisionsForIds() {
-		final DocumentIndexRepository documentIndexRepository = new  DocumentIndexRestRepositoryImpl(restOperations);
+		final OpportunityIndexRepository documentIndexRepository = new  DocumentIndexRestRepositoryImpl(restOperations);
 		final Collection<EntityContext> ids = new ArrayList<>();
 		ids.add(new EntityContextImpl(19680528L, Resource.Opportunity));
 		ids.add(new EntityContextImpl(4711L, Resource.Opportunity));
@@ -65,7 +65,7 @@ public class DocumentIndexRepositoryIntegrationTest {
 	
 	@Test
 	public final void updateDocuments() throws JsonGenerationException, JsonMappingException, IOException, InterruptedException {
-		final DocumentIndexRepository documentIndexRepository = new  DocumentIndexRestRepositoryImpl(restOperations);
+		final OpportunityIndexRepository documentIndexRepository = new  DocumentIndexRestRepositoryImpl(restOperations);
 		final AOProxyFactory proxyFactory = new  BeanConventionCGLIBProxyFactory();
 		final BeanResolver beanResolver = new SimpleReflectionBeanResolverImpl();
 		final Opportunity opportunity = new OpportunityImpl(EntityUtil.create(CustomerImpl.class), "Pets for you", "Nicoles special escort service", Kind.ProductOrService);

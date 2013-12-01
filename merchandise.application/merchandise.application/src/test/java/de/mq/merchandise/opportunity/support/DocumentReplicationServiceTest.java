@@ -31,7 +31,7 @@ public class DocumentReplicationServiceTest {
 	
 	final BeanResolver beanResolver = Mockito.mock(BeanResolver.class);
 	
-	final DocumentIndexRepository documentIndexRepository = Mockito.mock(DocumentIndexRepository.class);
+	final OpportunityIndexRepository documentIndexRepository = Mockito.mock(OpportunityIndexRepository.class);
 	final BasicRepository<Opportunity, Long> basicRepository = Mockito.mock(OpportunityRepository.class);
 	
 	final DocumentReplicationService documentReplicationService = new DocumentReplicationServiceImpl(entityContextRepository, proxyFactory, beanResolver, documentIndexRepository, basicRepository);
