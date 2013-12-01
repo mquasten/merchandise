@@ -72,7 +72,7 @@ public class OpportunityIndexpostGreSqlRepositoryImpl  implements OpportunityInd
 			final OpportunityIndex  gisIndex = entityManager.merge(new OpportunityGeoLocationIndexImpl(opportunity, entry.getKey() ));
 			final Query updateGISQuery = entityManager.createQuery(UPDATE_SQL_GIS);
 			updateGISQuery.setParameter("id", gisIndex.id());
-			updateGISQuery.setParameter(":point", entry.getValue());
+			updateGISQuery.setParameter("point", entry.getValue());
 			if(updateGISQuery.executeUpdate() != 1){
 				entityContext.assign(State.Conflict);
 				return;
