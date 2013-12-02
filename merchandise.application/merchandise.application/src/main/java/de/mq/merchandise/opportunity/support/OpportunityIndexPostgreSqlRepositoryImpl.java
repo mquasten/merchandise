@@ -30,7 +30,7 @@ public class OpportunityIndexPostgreSqlRepositoryImpl implements OpportunityInde
 	}
 
 	@Override
-	public Map<Long, String> revisionsforIds(Collection<EntityContext> ids) {
+	public Map<Long, String> revisionsforIds(final Collection<EntityContext> ids) {
 		final Map<Long,String> revisions =  new HashMap<>();
 		for(EntityContext entityContext : ids){
 			revisions.put(entityContext.reourceId(), "" + entityContext.created().getTime());
