@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.opportunity.support.EntityContext.State;
 
-public class OpportunityIndexpostGreSqlRepositoryImpl  implements OpportunityIndexRepository {
+public class OpportunityIndexPostgreSqlRepositoryImpl implements OpportunityIndexRepository {
 	
 	static final String UPDATE_SQL_TS="update OpportunityFullTextSearchIndex set  searchVector = to_tsvector(:ts) where id = :id";
 	
@@ -22,16 +22,20 @@ public class OpportunityIndexpostGreSqlRepositoryImpl  implements OpportunityInd
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	OpportunityIndexpostGreSqlRepositoryImpl(final EntityManager entityManager){
+	OpportunityIndexPostgreSqlRepositoryImpl(final EntityManager entityManager){
 		this.entityManager=entityManager;
 	}
-	public OpportunityIndexpostGreSqlRepositoryImpl(){
+	public OpportunityIndexPostgreSqlRepositoryImpl(){
 		super();
 	}
 
 	@Override
 	public Map<Long, String> revisionsforIds(Collection<EntityContext> ids) {
-		return new HashMap<>();
+		final Map<Long,String> revisions =  new HashMap<>();
+		for(EntityContext entityContext : ids){
+			revisions.put(entityContext.reourceId(), "" + entityContext.created().getTime());
+		}
+		return revisions;
 	}
 
 	@Override
