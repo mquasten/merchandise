@@ -1,48 +1,18 @@
 package de.mq.merchandise.rule.support;
 
 import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyCodeSource;
 import groovy.lang.GroovyObject;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 
 import junit.framework.Assert;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.mq.merchandise.rule.Validator;
 
- 
-
-
-public class GrooovyValidationTest {
-	
-	String  VALIDATOR = "class MinMaxValidator  implements de.mq.merchandise.rule.Validator<Number>{" +
-		"def Number min; " +
-		"def Number max; " +
-		
-		"def  String[] parameters() {" +
-		    "['min' , 'max'];"+ 
-			
-		"};"+
-
-		"def String resourceKey() {"+
-		     "'MinMaxValidator.message';" +
-		"};"+
-		     
-		
-	"def boolean validate(final Number value){"+
-		  "(value.doubleValue() >= min) && (value.doubleValue() <= max);"+
-	      
-	"};"+
-		
-		
-	"}" ;
-	
+public class GroovyValidationTest {
 	
 	@Test
 	public final void testValidate() throws InstantiationException, IllegalAccessException, IOException {
@@ -51,7 +21,7 @@ public class GrooovyValidationTest {
 		//Class<?> clazz = loader.parseClass(VALIDATOR);
 			
 		final File reader = new File("src/test/groovy/MinMaxValidatorImpl.groovy");
-		Class<?> clazz = loader.parseClass(reader);
+		final Class<?> clazz = loader.parseClass(reader);
 		GroovyObject aScript = (GroovyObject) clazz.newInstance();
 		@SuppressWarnings("unchecked")
 		final Validator<Object> validator = (Validator<Object>) aScript;
