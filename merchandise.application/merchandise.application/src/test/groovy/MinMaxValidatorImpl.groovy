@@ -1,7 +1,7 @@
 import org.springframework.context.MessageSource;
 
 
-class MinMaxValidatorImpl<T>  implements de.mq.merchandise.rule.Validator<T>{
+class MinMaxValidatorImpl<T>  implements de.mq.merchandise.rule.Validator<T> {
 	def Number min = Double.MIN_VALUE;
 	def Number  max = Double.MAX_VALUE;
 	static final String RESOURCE_KEY = 'MinMaxValidator.message';
@@ -13,6 +13,7 @@ class MinMaxValidatorImpl<T>  implements de.mq.merchandise.rule.Validator<T>{
 		return ['min' , 'max'];
 	}
 
+	
 
 	@Override
 	final boolean validate(final T value){
@@ -24,16 +25,16 @@ class MinMaxValidatorImpl<T>  implements de.mq.merchandise.rule.Validator<T>{
 	}
 	
 	@Override
-	public String message(final MessageSource messagesource, final Locale locale) {
+	final String message(final MessageSource messagesource, final Locale locale) {
 		return messagesource.getMessage(RESOURCE_KEY, [min,max].toArray(), String.format(DEFAULT_MESSAGE, min, max),  locale,);
 	}
 	
 	
-	void setMax(final String max) {
+	final void setMax(final String max) {
 		this.max=Double.valueOf(max);
 	}
 	
-	void setMin(final String min) {
+	final void setMin(final String min) {
 		this.min=Double.valueOf(min);
 	}
 

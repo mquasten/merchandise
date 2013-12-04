@@ -17,7 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.rule.Validator;
 
-public class GroovyValidationTest {
+public class MinMaxValidatorValidationTest {
 	
 	private static final String ERROR_MESSAGE = "Eine Fehlermeldung";
 
