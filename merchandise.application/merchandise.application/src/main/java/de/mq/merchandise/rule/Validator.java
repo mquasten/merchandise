@@ -1,13 +1,15 @@
 package de.mq.merchandise.rule;
 
+import java.util.Locale;
+
+import org.springframework.context.MessageSource;
+
 public interface Validator<T> {
 	
 	String[] parameters();
-	
-	String resourceKey();
-	
-	boolean validate(T object);
+
+	boolean validate(final T object);
 		
-	
+	String message(final MessageSource messagesource, final Locale locale);
 
 }
