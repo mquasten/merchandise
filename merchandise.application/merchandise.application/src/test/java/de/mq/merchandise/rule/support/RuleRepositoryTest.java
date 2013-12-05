@@ -33,7 +33,6 @@ public class RuleRepositoryTest {
 	
 	private RuleRepository ruleRepository = new RuleRepositoryImpl(entityManager, pagingUtil);
 	
-	
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Test
 	public final void forNamePattern() {
