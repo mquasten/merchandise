@@ -41,6 +41,8 @@
 	<class>de.mq.merchandise.opportunity.support.OpportunityFullTextSearchIndexImpl</class>
 	<class>de.mq.merchandise.opportunity.support.OpportunityGeoLocationIndexImpl</class>
 	
+	<class>de.mq.merchandise.rule.support.RuleImpl</class>
+	
 		<!--  properties>
 		    <property name="eclipselink.weaving" value="false" />
 		 

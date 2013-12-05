@@ -68,6 +68,9 @@ public class CustomerImpl implements Customer {
 	@OneToMany(mappedBy="customer", targetEntity=CommercialSubjectImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 	private final Set<CommercialSubject> commercialSubjects=new HashSet<>();
 
+	
+	
+	
 	/**
 	 * Especially for persistence. A default constructor is needed;
 	 */

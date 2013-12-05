@@ -14,7 +14,7 @@ import de.mq.merchandise.customer.State;
  */
 
 @Embeddable()
-class StateImpl implements State {
+public class StateImpl implements State {
 	
 	
 	private static final long serialVersionUID = 1L;
