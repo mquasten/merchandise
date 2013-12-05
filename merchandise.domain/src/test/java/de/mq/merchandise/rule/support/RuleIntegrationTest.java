@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import junit.framework.Assert;
 
@@ -33,6 +34,9 @@ import de.mq.merchandise.util.EntityUtil;
 @ContextConfiguration(locations={"/emf.xml"})
 public class RuleIntegrationTest {
 	
+	private static final String NAME = "testrule";
+
+
 	@PersistenceContext()
 	private EntityManager entityManager;
 	
@@ -59,8 +63,7 @@ public class RuleIntegrationTest {
 		person = entityManager.merge(person);
 		final Customer customer = entityManager.merge(new CustomerImpl(person));
 		
-		final Rule rule = new RuleImpl(customer ,"testrule");
-		final Rule result = entityManager.merge(rule);
+		final Rule result = entityManager.merge(new RuleImpl(customer ,NAME));
 	
 		waste.add(result);
 		waste.add(customer);
@@ -68,6 +71,17 @@ public class RuleIntegrationTest {
 		
 
 		Assert.assertEquals(result, entityManager.find(RuleImpl.class, result.id()));
+		
+		
+		final TypedQuery<Rule> typedQuery = entityManager.createNamedQuery(RuleRepository.RULE_FOR_NAME_PATTERN, Rule.class);
+		typedQuery.setParameter(RuleRepository.PARAMETER_CUSTOMER_ID, customer.id());
+		typedQuery.setParameter(RuleRepository.PARAMETER_RULE_NAME, NAME);
+		boolean likeAVirgin=true;
+		for(final Rule rule: typedQuery.getResultList()){
+			Assert.assertEquals(result, rule);
+			likeAVirgin=false;
+		}
+		Assert.assertFalse(likeAVirgin);
 	}
 	
 	

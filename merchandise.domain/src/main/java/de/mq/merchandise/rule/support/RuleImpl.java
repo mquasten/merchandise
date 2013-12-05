@@ -10,22 +10,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Target;
-
-
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.State;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.customer.support.StateBuilderImpl;
 import de.mq.merchandise.customer.support.StateImpl;
-
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
 @Entity(name="Rule")
+@NamedQuery(name=RuleRepository.RULE_FOR_NAME_PATTERN, query="select r from Rule r where r.name like :name and r.customer.id = :customerId")
+@Table(name="rule" ,uniqueConstraints={@UniqueConstraint(columnNames={"customer_id", "name"})})
 class RuleImpl implements Rule  {
 	
 	private static final long serialVersionUID = 1L;
