@@ -35,7 +35,7 @@ public class BasicServiceImpl <T>  implements BasicService<T>{
 	public final T read(final Long id) {
 		final T result = repository.forId(id);
 		if ( result == null){
-			throw new InvalidDataAccessApiUsageException("CommercialSubject not found");
+			throw new InvalidDataAccessApiUsageException("Entity not found id:" +id);
 		}
 		return result;
 	}

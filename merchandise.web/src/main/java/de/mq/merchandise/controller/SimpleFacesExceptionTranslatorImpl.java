@@ -34,16 +34,24 @@ public class SimpleFacesExceptionTranslatorImpl implements Action {
 
 	@Override
 	public Object execute(final ExceptionTranslation exceptionTranslation, final ModelRepository modelRepository, final Throwable ex, final Object[] args ) throws Exception {
+		
+		
+		
 		if (ex instanceof ConstraintViolationException) {
 			addConstraintViolations(ex);
 			
-		} else {
+		}  else {
 			addFacesMessage(null, messageSourceController.get(exceptionTranslation.bundle()));
 		}
 		
 		
+		
 		facesContextFactory.requestContext().addCallbackParam(VALIDATION_FAILED, true);
 		facesContextFactory.facesContext().validationFailed();
+		
+		
+		
+		
 		if(! exceptionTranslation.resultExpression().trim().isEmpty()) {
 			return parseEl(exceptionTranslation, args);
 		}
