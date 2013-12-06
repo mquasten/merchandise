@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+xmlns:ui="http://java.sun.com/jsf/facelets">
+   
+    <h:body>
+     <f:metadata>
+      			<f:viewParam name="ruleId" value="#{rule.id}" /> 
+      			 <f:event listener="#{ruleController.initRule()}" type="preRenderView" />
+ 	 </f:metadata>
+    
+    
+     <ui:composition template="masterlayout.xhtml">
+         <ui:define name="content">
+           <h2 style="text-align: center">
+					<h:outputText value="#{message.rule_headline}" />
+			</h2>
+			
+			 <h:form>
+ 
+	 
+			 <p:panelGrid columns="1" styleClass="positionCentered">
+			    <p:messages errorClass="error" globalOnly="true" />  
+			 <p:panelGrid  columns="3" columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle" >
+		 
+		  
+		  		<p:outputLabel id="idLabel" for="id" value="#{message.rule_id}" />  
+		  		 <p:inputText id="id" label="id"  value="#{rule.id}" styleClass="gridInputField"  readonly="true" />
+		  		<p:message id="idMessage" for="id" display="text" />
+		  
+		  		<p:outputLabel id="nameLabel" for="name" value="#{message.rule_name}" />  
+                <p:inputText id="name" label="name"  value="#{rule.name}" styleClass="gridInputField" />
+             
+                
+              
+                    	
+                
+              
+              
+               </p:panelGrid>
+			
+			  
+			    
+			    <f:facet name="footer">
+			    <p:button value="#{message.rule_cancel_button}" outcome="/rules.xhtml" />
+			    <p:commandButton value="#{message.rule_save_button}" rendered="#{not empty rule.id}"/>
+			    </f:facet>
+			    
+			</p:panelGrid>
+			
+			
+			
+			</h:form>
+			
+			
+         </ui:define>
+     
+     </ui:composition>
+  
+   	</h:body>
+</html>
+
+

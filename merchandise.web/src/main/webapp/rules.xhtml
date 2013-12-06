@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+xmlns:ui="http://java.sun.com/jsf/facelets">
+   
+    <h:body>
+     <ui:composition template="masterlayout.xhtml">
+         <ui:define name="content">
+           <h2 style="text-align: center">
+					<h:outputText value="#{message.rules_headline}" />
+			</h2>
+			
+			<h:panelGrid id="page" columns="1" styleClass="positionCentered">
+		  <h:form>
+			    
+			   <h:panelGrid id="search" columns="5" styleClass="centered">
+			      <p:outputLabel for="rulePager" value="#{message.rules_page_prefix}[1...#{rulesModel.paging.maxPages}]" />
+			      <p:spinner id="rulePager"   min="1" max="#{rulesModel.paging.maxPages}" size="#{rulesModel.paging.maxPages}"  value="#{rulesModel.paging.currentPage}"/> 
+			      <p:outputLabel for="namePattern" value="#{message.rules_search_label}" />
+			      <p:inputText id="namePattern"  value="#{rulesModel.pattern}"  >
+			 	     <p:ajax event="change" update="@this"  process="@this"/>
+			      </p:inputText>
+                  <p:commandButton id="paging" value="#{message.rules_search_button}"     update="@form" process="@parent"   action="#{ruleController.rules()}"  />     
+               </h:panelGrid>        
+			
+			   <p:dataTable  id="rules" var="ruleVar" paginator="false" rows="#{rulesModel.paging.pageSize}"   value="#{rulesModel.rules}"  selection="#{rulesModel.selected}"  >  
+			   	   <p:column selectionMode="single" style="width:2%" />  
+                   <p:column headerText="#{message.rules_table_column_name}">#{ruleVar.name}</p:column> 
+                 <p:column headerText="#{message.rules_table_column_state}">
+                     <h:graphicImage   url="ok.GIF" rendered="#{ruleVar.state.isActive()}" />
+                     <h:graphicImage  url="cross.png" rendered="#{!ruleVar.state.isActive()}" />
+                 </p:column> 
+                   <p:ajax event="rowSelectRadio"  update="@form" process="@this"/> 
+			   </p:dataTable>
+	
+	 		<h:panelGrid id="buttonPanel" columns="1" >
+			   <p:button id="changeButton"   outcome="rule.xhtml" value="#{message.rules_change_button}"   rendered="#{not empty rulesModel.selected}"  >
+			      <f:param   name="ruleId" value="#{rulesModel.selected.id}" />
+			   </p:button>
+		
+		   </h:panelGrid>
+		    
+			</h:form>
+			
+				
+			
+		</h:panelGrid>
+			
+			
+			
+			
+         </ui:define>
+     
+     </ui:composition>
+  
+   	</h:body>
+</html>
+
+
