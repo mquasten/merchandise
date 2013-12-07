@@ -8,6 +8,9 @@ public class String2LongConverter implements Converter<String,Long> {
 
 	@Override
 	public Long convert(final String source) {
+		if( source == null){
+			return null;
+		}
 		return Long.valueOf(source);
 	}
 

@@ -2,14 +2,23 @@ package de.mq.merchandise.rule.support;
 
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.Size;
 
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+
+import de.mq.mapping.util.proxy.ActionEvent;
+import de.mq.mapping.util.proxy.ExceptionTranslation;
 import de.mq.mapping.util.proxy.Getter;
 import de.mq.mapping.util.proxy.GetterDomain;
+import de.mq.mapping.util.proxy.MethodInvocation;
+import de.mq.mapping.util.proxy.Parameter;
 import de.mq.mapping.util.proxy.Setter;
 import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Number2StringConverter;
+import de.mq.merchandise.controller.SimpleFacesExceptionTranslatorImpl;
 import de.mq.merchandise.customer.State;
+import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.model.support.String2LongConverter;
 import de.mq.merchandise.rule.Rule;
 
@@ -43,7 +52,10 @@ public abstract class RuleAO implements Serializable {
 	@SetterDomain(clazz = RuleImpl.class)
 	public abstract void setRule(final Rule rule);
 	
-	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleAO.class, proxy=true)  , @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['ruleId']" , elResultType=Long.class , converter=String2LongConverter.class) })  },clazz=RuleControllerImpl.class, value={ @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class, bundle="rule_not_found"), @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class, bundle="rule_not_found")})
+	@PostConstruct()
+	public abstract void initRuleAO();
+
 	
 	
 

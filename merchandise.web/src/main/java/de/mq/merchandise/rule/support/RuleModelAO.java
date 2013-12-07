@@ -36,6 +36,6 @@ public abstract class RuleModelAO implements Serializable {
 	
 	@Getter(value = "paging")
 	public abstract PagingAO getPaging();
-
+	
 
 }

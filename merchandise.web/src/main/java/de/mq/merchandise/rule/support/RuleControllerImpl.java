@@ -2,7 +2,6 @@ package de.mq.merchandise.rule.support;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.rule.RuleService;
-import de.mq.merchandise.util.EntityUtil;
 
 class RuleControllerImpl {
 	
@@ -33,15 +32,10 @@ class RuleControllerImpl {
 	}
 	
 	
-	
-	void initRule(final RuleAO rule, final Long ruleId){	
+	void initRuleAO(final RuleAO ruleAO, final Long ruleId){
 		
-		EntityUtil.setFieldsToNull(rule.getRule());
-		
-		rule.setRule(ruleServive.read(ruleId));
+		ruleAO.setRule(ruleServive.read(ruleId));
 	}
-	
-	
 	
 
 }
