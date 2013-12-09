@@ -1,5 +1,8 @@
 package de.mq.merchandise.rule.support;
 
+import org.springframework.security.crypto.codec.Hex;
+import org.springframework.util.StringUtils;
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.rule.RuleService;
 
@@ -33,9 +36,16 @@ class RuleControllerImpl {
 	
 	
 	void initRuleAO(final RuleAO ruleAO, final Long ruleId){
-		
 		ruleAO.setRule(ruleServive.read(ruleId));
 	}
 	
-
+	 String state(final RuleModelAO ruleModelAO) {
+		String x = StringUtils.arrayToCommaDelimitedString(new String[] { "" + ruleModelAO.getSelected().getId() ,  "" + ruleModelAO.getPaging().getCurrentPage() , ruleModelAO.getPattern().replaceAll("[,]", "%")});
+		String result =  String.valueOf(Hex.encode(x.getBytes()));
+		System.out.println(">>>>" + new String(Hex.decode(result)));
+		
+		
+		 
+		return result;
+	}
 }

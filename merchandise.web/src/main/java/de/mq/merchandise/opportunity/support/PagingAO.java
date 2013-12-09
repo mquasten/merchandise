@@ -17,7 +17,7 @@ public abstract class PagingAO implements Serializable {
 
 	@Setter(clazz = SimplePagingImpl.class, value = "currentPage")
 	public abstract void setCurrentPage(int page);
-
+	
 	@Getter(clazz = SimplePagingImpl.class, value = "maxPages")
 	public abstract int getMaxPages();
 

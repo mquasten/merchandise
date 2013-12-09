@@ -39,6 +39,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 	 		<h:panelGrid id="buttonPanel" columns="1" >
 			   <p:button id="changeButton"   outcome="rule.xhtml" value="#{message.rules_change_button}"   rendered="#{not empty rulesModel.selected}"  >
 			      <f:param   name="ruleId" value="#{rulesModel.selected.id}" />
+			      <f:param name="state" value="#{rulesModel.state()}"  />
 			   </p:button>
 		
 		   </h:panelGrid>

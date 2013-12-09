@@ -1,17 +1,26 @@
 package de.mq.merchandise.rule.support;
 
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+
+
+import de.mq.mapping.util.proxy.ActionEvent;
 import de.mq.mapping.util.proxy.Getter;
 import de.mq.mapping.util.proxy.GetterProxyCollection;
+import de.mq.mapping.util.proxy.MethodInvocation;
+import de.mq.mapping.util.proxy.Parameter;
 import de.mq.mapping.util.proxy.Setter;
+import de.mq.merchandise.controller.SerialisationControllerImpl;
+import de.mq.merchandise.controller.State;
 import de.mq.merchandise.model.support.SimpleMapDataModel;
 import de.mq.merchandise.opportunity.support.PagingAO;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.util.support.HibernateProxyConverter;
 
+@State({"paging.currentPage", "selected.id" , "pattern"})
 public abstract class RuleModelAO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -36,6 +45,9 @@ public abstract class RuleModelAO implements Serializable {
 	
 	@Getter(value = "paging")
 	public abstract PagingAO getPaging();
+	
+	@MethodInvocation(actions={@ActionEvent(name="serialize" , params={@Parameter(clazz = Object.class, proxy=true)})}, clazz = SerialisationControllerImpl.class)
+	public abstract String state();
 	
 
 }

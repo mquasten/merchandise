@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Scope;
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
+import de.mq.merchandise.controller.SerialisationControllerImpl;
 import de.mq.merchandise.opportunity.support.PagingAO;
 import de.mq.merchandise.rule.RuleService;
 import de.mq.merchandise.util.EntityUtil;
@@ -53,7 +54,7 @@ public class RuleProxyFactoryImpl {
 	@Bean(name="rulesModel")
 	@Scope("view")
 	public RuleModelAO rulesModel() {
-		return proxyFactory.createProxy(RuleModelAO.class,  new ModelRepositoryBuilderImpl().withMapEntry("paging", proxyFactory.createProxy(PagingAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(new SimplePagingImpl(10, "name, id")).build())).withBeanResolver(beanResolver).build());
+		return proxyFactory.createProxy(RuleModelAO.class,  new ModelRepositoryBuilderImpl().withDomain(EntityUtil.create(SerialisationControllerImpl.class)).withMapEntry("paging", proxyFactory.createProxy(PagingAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(new SimplePagingImpl(10, "name, id")).build())).withBeanResolver(beanResolver).build());
 	}
 	
 	@Bean(name="rule")
