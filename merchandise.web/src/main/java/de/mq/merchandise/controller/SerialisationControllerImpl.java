@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
 
 public class SerialisationControllerImpl {
 	
-	static final String DELIMITER = ""+(char) 0;
+	static final String DELIMITER = ""+(char) 30; /*Record Separator*/
 	
 	
 
@@ -18,8 +18,8 @@ public class SerialisationControllerImpl {
 	}
 	
 	
-	public void deseialize(final Object target, final String values) {
-		deseialize(target, values, properties(target));
+	public void deserialize(final Object target, final String values) {
+		deserialize(target, values, properties(target));
 	}
 	
 	String serialize(final Object target,final String[] properties )  {
@@ -48,7 +48,7 @@ public class SerialisationControllerImpl {
 	}
 	
 	
-	void deseialize(final Object target, final String values, final String[] properties ) {
+	void deserialize(final Object target, final String values, final String[] properties ) {
 		int i=0;
 		for(final String value : StringUtils.delimitedListToStringArray(values, DELIMITER)) {
 			assignProperty(target, properties[i], value);

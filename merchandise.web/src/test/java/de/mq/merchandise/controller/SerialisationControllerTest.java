@@ -89,7 +89,7 @@ private final BeanResolver beanResolver =  new SimpleReflectionBeanResolverImpl(
 	    Assert.assertNull(ao.getSelected().getId());
 	    Assert.assertNull(ao.getPattern());
 	    
-	    serialisationController.deseialize(ao, string("" + CURRENT_PAGE, RULE_ID, PATTERN), PROPERTIES);
+	    serialisationController.deserialize(ao, string("" + CURRENT_PAGE, RULE_ID, PATTERN), PROPERTIES);
 	    
 	   Assert.assertEquals(PATTERN, ao.getPattern());
 	   Assert.assertEquals(CURRENT_PAGE, ao.getPaging().getCurrentPage());
@@ -98,7 +98,7 @@ private final BeanResolver beanResolver =  new SimpleReflectionBeanResolverImpl(
 	
 	@Test(expected=IllegalStateException.class)
 	public final void deserializeWrongProperty() {
-		serialisationController.deseialize(ao, string("" + CURRENT_PAGE, PATTERN, RULE_ID), new String[]{"dontLetMeGetMe"});
+		serialisationController.deserialize(ao, string("" + CURRENT_PAGE, PATTERN, RULE_ID), new String[]{"dontLetMeGetMe"});
 	}
 	
 	@Test
@@ -107,7 +107,7 @@ private final BeanResolver beanResolver =  new SimpleReflectionBeanResolverImpl(
 		    Assert.assertNull(ao.getSelected().getId());
 		    Assert.assertNull(ao.getPattern());
 		    
-		    serialisationController.deseialize(ao, string("" + CURRENT_PAGE, RULE_ID, PATTERN));
+		    serialisationController.deserialize(ao, string("" + CURRENT_PAGE, RULE_ID, PATTERN));
 		    
 		   Assert.assertEquals(PATTERN, ao.getPattern());
 		   Assert.assertEquals(CURRENT_PAGE, ao.getPaging().getCurrentPage());

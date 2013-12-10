@@ -13,6 +13,7 @@ public abstract class PageModelAO  implements Serializable {
 	public abstract boolean getSelectMode();
 	
 	@Setter(value="selectMode")
-	public abstract void setSelectMode(boolean selectMode);
+	public abstract void setSelectMode(final boolean selectMode);
+	
 
 }

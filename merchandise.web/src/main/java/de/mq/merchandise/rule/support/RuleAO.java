@@ -46,13 +46,20 @@ public abstract class RuleAO implements Serializable {
 	@Getter(clazz =RuleImpl.class, value = "state")
 	public abstract State getState();
 	
+	@Setter( value = "parentState")
+	public abstract void setParentState(final String state);
+	
+	@Getter(value = "parentState")
+	public abstract String getParentState();
+	
+	
 	@GetterDomain(clazz = RuleImpl.class)
 	public abstract Rule getRule();
 	
 	@SetterDomain(clazz = RuleImpl.class)
 	public abstract void setRule(final Rule rule);
 	
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleAO.class, proxy=true)  , @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['ruleId']" , elResultType=Long.class , converter=String2LongConverter.class) })  },clazz=RuleControllerImpl.class, value={ @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class, bundle="rule_not_found"), @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class, bundle="rule_not_found")})
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleAO.class, proxy=true)  , @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['ruleId']" , elResultType=Long.class , converter=String2LongConverter.class), @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['state']" , elResultType=String.class ) })  , },clazz=RuleControllerImpl.class, value={ @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class, bundle="rule_not_found"), @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class, bundle="rule_not_found")})
 	@PostConstruct()
 	public abstract void initRuleAO();
 

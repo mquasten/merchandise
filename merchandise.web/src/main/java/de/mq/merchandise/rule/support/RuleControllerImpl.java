@@ -32,9 +32,17 @@ class RuleControllerImpl {
 	}
 	
 	
-	void initRuleAO(final RuleAO ruleAO, final Long ruleId){
-		ruleAO.setRule(ruleServive.read(ruleId));
+	void initRuleAO(final RuleAO ruleAO, final Long ruleId, final String state){
+	   
+		ruleAO.setParentState(state);
+		if(ruleId==null){
+			return;
+		}
+		ruleAO.setRule(ruleServive.read(ruleId));	
+		
 	}
+	
+	
 	
 	
 }

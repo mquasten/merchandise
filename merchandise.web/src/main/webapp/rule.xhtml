@@ -7,9 +7,6 @@ xmlns:p="http://primefaces.org/ui"
 xmlns:ui="http://java.sun.com/jsf/facelets">
    
     <h:body>
-     <f:metadata>
-      			
- 	 </f:metadata>
     
     
      <ui:composition template="masterlayout.xhtml">
@@ -44,7 +41,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 			  
 			    
 			    <f:facet name="footer">
-			    <p:button value="#{message.rule_cancel_button}" outcome="/rules.xhtml" />
+			    <p:button value="#{message.rule_cancel_button}" outcome="/rules.xhtml" >
+			       <f:param  name="state"  value="#{rule.parentState}" disable="#{empty  rule.parentState}" />
+			    </p:button>
 			    <p:commandButton value="#{message.rule_save_button}" rendered="#{not empty rule.id}"/>
 			    </f:facet>
 			    

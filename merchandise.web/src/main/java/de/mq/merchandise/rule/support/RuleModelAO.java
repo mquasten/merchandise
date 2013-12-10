@@ -5,7 +5,9 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 
+import org.springframework.security.core.context.SecurityContext;
 
 import de.mq.mapping.util.proxy.ActionEvent;
 import de.mq.mapping.util.proxy.Getter;
@@ -15,6 +17,8 @@ import de.mq.mapping.util.proxy.Parameter;
 import de.mq.mapping.util.proxy.Setter;
 import de.mq.merchandise.controller.SerialisationControllerImpl;
 import de.mq.merchandise.controller.State;
+import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.model.support.SimpleMapDataModel;
 import de.mq.merchandise.opportunity.support.PagingAO;
 import de.mq.merchandise.rule.Rule;
@@ -48,6 +52,10 @@ public abstract class RuleModelAO implements Serializable {
 	
 	@MethodInvocation(actions={@ActionEvent(name="serialize" , params={@Parameter(clazz = Object.class, proxy=true)})}, clazz = SerialisationControllerImpl.class)
 	public abstract String state();
+	
+	@MethodInvocation(actions={@ActionEvent(name="deserialize" ,params={@Parameter(clazz = Object.class, proxy=true)  , @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['state']" , elResultType=String.class ) }) , @ActionEvent(clazz=RuleControllerImpl.class, name="rules", params={@Parameter(clazz = RuleModelAO.class, proxy=true), @Parameter(clazz = SecurityContext.class , el="#arg.authentication.details" , elResultType=Customer.class)}) }, clazz=SerialisationControllerImpl.class)
+	@PostConstruct()
+	public abstract void initRuleModelAO() ;
 	
 
 }
