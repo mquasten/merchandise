@@ -44,7 +44,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 			    <p:button value="#{message.rule_cancel_button}" outcome="/rules.xhtml" >
 			       <f:param  name="state"  value="#{rule.parentState}" disable="#{empty  rule.parentState}" />
 			    </p:button>
-			    <p:commandButton value="#{message.rule_save_button}" rendered="#{not empty rule.id}"/>
+			    <p:commandButton value="#{message.rule_save_button}" action="#{ruleController.save()}"  rendered="#{not empty rule.id}">
+			     	<f:param  name="state"  value="#{rule.parentState}" disable="#{empty  rule.parentState}" />
+			    </p:commandButton>
 			    </f:facet>
 			    
 			</p:panelGrid>

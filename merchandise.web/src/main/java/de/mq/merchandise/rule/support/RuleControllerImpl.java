@@ -12,10 +12,19 @@ class RuleControllerImpl {
 	}
 
 	void rules(final RuleModelAO ruleModelAO, final Customer customer) {
+		System.out.println();
 	
-		ruleModelAO.setRules(ruleServive.rules(customer,ruleModelAO.getPattern() + "%", ruleModelAO.getPaging().getPaging()));
+		ruleModelAO.setRules(ruleServive.rules(customer,nvl(ruleModelAO.getPattern()) + "%", ruleModelAO.getPaging().getPaging()));
 		
 		updateSelection(ruleModelAO);
+	}
+
+	private String nvl(String  value) {
+		if( value==null){
+			return "";
+		}
+		
+		return value;
 	}
 	
 	void updateSelection(final RuleModelAO ruleModelAO) {
@@ -39,6 +48,12 @@ class RuleControllerImpl {
 			return;
 		}
 		ruleAO.setRule(ruleServive.read(ruleId));	
+		
+	}
+	
+	String save(final RuleAO ruleAO){
+		   
+		return "rules.xhtml?faces-redirect=true&state=" + ruleAO.getParentState();
 		
 	}
 	

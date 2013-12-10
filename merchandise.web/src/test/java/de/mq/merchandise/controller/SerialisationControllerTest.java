@@ -78,6 +78,13 @@ private final BeanResolver beanResolver =  new SimpleReflectionBeanResolverImpl(
 		Assert.assertEquals(string("" +CURRENT_PAGE , RULE_ID ,PATTERN  ), serialisationController.serialize(ao));
 	}
 	
+	
+	@Test
+	public final void serializePropertiesNull(){
+	
+		Assert.assertEquals(string("1", "" , ""), serialisationController.serialize(ao));
+	}
+	
 	private String string(final String ... args){
 		return StringUtils.arrayToDelimitedString(args, SerialisationControllerImpl.DELIMITER);
 		

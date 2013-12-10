@@ -13,6 +13,7 @@ interface RuleController {
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleModelAO.class), @Parameter(clazz = SecurityContext.class , el="#arg.authentication.details" , elResultType=Customer.class)})}, clazz = RuleControllerImpl.class)
 	void rules();
 	
-	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleAO.class)})}, clazz = RuleControllerImpl.class)
+	String save();
 
 }

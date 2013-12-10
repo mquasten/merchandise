@@ -26,6 +26,7 @@ public class SerialisationControllerImpl {
 		final Object[] values =  new Object[properties.length];
 		int i=0;
 		for(final String property : properties){
+			
 			values[i]=property(target, property);
 		    i++;
 		}
@@ -66,6 +67,12 @@ public class SerialisationControllerImpl {
 		    if( propertyType==null){
 		    	propertyType=String.class;
 		    }
+            
+		   if (value.length() == 0 ){
+			   PropertyUtils.setProperty(target,property, null);
+			   return;
+		   }
+
 			PropertyUtils.setProperty(target, property,((Constructor<?>) ClassUtils.resolvePrimitiveIfNecessary(propertyType).getConstructor(String.class)).newInstance(value));	
 		} catch (final Exception ex) {
 			ReflectionUtils.handleReflectionException(ex);
@@ -75,11 +82,19 @@ public class SerialisationControllerImpl {
 
 
 	
+	
+	
 
 	private Object property(final Object target, final String property)  {
 		try {
 		
-			return PropertyUtils.getProperty(target, property);
+			 final Object result =  PropertyUtils.getProperty(target, property);
+			 if(result==null){
+				 return "";
+			 }
+			 return result;
+			
+			
 		} catch (Exception ex) {
 			
 			ReflectionUtils.handleReflectionException(ex);
