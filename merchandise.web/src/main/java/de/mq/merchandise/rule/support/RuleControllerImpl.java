@@ -57,7 +57,9 @@ class RuleControllerImpl {
 		
 	}
 	
-	
+	void changeState(final Long ruleId, Boolean state) {
+		System.out.println(">>>" + ruleId + ":" +state);
+	}
 	
 	
 }

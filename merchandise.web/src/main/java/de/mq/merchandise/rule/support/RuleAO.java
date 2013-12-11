@@ -17,7 +17,6 @@ import de.mq.mapping.util.proxy.Setter;
 import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Number2StringConverter;
 import de.mq.merchandise.controller.SimpleFacesExceptionTranslatorImpl;
-import de.mq.merchandise.customer.State;
 import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.model.support.String2LongConverter;
 import de.mq.merchandise.rule.Rule;
@@ -43,8 +42,11 @@ public abstract class RuleAO implements Serializable {
 	@Setter(clazz = RuleImpl.class, value = "name")
 	public abstract void setName(final String name);
 	
-	@Getter(clazz =RuleImpl.class, value = "state")
-	public abstract State getState();
+	@Getter(clazz =RuleImpl.class, value = "state" , converter=StateToBooleanConverterImpl.class)
+	public abstract Boolean getState();
+	
+	@Setter(clazz =RuleImpl.class, value = "state" , converter=BooleanToStateConverterImpl.class)
+	public abstract void setState(final Boolean active);
 	
 	@Setter( value = "parentState")
 	public abstract void setParentState(final String state);

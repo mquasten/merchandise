@@ -11,7 +11,7 @@ import de.mq.merchandise.customer.State;
  * @author mquasten
  *
  */
-public interface Rule extends BasicEntity{
+public interface Rule extends BasicEntity {
 
 	/**
 	 * The name of the rule

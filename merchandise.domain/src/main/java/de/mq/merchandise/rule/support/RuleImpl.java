@@ -2,6 +2,10 @@ package de.mq.merchandise.rule.support;
 
 
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -12,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Target;
@@ -21,6 +26,8 @@ import de.mq.merchandise.customer.State;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.customer.support.StateBuilderImpl;
 import de.mq.merchandise.customer.support.StateImpl;
+import de.mq.merchandise.opportunity.support.DocumentsAware;
+import de.mq.merchandise.opportunity.support.Resource;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
@@ -28,7 +35,7 @@ import de.mq.merchandise.util.Equals;
 @Entity(name="Rule")
 @NamedQuery(name=RuleRepository.RULE_FOR_NAME_PATTERN, query="select r from Rule r where r.name like :name and r.customer.id = :customerId")
 @Table(name="rule" ,uniqueConstraints={@UniqueConstraint(columnNames={"customer_id", "name"})})
-class RuleImpl implements Rule  {
+public class RuleImpl implements Rule, DocumentsAware  {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -54,12 +61,15 @@ class RuleImpl implements Rule  {
 	@Target(StateImpl.class)
 	private State state= new StateBuilderImpl().build();
 	
+	@Column(length=50)
+	private String source;
+	
 	
 	private RuleImpl() {
 		super();
 	}
 	
-	public RuleImpl(final Customer customer, final String name) {
+	RuleImpl(final Customer customer, final String name) {
 		this();
 		this.name=name;
 		this.customer=customer;
@@ -107,6 +117,42 @@ class RuleImpl implements Rule  {
 	@Override
 	public String toString() {
 		return "name="+name;
+	}
+
+	@Override
+	public Map<String, String> documents() {
+		final Map<String,String> results = new HashMap<>();
+		if( source == null){
+			return Collections.unmodifiableMap(results);
+		}
+		results.put(source, String.format("%s/%s/5s", Resource.Source.urlPart() , id(), source ));
+		return  Collections.unmodifiableMap(results);
+	}
+
+	@Override
+	public void assignWebLink(final String name) {
+		throw new NoSuchMethodError();
+		
+	}
+
+	@Override
+	public void assignDocument(String name) {
+		this.source=name;
+		
+	}
+
+	@Override
+	public void removeDocument(final String name) {
+		this.source=null;
+		
+	}
+
+	@Override
+	public String urlForName(String name) {
+		if(source==null){
+			return null;
+		}
+		return String.format("%s/%s/5s", Resource.Source.urlPart() , id(),source );
 	}
 	
 	

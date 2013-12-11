@@ -15,5 +15,8 @@ interface RuleController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleAO.class)})}, clazz = RuleControllerImpl.class)
 	String save();
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleAO.class, el="#arg.rule.id()", elResultType=Long.class), @Parameter(clazz=RuleAO.class, el="#arg.state", elResultType=Boolean.class)})}, clazz = RuleControllerImpl.class)
+	void changeState();
 
 }

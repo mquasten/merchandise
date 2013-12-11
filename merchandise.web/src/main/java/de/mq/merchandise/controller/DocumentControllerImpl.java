@@ -54,6 +54,9 @@ class DocumentControllerImpl {
 	
 	
 	String url(final  DocumentsAware documentAware, final String name) {
+		
+		
+		
 		final String url = documentAware.urlForName(name);
 		
 		if( url == null){

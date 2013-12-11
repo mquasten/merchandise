@@ -29,12 +29,25 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  
 		  		<p:outputLabel id="nameLabel" for="name" value="#{message.rule_name}" />  
                 <p:inputText id="name" label="name"  value="#{rule.name}" styleClass="gridInputField" />
-             
+             	<p:message id="nameMessage" for="name" display="text" />
                 
-              
+                <p:outputLabel id="stateLabel" for="state" value="#{message.rule_state}" />  
                     	
-                
-              
+                <p:selectBooleanButton id="state" value="#{rule.state}" onLabel="#{message.rule_state_active}" offLabel="#{message.rule_state_deactive}" onIcon="ui-icon-check" offIcon="ui-icon-close" >
+                <p:ajax update="stateMessage" listener="#{ruleController.changeState()}"/>  
+                </p:selectBooleanButton>  
+            	
+            	
+            	<p:message id="stateMessage" for="state" display="text" />
+            	
+            	<p:outputLabel id="sourceLabel" for="source" value="#{message.rule_source}" />  
+            	
+            	<h:link id="source" value="source anzeigen" outcome="showDocument.xhtml" />
+            	
+            	<p:message id="sourceMessage" for="source" display="text" />
+            	
+        		
+              	
               
                </p:panelGrid>
 			

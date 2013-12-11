@@ -32,8 +32,8 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 			   	   <p:column selectionMode="single" style="width:2%" />  
                    <p:column headerText="#{message.rules_table_column_name}">#{ruleVar.name}</p:column> 
                  <p:column headerText="#{message.rules_table_column_state}">
-                     <h:graphicImage   url="ok.GIF" rendered="#{ruleVar.state.isActive()}" />
-                     <h:graphicImage  url="cross.png" rendered="#{!ruleVar.state.isActive()}" />
+                     <h:graphicImage   url="ok.GIF" rendered="#{ruleVar.state}" />
+                     <h:graphicImage  url="cross.png" rendered="#{!ruleVar.state}" />
                  </p:column> 
                    <p:ajax event="rowSelectRadio"  update="@form" process="@this"/> 
 			   </p:dataTable>

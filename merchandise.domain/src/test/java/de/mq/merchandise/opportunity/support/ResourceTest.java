@@ -8,7 +8,7 @@ import junit.framework.Assert;
 public class ResourceTest {
 	@Test
 	public void resources() {
-		Assert.assertEquals(2, Resource.values().length);
+		Assert.assertEquals(3, Resource.values().length);
 		boolean subject=false;
 		boolean opportunity=false;
 		for(final Resource resource : Resource.values()){
