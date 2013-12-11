@@ -1,7 +1,6 @@
 package de.mq.merchandise.rule.support;
 
 
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Target;
@@ -125,7 +123,7 @@ public class RuleImpl implements Rule, DocumentsAware  {
 		if( source == null){
 			return Collections.unmodifiableMap(results);
 		}
-		results.put(source, String.format("%s/%s/5s", Resource.Source.urlPart() , id(), source ));
+		results.put(source, String.format("%s/%s/%s", Resource.Source.urlPart() , id(), source ));
 		return  Collections.unmodifiableMap(results);
 	}
 
@@ -152,7 +150,7 @@ public class RuleImpl implements Rule, DocumentsAware  {
 		if(source==null){
 			return null;
 		}
-		return String.format("%s/%s/5s", Resource.Source.urlPart() , id(),source );
+		return String.format("%s/%s/%s", Resource.Source.urlPart() , id(),source );
 	}
 	
 	
