@@ -4,6 +4,7 @@
 xmlns:h="http://java.sun.com/jsf/html"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:p="http://primefaces.org/ui"
+xmlns:u="http://example.com/functions"
 xmlns:ui="http://java.sun.com/jsf/facelets">
    
     <h:body>
@@ -33,18 +34,31 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
                 
                 <p:outputLabel id="stateLabel" for="state" value="#{message.rule_state}" />  
                     	
-                <p:selectBooleanButton id="state" value="#{rule.state}" onLabel="#{message.rule_state_active}" offLabel="#{message.rule_state_deactive}" onIcon="ui-icon-check" offIcon="ui-icon-close" >
-                <p:ajax update="stateMessage" listener="#{ruleController.changeState()}"/>  
+                <p:selectBooleanButton id="state" value="#{rule.state}" onLabel="#{message.rule_state_active}" offLabel="#{message.rule_state_deactive}" disabled="#{(empty rule.rule.documents()) and (!rule.state) }" onIcon="ui-icon-check" offIcon="ui-icon-close" >
+                <p:ajax update="stateMessage,state" listener="#{ruleController.changeState()}"/>  
                 </p:selectBooleanButton>  
             	
             	
             	<p:message id="stateMessage" for="state" display="text" />
             	
-            	<p:outputLabel id="sourceLabel" for="source" value="#{message.rule_source}" />  
+            	<p:outputLabel id="fileLabel" for="file" value="#{message.rule_file}" />  
             	
-            	<h:link id="source" value="source anzeigen" outcome="showDocument.xhtml" />
+            	 <p:dataTable id="file" var="fileVar" value="#{u:list(rule.rule.documents().entrySet())}" emptyMessage="" >  
+        			<p:column headerText="#{message.rule_file_header}">  
+           			 <h:outputText value="#{fileVar.key}" />  
+        			</p:column>  
+        			<p:column headerText="#{message.rule_url_header}">  
+           			 <h:outputText value="#{fileVar.value}" />  
+        			</p:column>  
+            	</p:dataTable>
             	
-            	<p:message id="sourceMessage" for="source" display="text" />
+            	<p:message id="fileMesssage" for="file" display="text" />
+            	
+            	<p:outputLabel id="sourceLabel" for="source" value="#{message.rule_source}" rendered="#{not empty rule.rule.documents()}" />  
+            	
+            	<h:link id="source" value="source anzeigen" outcome="showDocument.xhtml" rendered="#{not empty rule.rule.documents()}" />
+            	
+            	<p:message id="sourceMessage" for="source" display="text" rendered="#{not empty rule.rule.documents()}" />
             	
         		
               	

@@ -1,7 +1,11 @@
 package de.mq.merchandise.model.support;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -120,6 +124,12 @@ public final  class Functions {
 			return message.get(PERSON_ADDRESS_ADDRESS_KEY);
 		}
 		return CONTACT_NOT_KNOWN_STRING; 
+	}
+	
+	
+	
+	public final static List<?> list(Collection<?> col) {
+		return Collections.unmodifiableList(new ArrayList<>(col));
 	}
 	
 	

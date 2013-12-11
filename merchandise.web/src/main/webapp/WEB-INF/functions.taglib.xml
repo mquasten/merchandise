@@ -76,6 +76,11 @@
         <function-signature>java.lang.String translate(java.lang.Object, java.util.Map)</function-signature>
     </function>
     
+      <function>
+        <function-name>list</function-name>
+        <function-class>de.mq.merchandise.model.support.Functions</function-class>
+        <function-signature>java.util.List list(java.util.Collection)</function-signature>
+    </function>
     
      
     
