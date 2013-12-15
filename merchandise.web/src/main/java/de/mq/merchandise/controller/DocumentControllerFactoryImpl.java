@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.model.support.WebProxyFactory;
 import de.mq.merchandise.opportunity.ResourceOperations;
 import de.mq.merchandise.opportunity.support.DocumentService;
@@ -18,9 +17,6 @@ public class DocumentControllerFactoryImpl {
 	private WebProxyFactory webProxyFactory;
 	
 	@Autowired
-	private FacesContextFactory facesContextFactory;
-	
-	@Autowired
 	private ResourceOperations resourceOperations;
 	
 	@Autowired
@@ -30,7 +26,7 @@ public class DocumentControllerFactoryImpl {
 	@Bean(name="documentController")
 	@Scope("singleton")
 	public DocumentController documentController() {
-		return  webProxyFactory.webModell(DocumentController.class, new DocumentControllerImpl(facesContextFactory,documentService, resourceOperations));
+		return  webProxyFactory.webModell(DocumentController.class, new DocumentControllerImpl(documentService, resourceOperations));
 	}
 	
 	

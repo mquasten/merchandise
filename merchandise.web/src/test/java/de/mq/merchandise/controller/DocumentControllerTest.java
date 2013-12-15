@@ -35,22 +35,18 @@ public class DocumentControllerTest {
 
 	private static final String CALL_SHOW_FROM = "document.xhtml";
 
-	private final FacesContextFactory facesContextFactory = Mockito.mock(FacesContextFactory.class);
 	
 	private final ResourceOperations resourceOperations = Mockito.mock(ResourceOperations.class);
 	
 	
 	private final DocumentService documentService = Mockito.mock(DocumentService.class);
 	
-	private final DocumentControllerImpl documentController = new DocumentControllerImpl(facesContextFactory,documentService,resourceOperations);
+	private final DocumentControllerImpl documentController = new DocumentControllerImpl(documentService,resourceOperations);
 	private final DocumentsAware documentsAware = Mockito.mock(DocumentsAware.class);
 	private final DocumentModelAO documentModelAO = Mockito.mock(DocumentModelAO.class);
 	
 	
-	@Test
-	public final void constrctor() {
-		Assert.assertEquals(facesContextFactory, ReflectionTestUtils.getField(documentController, "facesContextFactory"));
-	}
+	
 	
 	@Test
 	public final void addAttachement() throws IOException {
@@ -85,23 +81,7 @@ public class DocumentControllerTest {
 		Assert.assertEquals(WEB_LINK, documentController.url(documentsAware, DOCUMENT_NAME));
 	}
 	
-	@Test
-	public final void assign() {
-		
-		
-		final FacesContext facesContext = Mockito.mock(FacesContext.class);
-		final UIViewRoot uiViewRoot = Mockito.mock(UIViewRoot.class);
-		Mockito.when(facesContext.getViewRoot()).thenReturn(uiViewRoot);
-		Mockito.when(uiViewRoot.getViewId()).thenReturn(CALL_UPLOAD_FROM);
-		Mockito.when(facesContextFactory.facesContext()).thenReturn(facesContext);
-		Assert.assertEquals(DocumentControllerImpl.UPLOAD_DOCUMENT_URL_REDIRECT, documentController.assign(documentModelAO, documentsAware));
-		
-		Mockito.verify(documentModelAO).setReturnFromUpload(CALL_UPLOAD_FROM);
-		Mockito.verify(documentModelAO).setSelected(null);
-		Mockito.verify(documentModelAO).setDocument(documentsAware);
-		
-		
-	}
+	
 	
 	@Test
 	public final void removeAttachement() {
@@ -146,24 +126,21 @@ public class DocumentControllerTest {
 		Mockito.verifyNoMoreInteractions(documentsAware, documentModelAO);
 	}
 	
-	@Test
-	public final void cancelUpload() {
-		Assert.assertEquals(CALL_UPLOAD_FROM, documentController.cancelUpLoad(CALL_UPLOAD_FROM));
-	}
+	
 	
 	@Test
-	public final void showAttachement() throws IOException  {
+	public final void calculateSize() throws IOException  {
 		final BufferedImage image = Mockito.mock(BufferedImage.class);
 		Mockito.when(image.getWidth()).thenReturn(DocumentControllerImpl.MAX_WIDTH*5/3);
 		Mockito.when(image.getHeight()).thenReturn(DocumentControllerImpl.MAX_HEIGHT);
 		
 		initForShowAttachements(image, DOCUMENT_NAME);
 		
-		Assert.assertEquals(DocumentControllerImpl.SHOW_DOCUMENT_URL_REDIRECT, documentController.showAttachement(documentModelAO));
+		documentController.calculateSize(documentModelAO);
 		
 		Mockito.verify(documentModelAO).setWidth(DocumentControllerImpl.MAX_WIDTH);
 		Mockito.verify(documentModelAO).setHeight(DocumentControllerImpl.MAX_HEIGHT);
-		Mockito.verify(documentModelAO).setReturnFromShowAttachement(CALL_SHOW_FROM);
+		//Mockito.verify(documentModelAO).setReturnFromShowAttachement(CALL_SHOW_FROM);
 		
 		
 		Mockito.verify(documentModelAO).setWidth(DocumentControllerImpl.MAX_WIDTH);
@@ -174,12 +151,13 @@ public class DocumentControllerTest {
 	
 	
 	@Test
-	public final void showAttachementPdf() throws IOException  {
+	public final void calculateSizePdf() throws IOException  {
 		initForShowAttachements(null, DOCUMENT_NAME.replaceFirst("jpg", "pdf"));
-		Assert.assertEquals(DocumentControllerImpl.SHOW_DOCUMENT_URL_REDIRECT, documentController.showAttachement(documentModelAO));
+		documentController.calculateSize(documentModelAO);
+		
 		Mockito.verify(documentModelAO).setWidth(DocumentControllerImpl.MAX_WIDTH);
 		Mockito.verify(documentModelAO).setHeight(DocumentControllerImpl.MAX_HEIGHT);
-		Mockito.verify(documentModelAO).setReturnFromShowAttachement(CALL_SHOW_FROM);
+
 		
 		Mockito.verifyZeroInteractions(resourceOperations);
 	
@@ -188,7 +166,7 @@ public class DocumentControllerTest {
 	private void initForShowAttachements(final BufferedImage bufferedImage, String documentName)  {
 		String url = String.format("/opportunities/%s/%s", 19680528, documentName);
         final FacesContext facesContext = Mockito.mock(FacesContext.class);
-		Mockito.when(facesContextFactory.facesContext()).thenReturn(facesContext);
+		
 		final UIViewRoot viewRoot = Mockito.mock(UIViewRoot.class);
 		Mockito.when(facesContext.getViewRoot()).thenReturn(viewRoot);
 		Mockito.when(viewRoot.getViewId()).thenReturn(CALL_SHOW_FROM);
@@ -202,14 +180,14 @@ public class DocumentControllerTest {
 	}
 	
 	@Test
-	public final void showAttachementNoImage()  {
+	public final void calculateSizeNoImage()  {
 		initForShowAttachements(null, DOCUMENT_NAME);
 		
-		Assert.assertEquals(DocumentControllerImpl.SHOW_DOCUMENT_URL_REDIRECT, documentController.showAttachement(documentModelAO));
+		documentController.calculateSize(documentModelAO);
 
 		Mockito.verify(documentModelAO).setWidth(DocumentControllerImpl.MAX_WIDTH);
 		Mockito.verify(documentModelAO).setHeight(DocumentControllerImpl.MAX_HEIGHT);
-		Mockito.verify(documentModelAO).setReturnFromShowAttachement(CALL_SHOW_FROM);
+		
 		
 	}
 	
@@ -221,10 +199,10 @@ public class DocumentControllerTest {
 		
 		initForShowAttachements(image,DOCUMENT_NAME);
 		
-		Assert.assertEquals(DocumentControllerImpl.SHOW_DOCUMENT_URL_REDIRECT, documentController.showAttachement(documentModelAO));
+		documentController.calculateSize(documentModelAO);
 		Mockito.verify(documentModelAO).setWidth(DocumentControllerImpl.MAX_WIDTH);
 		Mockito.verify(documentModelAO).setHeight(DocumentControllerImpl.MAX_HEIGHT);
-		Mockito.verify(documentModelAO).setReturnFromShowAttachement(CALL_SHOW_FROM);
+		
 		
 	}
 	

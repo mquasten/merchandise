@@ -1,6 +1,8 @@
 package de.mq.merchandise.rule.support;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.opportunity.support.DocumentModelAO;
+import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.rule.RuleService;
 
 class RuleControllerImpl {
@@ -41,13 +43,15 @@ class RuleControllerImpl {
 	}
 	
 	
-	void initRuleAO(final RuleAO ruleAO, final Long ruleId, final String state){
+	void initRuleAO(final RuleAO ruleAO, final DocumentModelAO documentModelAO, final Long ruleId, final String state){
 	   
 		ruleAO.setParentState(state);
 		if(ruleId==null){
 			return;
 		}
-		ruleAO.setRule(ruleServive.read(ruleId));	
+		final Rule rule = ruleServive.read(ruleId);
+		ruleAO.setRule(rule);	
+		documentModelAO.setDocument(rule);
 		
 	}
 	

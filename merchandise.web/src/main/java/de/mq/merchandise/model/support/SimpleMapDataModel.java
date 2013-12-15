@@ -50,14 +50,17 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 	}
 
 	private UUID id(T object) throws IllegalAccessException, InvocationTargetException {
+		
 		final Object id = invokeGetId(object);
 		if ( id != null){
 		   return UUID.nameUUIDFromBytes(id.toString().getBytes());
 		}
-		return UUID.nameUUIDFromBytes(Long.valueOf(System.identityHashCode(object)).toString().getBytes());
+		return UUID.nameUUIDFromBytes(Long.valueOf(object.hashCode()).toString().getBytes());
 	}
 
 	private Object invokeGetId(T object) throws IllegalAccessException, InvocationTargetException {
+		
+		
 		final Method method =  ReflectionUtils.findMethod(object.getClass(), "getId" );
 		if ( method == null){
 			return null;

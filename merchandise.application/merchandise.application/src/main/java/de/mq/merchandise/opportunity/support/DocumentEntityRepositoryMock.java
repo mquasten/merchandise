@@ -57,9 +57,25 @@ public class DocumentEntityRepositoryMock  implements DocumentEntityRepository{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void save(final DocumentsAware entity) {
+	public DocumentsAware save(final DocumentsAware entity) {
 		entityTypeGuard(entity.getClass());
-		((BasicRepository<DocumentsAware, Long>) repositories.get(entity.getClass())).save(entity);
+		return ((BasicRepository<DocumentsAware, Long>) repositories.get(entity.getClass())).save(entity);
+	}
+
+
+
+	@Override
+	public void delete(Long Id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public DocumentsAware forId(Long id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

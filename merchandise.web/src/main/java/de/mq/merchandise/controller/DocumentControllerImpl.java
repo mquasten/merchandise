@@ -6,7 +6,6 @@ import java.io.InputStream;
 
 import org.primefaces.model.UploadedFile;
 
-import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.opportunity.ResourceOperations;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.DocumentService;
@@ -14,7 +13,7 @@ import de.mq.merchandise.opportunity.support.DocumentsAware;
 
 
 
-class DocumentControllerImpl {
+public class DocumentControllerImpl {
 	
 	
 	private static final String PDF_EXT = ".pdf";
@@ -33,10 +32,9 @@ class DocumentControllerImpl {
 	static final String URL_ROOT="http://localhost:8080/merchandise.web/attachements/%s"; 
 
 	
-	private final FacesContextFactory facesContextFactory;
 	
-	DocumentControllerImpl(final FacesContextFactory facesContextFactory, final DocumentService documentService, final ResourceOperations resourceOperations) {
-		this.facesContextFactory=facesContextFactory;
+	
+	public DocumentControllerImpl(final DocumentService documentService, final ResourceOperations resourceOperations) {
 		this.documentService=documentService;
 		this.resourceOperations=resourceOperations;
 	}
@@ -66,18 +64,10 @@ class DocumentControllerImpl {
 		if(url.trim().toLowerCase().startsWith("http")){
 			return url;
 		}
+		System.out.println(String.format(URL_ROOT, url));
 		return String.format(URL_ROOT, url);
 	}
 	
-	
-	String assign(final DocumentModelAO documentModelAO, final DocumentsAware document) {
-		
-		documentModelAO.setReturnFromUpload(facesContextFactory.facesContext().getViewRoot().getViewId());	
-		documentModelAO.setSelected(null);
-		documentModelAO.setDocument(document);
-		
-		return UPLOAD_DOCUMENT_URL_REDIRECT;
-	}
 	
 	
 	void removeAttachement(final DocumentModelAO documentModelAO , final String name ) {
@@ -108,20 +98,17 @@ class DocumentControllerImpl {
 	}
 	
 	
-	String showAttachement(final DocumentModelAO documentModelAO)   {
+	void calculateSize(final DocumentModelAO documentModelAO)   {
 		
 		documentModelAO.setWidth(MAX_WIDTH);
 		documentModelAO.setHeight(MAX_HEIGHT);	
-		documentModelAO.setReturnFromShowAttachement(facesContextFactory.facesContext().getViewRoot().getViewId());
-	
 		
 		
-		
-		String url = url(documentModelAO.getDocument(), documentModelAO.getSelected() );
+		final String url = url(documentModelAO.getDocument(), documentModelAO.getSelected() );
 		
 		
 		if( url.toLowerCase().endsWith(PDF_EXT)){
-			return SHOW_DOCUMENT_URL_REDIRECT;
+			return;
 		}
 		
 		final BufferedImage image =resourceOperations.readImage(url);
@@ -130,7 +117,7 @@ class DocumentControllerImpl {
 		
 		if ( image == null ){
 			
-			return SHOW_DOCUMENT_URL_REDIRECT;
+			return;
 		} 
 			
 		
@@ -144,17 +131,28 @@ class DocumentControllerImpl {
 		}
 			
 	
-	   return SHOW_DOCUMENT_URL_REDIRECT;
 	}
 
-
 	
+	/* like a virgin touched for the very first time */
+	public final void init(final DocumentModelAO documentModelAO, final Long documentId, final String page, final String selected, final String returnPage) {
 	
-	
-	String cancelUpLoad(final String page){
-		return page;
+		documentModelAO.setReturnFromUpload(page);
+		documentModelAO.setSelected(selected);
+		documentModelAO.setReturnFromShowAttachement(returnPage);
+		if(documentId==null){
+			return;
+		}
 		
+		
+		documentModelAO.setDocument(documentService.read(documentId));
+		
+		if( selected != null){
+			calculateSize(documentModelAO);
+		}
 	}
-
+	
+	
+	
 
 }

@@ -8,7 +8,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.model.support.WebProxyFactory;
 import de.mq.merchandise.opportunity.ResourceOperations;
 
@@ -18,8 +17,6 @@ public class DocumentControllerFactoryTest {
 	
 	private WebProxyFactory webProxyFactory = Mockito.mock(WebProxyFactory.class);
 	
-	
-	private FacesContextFactory facesContextFactory = Mockito.mock(FacesContextFactory.class);
 	
 	
 	private ResourceOperations resourceOperations = Mockito.mock(ResourceOperations.class);
@@ -36,7 +33,7 @@ public class DocumentControllerFactoryTest {
 	@Before
 	public final void setup() {
 		ReflectionTestUtils.setField(documentControllerFactory, "webProxyFactory", webProxyFactory);
-		ReflectionTestUtils.setField(documentControllerFactory, "facesContextFactory", facesContextFactory);
+		
 		ReflectionTestUtils.setField(documentControllerFactory, "resourceOperations", resourceOperations);
 		
 		Mockito.when(webProxyFactory.webModell(classCaptor.capture(), documentControllerCaptor.capture())).thenReturn(documentController);
@@ -48,7 +45,6 @@ public class DocumentControllerFactoryTest {
 		Assert.assertEquals(documentController, documentControllerFactory.documentController());
 		Assert.assertEquals(DocumentController.class, classCaptor.getValue());
 		
-		Assert.assertEquals(facesContextFactory, ReflectionTestUtils.getField(documentControllerCaptor.getValue(), "facesContextFactory"));
 		Assert.assertEquals(resourceOperations, ReflectionTestUtils.getField(documentControllerCaptor.getValue(), "resourceOperations"));
 	}
 

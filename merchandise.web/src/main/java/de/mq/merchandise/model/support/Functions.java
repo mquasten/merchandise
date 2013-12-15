@@ -3,7 +3,6 @@ package de.mq.merchandise.model.support;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -129,7 +128,11 @@ public final  class Functions {
 	
 	
 	public final static List<?> list(Collection<?> col) {
-		return Collections.unmodifiableList(new ArrayList<>(col));
+		final List<Object> results = new ArrayList<>();
+		for(final Object x : col){
+			results.add(x);
+		}
+		return results;
 	}
 	
 	

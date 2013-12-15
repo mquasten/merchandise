@@ -10,7 +10,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
   
   <f:metadata>
       	
-      	<f:viewParam name="selectMode" value="#{pageModel.selectMode}" /> 		
+      	<f:viewParam name="selectMode" value="#{pageModel.selectMode}" /> 	
+      
+     	
   	</f:metadata>
 
   <ui:composition template="masterlayout.xhtml" >
@@ -32,7 +34,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
             
 			 
 			 
-			 <p:dataTable  id="documentTable" var="documentVar" paginator="false"   value="#{documentModel.documents}"  selection="#{documentModel.selected}" >  
+			 <p:dataTable  id="documentTable" var="documentVar" paginator="false"     value="#{documentModel.documents}"  selection="#{documentModel.selected}" >  
 			   	   <p:column selectionMode="single" style="width:2%" />  
                   
                    
@@ -47,22 +49,27 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
                   
                 
                  
-                   <p:ajax event="rowSelectRadio"  update="@this,documentTable" process="@this"/> 
+                   <p:ajax  event="rowSelectRadio"  update="documentTable" process="documentTable"   />
+                  
+                 
+                     
+                     <f:param  name="documentId" value="#{documentModel.document.id()}"/>
+                  
+                    <f:param  name="page" value="#{documentModel.returnFromUpload}"/>
+                  
                    
 			   <f:facet name="footer">   
 			   
 			   
 			   			 
                         
-    					<p:commandButton value="#{message.document_show_button}"     action="#{documentController.showAttachement}" rendered="#{not empty documentModel.selected}"   process="@this documentTable"  update="documentTable @this" />
-    					 
-    					
-        					
-    				
-    					
-        				
-			   				
-		  	              <p:commandButton id="deleteAttachement"    value="#{message.document_delete_button}" action="#{documentController.removeAttachement}"   process="@this documentTable"  update="documentTable @this"   rendered="#{not empty documentModel.selected}"  />      
+    					<p:button value="#{message.document_show_button}"   outcome="showDocument.xhtml"   rendered="#{not empty documentModel.selected}"   process="@this documentTable"  update="documentTable @this" >
+    						<f:param  name="documentId" value="#{documentModel.document.id()}"/>
+    						<f:param  name="page" value="#{documentModel.returnFromUpload}"/>
+    						<f:param  name="selected" value="#{documentModel.selected}"/>
+    						<f:param  name="returnPage" value="uploadDocument.xhtml"/>
+    					</p:button>
+		  	            <p:commandButton id="deleteAttachement"    value="#{message.document_delete_button}" action="#{documentController.removeAttachement}"   process="@this documentTable"  update="documentTable @this"   rendered="#{not empty documentModel.selected}"  />      
 			 		
 			  </f:facet>
 			   
@@ -81,6 +88,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
           <h:outputLabel  for="webLink" value="#{message.document_web_link_label}" />  
 			    		    <p:inputText  id="webLink"     value="#{documentModel.link}"  >
 			    		      <p:ajax update="addLink" event="keyup"  />
+			    		       <f:param  name="documentId" value="#{documentModel.document.id()}"/>
+                  
+                    			<f:param  name="page" value="#{documentModel.returnFromUpload}"/>
 			    		    </p:inputText> 
 			    		    <h:panelGrid id="addLink">
 			  				<p:commandButton  value="#{message.document_add_link_button}" action="#{documentController.addLink}"   process="inputGrid"  update="@form"   rendered="#{not empty documentModel.link}"  />    
@@ -102,7 +112,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  
 	
 	 <f:facet name="footer">
-             <p:commandButton  action="#{documentController.cancelUpLoad()}" value="#{message.document_cancel_button}" style="float:left" process="@this"  update="@this"  />
+             <p:button   outcome="#{documentModel.returnFromUpload}" value="#{message.document_cancel_button}" style="float:left" process="@this"  update="@this"  />
+         
+             
          </f:facet>    
    
    </h:panelGrid>

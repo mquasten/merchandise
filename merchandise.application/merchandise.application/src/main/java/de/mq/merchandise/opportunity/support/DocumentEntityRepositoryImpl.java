@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
+import de.mq.merchandise.rule.support.RuleImpl;
+
 @Repository
 @Profile("db")
 class DocumentEntityRepositoryImpl implements DocumentEntityRepository {
@@ -44,8 +46,31 @@ class DocumentEntityRepositoryImpl implements DocumentEntityRepository {
 	 * @see de.mq.merchandise.opportunity.support.DocumentEntityRepository#save(de.mq.merchandise.opportunity.support.DocumentsAware)
 	 */
 	@Override
-	public final void save(final DocumentsAware result) {
-		entityManger.merge(result);
+	public final DocumentsAware save(final DocumentsAware result) {
+		return entityManger.merge(result);
+	}
+
+	@Override
+	public void delete(final Long id) {
+		entityManger.remove(forId(id));
+		
+	}
+
+	@Override
+	public DocumentsAware forId(final Long id) {
+		 DocumentsAware result = entityManger.find(OpportunityImpl.class, id);
+		 if(result!=null){
+			return result;
+		 }
+		 result=entityManger.find(CommercialSubjectImpl.class, id);
+		 if(result!=null){
+			return result;
+		}
+		result=entityManger.find(RuleImpl.class, id);
+		if( result!=null){
+			return result;
+		}
+		throw new InvalidDataAccessApiUsageException("No document found for id " + id); 
 	}
 
 }

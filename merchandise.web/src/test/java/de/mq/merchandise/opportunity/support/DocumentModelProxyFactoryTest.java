@@ -1,6 +1,8 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -13,6 +15,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.ModelRepository;
+import de.mq.merchandise.controller.DocumentControllerImpl;
 
 public class DocumentModelProxyFactoryTest {
 	
@@ -45,9 +48,19 @@ public class DocumentModelProxyFactoryTest {
 		Assert.assertEquals(DocumentModelAO.class, classArgumentCaptor.getValue());
 		@SuppressWarnings("unchecked")
 		Map<String, Object> items = (Map<String, Object>) ReflectionTestUtils.getField(modelRepositoryArgumentCaptor.getValue(), "modelItems");
-		Assert.assertEquals(1, items.size());
 		
-		Assert.assertEquals(OpportunityImpl.class, items.values().iterator().next().getClass());
+		
+		Assert.assertEquals(2, items.size());
+		
+		
+		final Set<Class<?>> resultClasses=new HashSet<>();
+		for(Object value :  items.values()){
+			Assert.assertFalse(resultClasses.contains((value.getClass())));
+			resultClasses.add(value.getClass());
+		}
+		Assert.assertEquals(2, resultClasses.size());
+		Assert.assertTrue(resultClasses.contains(OpportunityImpl.class));
+		Assert.assertTrue(resultClasses.contains(DocumentControllerImpl.class));
 	}
 	
 	

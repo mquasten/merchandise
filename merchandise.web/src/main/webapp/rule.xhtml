@@ -61,8 +61,14 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
             	<p:message id="sourceMessage" for="source" display="text" rendered="#{not empty rule.rule.documents()}" />
             	
         		
+              	<p:outputLabel id="fileuploadLabel" for="source" value="#{message.rule_upload}"  />  
+              	 <p:fileUpload update="@form"  id="fileupload" label="#{message.document_upload_button}"    fileUploadListener="#{documentController.addAttachement}"  dragDropSupport="false"  
+                   sizeLimit="2000000"  allowTypes="/(\.|\/)(groovy)$/" invalidSizeMessage="#{message.document_invalid_size_message}"     invalidFileMessage="#{message.document_wrong_file_message}"  auto="true"   >  
+			 
+		 
+		 		</p:fileUpload>
               	
-              
+              <p:message id="fileuploadMessage" for="fileupload" display="text"  />
                </p:panelGrid>
 			
 			  
@@ -74,6 +80,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 			    <p:commandButton value="#{message.rule_save_button}" action="#{ruleController.save()}"  rendered="#{not empty rule.id}">
 			     	<f:param  name="state"  value="#{rule.parentState}" disable="#{empty  rule.parentState}" />
 			    </p:commandButton>
+			    
+			   
+			    
 			    </f:facet>
 			    
 			</p:panelGrid>

@@ -24,7 +24,6 @@ import de.mq.merchandise.customer.State;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.customer.support.StateBuilderImpl;
 import de.mq.merchandise.customer.support.StateImpl;
-import de.mq.merchandise.opportunity.support.DocumentsAware;
 import de.mq.merchandise.opportunity.support.Resource;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.util.EntityUtil;
@@ -33,7 +32,7 @@ import de.mq.merchandise.util.Equals;
 @Entity(name="Rule")
 @NamedQuery(name=RuleRepository.RULE_FOR_NAME_PATTERN, query="select r from Rule r where r.name like :name and r.customer.id = :customerId")
 @Table(name="rule" ,uniqueConstraints={@UniqueConstraint(columnNames={"customer_id", "name"})})
-public class RuleImpl implements Rule, DocumentsAware  {
+public class RuleImpl implements Rule  {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -121,7 +120,7 @@ public class RuleImpl implements Rule, DocumentsAware  {
 	public Map<String, String> documents() {
 		final Map<String,String> results = new HashMap<>();
 		if( source == null){
-			return Collections.unmodifiableMap(results);
+			return Collections.unmodifiableMap(results) ;
 		}
 		results.put(source, String.format("%s/%s/%s", Resource.Source.urlPart() , id(), source ));
 		return  Collections.unmodifiableMap(results);

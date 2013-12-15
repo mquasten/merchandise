@@ -19,6 +19,7 @@ import de.mq.mapping.util.proxy.support.Number2StringConverter;
 import de.mq.merchandise.controller.SimpleFacesExceptionTranslatorImpl;
 import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.model.support.String2LongConverter;
+import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.rule.Rule;
 
 public abstract class RuleAO implements Serializable {
@@ -61,7 +62,7 @@ public abstract class RuleAO implements Serializable {
 	@SetterDomain(clazz = RuleImpl.class)
 	public abstract void setRule(final Rule rule);
 	
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleAO.class, proxy=true)  , @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['ruleId']" , elResultType=Long.class , converter=String2LongConverter.class), @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['state']" , elResultType=String.class ) })  , },clazz=RuleControllerImpl.class, value={ @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class, bundle="rule_not_found"), @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class, bundle="rule_not_found")})
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleAO.class, proxy=true)  , @Parameter(clazz=DocumentModelAO.class), @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['ruleId']" , elResultType=Long.class , converter=String2LongConverter.class), @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['state']" , elResultType=String.class ) })  , },clazz=RuleControllerImpl.class, value={ @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class, bundle="rule_not_found"), @ExceptionTranslation(action = SimpleFacesExceptionTranslatorImpl.class, source = InvalidDataAccessApiUsageException.class, bundle="rule_not_found")})
 	@PostConstruct()
 	public abstract void initRuleAO();
 

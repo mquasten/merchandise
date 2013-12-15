@@ -25,6 +25,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 	 		
 	       <h:link  outcome="#{documentModel.returnFromShowAttachement}"> 
 	             <h:graphicImage url="cross.png" />
+	             <f:param  name="documentId" value="#{documentModel.document.id()}"/>
+    			 <f:param  name="page" value="#{documentModel.returnFromUpload}"/>
+    			 <f:param  name="selected" value="#{documentModel.selected}"/>
 	      </h:link>
 	       <h:outputText value="&nbsp;" />
 	      <h:outputText value="#{documentModel.selected}" />

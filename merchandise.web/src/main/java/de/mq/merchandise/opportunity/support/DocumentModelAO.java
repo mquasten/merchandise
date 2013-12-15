@@ -2,10 +2,17 @@ package de.mq.merchandise.opportunity.support;
 
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
 import javax.faces.model.DataModel;
 
+import de.mq.mapping.util.proxy.ActionEvent;
 import de.mq.mapping.util.proxy.Getter;
+import de.mq.mapping.util.proxy.MethodInvocation;
+import de.mq.mapping.util.proxy.Parameter;
 import de.mq.mapping.util.proxy.Setter;
+import de.mq.merchandise.controller.DocumentControllerImpl;
+import de.mq.merchandise.model.support.FacesContextFactory;
+import de.mq.merchandise.model.support.String2LongConverter;
 
 public abstract class DocumentModelAO implements Serializable {
 	
@@ -60,5 +67,12 @@ public abstract class DocumentModelAO implements Serializable {
 	
 	@Setter(value = "returnFromShowAttachement")
 	public abstract void setReturnFromShowAttachement(String url);
+	
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = DocumentModelAO.class, proxy=true ), @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['documentId']" , elResultType=Long.class , converter=String2LongConverter.class),  @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['page']" , elResultType=String.class ), @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['selected']" , elResultType=String.class ),  @Parameter(clazz = FacesContextFactory.class , el="#arg.facesContext().externalContext.requestParameterMap['returnPage']" , elResultType=String.class )})}, clazz = DocumentControllerImpl.class)
+	@PostConstruct
+	public abstract void init();
+		
+	
 
 }

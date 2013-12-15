@@ -3,6 +3,7 @@ package de.mq.merchandise.rule;
 import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.State;
+import de.mq.merchandise.opportunity.support.DocumentsAware;
 
 /**
  * A Rule, a groovy program stored in a document based data store
@@ -11,7 +12,7 @@ import de.mq.merchandise.customer.State;
  * @author mquasten
  *
  */
-public interface Rule extends BasicEntity {
+public interface Rule extends BasicEntity, DocumentsAware {
 
 	/**
 	 * The name of the rule

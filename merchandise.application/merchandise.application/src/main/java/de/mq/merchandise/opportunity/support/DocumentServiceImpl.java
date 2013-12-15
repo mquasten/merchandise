@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.mq.merchandise.util.BasicServiceImpl;
+
 
 @Service
-public class DocumentServiceImpl implements DocumentService {
+public class DocumentServiceImpl extends BasicServiceImpl<DocumentsAware> implements DocumentService  {
 	
 	private final DocumentRepository documentRepository;
 
@@ -21,6 +23,7 @@ public class DocumentServiceImpl implements DocumentService {
 	
 	@Autowired
 	public DocumentServiceImpl(final DocumentRepository documentRepository, final DocumentEntityRepository documentEntityRepository) {
+		super(documentEntityRepository);
 		this.documentRepository = documentRepository;
 		this.documentEntityRepository = documentEntityRepository;
 	}
@@ -56,6 +59,9 @@ public class DocumentServiceImpl implements DocumentService {
 		document.removeDocument(name);
 		documentEntityRepository.save(document);
 	}
+
+
+	
 	
 	
 

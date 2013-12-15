@@ -1,12 +1,14 @@
 package de.mq.merchandise.opportunity.support;
 
+import de.mq.merchandise.BasicRepository;
+
 
 /**
  * Store and read Entities with attached Documents
  * @author mquasten
  *
  */
-interface DocumentEntityRepository {
+interface DocumentEntityRepository extends BasicRepository<DocumentsAware, Long> {
 
 	/**
 	 * Get the entity by its id. 
@@ -21,7 +23,8 @@ interface DocumentEntityRepository {
 	/**
 	 * save merge the given entity.
 	 * @param entity the entity that should be stored
+	 * @return 
 	 */
-	void save(final DocumentsAware entity);
+	DocumentsAware save(final DocumentsAware entity);
 
 }

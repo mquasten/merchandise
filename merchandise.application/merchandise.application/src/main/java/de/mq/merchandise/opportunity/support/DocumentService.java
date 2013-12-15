@@ -5,7 +5,9 @@ import java.io.InputStream;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface DocumentService {
+import de.mq.merchandise.util.BasicService;
+
+public interface DocumentService extends BasicService<DocumentsAware>{
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	void upload(DocumentsAware documentAware, String name, InputStream inputStream, final String contentType);
