@@ -72,13 +72,16 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 	}
 
 	String entity(final BasicEntity basicEntity) {
-		if (basicEntity instanceof Opportunity) {
-			return OPPORTUNITIES_ENTITY;
+	
+		
+		
+		for(final Resource resource :Resource.values()){
+		
+			if( resource.entityClass().isInstance(basicEntity)) {
+				return resource.urlPart();
+			}
 		}
-
-		if (basicEntity instanceof CommercialSubject) {
-			return SUBJECTS_ENTITY;
-		}
+	
 		throw new InvalidDataAccessApiUsageException("Not supported entity type for documents " + basicEntity.getClass());
 	}
 

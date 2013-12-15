@@ -49,12 +49,12 @@ public class DocumentFileRepositoryMock implements DocumentRepository {
 	}
 
 	private String entity(final BasicEntity entity) {
-		if (entity instanceof Opportunity) {
-			return OPPORTUNITIES_ENTITY;
-		}
 		
-		if ( entity instanceof CommercialSubject){
-			return  SUBJECTS_ENTITY;
+		
+		for(final Resource resource : Resource.values()){
+			if(resource.entityClass().isInstance(entity)){
+				return resource.urlPart();
+			}
 		}
 		
 		throw new InvalidDataAccessApiUsageException("Not supported entity type for documents " + entity.getClass());

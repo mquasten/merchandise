@@ -72,7 +72,7 @@ public class DocumentRestRepositoryTest {
 		Assert.assertEquals(Map.class, responseTypeCaptor.getValue());
 		Assert.assertEquals(2,  parameterCaptor.getValue().size());
 		Assert.assertEquals(id, parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ID_PARAMETER));
-		Assert.assertEquals(DocumentRestRepositoryImpl.OPPORTUNITIES_ENTITY, parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ENTITY_PARAMETER));
+		Assert.assertEquals(Resource.Opportunity.urlPart(), parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ENTITY_PARAMETER));
 	}
 	
 	@Test
@@ -85,7 +85,7 @@ public class DocumentRestRepositoryTest {
 		Assert.assertEquals(Map.class, responseTypeCaptor.getValue());
 		Assert.assertEquals(2,  parameterCaptor.getValue().size());
 		Assert.assertEquals(id, parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ID_PARAMETER));
-		Assert.assertEquals(DocumentRestRepositoryImpl.SUBJECTS_ENTITY, parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ENTITY_PARAMETER));
+		Assert.assertEquals(Resource.Subject.urlPart(), parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ENTITY_PARAMETER));
 	}
 	
 	
@@ -124,7 +124,7 @@ public class DocumentRestRepositoryTest {
 				final Map<String,String> params = ((Map<String,String>)invocation.getArguments()[2]);
 				Assert.assertEquals(2, params.size());
 				Assert.assertEquals(id, params.get(DocumentRestRepositoryImpl.ID_PARAMETER));
-				Assert.assertEquals(DocumentRestRepositoryImpl.OPPORTUNITIES_ENTITY, params.get(DocumentRestRepositoryImpl.ENTITY_PARAMETER));
+				Assert.assertEquals(Resource.Opportunity.urlPart(), params.get(DocumentRestRepositoryImpl.ENTITY_PARAMETER));
 				
 				Assert.assertEquals(id, parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ID_PARAMETER));
 				if ( likeAVirgin[0]){
@@ -146,7 +146,7 @@ public class DocumentRestRepositoryTest {
 		Assert.assertTrue(jsonMapCaptor.getValue().isEmpty());
 		Assert.assertEquals(2,  parameterCaptor.getValue().size());
 		Assert.assertEquals(id, parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ID_PARAMETER));
-		Assert.assertEquals(DocumentRestRepositoryImpl.OPPORTUNITIES_ENTITY, parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ENTITY_PARAMETER));
+		Assert.assertEquals(Resource.Opportunity.urlPart(), parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ENTITY_PARAMETER));
 		Assert.assertFalse(likeAVirgin[0]);
 		
 		
@@ -196,7 +196,7 @@ public class DocumentRestRepositoryTest {
 		Assert.assertEquals( id , parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ID_PARAMETER));
 		Assert.assertEquals( revision , parameterCaptor.getValue().get(DocumentRestRepositoryImpl.REVISION_KEY));
 		Assert.assertEquals( ATTACHMENT_NAME , parameterCaptor.getValue().get(DocumentRestRepositoryImpl.NAME_PARAMETER));
-		Assert.assertEquals( DocumentRestRepositoryImpl.OPPORTUNITIES_ENTITY , parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ENTITY_PARAMETER));
+		Assert.assertEquals( Resource.Opportunity.urlPart() , parameterCaptor.getValue().get(DocumentRestRepositoryImpl.ENTITY_PARAMETER));
 	}
 	
 	@SuppressWarnings("unchecked")

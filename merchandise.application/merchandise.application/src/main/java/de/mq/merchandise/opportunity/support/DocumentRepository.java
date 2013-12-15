@@ -26,8 +26,8 @@ interface DocumentRepository {
 	 */
 	void delete(final BasicEntity entity, final String name);
 	
-	static final String SUBJECTS_ENTITY = "subjects";
-	static final String OPPORTUNITIES_ENTITY = "opportunities";
+//	static final String SUBJECTS_ENTITY = "subjects";
+//	static final String OPPORTUNITIES_ENTITY = "opportunities";
 	
 	
 

@@ -58,8 +58,7 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 		
 		final String result  = fromMap(String.class, placemarks.get(0), "formatted_address" );
 		
-		
-		if(! result.toLowerCase().contains(cityAddress.city().toLowerCase())|| ! result.toLowerCase().contains(cityAddress.zipCode().toLowerCase())) {
+		if(! (result.toLowerCase().contains(cityAddress.city().toLowerCase()) || result.toLowerCase().contains(cityAddress.zipCode().toLowerCase()))) {
 			throw new IllegalArgumentException("Coordinates doesn't belong to a street with the city and or zipCode");
 		}
 		
