@@ -20,7 +20,6 @@ import de.mq.merchandise.controller.State;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.model.support.SimpleMapDataModel;
-import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.PagingAO;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.util.support.HibernateProxyConverter;
