@@ -56,12 +56,14 @@ class RuleControllerImpl {
 	}
 	
 	String save(final RuleAO ruleAO){
-		   
+		ruleServive.createOrUpdate(ruleAO.getRule()) ;  
 		return "rules.xhtml?faces-redirect=true&state=" + ruleAO.getParentState();
 		
 	}
 	
-	void changeState(final Long ruleId, Boolean state) {
+	void changeState(final Long ruleId, final Boolean state) {
+		
+		
 		System.out.println(">>>" + ruleId + ":" +state);
 	}
 	

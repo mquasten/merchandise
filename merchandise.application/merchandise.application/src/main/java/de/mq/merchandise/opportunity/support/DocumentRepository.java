@@ -25,6 +25,10 @@ interface DocumentRepository {
 	 * @param name the name of the attachment that should be deleted
 	 */
 	void delete(final BasicEntity entity, final String name);
+
+	
+
+	byte[] document(final BasicEntity entity, final String name);
 	
 //	static final String SUBJECTS_ENTITY = "subjects";
 //	static final String OPPORTUNITIES_ENTITY = "opportunities";

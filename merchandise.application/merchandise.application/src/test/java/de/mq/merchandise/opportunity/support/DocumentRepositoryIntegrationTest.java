@@ -1,12 +1,16 @@
 package de.mq.merchandise.opportunity.support;
 
+
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import junit.framework.Assert;
+
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +20,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
+
+import de.mq.merchandise.util.EntityUtil;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -89,6 +96,20 @@ public class DocumentRepositoryIntegrationTest {
 			Assert.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
 		}
 
+	}
+	
+	@Test
+	public final void document() throws IOException {
+		upload();
+		final Opportunity rule =EntityUtil.create(OpportunityImpl.class);
+		ReflectionTestUtils.setField(rule, "id", 4711L);
+		
+		final InputStream inputStream = getClass().getResourceAsStream("/Kylie-Doll.jpg");
+		final ByteArrayOutputStream kylieDollStream = new ByteArrayOutputStream();
+		FileCopyUtils.copy(inputStream, kylieDollStream);
+		Assert.assertArrayEquals(kylieDollStream.toByteArray(), documentRepository.document(rule, "Kylie-Doll.jpg"));
+		
+		
 	}
 
 }

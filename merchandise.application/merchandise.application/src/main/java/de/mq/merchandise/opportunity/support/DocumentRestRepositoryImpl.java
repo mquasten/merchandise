@@ -129,5 +129,11 @@ public class DocumentRestRepositoryImpl implements DocumentRepository {
 			throwExceptionIfNot404(ex);
 		}
 	}
+	
+	@Override
+	public final byte[] document(final BasicEntity entity,final String name ){
+		return restOperations.getForObject(ATTACHEMENT_URL,byte[].class,  attachementParameters(entity, name));
+		
+	}
 
 }

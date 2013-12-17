@@ -1,5 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import de.mq.merchandise.opportunity.ResourceOperations;
 
 
-class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessageConverter<InputStream> {
+class SimpleMediaTypeInputStreamHttpMessageConverterImpl<T> implements   HttpMessageConverter<T> {
 	
 	
 	static final MediaType MEDIA_TYPE_PDF = MediaType.parseMediaType("application/pdf");
@@ -29,11 +30,17 @@ class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessag
 
 	@Override
 	public boolean canRead(Class<?> clazz, MediaType mediaType) {
-		return false;
+		if( mediaType==null){
+			return false;
+		}
+		return byte[].class.isAssignableFrom(clazz)&&supports(mediaType);
 	}
 
 	@Override
 	public boolean canWrite(final Class<?> clazz, final MediaType mediaType) {
+		if( mediaType==null){
+			return false;
+		}
 		return  InputStream.class.isAssignableFrom(clazz) && supports(mediaType);
 	}
 
@@ -43,6 +50,7 @@ class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessag
 				return true;
 			}
 		}
+		
 		return false;
 	}
 
@@ -57,14 +65,18 @@ class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessag
 		return results;
 	}
 
+	
 	@Override
-	public InputStream read(Class<? extends InputStream> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
-		throw new HttpMessageNotReadableException("Read is not supported");
+	public void write(final T inputStream, final MediaType contentType, final HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+		outputMessage.getHeaders().setContentLength(resourceOperations.copy((InputStream)inputStream, outputMessage.getBody()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void write(final InputStream inputStream, final MediaType contentType, final HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
-		outputMessage.getHeaders().setContentLength(resourceOperations.copy(inputStream, outputMessage.getBody()));
+	public T read(Class<? extends T> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+		final ByteArrayOutputStream os = new ByteArrayOutputStream();
+		resourceOperations.copy(inputMessage.getBody(), os);
+		return (T) os.toByteArray();
 	}
 
 	

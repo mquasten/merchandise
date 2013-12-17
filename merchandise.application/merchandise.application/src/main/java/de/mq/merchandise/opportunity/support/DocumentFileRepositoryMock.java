@@ -70,4 +70,10 @@ public class DocumentFileRepositoryMock implements DocumentRepository {
 		}
 	}
 
+	@Override
+	public byte[] document(BasicEntity entity, String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

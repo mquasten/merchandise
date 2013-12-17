@@ -26,7 +26,7 @@ public class SimpleMediaTypeInputStreamHttpMessageConverterTest {
 
 	private final ResourceOperations resourceOperations = Mockito.mock(ResourceOperations.class);
 	
-	private final HttpMessageConverter<InputStream> messageConverter = new SimpleMediaTypeInputStreamHttpMessageConverterImpl(resourceOperations);
+	private final HttpMessageConverter<InputStream> messageConverter = new SimpleMediaTypeInputStreamHttpMessageConverterImpl<InputStream>(resourceOperations);
 	
 	
 	@Test
@@ -52,11 +52,7 @@ public class SimpleMediaTypeInputStreamHttpMessageConverterTest {
 		Assert.assertFalse(messageConverter.canWrite(InputStream.class, MediaType.APPLICATION_ATOM_XML));
 	}
 	
-	@Test(expected=HttpMessageNotReadableException.class)
-	public final void read() throws HttpMessageNotReadableException, IOException {
-		final HttpInputMessage httpInputMessage = Mockito.mock(HttpInputMessage.class);
-		messageConverter.read(InputStream.class, httpInputMessage);
-	}
+	
 	
 	@Test
 	public final void write() throws HttpMessageNotWritableException, IOException {
