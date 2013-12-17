@@ -1,11 +1,8 @@
 package de.mq.merchandise.controller;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.primefaces.model.DefaultStreamedContent;
@@ -152,8 +149,6 @@ public class DocumentControllerImpl {
 	
 	/* like a virgin touched for the very first time */
 	public final void init(final DocumentModelAO documentModelAO, final Long documentId, final String page, final String selected, final String returnPage) {
-	
-		System.out.println(documentId + ":" + selected);
 		documentModelAO.setReturnFromUpload(page);
 		documentModelAO.setSelected(selected);
 		documentModelAO.setReturnFromShowAttachement(returnPage);
@@ -173,6 +168,9 @@ public class DocumentControllerImpl {
 	
 	
 	StreamedContent stream(final DocumentModelAO documentModelAO) throws IOException {
+		if ( documentModelAO.getDocument().documents().keySet().isEmpty() ) {
+			throw new IllegalArgumentException("Nothing attached, unable to download it");
+		}
 		final String name = documentModelAO.getDocument().documents().keySet().iterator().next();
 		final URL url = new URL(url(documentModelAO.getDocument(), name));
 		
