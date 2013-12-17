@@ -32,10 +32,11 @@ public class SimpleMediaTypeInputStreamHttpMessageConverterTest {
 	@Test
 	public final void accept() {
 		final List<MediaType> results = messageConverter.getSupportedMediaTypes();
-		Assert.assertEquals(4, results.size());
+		Assert.assertEquals(5, results.size());
 		Assert.assertTrue(results.contains(MediaType.IMAGE_GIF));
 		Assert.assertTrue(results.contains(MediaType.IMAGE_PNG));
 		Assert.assertTrue(results.contains(MediaType.IMAGE_JPEG));
+		Assert.assertTrue(results.contains(MediaType.APPLICATION_OCTET_STREAM));
 		Assert.assertTrue(results.contains(SimpleMediaTypeInputStreamHttpMessageConverterImpl.MEDIA_TYPE_PDF));
 	}
 	

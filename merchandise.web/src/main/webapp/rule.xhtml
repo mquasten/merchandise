@@ -41,28 +41,20 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
             	
             	<p:message id="stateMessage" for="state" display="text" />
             	
-            	<p:outputLabel id="fileLabel" for="file" value="#{message.rule_file}" />  
             	
-            	 <p:dataTable id="file" var="fileVar" value="#{u:list(rule.rule.documents().entrySet())}" emptyMessage="" >  
-        			<p:column headerText="#{message.rule_file_header}">  
-           			 <h:outputText value="#{fileVar.key}" />  
-        			</p:column>  
-        			<p:column headerText="#{message.rule_url_header}">  
-           			 <h:outputText value="#{fileVar.value}" />  
-        			</p:column>  
-            	</p:dataTable>
-            	
-            	<p:message id="fileMesssage" for="file" display="text" />
             	
             	<p:outputLabel id="sourceLabel" for="source" value="#{message.rule_source}" rendered="#{not empty rule.rule.documents()}" />  
             	
-            	<h:link id="source" value="source anzeigen" outcome="showDocument.xhtml" rendered="#{not empty rule.rule.documents()}" />
+            	<h:commandLink id="source" value="#{u:list(rule.rule.documents().keySet())[0]}"  rendered="#{not empty rule.rule.documents()}" >
+            		
+            	    <p:fileDownload value="#{documentController.stream()}" />  
+            	</h:commandLink>
             	
             	<p:message id="sourceMessage" for="source" display="text" rendered="#{not empty rule.rule.documents()}" />
             	
         		
               	<p:outputLabel id="fileuploadLabel" for="source" value="#{message.rule_upload}"  />  
-              	 <p:fileUpload update="@form"  id="fileupload" label="#{message.document_upload_button}"    fileUploadListener="#{documentController.addAttachement}"  dragDropSupport="false"  
+              	 <p:fileUpload update="@form"  id="fileupload" label="#{message.document_upload_button}"    fileUploadListener="#{documentController.removeAllAndAddNew}"  dragDropSupport="false"  
                    sizeLimit="2000000"  allowTypes="/(\.|\/)(groovy)$/" invalidSizeMessage="#{message.document_invalid_size_message}"     invalidFileMessage="#{message.document_wrong_file_message}"  auto="true"   >  
 			 
 		 

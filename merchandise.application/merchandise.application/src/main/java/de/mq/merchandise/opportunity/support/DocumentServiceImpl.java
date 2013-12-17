@@ -34,7 +34,7 @@ public class DocumentServiceImpl extends BasicServiceImpl<DocumentsAware> implem
 	public final  void upload(DocumentsAware documentAware,  final String name , final InputStream inputStream, final String contentType ) {
 		
 		final DocumentsAware document = documentEntityRepository.forId(documentAware.id(), documentAware.getClass());
-		
+	
 		documentRepository.assign(document, name, inputStream, MediaType.parseMediaType(contentType));
 		
 		document.assignDocument(name);

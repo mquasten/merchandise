@@ -1,6 +1,7 @@
 package de.mq.merchandise.controller;
 
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import de.mq.mapping.util.proxy.ActionEvent;
@@ -24,9 +25,11 @@ public interface DocumentController {
 	void addLink();
 	
 	
+	@MethodInvocation(actions={ @ActionEvent(params={ @Parameter(clazz = DocumentModelAO.class , el="#arg.document", elResultType=DocumentsAware.class) , @Parameter(clazz = FileUploadEvent.class , originIndex=0, el="#arg.file", elResultType=UploadedFile.class)})}, clazz = DocumentControllerImpl.class)
+	void removeAllAndAddNew(final  FileUploadEvent fileUploadEvent);
 	
-	
-	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = DocumentModelAO.class ) })}, clazz = DocumentControllerImpl.class)
+	StreamedContent stream();
 	
 }
 

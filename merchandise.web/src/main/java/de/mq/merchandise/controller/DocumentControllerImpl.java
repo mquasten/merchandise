@@ -1,10 +1,17 @@
 package de.mq.merchandise.controller;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
+import org.springframework.http.MediaType;
 
 import de.mq.merchandise.opportunity.ResourceOperations;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
@@ -40,6 +47,15 @@ public class DocumentControllerImpl {
 	}
 	
 	
+	
+	
+	void removeAllAndAddNew(final DocumentsAware document, final UploadedFile file) throws IOException {
+		for(final String name : document.documents().keySet()){
+			documentService.delete(document, name);
+			document.removeDocument(name);
+		}
+		addAttachement(document, file);
+	}
 	
 	
 	void addAttachement(final DocumentsAware document, final UploadedFile file ) throws IOException  {
@@ -137,6 +153,7 @@ public class DocumentControllerImpl {
 	/* like a virgin touched for the very first time */
 	public final void init(final DocumentModelAO documentModelAO, final Long documentId, final String page, final String selected, final String returnPage) {
 	
+		System.out.println(documentId + ":" + selected);
 		documentModelAO.setReturnFromUpload(page);
 		documentModelAO.setSelected(selected);
 		documentModelAO.setReturnFromShowAttachement(returnPage);
@@ -151,6 +168,19 @@ public class DocumentControllerImpl {
 			calculateSize(documentModelAO);
 		}
 	}
+	
+	
+	
+	
+	StreamedContent stream(final DocumentModelAO documentModelAO) throws IOException {
+		final String name = documentModelAO.getDocument().documents().keySet().iterator().next();
+		final URL url = new URL(url(documentModelAO.getDocument(), name));
+		
+		InputStream content =  (InputStream) url.getContent() ;
+			return new DefaultStreamedContent(content,MediaType.TEXT_PLAIN_VALUE ,name );
+		
+	}
+	 
 	
 	
 	

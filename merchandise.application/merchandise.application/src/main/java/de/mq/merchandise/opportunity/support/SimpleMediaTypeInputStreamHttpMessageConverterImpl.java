@@ -53,6 +53,7 @@ class SimpleMediaTypeInputStreamHttpMessageConverterImpl implements   HttpMessag
 		results.add(MediaType.IMAGE_GIF);
 		results.add(MediaType.IMAGE_PNG);
 		results.add(MEDIA_TYPE_PDF);
+		results.add(MediaType.APPLICATION_OCTET_STREAM);
 		return results;
 	}
 

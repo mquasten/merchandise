@@ -1,7 +1,6 @@
 package de.mq.merchandise.rule.support;
 
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -120,10 +119,10 @@ public class RuleImpl implements Rule  {
 	public Map<String, String> documents() {
 		final Map<String,String> results = new HashMap<>();
 		if( source == null){
-			return Collections.unmodifiableMap(results) ;
+			return results ;
 		}
 		results.put(source, String.format("%s/%s/%s", Resource.Source.urlPart() , id(), source ));
-		return  Collections.unmodifiableMap(results);
+		return  results;
 	}
 
 	@Override
