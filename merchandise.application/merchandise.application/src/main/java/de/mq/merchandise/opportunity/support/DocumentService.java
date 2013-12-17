@@ -17,5 +17,8 @@ public interface DocumentService extends BasicService<DocumentsAware>{
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	void assignLink(DocumentsAware documentAware, String name);
+	
+	@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
+	public  byte[] document(final Long id, String name);
 
 }

@@ -60,8 +60,10 @@ public class DocumentServiceImpl extends BasicServiceImpl<DocumentsAware> implem
 		documentEntityRepository.save(document);
 	}
 
-
-	
+	@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
+	public final byte[] document(final Long id, String name){
+		return documentRepository.document(documentEntityRepository.forId(id), name);
+	}
 	
 	
 

@@ -1,9 +1,9 @@
 package de.mq.merchandise.controller;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -172,10 +172,12 @@ public class DocumentControllerImpl {
 			throw new IllegalArgumentException("Nothing attached, unable to download it");
 		}
 		final String name = documentModelAO.getDocument().documents().keySet().iterator().next();
-		final URL url = new URL(url(documentModelAO.getDocument(), name));
+		/*final URL url = new URL(url(documentModelAO.getDocument(), name));
 		
-		InputStream content =  (InputStream) url.getContent() ;
-			return new DefaultStreamedContent(content,MediaType.TEXT_PLAIN_VALUE ,name );
+		InputStream content =  (InputStream) url.getContent() ;*/
+		try (InputStream is = new ByteArrayInputStream(documentService.document(documentModelAO.getDocument().id(), name))) {
+			return new DefaultStreamedContent(is,MediaType.TEXT_PLAIN_VALUE ,name );
+		}
 		
 	}
 	 
