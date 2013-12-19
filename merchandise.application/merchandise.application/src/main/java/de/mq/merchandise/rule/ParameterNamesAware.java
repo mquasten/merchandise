@@ -1,6 +1,8 @@
 package de.mq.merchandise.rule;
 
-public interface ParameterNamesAware<T> {
+import groovy.lang.GroovyObject;
+
+public interface ParameterNamesAware<T>  extends GroovyObject {
 
 	public abstract String[] parameters();
 

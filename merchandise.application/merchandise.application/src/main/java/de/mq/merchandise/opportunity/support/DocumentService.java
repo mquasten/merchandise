@@ -20,5 +20,8 @@ public interface DocumentService extends BasicService<DocumentsAware>{
 	
 	@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 	public  byte[] document(final Long id, String name);
+	
+	@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
+	public  byte[] document(final Long id);
 
 }

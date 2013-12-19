@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.ResourceAccessException;
 
 import de.mq.merchandise.util.BasicServiceImpl;
 
@@ -63,6 +64,20 @@ public class DocumentServiceImpl extends BasicServiceImpl<DocumentsAware> implem
 	@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 	public final byte[] document(final Long id, String name){
 		return documentRepository.document(documentEntityRepository.forId(id), name);
+	}
+	
+	@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
+	public final byte[] document(final Long id){
+		final DocumentsAware documentsAware = documentEntityRepository.forId(id);
+		documentAwareGuard(documentsAware);
+		return documentRepository.document(documentEntityRepository.forId(id), documentsAware.documents().keySet().iterator().next());
+	}
+
+
+	private void documentAwareGuard(final DocumentsAware documentsAware) {
+		if( documentsAware.documents().size() != 1 ){
+			throw new ResourceAccessException("One and only one Document must be aware");
+		}
 	}
 	
 	
