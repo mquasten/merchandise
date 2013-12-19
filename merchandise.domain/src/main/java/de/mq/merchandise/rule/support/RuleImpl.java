@@ -73,7 +73,7 @@ public class RuleImpl implements Rule  {
 	
 	
 	@Override
-	public final long id() {
+	public  final long id() {
 		EntityUtil.idAware(id);
 		return id;
 	}

@@ -5,8 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -17,15 +16,15 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpEntity;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
 
-
 import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.rule.support.RuleImpl;
+import de.mq.merchandise.util.EntityUtil;
 
 public class DocumentRestRepositoryTest {
 	
@@ -217,6 +216,41 @@ public class DocumentRestRepositoryTest {
 		
 		documentRepository.delete(basicEntity, ATTACHMENT_NAME);
 		Mockito.verify(restOperations).delete(Mockito.anyString(), Mockito.anyMap() );
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public final void document() {
+		final byte[] byteArrayResult = "kinkyKylie".getBytes();
+		basicEntity =EntityUtil.create(RuleImpl.class);
+		EntityUtil.setId(basicEntity, id);
+	
+		Mockito.when(restOperations.getForObject(urlCaptor.capture(), responseTypeCaptor.capture(), parameterCaptor.capture())).thenAnswer(new Answer<Object>(){
+            
+			
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				final Map<String,String> params =  (Map<String, String>) invocation.getArguments()[2];
+				Assert.assertEquals(id, params.get(DocumentRestRepositoryImpl.ID_PARAMETER));
+				Assert.assertEquals(Resource.Source.urlPart(), params.get(DocumentRestRepositoryImpl.ENTITY_PARAMETER));
+				if ( invocation.getArguments()[1].equals(Map.class)) {
+					Assert.assertEquals(DocumentRestRepositoryImpl.ENTITY_URL, invocation.getArguments()[0]);
+					
+					Assert.assertEquals(2, params.size());
+					return jsonResult;
+				  };
+				  Assert.assertEquals(byte[].class, invocation.getArguments()[1]);
+				  Assert.assertEquals(DocumentRestRepositoryImpl.ATTACHEMENT_URL, invocation.getArguments()[0]);
+				  Assert.assertEquals(ATTACHMENT_NAME, params.get(DocumentRestRepositoryImpl.NAME_PARAMETER));
+				  Assert.assertEquals(revision, params.get(DocumentRestRepositoryImpl.REVISION_KEY));
+				return byteArrayResult;
+			} });
+		
+		
+		Assert.assertArrayEquals(byteArrayResult, documentRepository.document(basicEntity, ATTACHMENT_NAME));
+		
 	}
 
 }
