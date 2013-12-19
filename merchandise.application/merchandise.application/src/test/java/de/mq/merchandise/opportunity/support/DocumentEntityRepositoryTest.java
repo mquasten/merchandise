@@ -8,6 +8,10 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
+import de.mq.merchandise.rule.Rule;
+import de.mq.merchandise.rule.support.RuleImpl;
+import de.mq.merchandise.util.EntityUtil;
+
 public class DocumentEntityRepositoryTest {
 	
 	
@@ -43,5 +47,52 @@ public class DocumentEntityRepositoryTest {
 	public final void defaultConstructor() {
 		Assert.assertNotNull(new DocumentEntityRepositoryImpl());
 	}
-
+	
+	@Test
+	public final void forIdAllOpportunity(){
+	
+		final Opportunity opportunity = EntityUtil.create(OpportunityImpl.class);
+		EntityUtil.setId(opportunity, ID);
+		Mockito.when(entityManager.find(OpportunityImpl.class, ID)).thenReturn((OpportunityImpl) opportunity);
+		
+		Assert.assertEquals(opportunity, documentEntityRepository.forId(ID)); 
+	}
+	
+	@Test
+	public final void forIdAllSubject(){
+	
+		final CommercialSubjectImpl subject = EntityUtil.create(CommercialSubjectImpl.class);
+		EntityUtil.setId(opportunity, ID);
+		Mockito.when(entityManager.find(CommercialSubjectImpl.class, ID)).thenReturn(subject);
+		
+		Assert.assertEquals(subject, documentEntityRepository.forId(ID)); 
+	}
+	
+	@Test
+	public final void forIdAllRule(){
+	
+		final Rule rule = EntityUtil.create(RuleImpl.class);
+		EntityUtil.setId(rule, ID);
+		Mockito.when(entityManager.find(RuleImpl.class, ID)).thenReturn((RuleImpl) rule);
+		
+		Assert.assertEquals(rule, documentEntityRepository.forId(ID)); 
+	}
+	
+	@Test(expected=InvalidDataAccessApiUsageException.class)
+	public final void forIdAllNotFound(){
+		documentEntityRepository.forId(ID);
+	}
+	
+	
+	@Test
+	public final void delete() {
+		final Opportunity opportunity = EntityUtil.create(OpportunityImpl.class);
+		EntityUtil.setId(opportunity, ID);
+		Mockito.when(entityManager.find(OpportunityImpl.class, ID)).thenReturn((OpportunityImpl) opportunity);
+		
+		documentEntityRepository.delete(ID);
+		
+		Mockito.verify(entityManager).remove(opportunity);
+	}
+	
 }
