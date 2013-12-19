@@ -127,7 +127,8 @@ public class RuleImpl implements Rule  {
 
 	@Override
 	public void assignWebLink(final String name) {
-		throw new NoSuchMethodError();
+		throw new  UnsupportedOperationException("AssignWebLink is not supported for rules.");
+
 		
 	}
 
