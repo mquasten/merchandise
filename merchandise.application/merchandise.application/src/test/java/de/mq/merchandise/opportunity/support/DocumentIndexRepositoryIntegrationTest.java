@@ -31,7 +31,7 @@ import de.mq.merchandise.util.EntityUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/documentRepository.xml" })
-//@Ignore
+
 public class DocumentIndexRepositoryIntegrationTest {
 	
 	@Autowired

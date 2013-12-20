@@ -1,18 +1,23 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
 import de.mq.merchandise.opportunity.ResourceOperations;
@@ -20,11 +25,13 @@ import de.mq.merchandise.opportunity.ResourceOperations;
 public class SimpleMediaTypeInputStreamHttpMessageConverterTest {
 	
 	
+	private static final byte[] CONTENT = "KinkyKylie".getBytes();
+
 	private static final int LENGTH = 19680528;
 
 	private final ResourceOperations resourceOperations = Mockito.mock(ResourceOperations.class);
 	
-	private final HttpMessageConverter<InputStream> messageConverter = new SimpleMediaTypeInputStreamHttpMessageConverterImpl<InputStream>(resourceOperations);
+	private final HttpMessageConverter<Object> messageConverter = new SimpleMediaTypeInputStreamHttpMessageConverterImpl<Object>(resourceOperations);
 	
 	
 	@Test
@@ -40,14 +47,20 @@ public class SimpleMediaTypeInputStreamHttpMessageConverterTest {
 	
 	@Test
 	public final void canRead() {
-		 Assert.assertFalse(messageConverter.canRead(InputStream.class, MediaType.IMAGE_JPEG));
+		 Assert.assertTrue(messageConverter.canRead(byte[].class, MediaType.IMAGE_JPEG));
+		 Assert.assertFalse(messageConverter.canRead(Object.class, MediaType.IMAGE_JPEG));
+		 Assert.assertFalse(messageConverter.canRead(byte[].class, MediaType.APPLICATION_ATOM_XML));
+		 Assert.assertFalse(messageConverter.canRead(byte[].class, null));
 	}
+	
+	
 	
 	@Test
 	public final void canWrite() {
 		Assert.assertTrue(messageConverter.canWrite(InputStream.class, MediaType.IMAGE_JPEG));
 		Assert.assertFalse(messageConverter.canWrite(String.class, MediaType.IMAGE_JPEG));
 		Assert.assertFalse(messageConverter.canWrite(InputStream.class, MediaType.APPLICATION_ATOM_XML));
+		Assert.assertFalse(messageConverter.canWrite(InputStream.class, null));
 	}
 	
 	
@@ -66,6 +79,32 @@ public class SimpleMediaTypeInputStreamHttpMessageConverterTest {
 		
 		Mockito.verify(resourceOperations).copy(is, os);
 		Mockito.verify(httpHeaders).setContentLength(LENGTH);
+	}
+	
+	@Test
+	public final void read() throws HttpMessageNotReadableException, IOException {
+		final InputStream is = Mockito.mock(InputStream.class);
+		ArgumentCaptor<InputStream> inputStreamCaptor = ArgumentCaptor.forClass(InputStream.class);
+		ArgumentCaptor<OutputStream> outputStreamCaptor = ArgumentCaptor.forClass(OutputStream.class);
+		
+		final HttpInputMessage httpInputMessage = Mockito.mock(HttpInputMessage.class);
+		Mockito.when(httpInputMessage.getBody()).thenReturn(is);
+		
+		Mockito.when(resourceOperations.copy(inputStreamCaptor.capture(), outputStreamCaptor.capture())).thenAnswer(new Answer<Object>() {
+
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				((ByteArrayOutputStream) invocation.getArguments()[1]).write(CONTENT, 0, CONTENT.length);
+				return null;
+			}
+		});
+
+		Assert.assertArrayEquals(CONTENT, (byte[]) messageConverter.read(byte[].class, httpInputMessage));
+		
+		Assert.assertEquals(is, inputStreamCaptor.getValue());
+		
+		
+		
 	}
 
 }
