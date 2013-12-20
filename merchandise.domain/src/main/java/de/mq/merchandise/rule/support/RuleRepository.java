@@ -7,7 +7,7 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.util.Paging;
 
-interface RuleRepository extends BasicRepository<Rule, Long> {
+public interface RuleRepository extends BasicRepository<Rule, Long> {
 	
 	static final String RULE_FOR_NAME_PATTERN = "ruleForNamePattern";
 	

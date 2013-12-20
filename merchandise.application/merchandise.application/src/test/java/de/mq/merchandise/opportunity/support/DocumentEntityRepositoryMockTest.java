@@ -7,6 +7,9 @@ import org.mockito.Mockito;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import de.mq.merchandise.rule.Rule;
+import de.mq.merchandise.rule.support.RuleImpl;
+import de.mq.merchandise.rule.support.RuleRepository;
 import de.mq.merchandise.util.EntityUtil;
 
 public class DocumentEntityRepositoryMockTest {
@@ -17,10 +20,13 @@ public class DocumentEntityRepositoryMockTest {
 	
 	private final OpportunityRepository opportunityRepository = Mockito.mock(OpportunityRepository.class);
 	private final CommercialSubjectRepository commercialSubjectRepository = Mockito.mock(CommercialSubjectRepository.class);
+	private final RuleRepository ruleRepository = Mockito.mock(RuleRepository.class);
 	
-	private DocumentEntityRepository documentEntityRepository = new DocumentEntityRepositoryMock(opportunityRepository, commercialSubjectRepository);
+	
+	private DocumentEntityRepository documentEntityRepository = new DocumentEntityRepositoryMock(opportunityRepository, commercialSubjectRepository, ruleRepository);
 	private final Opportunity opportunity =  EntityUtil.create(OpportunityImpl.class);
 	private final CommercialSubject subject =  EntityUtil.create(CommercialSubjectImpl.class);
+	private final Rule rule =  EntityUtil.create(RuleImpl.class);
 	
 	@Test
 	public final void forIdOpportunitiy() {
@@ -67,6 +73,24 @@ public class DocumentEntityRepositoryMockTest {
 	@Test
 	public final void defaultconstructor() {
 		Assert.assertNotNull(new DocumentEntityRepositoryMock());
+	}
+	
+	@Test
+	public final void forId() {
+		Mockito.when(ruleRepository.forId(ID)).thenReturn(rule);
+		Assert.assertEquals(rule, documentEntityRepository.forId(ID));
+	}
+	
+	@Test(expected=InvalidDataAccessApiUsageException.class)
+	public final void forIdNotFound() {
+		Assert.assertEquals(rule, documentEntityRepository.forId(ID));
+	}
+	
+	@Test
+	public final void delete() {
+		Mockito.when(ruleRepository.forId(ID)).thenReturn(rule);
+		 documentEntityRepository.delete(ID);
+		 Mockito.verify(ruleRepository).delete(ID);
 	}
 
 }

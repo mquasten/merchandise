@@ -9,6 +9,8 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
 import de.mq.merchandise.BasicRepository;
+import de.mq.merchandise.rule.support.RuleImpl;
+import de.mq.merchandise.rule.support.RuleRepository;
 
 @Repository
 @Profile("mock")
@@ -27,9 +29,10 @@ public class DocumentEntityRepositoryMock  implements DocumentEntityRepository{
 	
 	
 	@Autowired
-	DocumentEntityRepositoryMock(final OpportunityRepository opportunityRepository, final CommercialSubjectRepository commercialSubjectRepository) {
+	DocumentEntityRepositoryMock(final OpportunityRepository opportunityRepository, final CommercialSubjectRepository commercialSubjectRepository, RuleRepository ruleRepository) {
 		repositories.put(OpportunityImpl.class, opportunityRepository);
 		repositories.put(CommercialSubjectImpl.class, commercialSubjectRepository);
+		repositories.put(RuleImpl.class, ruleRepository);
 		
 	}
 
@@ -65,17 +68,26 @@ public class DocumentEntityRepositoryMock  implements DocumentEntityRepository{
 
 
 	@Override
-	public void delete(Long Id) {
-		// TODO Auto-generated method stub
-		
+	public void delete(final Long id) {
+		final DocumentsAware whereTheWildRosesGrow = forId(id); 
+		entityTypeGuard(whereTheWildRosesGrow.getClass());
+		repositories.get(whereTheWildRosesGrow.getClass()).delete(id);
 	}
 
 
 
 	@Override
-	public DocumentsAware forId(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public DocumentsAware forId(final Long id) {
+		for(Class<? extends DocumentsAware> clazz : repositories.keySet()){
+			
+			
+			final DocumentsAware  result = forId(id, clazz);
+			if( result != null){
+				return result;
+			}
+			
+		}
+		throw new InvalidDataAccessApiUsageException("Document not found in repositories, id " + id  );
 	}
 	
 	
