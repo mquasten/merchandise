@@ -1,13 +1,17 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.ResourceAccessException;
@@ -19,6 +23,8 @@ import de.mq.merchandise.util.EntityUtil;
 
 public class DocumentFileRepositoryTest {
 	
+	private static final byte[] CONTENT = "kinkyKylie".getBytes();
+
 	private static final long ID = 19680528L;
 
 	private static final String DIR_PATH = String.format(DocumentFileRepositoryMock.DOCUMENT_FOLDER,Resource.Opportunity.urlPart(), ID);
@@ -119,6 +125,35 @@ public class DocumentFileRepositoryTest {
 		documentRepository.delete(opportunity, DOCUMENT_NAME);
 		Mockito.verify(resourceOperations).file(FILE_PATH);
 		Mockito.verify(file, Mockito.never()).delete();
+		
+	}
+	
+	@Test
+	public final void document() {
+		Mockito.when(resourceOperations.inputStream(FILE_PATH)).thenReturn(inputStream);
+		
+		
+		Mockito.when(resourceOperations.copy(Mockito.any(InputStream.class), Mockito.any(OutputStream.class))).thenAnswer(new Answer<Object>() {
+
+			@Override
+			public Object answer(final InvocationOnMock invocation) throws Throwable {
+				final ByteArrayOutputStream os = (ByteArrayOutputStream) invocation.getArguments()[1];
+				os.write(CONTENT, 0, CONTENT.length);
+				Assert.assertEquals(inputStream, invocation.getArguments()[0]);
+				return null;
+			} });
+		
+		Assert.assertArrayEquals(CONTENT, documentRepository.document(opportunity, DOCUMENT_NAME));
+	}
+	
+	
+	@Test(expected=ResourceAccessException.class)
+	public final void documentException() throws IOException {
+		Mockito.when(resourceOperations.inputStream(FILE_PATH)).thenReturn(inputStream);
+		Mockito.doThrow(new IOException()).when(inputStream).close();
+		documentRepository.document(opportunity, DOCUMENT_NAME);
+		
+		
 		
 	}
 

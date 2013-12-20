@@ -1,5 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,9 +73,18 @@ public class DocumentFileRepositoryMock implements DocumentRepository {
 	}
 
 	@Override
-	public byte[] document(BasicEntity entity, String name) {
-		// TODO Auto-generated method stub
-		return null;
+	public byte[] document(final BasicEntity entity, final String name) {
+		
+		final String path = String.format(DOCUMENT_FILE,entity(entity), entity.id(), name);
+		try (
+			final InputStream is = resourceOperations.inputStream(path);
+			final ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+			resourceOperations.copy(is,os);
+			return os.toByteArray();
+		} catch (final IOException ex) {
+			throw new  ResourceAccessException("Unable to copy file: " + path, ex);
+		}
+		
 	}
 
 }
