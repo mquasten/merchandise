@@ -10,6 +10,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 
 
 
@@ -71,6 +72,13 @@ public class RuleRepositoryTest {
 	@Test
 	public final void clazz() {
 		 Assert.assertEquals(RuleImpl.class, new RuleRepositoryImpl(entityManager, pagingUtil).entityImplementationClass());
+	}
+	
+	@Test
+	public final void defaultConstructor() {
+		final RuleRepository ruleRepository = new RuleRepositoryImpl();
+		Assert.assertNull(ReflectionTestUtils.getField(ruleRepository, "pagingUtil"));
+		Assert.assertNull(ReflectionTestUtils.getField(ruleRepository, "entityManager"));
 	}
 
 }
