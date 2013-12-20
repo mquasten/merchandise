@@ -1,16 +1,22 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.MediaType;
 
 
 public class DocumentServiceTest {
 	
 	
+	private static final byte[] DOCUMENT_CONTENT = "KinkyKylie".getBytes();
+
 	private static final String DOCUMENT_NAME = "kylie-doll.jpg";
 
 	private static final long ID = 19680528L;
@@ -59,6 +65,33 @@ public class DocumentServiceTest {
 		Mockito.verify(documentRepository).delete(documentFromDatabase, DOCUMENT_NAME);
 		Mockito.verify(documentFromDatabase).removeDocument(DOCUMENT_NAME);
 		Mockito.verify(documentEntityRepository).save(documentFromDatabase);
+	}
+	
+	@Test
+	public final void document() {
+		Mockito.when(documentRepository.document(documentFromDatabase, DOCUMENT_NAME)).thenReturn(DOCUMENT_CONTENT);
+		Assert.assertArrayEquals(DOCUMENT_CONTENT, documentService.document(ID, document.getClass(), DOCUMENT_NAME));
+	}
+	
+	@Test
+	//like a prayer ...
+	public final void documentTryGuessType() {
+		Mockito.when(documentEntityRepository.forId(ID)).thenReturn(documentFromDatabase);
+		final Map<String,String> documents = new HashMap<>();
+		documents.put(DOCUMENT_NAME, "dontLetMeGetMe");
+		Mockito.when(documentFromDatabase.documents()).thenReturn(documents);
+		Mockito.when(documentRepository.document(documentFromDatabase, DOCUMENT_NAME)).thenReturn(DOCUMENT_CONTENT);
+		
+		Assert.assertArrayEquals(DOCUMENT_CONTENT, documentService.document(ID));
+	}
+	
+	@Test(expected=InvalidDataAccessApiUsageException.class)
+	public final void documentTryGuessTypeDocumentNotAware() {
+		Mockito.when(documentEntityRepository.forId(ID)).thenReturn(documentFromDatabase);
+		Mockito.when(documentFromDatabase.documents()).thenReturn(new HashMap<String, String>());
+		
+		
+		Assert.assertArrayEquals(DOCUMENT_CONTENT, documentService.document(ID));
 	}
 
 }

@@ -19,7 +19,7 @@ public interface DocumentService extends BasicService<DocumentsAware>{
 	void assignLink(DocumentsAware documentAware, String name);
 	
 	@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-	public  byte[] document(final Long id, String name);
+	public  byte[] document(final Long id, final Class<? extends DocumentsAware> clazz, String name);
 	
 	@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 	public  byte[] document(final Long id);
