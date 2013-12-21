@@ -175,7 +175,7 @@ public class DocumentControllerImpl {
 		/*final URL url = new URL(url(documentModelAO.getDocument(), name));
 		
 		InputStream content =  (InputStream) url.getContent() ;*/
-		try (InputStream is = new ByteArrayInputStream(documentService.document(documentModelAO.getDocument().id(), name))) {
+		try (InputStream is = new ByteArrayInputStream(documentService.document(documentModelAO.getDocument().id()))) {
 			return new DefaultStreamedContent(is,MediaType.TEXT_PLAIN_VALUE ,name );
 		}
 		
