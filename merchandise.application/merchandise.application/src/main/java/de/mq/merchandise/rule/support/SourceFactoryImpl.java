@@ -41,8 +41,9 @@ public class SourceFactoryImpl {
 
 
 	
-	private GroovyObject doCreate(final Long sourceId) throws InstantiationException, IllegalAccessException, IOException {
+	private GroovyObject doCreate(final Long sourceId) throws IOException, InstantiationException, IllegalAccessException  {
 		final byte[] source = documentService.document(sourceId);
+		System.out.println(new String(source));
 		final ClassLoader parent = getClass().getClassLoader();
 		try (final GroovyClassLoader loader = new GroovyClassLoader(parent)){
 			final Class<?> clazz = loader.parseClass(new String(source));
@@ -53,6 +54,7 @@ public class SourceFactoryImpl {
 
 	private void assignParameters(final GroovyObject aScript, final Parameter<?>... parameters) {
 		for(final Parameter<?> parameter : parameters){
+		
 			aScript.setProperty(parameter.name(), parameter.value());
 		}
 	}

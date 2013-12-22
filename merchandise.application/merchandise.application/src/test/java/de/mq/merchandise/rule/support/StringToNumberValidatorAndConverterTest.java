@@ -48,9 +48,9 @@ public class StringToNumberValidatorAndConverterTest {
 	
 	@Test
 	public final void setType() {
-		Assert.assertEquals(Double.class, script.getProperty("type"));
+		Assert.assertEquals(Double.class, script.getProperty("clazz"));
 		script.setProperty("type", Integer.class.getName() );
-		Assert.assertEquals(Integer.class, script.getProperty("type"));
+		Assert.assertEquals(Integer.class, script.getProperty("clazz"));
 	}
 	
 	@Test
@@ -59,7 +59,8 @@ public class StringToNumberValidatorAndConverterTest {
 		final ParameterNamesAware<String> parameterAware = (ParameterNamesAware<String>) script;
 		final String[] results = parameterAware.parameters();
 		Assert.assertEquals(1, results.length);
-		Assert.assertEquals("type", results[0]);
+		Assert.assertEquals("clazz", results[0]);
 	}
+	
 
 }
