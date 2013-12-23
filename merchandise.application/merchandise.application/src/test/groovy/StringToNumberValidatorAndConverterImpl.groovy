@@ -13,11 +13,11 @@ class StringToNumberValidatorAndConverterImpl implements de.mq.merchandise.rule.
 
 	static final String DEFAULT_MESSAGE = 'Not a valid number for %s'
 
-	def Class clazz = Double.class;
+	def   Class type = Double.class;
 	
 	@Override
 	final String[] parameters() {
-		return ['clazz'].toArray();
+		return ['type'].toArray();
 	}
 
 	@Override
@@ -38,12 +38,12 @@ class StringToNumberValidatorAndConverterImpl implements de.mq.merchandise.rule.
 
 	@Override
 	final Number convert(final String value) {
-		return clazz.newInstance(value);
+		return type.newInstance(value);
 		
 	}
 	
-	final void setType(final String type){
-		this.clazz=Class.forName(type);
+	final void setTypeAsString(final String type){
+		this.type=Class.forName(type);
 	}
 
 }

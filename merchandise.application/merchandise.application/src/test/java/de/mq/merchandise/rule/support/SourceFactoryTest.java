@@ -37,12 +37,13 @@ import de.mq.merchandise.util.Parameter;
 		
 		@Test
 		public final void create() throws FileNotFoundException {
+		
 			@SuppressWarnings("unchecked")
 			final Parameter<Class<Integer>> parameter = Mockito.mock(Parameter.class);
-			Mockito.when(parameter.name()).thenReturn("clazz");
+			Mockito.when(parameter.name()).thenReturn("type");
 			Mockito.when(parameter.value()).thenReturn(Integer.class);
-			
 			final Validator<?> result = sourceFactory.create(ID, parameter);
+			
 			
 			Assert.assertEquals("StringToNumberValidatorAndConverterImpl", result.getClass().getSimpleName());
 			
