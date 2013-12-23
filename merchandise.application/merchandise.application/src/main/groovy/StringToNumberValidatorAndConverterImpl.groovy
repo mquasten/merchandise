@@ -42,8 +42,6 @@ class StringToNumberValidatorAndConverterImpl implements de.mq.merchandise.rule.
 		
 	}
 	
-	final void setTypeAsString(final String type){
-		this.type=Class.forName(type);
-	}
+	
 
 }

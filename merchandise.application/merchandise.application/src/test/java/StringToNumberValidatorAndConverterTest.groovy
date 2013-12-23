@@ -42,13 +42,13 @@ class StringToNumberValidatorAndConverterTest {
 	}
 	
 	
+	
 	@Test
-	public final void setType() {
+	public final void setType2() {
 		final Validator<Number>  validator = new StringToNumberValidatorAndConverterImpl();
-		Assert.assertEquals(Double.class, validator.getProperties().get('type'));
-		validator.setTypeAsString('java.lang.Integer');
-		Assert.assertEquals(Integer.class, validator.getProperties().get('type'));
-		
+		validator.setProperty('type', 'java.lang.Integer')
+		Assert.assertTrue(validator.validate('2'));
+		Assert.assertFalse(validator.validate('2.2'));
 	}
 	
 	@Test
@@ -63,6 +63,7 @@ class StringToNumberValidatorAndConverterTest {
 		MessageSource messageSource = Mockito.mock(MessageSource.class);
 	    Mockito.when(messageSource.getMessage(StringToNumberValidatorAndConverterImpl.RESOURCE_KEY, ['Double'].toArray() ,String.format(StringToNumberValidatorAndConverterImpl.DEFAULT_MESSAGE, 'Double') , Locale.GERMAN )).thenReturn(MESSAGE)
 		Assert.assertEquals(MESSAGE, validator.message(messageSource, Locale.GERMAN));
+		
 	}
 
 }

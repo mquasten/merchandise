@@ -23,7 +23,7 @@ public class StringToNumberValidatorAndConverterTest {
 	public void setup() throws IOException, InstantiationException, IllegalAccessException {
 		final ClassLoader parent = getClass().getClassLoader();
 		try (final GroovyClassLoader loader = new GroovyClassLoader(parent)) {
-			final File reader = new File("src/test/groovy/StringToNumberValidatorAndConverterImpl.groovy");
+			final File reader = new File("src/main/groovy/StringToNumberValidatorAndConverterImpl.groovy");
 			final Class<?> clazz = loader.parseClass(reader);
 			script = (GroovyObject) clazz.newInstance();
 

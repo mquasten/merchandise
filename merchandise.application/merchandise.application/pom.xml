@@ -119,6 +119,7 @@
 	<groupId>org.codehaus.groovy</groupId>
 	<artifactId>groovy</artifactId>
 	<version>1.8.9</version>
+	
 </dependency>
             
 	
@@ -127,9 +128,13 @@
 
 	<build>
 		<plugins>
+<plugin>
+          <groupId>org.codehaus.groovy</groupId>
+    <artifactId>groovy-eclipse-compiler</artifactId>
+   
+    <extensions>true</extensions>
 
-
-			
+	</plugin>		
 		</plugins>
 	</build>
 

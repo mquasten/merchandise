@@ -27,7 +27,7 @@ public class MinMaxValidatorValidationTest {
 		try (final GroovyClassLoader loader = new GroovyClassLoader(parent)){
 		//Class<?> clazz = loader.parseClass(VALIDATOR);
 			
-		final File reader = new File("src/test/groovy/MinMaxValidatorImpl.groovy");
+		final File reader = new File("src/main/groovy/MinMaxValidatorImpl.groovy");
 		final Class<?> clazz = loader.parseClass(reader);
 		GroovyObject aScript = (GroovyObject) clazz.newInstance();
 		
