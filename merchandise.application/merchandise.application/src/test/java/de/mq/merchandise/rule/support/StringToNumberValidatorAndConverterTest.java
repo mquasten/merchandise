@@ -60,6 +60,7 @@ public class StringToNumberValidatorAndConverterTest {
 		final String[] results = parameterAware.parameters();
 		Assert.assertEquals(1, results.length);
 		Assert.assertEquals("type", results[0]);
+		
 	}
 	
 

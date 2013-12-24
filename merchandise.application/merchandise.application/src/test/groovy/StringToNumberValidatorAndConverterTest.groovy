@@ -37,6 +37,7 @@ class StringToNumberValidatorAndConverterTest {
 		final Converter<String>  converter = new StringToNumberValidatorAndConverterImpl();
 		converter.setProperty('type', Integer.class);
 		Assert.assertEquals(2, converter.convert('2'));
+		println '++++++++++++++++++++++++++++++++++++'
 		
 		
 	}
