@@ -1,5 +1,5 @@
+package de.mq.merchandise.rule.support
 
-import StringToNumberValidatorAndConverterImpl;
 
 import  org.junit.Assert;
 
@@ -7,6 +7,8 @@ import  org.junit.Assert;
 
 import de.mq.merchandise.rule.Converter
 import de.mq.merchandise.rule.Validator
+import de.mq.merchandise.rule.support.StringToNumberValidatorAndConverterImpl;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;

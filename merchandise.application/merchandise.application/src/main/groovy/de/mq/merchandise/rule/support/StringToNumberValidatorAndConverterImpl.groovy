@@ -1,3 +1,4 @@
+package de.mq.merchandise.rule.support
 import java.lang.invoke.MethodHandleImpl.BindCaller.T
 import java.lang.reflect.Constructor
 import java.text.NumberFormat;

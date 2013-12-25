@@ -31,7 +31,7 @@ import de.mq.merchandise.util.Parameter;
 		
 		@Before
 		public final void setup() throws IOException {
-			Mockito.when(documentService.document(ID)).thenReturn(FileCopyUtils.copyToByteArray(new File("src/main/groovy/StringToNumberValidatorAndConverterImpl.groovy")));
+			Mockito.when(documentService.document(ID)).thenReturn(FileCopyUtils.copyToByteArray(new File("src/main/groovy/de/mq/merchandise/rule/support/StringToNumberValidatorAndConverterImpl.groovy")));
 		}
 		
 		

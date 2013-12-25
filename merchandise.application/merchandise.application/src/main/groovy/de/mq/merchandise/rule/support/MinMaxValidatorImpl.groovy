@@ -1,3 +1,4 @@
+package de.mq.merchandise.rule.support
 import org.springframework.context.MessageSource;
 
 

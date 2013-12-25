@@ -15,7 +15,7 @@ import de.mq.merchandise.rule.Converter;
 import de.mq.merchandise.rule.ParameterNamesAware;
 import de.mq.merchandise.rule.Validator;
 
-public class StringToNumberValidatorAndConverterTest {
+public class GetThePartyStratedGroovyTest {
 
 	private GroovyObject script;
 
@@ -23,7 +23,7 @@ public class StringToNumberValidatorAndConverterTest {
 	public void setup() throws IOException, InstantiationException, IllegalAccessException {
 		final ClassLoader parent = getClass().getClassLoader();
 		try (final GroovyClassLoader loader = new GroovyClassLoader(parent)) {
-			final File reader = new File("src/main/groovy/StringToNumberValidatorAndConverterImpl.groovy");
+			final File reader = new File("src/main/groovy/de/mq/merchandise/rule/support/StringToNumberValidatorAndConverterImpl.groovy");
 			final Class<?> clazz = loader.parseClass(reader);
 			script = (GroovyObject) clazz.newInstance();
 
