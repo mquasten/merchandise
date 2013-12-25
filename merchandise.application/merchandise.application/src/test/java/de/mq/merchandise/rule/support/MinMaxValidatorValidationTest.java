@@ -47,9 +47,9 @@ public class MinMaxValidatorValidationTest {
 		Assert.assertEquals(20d, aScript.getProperty("max"));
 		
 		
-		Assert.assertTrue(validator.validate(15L));
-		Assert.assertFalse(validator.validate(9L));
-		Assert.assertFalse(validator.validate(21L));
+		Assert.assertTrue(validator.validate("1.5e1"));
+		Assert.assertFalse(validator.validate("9"));
+		Assert.assertFalse(validator.validate("21"));
 		
 		Assert.assertFalse(validator.validate("kinkyKylie"));
 		
