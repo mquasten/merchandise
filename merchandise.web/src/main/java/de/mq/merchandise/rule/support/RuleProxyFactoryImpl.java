@@ -41,7 +41,7 @@ public class RuleProxyFactoryImpl {
 		this.proxyFactory = proxyFactory;
 		this.beanResolver = beanResolver;
 		this.ruleService=ruleService;
-		init();
+		
 	}
 
 
@@ -54,6 +54,7 @@ public class RuleProxyFactoryImpl {
 	@Bean(name="rulesModel")
 	@Scope("view")
 	public RuleModelAO rulesModel() {
+		
 		return proxyFactory.createProxy(RuleModelAO.class,  new ModelRepositoryBuilderImpl().withDomain(EntityUtil.create(SerialisationControllerImpl.class)).withDomain(ruleController).withMapEntry("selected", proxyFactory.createProxy(RuleAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(RuleImpl.class)).build())).withMapEntry("paging", proxyFactory.createProxy(PagingAO.class,  new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(new SimplePagingImpl(10, "name, id")).build())).withBeanResolver(beanResolver).build());
 	}
 	
