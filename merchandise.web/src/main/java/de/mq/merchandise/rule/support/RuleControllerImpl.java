@@ -14,8 +14,7 @@ class RuleControllerImpl {
 	}
 
 	void rules(final RuleModelAO ruleModelAO, final Customer customer) {
-		System.out.println();
-	
+		
 		ruleModelAO.setRules(ruleServive.rules(customer,nvl(ruleModelAO.getPattern()) + "%", ruleModelAO.getPaging().getPaging()));
 		
 		updateSelection(ruleModelAO);
