@@ -1,32 +1,47 @@
 package de.mq.merchandise.controller;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
-import junit.framework.Assert;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import com.sun.xml.bind.v2.model.core.ID;
 
 import de.mq.merchandise.model.support.FacesContextFactory;
 import de.mq.merchandise.opportunity.ResourceOperations;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.DocumentService;
 import de.mq.merchandise.opportunity.support.DocumentsAware;
+import de.mq.merchandise.opportunity.support.OpportunityImpl;
+import de.mq.merchandise.opportunity.support.Resource;
 
 @SuppressWarnings("unused")
 public class DocumentControllerTest {
 	
+
+
+	private static final byte[] CONTENT = "kylie is nice".getBytes();
+
+	private static final long ID = 19680528L;
+
 	private static final String CALL_UPLOAD_FROM = "opportunities.xhtml";
 
 	private static final String WEB_LINK = "http://www.kylie.de";
@@ -162,6 +177,15 @@ public class DocumentControllerTest {
 		Mockito.verifyZeroInteractions(resourceOperations);
 	
 	}
+	
+	@Test
+	public final void calculateSizeNotSelected() throws IOException  {
+		final BufferedImage image = Mockito.mock(BufferedImage.class);
+		initForShowAttachements(image, null);
+		documentController.calculateSize(documentModelAO);
+		Mockito.verify(documentModelAO, Mockito.times(1)).setWidth(DocumentControllerImpl.MAX_WIDTH);
+		Mockito.verify(documentModelAO,  Mockito.times(1)).setHeight(DocumentControllerImpl.MAX_HEIGHT);
+	}
 
 	private void initForShowAttachements(final BufferedImage bufferedImage, String documentName)  {
 		String url = String.format("/opportunities/%s/%s", 19680528, documentName);
@@ -207,5 +231,93 @@ public class DocumentControllerTest {
 	}
 	
 	
+	@Test
+	public final void removeAll() {
+		
+		final Map<String,String> documents = new HashMap<>();
+		documents.put(DOCUMENT_NAME, String.format("/" + Resource.Opportunity.urlPart() + "/%s/%s" , 19680528L , DOCUMENT_NAME));
+		Mockito.when(documentsAware.documents()).thenReturn(documents);
+		
+		documentController.removeAll(documentsAware);
+		
+		
+		Mockito.verify(documentService).delete(documentsAware, DOCUMENT_NAME);
+		Mockito.verify(documentsAware).removeDocument(DOCUMENT_NAME);
+	}
+	
+	
+	@Test
+	public final void init() {
+		
+		Mockito.when(documentModelAO.getDocument()).thenReturn(documentsAware);
+		Mockito.when(documentsAware.id()).thenReturn(ID);
+	
+		Mockito.when(documentService.read(ID)).thenReturn(documentsAware);
+		
+		documentController.init(documentModelAO,ID , CALL_UPLOAD_FROM, DOCUMENT_NAME, CALL_SHOW_FROM);
+		
+		Mockito.verify(documentModelAO, Mockito.times(1)).setReturnFromUpload(CALL_UPLOAD_FROM);
+
+		Mockito.verify(documentModelAO, Mockito.times(1)).setSelected(DOCUMENT_NAME);
+
+		Mockito.verify(documentModelAO, Mockito.times(1)).setReturnFromShowAttachement(CALL_SHOW_FROM);
+
+		Mockito.verify(documentModelAO, Mockito.times(1)).setDocument(documentsAware);
+		
+	}
+	
+	
+	@Test
+	public final void initWithoutId() {
+		
+		Mockito.when(documentModelAO.getDocument()).thenReturn(documentsAware);
+		Mockito.when(documentsAware.id()).thenReturn(ID);
+	
+		
+		
+		documentController.init(documentModelAO, null , CALL_UPLOAD_FROM, DOCUMENT_NAME, CALL_SHOW_FROM);
+		
+		Mockito.verify(documentModelAO, Mockito.times(1)).setReturnFromUpload(CALL_UPLOAD_FROM);
+
+		Mockito.verify(documentModelAO, Mockito.times(1)).setSelected(DOCUMENT_NAME);
+
+		Mockito.verify(documentModelAO, Mockito.times(1)).setReturnFromShowAttachement(CALL_SHOW_FROM);
+
+		Mockito.verify(documentService, Mockito.times(0)).read(Mockito.anyLong());
+		
+	}
+	
+	
+	@Test
+	public final void stream() throws IOException {
+		Mockito.when(documentModelAO.getDocument()).thenReturn(documentsAware);
+		final Map<String,String> documents = new HashMap<>();
+		documents.put(DOCUMENT_NAME, String.format("/" + Resource.Opportunity.urlPart() + "/%s/%s" , 19680528L , DOCUMENT_NAME));
+		Mockito.when(documentsAware.documents()).thenReturn(documents);
+		Mockito.when(documentsAware.id()).thenReturn(ID);
+		
+		Mockito.when(documentService.document(ID)).thenReturn(CONTENT);
+		
+		StreamedContent result = (DefaultStreamedContent) documentController.stream(documentModelAO);
+		
+		byte[] buffer = new byte[CONTENT.length];
+		
+
+		Assert.assertEquals(CONTENT.length ,result.getStream().read(buffer, 0, CONTENT.length));
+		Assert.assertArrayEquals(CONTENT,buffer);
+		Assert.assertEquals(DOCUMENT_NAME, result.getName());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void streamEmptyMap() throws IOException {
+		Mockito.when(documentModelAO.getDocument()).thenReturn(documentsAware);
+		final Map<String,String> documents = new HashMap<>();
+		Mockito.when(documentsAware.documents()).thenReturn(documents);
+		Mockito.when(documentsAware.id()).thenReturn(ID);
+		
+		documentController.stream(documentModelAO);
+		
+	}
+
 
 }

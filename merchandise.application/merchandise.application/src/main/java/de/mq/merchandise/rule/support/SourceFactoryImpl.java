@@ -16,10 +16,14 @@ import de.mq.merchandise.util.Parameter;
 @Configuration
 public class SourceFactoryImpl {
 	
+	@Autowired
 	private DocumentService documentService;
 	
-	@Autowired
-	public SourceFactoryImpl(final DocumentService documentService){
+	public SourceFactoryImpl() {
+		
+	}
+	
+	SourceFactoryImpl(final DocumentService documentService){
 		this.documentService=documentService;
 	}
 	
@@ -27,7 +31,7 @@ public class SourceFactoryImpl {
 	@Bean(name="groovyObject")
 	@Scope("prototype")
 	@SuppressWarnings("unchecked")
-	public final  <T extends GroovyObject> T create(final Long sourceId, final Parameter<?>... parameters) {
+	public   <T extends GroovyObject> T create(final Long sourceId, final Parameter<?>... parameters) {
 		try {
 			final GroovyObject result =  doCreate(sourceId);
 			assignParameters(result, parameters);

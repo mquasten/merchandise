@@ -7,6 +7,7 @@ import de.mq.merchandise.rule.RuleService;
 
 class RuleControllerImpl {
 	
+	static final String RETURN_URL = "rules.xhtml?faces-redirect=true&state=%s";
 	private  final RuleService ruleServive;
 	
 	RuleControllerImpl(RuleService ruleServive) {
@@ -56,7 +57,7 @@ class RuleControllerImpl {
 	
 	String save(final RuleAO ruleAO){
 		ruleServive.createOrUpdate(ruleAO.getRule()) ;  
-		return "rules.xhtml?faces-redirect=true&state=" + ruleAO.getParentState();
+		return String.format(RETURN_URL,  ruleAO.getParentState());
 		
 	}
 	

@@ -3,6 +3,8 @@ package de.mq.merchandise.rule.support;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -127,8 +129,11 @@ public class RuleControllerTest {
 	
 	@Test
 	public final void save() {
+		
+		Mockito.when(ruleAO.getParentState()).thenReturn(STATE);
 		Mockito.when(ruleAO.getRule()).thenReturn(rule);
-		ruleController.save(ruleAO);
+		
+		Assert.assertEquals(String.format(RuleControllerImpl.RETURN_URL,STATE), ruleController.save(ruleAO));
 		
 		Mockito.verify(ruleService).createOrUpdate(rule);
 		

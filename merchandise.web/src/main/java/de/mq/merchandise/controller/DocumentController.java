@@ -25,7 +25,7 @@ public interface DocumentController {
 	void addLink();
 	
 	
-	@MethodInvocation(actions={ @ActionEvent(params={ @Parameter(clazz = DocumentModelAO.class , el="#arg.document", elResultType=DocumentsAware.class) , @Parameter(clazz = FileUploadEvent.class , originIndex=0, el="#arg.file", elResultType=UploadedFile.class)})}, clazz = DocumentControllerImpl.class)
+	@MethodInvocation(actions={ @ActionEvent( name="removeAll" ,params={ @Parameter(clazz = DocumentModelAO.class , el="#arg.document", elResultType=DocumentsAware.class) }), @ActionEvent( name="addAttachement" ,params={ @Parameter(clazz = DocumentModelAO.class , el="#arg.document", elResultType=DocumentsAware.class) , @Parameter(clazz = FileUploadEvent.class , originIndex=0, el="#arg.file", elResultType=UploadedFile.class)})}, clazz = DocumentControllerImpl.class)
 	void removeAllAndAddNew(final  FileUploadEvent fileUploadEvent);
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = DocumentModelAO.class ) })}, clazz = DocumentControllerImpl.class)

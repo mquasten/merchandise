@@ -46,12 +46,12 @@ public class DocumentControllerImpl {
 	
 	
 	
-	void removeAllAndAddNew(final DocumentsAware document, final UploadedFile file) throws IOException {
+	void removeAll(final DocumentsAware document)  {
+		System.out.println("removeAll...");
 		for(final String name : document.documents().keySet()){
 			documentService.delete(document, name);
 			document.removeDocument(name);
 		}
-		addAttachement(document, file);
 	}
 	
 	
@@ -77,7 +77,7 @@ public class DocumentControllerImpl {
 		if(url.trim().toLowerCase().startsWith("http")){
 			return url;
 		}
-		System.out.println(String.format(URL_ROOT, url));
+		
 		return String.format(URL_ROOT, url);
 	}
 	
@@ -113,9 +113,13 @@ public class DocumentControllerImpl {
 	
 	void calculateSize(final DocumentModelAO documentModelAO)   {
 		
+		
 		documentModelAO.setWidth(MAX_WIDTH);
 		documentModelAO.setHeight(MAX_HEIGHT);	
 		
+		if ( documentModelAO.getSelected() == null ) {
+			return;
+		}
 		
 		final String url = url(documentModelAO.getDocument(), documentModelAO.getSelected() );
 		
@@ -159,9 +163,7 @@ public class DocumentControllerImpl {
 		
 		documentModelAO.setDocument(documentService.read(documentId));
 		
-		if( selected != null){
-			calculateSize(documentModelAO);
-		}
+	
 	}
 	
 	
