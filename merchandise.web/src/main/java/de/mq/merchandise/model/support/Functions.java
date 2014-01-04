@@ -1,10 +1,7 @@
 package de.mq.merchandise.model.support;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -127,12 +124,16 @@ public final  class Functions {
 	
 	
 	
-	public final static List<?> list(Collection<?> col) {
-		final List<Object> results = new ArrayList<>();
-		for(final Object x : col){
-			results.add(x);
+	//You've been a very bad elResolver ! A very very bad bad elResolver ... ! 
+	public final static <T> T firstKey(final Map<? extends T, ?> col) {
+		
+		if(col.isEmpty()){
+			return null;
 		}
-		return results;
+	
+		return (T) ((Map<? extends T,?>) col).keySet().iterator().next();
+			
+		
 	}
 	
 	

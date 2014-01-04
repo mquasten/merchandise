@@ -45,7 +45,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
             	
             	<p:outputLabel id="sourceLabel" for="source" value="#{message.rule_source}" rendered="#{not empty rule.rule.documents()}" />  
             	
-            	<h:commandLink id="source" value="#{u:list(rule.rule.documents().keySet())[0]}"  rendered="#{not empty rule.rule.documents()}" >
+            	<h:commandLink id="source" value="#{u:firstKey(rule.rule.documents())}"  rendered="#{not empty rule.rule.documents()}" >
             		
             	    <p:fileDownload value="#{documentController.stream()}" />  
             	</h:commandLink>

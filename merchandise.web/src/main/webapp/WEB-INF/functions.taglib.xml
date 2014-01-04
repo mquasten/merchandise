@@ -77,9 +77,9 @@
     </function>
     
       <function>
-        <function-name>list</function-name>
+        <function-name>firstKey</function-name>
         <function-class>de.mq.merchandise.model.support.Functions</function-class>
-        <function-signature>java.util.List list(java.util.Collection)</function-signature>
+        <function-signature>java.util.List firstKey(java.util.Map)</function-signature>
     </function>
     
      

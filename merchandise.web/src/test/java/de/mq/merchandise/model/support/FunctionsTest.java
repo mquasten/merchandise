@@ -141,4 +141,19 @@ public class FunctionsTest {
 	}
 	
 
+	@Test
+	public final void first() {
+		final Map<String, Object> values=new HashMap<>();
+		values.put(FIRST_NAME, FIRST_NAME);
+		values.put(LAST_NAME, LAST_NAME);
+		Assert.assertEquals(FIRST_NAME, Functions.firstKey(values));
+	}
+	
+	@Test
+	public final void firstEmpthy() {
+		
+		
+		Assert.assertNull(Functions.firstKey(new HashMap<String,String>()));
+	}
+	
 }

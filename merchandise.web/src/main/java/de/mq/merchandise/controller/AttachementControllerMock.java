@@ -30,7 +30,6 @@ public class AttachementControllerMock {
 
 	@RequestMapping("/{entity}/{id}/{file}.{ext}")
 	public void  content(@PathVariable String entity,@PathVariable Long id, @PathVariable String file, @PathVariable String ext, HttpServletResponse response) throws FileNotFoundException, IOException {
-		System.out.println("************Controller**************");
 	    try ( final InputStream inputStream = resourceOperations.inputStream(String.format(DocumentFileRepositoryMock.DOCUMENT_FILE, entity, id, file+ "." + ext)); final OutputStream outputStream = response.getOutputStream(); ) {
 			resourceOperations.copy(inputStream, outputStream);
 	    }
