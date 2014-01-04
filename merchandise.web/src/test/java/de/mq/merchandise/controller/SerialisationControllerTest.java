@@ -1,5 +1,7 @@
 package de.mq.merchandise.controller;
 
+import java.util.Date;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -63,7 +65,12 @@ private final BeanResolver beanResolver =  new SimpleReflectionBeanResolverImpl(
 		Assert.assertEquals(string("" +CURRENT_PAGE , RULE_ID, PATTERN ), serialisationController.serialize(ao, PROPERTIES));
 	}
 	
-	@Test(expected=IllegalStateException.class)
+	@Test
+	public final void serializeNothing() {
+		Assert.assertEquals("", serialisationController.serialize(new Date()));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
 	public final void serializeWrongProperty() {
 		serialisationController.serialize(ao, new String[] {"dontLetMeGetMe"});
 	}
@@ -96,7 +103,7 @@ private final BeanResolver beanResolver =  new SimpleReflectionBeanResolverImpl(
 	    Assert.assertNull(ao.getSelected().getId());
 	    Assert.assertNull(ao.getPattern());
 	    
-	    serialisationController.deserialize(ao, string("" + CURRENT_PAGE, RULE_ID, PATTERN), PROPERTIES);
+	    serialisationController.deserialize(ao, string(""+ CURRENT_PAGE, RULE_ID, PATTERN), PROPERTIES);
 	    
 	   Assert.assertEquals(PATTERN, ao.getPattern());
 	   Assert.assertEquals(CURRENT_PAGE, ao.getPaging().getCurrentPage());
@@ -106,6 +113,17 @@ private final BeanResolver beanResolver =  new SimpleReflectionBeanResolverImpl(
 	@Test(expected=IllegalStateException.class)
 	public final void deserializeWrongProperty() {
 		serialisationController.deserialize(ao, string("" + CURRENT_PAGE, PATTERN, RULE_ID), new String[]{"dontLetMeGetMe"});
+	}
+	
+	@Test()
+	public final void deserializeEmpthy() {
+		ao.setPattern(PATTERN);
+		RuleAO ruleAO = ao.getSelected();
+		ruleAO.setId(RULE_ID);
+		serialisationController.deserialize(ao, string(""+ CURRENT_PAGE, "", ""), PROPERTIES);
+		Assert.assertNull(ao.getPattern());
+		Assert.assertEquals(CURRENT_PAGE, ao.getPaging().getCurrentPage());
+		Assert.assertNull( ao.getSelected().getId());
 	}
 	
 	@Test

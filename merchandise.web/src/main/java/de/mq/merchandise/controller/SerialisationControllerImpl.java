@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 public class SerialisationControllerImpl {
@@ -75,7 +74,7 @@ public class SerialisationControllerImpl {
 
 			PropertyUtils.setProperty(target, property,((Constructor<?>) ClassUtils.resolvePrimitiveIfNecessary(propertyType).getConstructor(String.class)).newInstance(value));	
 		} catch (final Exception ex) {
-			ReflectionUtils.handleReflectionException(ex);
+			throw new IllegalStateException("Error setting property: " + property,  ex);
 		}
 	}
 
@@ -95,10 +94,8 @@ public class SerialisationControllerImpl {
 			 return result;
 			
 			
-		} catch (Exception ex) {
-			
-			ReflectionUtils.handleReflectionException(ex);
-			return null;
+		} catch (final Exception ex) {
+		    throw new IllegalArgumentException("Unkown Property:" + property, ex);
 		}
 	}
 	
