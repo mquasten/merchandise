@@ -58,5 +58,49 @@ class MinMaxValidatorTest {
 		Assert.assertEquals MESSAGE, validator.message(messageSource, Locale.GERMAN)
 	}
 	
+	@Test
+	final void ok() {
+		final Validator  validator = new MinMaxValidatorImpl();
+		validator.setProperty('min', 1)
+		validator.setProperty('max', 2)
+		int counter=0;
+		for(final String value :validator.ok()) {
+			Assert.assertTrue Double.valueOf(value)==1D||Double.valueOf(value)==2D||Double.valueOf(value)==1.5D
+			Assert.assertTrue validator.validate(value)
+			counter++;
+		}
+		
+		Assert.assertEquals 3, counter 
+	}
+	
+	@Test
+	final void bad() {
+		final Validator  validator = new MinMaxValidatorImpl();
+		validator.setProperty('min', 1)
+		validator.setProperty('max', 2)
+		int counter=0;
+		for(final String value :validator.bad()) {
+			if( isNumber(value) ) {
+				Assert.assertTrue(Double.valueOf(value) < 1 || Double.valueOf(value) > 2)
+			}else {
+			     Assert.assertEquals 'For my name was Elisa Day',  value
+			}
+			
+			Assert.assertFalse  validator.validate(value)
+			counter++;
+		}
+		Assert.assertEquals 3, counter
+	
+	}
+
+	private boolean isNumber(String value) {
+		try {
+			Double.valueOf(value)
+			return true;
+		} catch(final NumberFormatException ne){
+			return false;
+		}
+	}
+	
 
 }

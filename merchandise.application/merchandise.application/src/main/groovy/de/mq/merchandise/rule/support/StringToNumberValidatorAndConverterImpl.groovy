@@ -14,7 +14,7 @@ class StringToNumberValidatorAndConverterImpl implements de.mq.merchandise.rule.
 
 	static final String DEFAULT_MESSAGE = 'Not a valid number for %s'
 
-	def   Class type = Double.class;
+	def   Class<Number> type = Double.class;
 	
 	@Override
 	final String[] parameters() {
@@ -43,6 +43,22 @@ class StringToNumberValidatorAndConverterImpl implements de.mq.merchandise.rule.
 		
 	}
 	
+	@Override
+	final String[] ok() {
+		if( validate('0.5') ) {
+			return ['-1.5','0','1.5'].toArray();
+		}
+		return ['-1','0','1'].toArray();
+	}
 	
+	@Override
+	final String[] bad() {
+		if( ! validate('0.5') ) {
+			return ['ogin ateed', '-1.5', '1.5']
+		} else {
+			return ['ogin ateed']
+		}
+		
+	}
 
 }

@@ -5,5 +5,9 @@ import groovy.lang.GroovyObject;
 public interface ParameterNamesAware<T>  extends GroovyObject {
 
 	public abstract String[] parameters();
+	
+	public String[] ok();
+	
+	public String[] bad();
 
 }

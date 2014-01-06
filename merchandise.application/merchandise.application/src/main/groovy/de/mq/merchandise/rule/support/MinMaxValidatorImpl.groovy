@@ -1,12 +1,14 @@
 package de.mq.merchandise.rule.support
 
 
+import groovy.lang.MetaClass;
+
 import org.springframework.context.MessageSource
 
 
 class MinMaxValidatorImpl  implements  de.mq.merchandise.rule.Validator<String>  {
-	def Number min = Double.MIN_VALUE
-	def Number  max = Double.MAX_VALUE
+	def Number min = Double.MIN_VALUE+1;
+	def Number  max = Double.MAX_VALUE-1;
 	static final String RESOURCE_KEY = 'MinMaxValidator.message'
 
 	static final String DEFAULT_MESSAGE = 'Number required [%s ... %s]'
@@ -46,4 +48,28 @@ class MinMaxValidatorImpl  implements  de.mq.merchandise.rule.Validator<String> 
 	final void setMin(final String min) {
 		this.min=Double.valueOf(min)
 	} 
+
+
+
+
+
+	@Override
+	final String[] ok() {
+		return [ String.valueOf(min), String.valueOf(( min + max) / 2) ,  String.valueOf(max)].toArray();
+	}
+
+
+
+
+
+	@Override
+	final String[] bad() {
+		return [String.valueOf(min-0.5), String.valueOf(max+0.5), 'For my name was Elisa Day'];
+	}
+
+
+
+
+
+	
 }
