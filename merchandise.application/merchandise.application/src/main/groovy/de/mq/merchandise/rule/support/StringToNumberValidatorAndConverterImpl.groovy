@@ -8,7 +8,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.convert.converter.Converter;
 
 
-class StringToNumberValidatorAndConverterImpl implements de.mq.merchandise.rule.Validator<String> , de.mq.merchandise.rule.Converter<String, Number> {
+class StringToNumberValidatorAndConverterImpl<T> implements de.mq.merchandise.rule.Validator<T> , de.mq.merchandise.rule.Converter<T, Number> {
 
 	static final String RESOURCE_KEY = 'StringToNumberValidatorAndConverter.message'
 
@@ -22,7 +22,7 @@ class StringToNumberValidatorAndConverterImpl implements de.mq.merchandise.rule.
 	}
 
 	@Override
-	final boolean validate(final String value) {
+	final boolean validate(final T value) {
 		try {
 			convert(value);
 			return true;
@@ -38,27 +38,31 @@ class StringToNumberValidatorAndConverterImpl implements de.mq.merchandise.rule.
 	}
 
 	@Override
-	final Number convert(final String value) {
+	final Number convert(final T value) {
+		if (value instanceof Number ) {
+			return type.newInstance(value.toString());
+		}
 		return type.newInstance(value);
 		
 	}
 	
 	@Override
-	final String[] ok() {
+	final T[] ok() {
 		if( validate('0.5') ) {
-			return ['-1.5','0','1.5'].toArray();
+			return ['-1.5','0','1.5', -1.5, 0, 1.5].toArray();
 		}
-		return ['-1','0','1'].toArray();
+		return ['-1','0','1', -1, 0, 1].toArray();
 	}
 	
 	@Override
-	final String[] bad() {
+	final T[] bad() {
 		if( ! validate('0.5') ) {
-			return ['ogin ateed', '-1.5', '1.5']
+			return ['ogin ateed', '-1.5', '1.5', -1.5, 1.5]
 		} else {
 			return ['ogin ateed']
 		}
 		
+	
 	}
 
 }

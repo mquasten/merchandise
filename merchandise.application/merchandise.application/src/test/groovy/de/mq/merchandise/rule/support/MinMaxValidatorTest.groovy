@@ -14,7 +14,7 @@ class MinMaxValidatorTest {
 	
 	@Test
 	final void parameters() {
-		final Validator  validator = new MinMaxValidatorImpl();
+		final Validator  validator = new MinMaxValidatorImpl<>();
 		Assert.assertEquals 2, validator.parameters().length
 		Assert.assertEquals 'min', validator.parameters()[0]
 		Assert.assertEquals 'max', validator.parameters()[1]
@@ -22,7 +22,7 @@ class MinMaxValidatorTest {
 	
 	@Test
 	final void setMinAsString() {
-		final Validator  validator = new MinMaxValidatorImpl();
+		final Validator validator = new MinMaxValidatorImpl();
 		validator.setProperty('min', DOUBLE_STRING)
 		Assert.assertEquals Double.valueOf('47.11e0'), validator.getProperties().get('min') , 0;
 	}
@@ -36,7 +36,7 @@ class MinMaxValidatorTest {
 	
 	@Test
 	final void validate() {
-		final Validator  validator = new MinMaxValidatorImpl();
+		final Validator<String>  validator = new MinMaxValidatorImpl<String>();
 		validator.setProperty('min', 10)
 		validator.setProperty('max', 20)
 		Assert.assertTrue validator.validate('15.15')
@@ -44,6 +44,16 @@ class MinMaxValidatorTest {
 		Assert.assertFalse validator.validate('20.1')
 		Assert.assertFalse validator.validate('xx')
 		
+	}
+	
+	@Test
+	final void validateNumber() {
+		final Validator<Number>  validator = new MinMaxValidatorImpl<Number>();
+		validator.setProperty('min', 10)
+		validator.setProperty('max', 20)
+		Assert.assertTrue validator.validate(15.15)
+		Assert.assertFalse validator.validate(9.9)
+		Assert.assertFalse validator.validate(20.1)
 	}
 	
 	@Test
@@ -69,8 +79,7 @@ class MinMaxValidatorTest {
 			Assert.assertTrue validator.validate(value)
 			counter++;
 		}
-		
-		Assert.assertEquals 3, counter 
+		Assert.assertEquals 6, counter 
 	}
 	
 	@Test
@@ -89,7 +98,7 @@ class MinMaxValidatorTest {
 			Assert.assertFalse  validator.validate(value)
 			counter++;
 		}
-		Assert.assertEquals 3, counter
+		Assert.assertEquals 5, counter
 	
 	}
 

@@ -37,6 +37,9 @@ class StringToNumberValidatorAndConverterTest {
 		
 		Assert.assertTrue(validator.validate('2'));
 		Assert.assertFalse(validator.validate('2.2'));
+		
+		Assert.assertTrue(validator.validate(2));
+		Assert.assertFalse(validator.validate(2.2e10));
 	}
 	
 	@Test
@@ -44,8 +47,6 @@ class StringToNumberValidatorAndConverterTest {
 		final Converter<String>  converter = new StringToNumberValidatorAndConverterImpl();
 		converter.setProperty('type', Integer.class);
 		Assert.assertEquals(2, converter.convert('2'));
-		println '++++++++++++++++++++++++++++++++++++'
-		
 		
 	}
 	
@@ -84,7 +85,7 @@ class StringToNumberValidatorAndConverterTest {
 			Assert.assertTrue validator.validate(value)
 			counter++;
 		}
-		Assert.assertEquals 3 , counter;
+		Assert.assertEquals 6 , counter;
 	}
 	
 	@Test
@@ -97,7 +98,7 @@ class StringToNumberValidatorAndConverterTest {
 				Assert.assertTrue validator.validate(value)
 				counter++;
 		}
-		Assert.assertEquals 3 , counter;
+		Assert.assertEquals 6 , counter;
 	}
 	
 	@Test
@@ -127,10 +128,10 @@ class StringToNumberValidatorAndConverterTest {
 			counter++;
 			
 		}
-		Assert.assertEquals 3 , counter;
+		Assert.assertEquals 5 , counter;
 	}
 	
-	private boolean isNumber(String value) {
+	private boolean isNumber(final String value) {
 		try {
 			Double.valueOf(value)
 			return true;

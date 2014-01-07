@@ -6,8 +6,8 @@ public interface ParameterNamesAware<T>  extends GroovyObject {
 
 	public abstract String[] parameters();
 	
-	public String[] ok();
+	public T[] ok();
 	
-	public String[] bad();
+	public T[] bad();
 
 }

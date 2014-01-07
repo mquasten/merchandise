@@ -3,10 +3,11 @@ package de.mq.merchandise.rule.support
 
 import groovy.lang.MetaClass;
 
+import org.mockito.internal.matchers.InstanceOf;
 import org.springframework.context.MessageSource
 
 
-class MinMaxValidatorImpl  implements  de.mq.merchandise.rule.Validator<String>  {
+class MinMaxValidatorImpl<T>  implements  de.mq.merchandise.rule.Validator<T>  {
 	def Number min = Double.MIN_VALUE+1;
 	def Number  max = Double.MAX_VALUE-1;
 	static final String RESOURCE_KEY = 'MinMaxValidator.message'
@@ -24,15 +25,21 @@ class MinMaxValidatorImpl  implements  de.mq.merchandise.rule.Validator<String> 
 
 
 	@Override
-	final boolean validate(final String  value){
+	final boolean validate(final T  value){
 		try {
-			final Number numberValue= Double.valueOf(value);
+			final Number numberValue= number(value)
 			return (numberValue.doubleValue() >= min.doubleValue()) && (numberValue.doubleValue() <= max.doubleValue() )
 		} catch (final NumberFormatException ne){
 			return false;
 		}
 	}
 
+	private Number number(final T value) {
+		if (value instanceof Number ) {
+			return value;
+		}
+		return Double.valueOf(value);
+	}
 
 
 	@Override
@@ -54,8 +61,8 @@ class MinMaxValidatorImpl  implements  de.mq.merchandise.rule.Validator<String> 
 
 
 	@Override
-	final String[] ok() {
-		return [ String.valueOf(min), String.valueOf(( min + max) / 2) ,  String.valueOf(max)].toArray();
+	final T[] ok() {
+		return [ String.valueOf(min), String.valueOf(( min + max) / 2) ,  String.valueOf(max), min, ( min + max) / 2, max ].toArray();
 	}
 
 
@@ -63,8 +70,8 @@ class MinMaxValidatorImpl  implements  de.mq.merchandise.rule.Validator<String> 
 
 
 	@Override
-	final String[] bad() {
-		return [String.valueOf(min-0.5), String.valueOf(max+0.5), 'For my name was Elisa Day'];
+	final T[] bad() {
+		return [String.valueOf(min-0.5), String.valueOf(max+0.5), 'For my name was Elisa Day', min-0.5, max+0.5 ];
 	}
 
 
