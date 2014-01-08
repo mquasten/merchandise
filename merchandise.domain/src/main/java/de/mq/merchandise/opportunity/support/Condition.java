@@ -1,5 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.util.Collection;
 import java.util.List;
 
 import de.mq.merchandise.BasicEntity;
@@ -26,5 +27,7 @@ public interface Condition extends BasicEntity {
 	void assignValue(final String value);
 	
 	void removeValue(final String value);
+
+	Collection<RuleInstance> ruleInstances();
 	
 }

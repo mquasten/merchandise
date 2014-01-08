@@ -1,19 +1,24 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
@@ -48,6 +53,10 @@ class ConditionImpl implements Condition{
 	@JoinColumn(name="commercial_relation_id")
 	@Equals
 	private CommercialRelation commercialRelation; 
+	
+	@OneToMany(mappedBy="condition", targetEntity=RuleInstanceImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE,  CascadeType.REMOVE })
+	@OrderBy("priority")
+	private List<RuleInstance> ruleInstances = new ArrayList<>();
 
 	protected ConditionImpl() {
 		
@@ -133,6 +142,11 @@ class ConditionImpl implements Condition{
 	@Override
 	public void removeValue(String value) {
 		values.remove(value);
+	}
+	
+	@Override
+	public Collection<RuleInstance> ruleInstances() {
+		return Collections.unmodifiableList(ruleInstances);
 	}
 	
 
