@@ -12,4 +12,6 @@ interface RuleInstance {
 
 	Rule rule();
 
+	int priority();
+
 }

@@ -90,6 +90,8 @@ public class OpportunityImpl implements Opportunity {
 	@JoinColumn(name="opportunity_id")
 	private Collection<Address> addresses= new HashSet<>();
 	
+	
+	
 	protected OpportunityImpl() {
 		
 	}

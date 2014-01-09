@@ -31,14 +31,15 @@ class RuleInstanceImpl implements RuleInstance {
 	@Column(length=50)
 	private String id; 
 	
-	@ManyToOne(targetEntity=ConditionImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} )
+	@ManyToOne(targetEntity=ConditionImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST},optional=true )
 	@JoinColumn(name="condition_id" )
 	@Equals
 	private final Condition condition; 
 	
-	@ManyToOne(targetEntity=RuleImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} )
+	
+	@ManyToOne(targetEntity=RuleImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} , optional=false)
 	@JoinColumn(name="rule_id" )
-	@Equals
+    @Equals
 	private Rule rule; 
 	
 	
@@ -103,6 +104,13 @@ class RuleInstanceImpl implements RuleInstance {
 	public Rule rule() {
 		return rule;
 	}
+	
+	@Override
+	public int priority() {
+		EntityUtil.notNullGuard(priority, "priority");
+		return priority;
+	}
+	
 	
 	@Override
 	public int hashCode() {
