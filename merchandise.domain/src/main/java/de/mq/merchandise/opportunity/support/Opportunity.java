@@ -57,6 +57,8 @@ public interface Opportunity extends BasicEntity, DocumentsAware{
 	Collection<Address> addresses();
 
 	void assign(Address address);
+
+	Condition condition(CommercialSubject subject, ConditionType conditionType);
  
 	
 

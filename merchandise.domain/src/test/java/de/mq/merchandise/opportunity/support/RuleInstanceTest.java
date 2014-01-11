@@ -2,8 +2,6 @@ package de.mq.merchandise.opportunity.support;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -82,7 +80,7 @@ public class RuleInstanceTest {
 		Mockito.when(rule.id()).thenReturn(RULE_ID);
 		final RuleInstance ruleInstance = new RuleInstanceImpl(condition, rule, PRIORITY);
 		
-		Assert.assertEquals(new UUID(CONDITION_ID, RULE_ID).toString().hashCode(), ruleInstance.hashCode());
+		Assert.assertEquals( condition.hashCode() + rule.hashCode() , ruleInstance.hashCode());
 	}
 	
 	@Test

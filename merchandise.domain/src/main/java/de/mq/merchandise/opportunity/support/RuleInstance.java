@@ -1,17 +1,20 @@
 package de.mq.merchandise.opportunity.support;
 
+import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.rule.Rule;
 
-interface RuleInstance {
+public interface RuleInstance  extends BasicEntity {
 
-	void assign(String name, String value);
+	void assign(final String name, final String value);
 
-	void assign(int priority);
+	void assign(final int priority);
 
-	String parameter(String name);
+	String parameter(final String name);
 
 	Rule rule();
 
 	int priority();
+	
+	boolean forRule(final Rule rule);
 
 }

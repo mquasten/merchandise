@@ -309,6 +309,15 @@ public class OpportunityImpl implements Opportunity {
 		addresses.add(address);
 	}
 	
+	@Override
+	public final Condition  condition(final CommercialSubject subject , ConditionType conditionType) {
+		final CommercialRelation commercialRelation = findRelation(subject);
+		if( commercialRelation == null){
+			throw new IllegalArgumentException("CommercialSubject not assigned: "+  subject.name());
+		}
+		return commercialRelation.condition(conditionType);
+	}
+	
 	
 
 }

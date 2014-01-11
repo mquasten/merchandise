@@ -1,7 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
+import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
@@ -145,9 +145,27 @@ class ConditionImpl implements Condition{
 	}
 	
 	@Override
-	public Collection<RuleInstance> ruleInstances() {
+	public List<RuleInstance> ruleInstances() {
 		return Collections.unmodifiableList(ruleInstances);
 	}
 	
+	@Override
+	public  final RuleInstance ruleInstance(final Rule rule) {
+		
+		for(final RuleInstance ruleInstance : ruleInstances){
+			if(! ruleInstance.forRule(rule)){
+				continue;
+			}
+			return ruleInstance;
+		}
+		throw new IllegalArgumentException("Rule " + rule.name() + " isn't assigned to condition");
+		
+	}
+	
 
+	@Override
+	public final void assign(final Rule rule, final int priority ){
+		ruleInstances.add(new RuleInstanceImpl(this, rule, priority));
+	}
+	
 }

@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.BasicEntity;
@@ -24,12 +25,17 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.PersonConstants;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
+import de.mq.merchandise.rule.Rule;
+import de.mq.merchandise.rule.support.RuleImpl;
+import de.mq.merchandise.util.EntityUtil;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
 public class OpportunityIntegrationTest {
 	
+	private static final String PARAMETER_VALUE = "10";
+	private static final String PARAMETER_NAME = "hotScore";
 	private static final String UNIT_DAY = "day";
 	private static final String UNIT_HOUR = "hour";
 	private static final String KEY_WORD = "EscortService";
@@ -46,11 +52,12 @@ public class OpportunityIntegrationTest {
 	@After
     public final void clean() {
     	for(final BasicEntity entity : waste){
-    		BasicEntity find = entityManager.find(entity.getClass(), entity.id());
-    		System.out.println(find);
-    		if( find != null)
-			entityManager.remove(find);
-    		entityManager.flush();
+    		final BasicEntity whereTheWildRosesGrow = entityManager.find(entity.getClass(), entity.id());
+    		
+    		if( whereTheWildRosesGrow != null){
+    			entityManager.remove(whereTheWildRosesGrow);
+    			entityManager.flush();
+    		}
     	}
     	
     	
@@ -61,7 +68,16 @@ public class OpportunityIntegrationTest {
 	@Rollback(false)
 	public final void persitOpportunity() {
 		
+		
+		
 		final Customer customer  = entityManager.merge(PersonConstants.customer());
+		
+		Rule rule = EntityUtil.create(RuleImpl.class);
+		ReflectionTestUtils.setField(rule, "customer", customer);
+		ReflectionTestUtils.setField(rule, "name", "whereTheWildRosesGrow");
+		rule=entityManager.merge(rule);
+		
+	
 		final CommercialSubject commercialSubject = entityManager.merge(new CommercialSubjectImpl(customer, "EscortService++", null));
 		
 		final ActivityClassification activityClassification = entityManager.find(ActivityClassificationImpl.class, ACTIVITY_ID);
@@ -83,9 +99,23 @@ public class OpportunityIntegrationTest {
 		values.add(UNIT_DAY);
 		
 		
-		opportunity.assignConditions(commercialSubject, new ConditionImpl(ConditionType.PricePerUnit, values));
+		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values);
+	
+		condition.assign(rule, 4711);
+	 
+		
+		final RuleInstance ruleInstance = condition.ruleInstance(rule);
+		ruleInstance.assign(PARAMETER_NAME, PARAMETER_VALUE);
+		
+		opportunity.assignConditions(commercialSubject, condition);
+		
+		
+		
 		opportunity=entityManager.merge(opportunity);
+		
+		
 		waste.add(opportunity);
+		waste.add(rule);
 		entityManager.flush();
 		
 		entityManager.refresh(opportunity);
@@ -123,7 +153,11 @@ public class OpportunityIntegrationTest {
 		
 		Assert.assertEquals(1, result.addresses().size());
 		Assert.assertEquals(address, result.addresses().iterator().next());
-		System.out.println(">>>" + result.addresses().iterator().next().id());
+		
+		Assert.assertEquals(1, result.condition(commercialSubject, ConditionType.PricePerUnit).ruleInstances().size());
+		Assert.assertEquals(rule, result.condition(commercialSubject, ConditionType.PricePerUnit).ruleInstances().get(0).rule());
+		Assert.assertEquals(PARAMETER_VALUE, result.condition(commercialSubject, ConditionType.PricePerUnit).ruleInstance(rule).parameter(PARAMETER_NAME));
+		Assert.assertNotNull(result.addresses().iterator().next().id());
 		
 	}
 	

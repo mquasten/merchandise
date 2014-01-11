@@ -3,7 +3,6 @@ package de.mq.merchandise.opportunity.support;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -12,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,17 +27,19 @@ import de.mq.merchandise.util.Equals;
 @Table(name="rule_instance")
 class RuleInstanceImpl implements RuleInstance {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
-	@Column(length=50)
-	private String id; 
+	@GeneratedValue
+	private Long id; 
 	
-	@ManyToOne(targetEntity=ConditionImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST},optional=true )
+	@ManyToOne(targetEntity=ConditionImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} )
 	@JoinColumn(name="condition_id" )
 	@Equals
 	private final Condition condition; 
 	
 	
-	@ManyToOne(targetEntity=RuleImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} , optional=false)
+	@ManyToOne(targetEntity=RuleImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} )
 	@JoinColumn(name="rule_id" )
     @Equals
 	private Rule rule; 
@@ -64,7 +66,6 @@ class RuleInstanceImpl implements RuleInstance {
 		this.condition=condition;
 		this.rule=rule;
 		this.priority=priority;
-		id= new UUID(condition.id(), rule.id()).toString();
 	}
 	
 	
@@ -120,6 +121,24 @@ class RuleInstanceImpl implements RuleInstance {
 	@Override
 	public boolean equals(final Object obj) {
 	    return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(RuleInstance.class).isEquals();
+	}
+
+	@Override
+	public boolean forRule(final Rule rule) {
+		EntityUtil.notNullGuard(rule, "rule");
+		EntityUtil.notNullGuard(this.rule, "rule");
+		return this.rule.equals(rule);
+	}
+
+	@Override
+	public long id() {
+		EntityUtil.idAware(id);
+		return id;
+	}
+
+	@Override
+	public boolean hasId() {
+		return (id!=null);
 	}
 	
 
