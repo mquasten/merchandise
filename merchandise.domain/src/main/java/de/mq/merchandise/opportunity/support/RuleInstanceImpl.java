@@ -35,8 +35,13 @@ class RuleInstanceImpl implements RuleInstance {
 	
 	@ManyToOne(targetEntity=ConditionImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} )
 	@JoinColumn(name="condition_id" )
-	@Equals
+	@Equals(mandatory=false)
 	private final Condition condition; 
+	
+	@ManyToOne(targetEntity=CommercialRelationImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} )
+	@JoinColumn(name="commercial_relation_id" )
+	@Equals(mandatory=false)
+	private final CommercialRelation commercialRelation;
 	
 	
 	@ManyToOne(targetEntity=RuleImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} )
@@ -59,13 +64,25 @@ class RuleInstanceImpl implements RuleInstance {
 	private RuleInstanceImpl() {
 		this.condition=null;
 		this.rule=null;
+		this.commercialRelation=null;
 		this.priority=0;
 	}
 	
 	RuleInstanceImpl(final Condition condition, final Rule rule, final int priority) {
 		this.condition=condition;
 		this.rule=rule;
+		this.commercialRelation=null;
 		this.priority=priority;
+		valid(this);
+	}
+	
+	
+	RuleInstanceImpl(final CommercialRelation commercialRelation, final Rule rule, final int priority) {
+		this.condition=null;
+		this.commercialRelation=commercialRelation;
+		this.rule=rule;
+		this.priority=priority;
+		valid(this);
 	}
 	
 	
@@ -115,12 +132,21 @@ class RuleInstanceImpl implements RuleInstance {
 	
 	@Override
 	public int hashCode() {
+		if( ! valid(this) ) {
+			super.hashCode();
+		}
 		return  EntityUtil.equalsBuilder().withSource(this).buildHashCode();
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
-	    return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(RuleInstance.class).isEquals();
+		if( ! valid(this)){
+			return super.equals(obj);
+		}
+		if( ! valid(obj)) {
+			return super.equals(obj);
+		}
+	    return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).isEquals();
 	}
 
 	@Override
@@ -141,5 +167,25 @@ class RuleInstanceImpl implements RuleInstance {
 		return (id!=null);
 	}
 	
+	
+	
+	
+	boolean valid(final Object ruleinstance ) {
+		if (!(ruleinstance instanceof RuleInstanceImpl)) {
+			return false;
+		}
+		
+	    return (((RuleInstanceImpl) ruleinstance).commercialRelation()!=null ^ ((RuleInstanceImpl) ruleinstance).condition()!=null) && (((RuleInstanceImpl) ruleinstance).rule()!=null);
+	}
+
+	
+	Condition condition() {
+		return condition;
+	}
+
+
+	CommercialRelation commercialRelation() {
+		return commercialRelation;
+	}
 
 }

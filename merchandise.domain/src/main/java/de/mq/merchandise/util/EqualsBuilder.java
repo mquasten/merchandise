@@ -45,6 +45,8 @@ public interface EqualsBuilder {
 	 */
 	int buildHashCode();
 
+
+
 	
 
 }

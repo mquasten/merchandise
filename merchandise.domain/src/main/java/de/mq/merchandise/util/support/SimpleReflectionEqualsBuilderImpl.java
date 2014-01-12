@@ -29,11 +29,17 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 	
 	private boolean idNulls=false;
 	
+	
+	
 	private Converter<Object,Object> proxyConverter = new HibernateProxyConverter();
+	
+	
+	
 	
 	SimpleReflectionEqualsBuilderImpl() {
 		
 	}
+	
 	
 	
 	@Override
@@ -189,14 +195,17 @@ public class SimpleReflectionEqualsBuilderImpl implements EqualsBuilder {
 		}
 		
 		if(field.isAnnotationPresent(Equals.class) ){
-		    handleEqualsField(values, field, value);
+			
+		    handleEqualsField(values, field, value, field.getAnnotation(Equals.class).mandatory());
 		}
 	}
 
 
-	private void handleEqualsField(final Map<UUID, Object> values, final Field field, final Object value) {
-		if(  value==null){
-			nulls=true;
+	private void handleEqualsField(final Map<UUID, Object> values, final Field field, final Object value, final boolean mandatory) {
+		if(  value==null){	
+			 if( mandatory){
+				nulls=mandatory;
+			 }
 			return;
 		}
 		

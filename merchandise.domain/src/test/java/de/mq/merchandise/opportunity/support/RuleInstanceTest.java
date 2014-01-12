@@ -83,6 +83,18 @@ public class RuleInstanceTest {
 		Assert.assertEquals( condition.hashCode() + rule.hashCode() , ruleInstance.hashCode());
 	}
 	
+	
+	@Test
+	public final void hashCommercialSubject() {
+		final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
+		
+		final Rule rule= Mockito.mock(Rule.class);
+		
+		final RuleInstance ruleInstance = new RuleInstanceImpl(commercialRelation, rule, PRIORITY);
+		
+		Assert.assertEquals( commercialRelation.hashCode() + rule.hashCode() , ruleInstance.hashCode());
+	}
+	
 	@Test
 	public final void equals() {
 		final Condition condition = Mockito.mock(Condition.class);
@@ -94,6 +106,19 @@ public class RuleInstanceTest {
 		
 		Assert.assertTrue(new RuleInstanceImpl(condition, rule, PRIORITY).equals(new RuleInstanceImpl(condition, rule, PRIORITY)));
 		Assert.assertFalse(new RuleInstanceImpl(condition, rule, PRIORITY).equals(new RuleInstanceImpl(condition, otherRule, PRIORITY)));
+	}
+	
+	@Test
+	public final void equalsCommercialRelation() {
+		final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
+	
+		final Rule rule= Mockito.mock(Rule.class);
+		
+		final Rule otherRule= Mockito.mock(Rule.class);
+		Mockito.when(otherRule.id()).thenReturn(2*RULE_ID);
+		
+		Assert.assertTrue(new RuleInstanceImpl(commercialRelation, rule, PRIORITY).equals(new RuleInstanceImpl(commercialRelation, rule, PRIORITY)));
+		Assert.assertFalse(new RuleInstanceImpl(commercialRelation, rule, PRIORITY).equals(new RuleInstanceImpl(commercialRelation, otherRule, PRIORITY)));
 	}
 	
 	@Test

@@ -9,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import junit.framework.Assert;
 
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -30,7 +29,6 @@ import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.rule.support.RuleImpl;
 import de.mq.merchandise.util.EntityUtil;
 
-@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
 public class OpportunityIntegrationTest {
