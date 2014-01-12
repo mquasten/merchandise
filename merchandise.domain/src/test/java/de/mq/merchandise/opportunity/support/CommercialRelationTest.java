@@ -68,4 +68,7 @@ public class CommercialRelationTest {
 		Assert.assertTrue(new CommercialRelationImpl(commercialSubject, opportunity).equals(new CommercialRelationImpl(commercialSubject, opportunity)));
 		Assert.assertFalse(new CommercialRelationImpl(commercialSubject, opportunity).equals(new CommercialRelationImpl(commercialSubject, Mockito.mock(Opportunity.class))));
 	}
+	
+	
+	
 }

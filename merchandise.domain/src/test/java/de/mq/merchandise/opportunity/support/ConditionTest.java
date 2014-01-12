@@ -5,12 +5,15 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
+import de.mq.merchandise.rule.Rule;
+import de.mq.merchandise.util.EntityUtil;
 
 public class ConditionTest {
 	
@@ -132,6 +135,42 @@ public class ConditionTest {
 		condition.removeValue(VALUE);
 		
 		Assert.assertEquals(0, condition.values().size());
+	}
+	
+	
+	@Test
+	public final void ruleInstance() {
+		
+		final Condition condition = EntityUtil.create(ConditionImpl.class);
+		final List<RuleInstance> ruleInstances = new ArrayList<>();
+		final RuleInstance ruleInstance =Mockito.mock(RuleInstance.class);
+		final Rule rule = Mockito.mock(Rule.class);
+		Mockito.when(ruleInstance.forRule(rule)).thenReturn(true);
+		Mockito.when(ruleInstance.rule()).thenReturn(rule);
+		Mockito.when(rule.name()).thenReturn("hotScore");
+		final RuleInstance otherRuleInstance =Mockito.mock(RuleInstance.class);
+		final Rule otherRule = Mockito.mock(Rule.class);
+		Mockito.when(otherRuleInstance.forRule(otherRule)).thenReturn(true);
+		Mockito.when(otherRuleInstance.rule()).thenReturn(otherRule);
+		Mockito.when(otherRule.name()).thenReturn("category");
+		
+		ruleInstances.add(ruleInstance);
+		ruleInstances.add(otherRuleInstance);
+		
+		ReflectionTestUtils.setField(condition, "ruleInstances", ruleInstances);
+		
+		Assert.assertEquals(ruleInstance, condition.ruleInstance(rule));
+		Assert.assertEquals(otherRuleInstance, condition.ruleInstance(otherRule));
+		
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void ruleInstanceNotFound() {
+		final Condition condition = EntityUtil.create(ConditionImpl.class);
+		final Rule rule = Mockito.mock(Rule.class);
+		Mockito.when(rule.name()).thenReturn("hotScore");
+		condition.ruleInstance(rule);
+		
 	}
 
 }

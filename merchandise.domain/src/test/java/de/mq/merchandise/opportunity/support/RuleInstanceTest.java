@@ -95,5 +95,36 @@ public class RuleInstanceTest {
 		Assert.assertTrue(new RuleInstanceImpl(condition, rule, PRIORITY).equals(new RuleInstanceImpl(condition, rule, PRIORITY)));
 		Assert.assertFalse(new RuleInstanceImpl(condition, rule, PRIORITY).equals(new RuleInstanceImpl(condition, otherRule, PRIORITY)));
 	}
+	
+	@Test
+	public final void forRule() {
+		final Condition condition = Mockito.mock(Condition.class);
+		final Rule rule= Mockito.mock(Rule.class);
+		final RuleInstance ruleInstance = new RuleInstanceImpl(condition, rule, PRIORITY);
+		Assert.assertTrue(ruleInstance.forRule(rule));
+		Assert.assertFalse(ruleInstance.forRule(Mockito.mock(Rule.class)));
+	}
+	
+	@Test
+	public final void id() {
+		final RuleInstance ruleInstance =  EntityUtil.create(RuleInstanceImpl.class);
+		final long id = randomId();
+		EntityUtil.setId(ruleInstance, id);
+		Assert.assertEquals(id, ruleInstance.id());
+		
+		
+	}
+
+	private long randomId() {
+		return (long)  (1e12 * Math.random());
+	}
+	
+	@Test
+	public final void hasId() {
+		final RuleInstance ruleInstance =  EntityUtil.create(RuleInstanceImpl.class);
+		Assert.assertFalse(ruleInstance.hasId());
+		EntityUtil.setId(ruleInstance, randomId());
+		Assert.assertTrue(ruleInstance.hasId());
+	}
 
 }

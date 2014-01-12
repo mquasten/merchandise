@@ -350,4 +350,28 @@ public class OpportunityTest {
 		
 	}
 	
+	@Test
+	public final void condition() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		final Condition condition = Mockito.mock(Condition.class);
+		Mockito.when(condition.conditionType()).thenReturn(ConditionType.PricePerUnit);
+		
+		final Condition anOtherCondition = Mockito.mock(Condition.class);
+		Mockito.when(anOtherCondition.conditionType()).thenReturn(ConditionType.Unit);
+		opportunity.assignConditions(commercialSubject, condition, anOtherCondition);
+		
+		Assert.assertEquals(condition, opportunity.condition(commercialSubject, ConditionType.PricePerUnit));
+		Assert.assertEquals(anOtherCondition, opportunity.condition(commercialSubject, ConditionType.Unit));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void conditionSubjectNotFound() {
+		final Opportunity opportunity = new OpportunityImpl(customer , NAME);
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		Mockito.when(commercialSubject.name()).thenReturn(NAME);
+		opportunity.condition(commercialSubject, ConditionType.Currency);
+	
+	}
+	
 }
