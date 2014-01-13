@@ -81,6 +81,10 @@ public class RuleInstanceTest {
 		final RuleInstance ruleInstance = new RuleInstanceImpl(condition, rule, PRIORITY);
 		
 		Assert.assertEquals( condition.hashCode() + rule.hashCode() , ruleInstance.hashCode());
+		
+		RuleInstanceImpl invalid = EntityUtil.create(RuleInstanceImpl.class);
+		Assert.assertEquals(System.identityHashCode(invalid), invalid.hashCode());
+	
 	}
 	
 	
@@ -121,6 +125,20 @@ public class RuleInstanceTest {
 		Assert.assertFalse(new RuleInstanceImpl(commercialRelation, rule, PRIORITY).equals(new RuleInstanceImpl(commercialRelation, otherRule, PRIORITY)));
 	}
 	
+	
+	@Test
+	public final void equalsNotValid() {
+		final RuleInstance ruleInstance = EntityUtil.create(RuleInstanceImpl.class);
+		
+		final Condition condition = Mockito.mock(Condition.class);
+		final Rule rule = Mockito.mock(Rule.class);
+		final RuleInstance anOtherRuleInstance = new RuleInstanceImpl(condition, rule, 1);
+		
+		Assert.assertFalse(ruleInstance.equals(anOtherRuleInstance));
+		Assert.assertFalse(anOtherRuleInstance.equals(ruleInstance));
+		Assert.assertTrue(ruleInstance.equals(ruleInstance));
+	}
+	
 	@Test
 	public final void forRule() {
 		final Condition condition = Mockito.mock(Condition.class);
@@ -151,5 +169,19 @@ public class RuleInstanceTest {
 		EntityUtil.setId(ruleInstance, randomId());
 		Assert.assertTrue(ruleInstance.hasId());
 	}
+	
+	@Test
+	public final void valid() {
+		final RuleInstanceImpl ruleInstance = EntityUtil.create(RuleInstanceImpl.class);
+		Assert.assertFalse(ruleInstance.valid(Mockito.mock(Rule.class)));
+		Assert.assertTrue(ruleInstance.valid(new RuleInstanceImpl(Mockito.mock(CommercialRelation.class), Mockito.mock(Rule.class), 1)));
+		Assert.assertFalse(ruleInstance.valid(new RuleInstanceImpl(Mockito.mock(CommercialRelation.class), null, 1)));
+		Assert.assertFalse(ruleInstance.valid(new RuleInstanceImpl((Condition) null, null, 1)));
+		
+		final RuleInstance invalid = new RuleInstanceImpl(Mockito.mock(CommercialRelation.class), null, 1);
+		ReflectionTestUtils.setField(invalid, "condition", Mockito.mock(Condition.class));
+		Assert.assertFalse(ruleInstance.valid(invalid));
+	}
+	
 
 }
