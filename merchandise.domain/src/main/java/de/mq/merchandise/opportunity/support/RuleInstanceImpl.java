@@ -36,7 +36,7 @@ class RuleInstanceImpl implements RuleInstance {
 	@ManyToOne(targetEntity=ConditionImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} )
 	@JoinColumn(name="condition_id" )
 	@Equals(mandatory=false)
-	private final Condition condition; 
+	private final RuleOperations condition; 
 	
 	@ManyToOne(targetEntity=CommercialRelationImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} )
 	@JoinColumn(name="commercial_relation_id" )
@@ -179,7 +179,7 @@ class RuleInstanceImpl implements RuleInstance {
 	}
 
 	
-	Condition condition() {
+	RuleOperations condition() {
 		return condition;
 	}
 

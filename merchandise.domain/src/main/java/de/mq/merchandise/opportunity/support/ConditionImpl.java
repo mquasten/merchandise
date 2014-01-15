@@ -167,5 +167,12 @@ class ConditionImpl implements Condition{
 	public final void assign(final Rule rule, final int priority ){
 		ruleInstances.add(new RuleInstanceImpl(this, rule, priority));
 	}
+
+
+
+	@Override
+	public void remove(final Rule rule) {
+		ruleInstances.remove(new RuleInstanceImpl(this, rule, 0));
+	}
 	
 }

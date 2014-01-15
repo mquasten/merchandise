@@ -60,7 +60,7 @@ public class ConditionTest {
 	@Test
 	public final void hash() {
 		final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
-		final Condition condition = newCondition(commercialRelation, ConditionType.PricePerUnit);
+		final RuleOperations condition = newCondition(commercialRelation, ConditionType.PricePerUnit);
 		
 		Assert.assertEquals(commercialRelation.hashCode() + ConditionType.PricePerUnit.hashCode() , condition.hashCode());
 	}
@@ -73,8 +73,8 @@ public class ConditionTest {
 	
 	}
 
-	private Condition newCondition(final CommercialRelation commercialRelation, final ConditionType conditionType) {
-		final Condition condition = new ConditionImpl(conditionType, values);
+	private RuleOperations newCondition(final CommercialRelation commercialRelation, final ConditionType conditionType) {
+		final RuleOperations condition = new ConditionImpl(conditionType, values);
 		ReflectionTestUtils.setField(condition, "commercialRelation", commercialRelation);
 		return condition;
 	}
@@ -141,7 +141,7 @@ public class ConditionTest {
 	@Test
 	public final void ruleInstance() {
 		
-		final Condition condition = EntityUtil.create(ConditionImpl.class);
+		final RuleOperations condition = EntityUtil.create(ConditionImpl.class);
 		final List<RuleInstance> ruleInstances = new ArrayList<>();
 		final RuleInstance ruleInstance =Mockito.mock(RuleInstance.class);
 		final Rule rule = Mockito.mock(Rule.class);
@@ -166,10 +166,24 @@ public class ConditionTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public final void ruleInstanceNotFound() {
-		final Condition condition = EntityUtil.create(ConditionImpl.class);
+		final RuleOperations condition = EntityUtil.create(ConditionImpl.class);
 		final Rule rule = Mockito.mock(Rule.class);
 		Mockito.when(rule.name()).thenReturn("hotScore");
 		condition.ruleInstance(rule);
+		
+	}
+	
+	@Test
+	public final void remove() {
+		final Condition condition =  EntityUtil.create(ConditionImpl.class);
+		final Rule rule = Mockito.mock(Rule.class);
+		final RuleInstance ruleInstance = new RuleInstanceImpl(condition, rule, 4711);
+		List<RuleInstance> ruleInstances = new ArrayList<>();
+		ruleInstances.add(ruleInstance);
+		ReflectionTestUtils.setField(condition, "ruleInstances", ruleInstances);
+		Assert.assertFalse(condition.ruleInstances().isEmpty());
+		condition.remove(rule);
+		Assert.assertTrue(condition.ruleInstances().isEmpty());
 		
 	}
 

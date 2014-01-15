@@ -176,7 +176,7 @@ public class RuleInstanceTest {
 		Assert.assertFalse(ruleInstance.valid(Mockito.mock(Rule.class)));
 		Assert.assertTrue(ruleInstance.valid(new RuleInstanceImpl(Mockito.mock(CommercialRelation.class), Mockito.mock(Rule.class), 1)));
 		Assert.assertFalse(ruleInstance.valid(new RuleInstanceImpl(Mockito.mock(CommercialRelation.class), null, 1)));
-		Assert.assertFalse(ruleInstance.valid(new RuleInstanceImpl((Condition) null, null, 1)));
+		Assert.assertFalse(ruleInstance.valid(new RuleInstanceImpl( (Condition)null, null, 1)));
 		
 		final RuleInstance invalid = new RuleInstanceImpl(Mockito.mock(CommercialRelation.class), null, 1);
 		ReflectionTestUtils.setField(invalid, "condition", Mockito.mock(Condition.class));
