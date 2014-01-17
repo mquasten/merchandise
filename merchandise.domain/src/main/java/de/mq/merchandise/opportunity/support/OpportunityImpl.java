@@ -311,12 +311,20 @@ public class OpportunityImpl implements Opportunity {
 	
 	@Override
 	public final Condition  condition(final CommercialSubject subject , ConditionType conditionType) {
+		final CommercialRelation commercialRelation = commercialRelation(subject);
+		return commercialRelation.condition(conditionType);
+	}
+
+	@Override
+	public CommercialRelation commercialRelation(final CommercialSubject subject) {
 		final CommercialRelation commercialRelation = findRelation(subject);
 		if( commercialRelation == null){
 			throw new IllegalArgumentException("CommercialSubject not assigned: "+  subject.name());
 		}
-		return commercialRelation.condition(conditionType);
+		return commercialRelation;
 	}
+
+	
 	
 	
 

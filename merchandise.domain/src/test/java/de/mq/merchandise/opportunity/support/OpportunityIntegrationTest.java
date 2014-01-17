@@ -33,6 +33,8 @@ import de.mq.merchandise.util.EntityUtil;
 @ContextConfiguration(locations={"/emf.xml"})
 public class OpportunityIntegrationTest {
 	
+	private static final String PARAMETER_SUBJECT_VALUE = "19680528";
+	private static final String PARAMETER_SUBJECT = "birthDate";
 	private static final String PARAMETER_VALUE = "10";
 	private static final String PARAMETER_NAME = "hotScore";
 	private static final String UNIT_DAY = "day";
@@ -76,6 +78,12 @@ public class OpportunityIntegrationTest {
 		ReflectionTestUtils.setField(rule, "name", "whereTheWildRosesGrow");
 		rule=entityManager.merge(rule);
 		
+		
+		Rule ruleForSubject = EntityUtil.create(RuleImpl.class);
+		
+		ReflectionTestUtils.setField(ruleForSubject, "customer", customer);
+		ReflectionTestUtils.setField(ruleForSubject, "name", "downInTheWillowGarden");
+		ruleForSubject=entityManager.merge(ruleForSubject);
 	
 		final CommercialSubject commercialSubject = entityManager.merge(new CommercialSubjectImpl(customer, "EscortService++", null));
 		
@@ -98,6 +106,10 @@ public class OpportunityIntegrationTest {
 		values.add(UNIT_DAY);
 		
 		
+		
+		
+		
+		
 		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values);
 	
 		condition.assign(rule, 4711);
@@ -108,13 +120,19 @@ public class OpportunityIntegrationTest {
 		
 		opportunity.assignConditions(commercialSubject, condition);
 		
+		final CommercialRelation commercialRelation = opportunity.commercialRelation(commercialSubject);
+		commercialRelation.assign(ruleForSubject, 4712);
+		final RuleInstance ruleInstanceForSubject = commercialRelation.ruleInstance(ruleForSubject);
+		ruleInstanceForSubject.assign(PARAMETER_SUBJECT, PARAMETER_SUBJECT_VALUE); 
 		
 		
 		opportunity=entityManager.merge(opportunity);
 		
 		
 		waste.add(opportunity);
+		waste.add(ruleForSubject);
 		waste.add(rule);
+		
 		entityManager.flush();
 		
 		entityManager.refresh(opportunity);
@@ -156,7 +174,21 @@ public class OpportunityIntegrationTest {
 		Assert.assertEquals(1, result.condition(commercialSubject, ConditionType.PricePerUnit).ruleInstances().size());
 		Assert.assertEquals(rule, result.condition(commercialSubject, ConditionType.PricePerUnit).ruleInstances().get(0).rule());
 		Assert.assertEquals(PARAMETER_VALUE, result.condition(commercialSubject, ConditionType.PricePerUnit).ruleInstance(rule).parameter(PARAMETER_NAME));
+		
+		Assert.assertEquals(result.condition(commercialSubject, condition.conditionType()), ReflectionTestUtils.getField(result.condition(commercialSubject, ConditionType.PricePerUnit).ruleInstances().get(0), "condition"));
+		
+		
+		Assert.assertNull(ReflectionTestUtils.getField(result.condition(commercialSubject, ConditionType.PricePerUnit).ruleInstances().get(0), "commercialRelation"));
+		
 		Assert.assertNotNull(result.addresses().iterator().next().id());
+		
+		
+		Assert.assertEquals(1, result.commercialRelations().iterator().next().ruleInstances().size());
+		Assert.assertEquals(ruleInstanceForSubject, result.commercialRelations().iterator().next().ruleInstance(ruleForSubject));
+		Assert.assertEquals(result.commercialRelations().iterator().next(), ReflectionTestUtils.getField(result.commercialRelations().iterator().next().ruleInstance(ruleForSubject), "commercialRelation"));
+		Assert.assertNull(ReflectionTestUtils.getField(result.commercialRelations().iterator().next().ruleInstance(ruleForSubject), "condition"));
+		
+		Assert.assertEquals(PARAMETER_SUBJECT_VALUE, result.commercialRelations().iterator().next().ruleInstance(ruleForSubject).parameter(PARAMETER_SUBJECT));
 		
 	}
 	

@@ -1,6 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -185,6 +186,21 @@ public class ConditionTest {
 		condition.remove(rule);
 		Assert.assertTrue(condition.ruleInstances().isEmpty());
 		
+	}
+	
+	
+	
+	@Test
+	public final void assignRule() {
+		final Condition condition =  EntityUtil.create(ConditionImpl.class);
+		final Rule rule = Mockito.mock(Rule.class);
+		condition.assign(rule, 4711);
+		@SuppressWarnings("unchecked")
+		final Collection<RuleInstance> results = (Collection<RuleInstance>) ReflectionTestUtils.getField(condition, "ruleInstances");
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(rule, results.iterator().next().rule());
+		Assert.assertEquals(condition, ((RuleInstanceImpl) results.iterator().next()).condition());
+		Assert.assertNull(((RuleInstanceImpl) results.iterator().next()).commercialRelation());
 	}
 
 }

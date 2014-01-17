@@ -107,6 +107,7 @@ public class CommercialRelationTest {
 		Assert.assertEquals(rule, ruleInstances.get(0).rule());
 		Assert.assertEquals(PRIORITY, ruleInstances.get(0).priority());
 		Assert.assertEquals(commercialRelation, (((RuleInstanceImpl)ruleInstances.get(0)).commercialRelation()));
+		Assert.assertNull(((RuleInstanceImpl)ruleInstances.get(0)).condition());
 	}
 	
 	@Test

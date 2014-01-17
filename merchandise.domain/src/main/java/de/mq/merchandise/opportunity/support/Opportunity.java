@@ -60,6 +60,7 @@ public interface Opportunity extends BasicEntity, DocumentsAware{
 
 	Condition condition(CommercialSubject subject, ConditionType conditionType);
  
+	CommercialRelation commercialRelation(final CommercialSubject commercialSubject) ;
 	
 
 }
