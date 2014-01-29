@@ -1,5 +1,11 @@
 package de.mq.merchandise.rule.support;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.faces.model.SelectItem;
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.rule.Rule;
@@ -65,6 +71,15 @@ class RuleControllerImpl {
 		
 		
 		System.out.println(">>>" + ruleId + ":" +state);
+	}
+	
+	List<SelectItem>  ruleItems(final Collection<RuleAO> ruleAOs) {
+		final List<SelectItem> result = new ArrayList<>(); 
+		for(final RuleAO ruleAO : ruleAOs){
+			result.add( new SelectItem(ruleAO, ruleAO.getName()));
+		}
+		return result;
+		
 	}
 	
 	

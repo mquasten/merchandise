@@ -54,20 +54,21 @@
             <p:message for="type" display="text" />
             
             
-            <h:outputLabel  for="validation" value="#{cc.attrs.message.condition_validation}" />  
+            <h:outputLabel  for="rules"  value="#{cc.attrs.message.condition_rules}" />  
             
-            <p:inputTextarea  id="validation" value="#{condition.validation }" style="width:100%" >
-						<f:validateBean />
-			</p:inputTextarea >
+          
             
-             <p:message for="validation" display="text" />
+            <p:selectOneMenu  id="rules"  value=""  style="width:100%" 	>
+						
+						<f:selectItems
+							value="#{ruleController.ruleItems()}" />  />
+						
+		</p:selectOneMenu>
+           		
+          
+             <p:message for="rules" display="text" />
              
-             <h:outputLabel  for="calculation" value="#{cc.attrs.message.condition_calculation}" /> 
-              <p:inputTextarea  id="calculation" value="#{condition.calculation }" style="width:100%" >
-						<f:validateBean />
-			</p:inputTextarea >
-			
-			 <p:message for="calculation" display="text" />
+             
 			 
 			 
 			 <h:outputLabel  for="valueTable" value="#{cc.attrs.message.condition_values}" />
