@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -24,6 +25,7 @@ import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
 @Entity(name="CommercialSubject")
+@Cacheable(false)
 @Table(name="commercial_subject")
 @NamedQuery(name=CommercialSubjectRepository.SUBJECT_FOR_NAME_PATTERN, query="select s from CommercialSubject s where s.name like :name and s.customer.id = :customerId")
 public class CommercialSubjectImpl implements  CommercialSubject {

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Basic;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,6 +23,7 @@ import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
 @Entity(name="EntityContext" )
+@Cacheable(false)
 @Table(name="entity_context")
 @NamedQueries({
 @NamedQuery(name = EntityContextRepository.ENTITYCONTEXT_FOR_RESOURCE, query = "select e from EntityContext e where resource=:resource"),	

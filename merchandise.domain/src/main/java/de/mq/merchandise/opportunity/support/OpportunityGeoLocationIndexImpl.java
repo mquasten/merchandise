@@ -1,6 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
 import javax.persistence.Basic;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.contact.support.AbstractCityAddress;
 
 @Entity(name="OpportunityGeoLocationIndex")
+@Cacheable(false)
 @Table(name="opportunity_gis_index")
 public class OpportunityGeoLocationIndexImpl extends AbstractOpportunityIndex{
 

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
 import de.mq.merchandise.customer.Customer;
@@ -80,6 +82,10 @@ class RuleControllerImpl {
 		}
 		return result;
 		
+	}
+	
+	void change(final ValueChangeEvent  event) {
+		System.out.println(event.getSource());
 	}
 	
 	

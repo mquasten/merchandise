@@ -4,6 +4,8 @@ package de.mq.merchandise.rule.support;
 import java.util.Collection;
 import java.util.List;
 
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
 import org.springframework.security.core.context.SecurityContext;
@@ -26,5 +28,8 @@ interface RuleController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleModelAO.class, el="#arg.rules",elResultType=Collection.class)})}, clazz = RuleControllerImpl.class)
 	List<SelectItem> ruleItems() ;
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ValueChangeEvent.class,originIndex=0)})}, clazz = RuleControllerImpl.class)
+	List<SelectItem> change() ;
 
 }

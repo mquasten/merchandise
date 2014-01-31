@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -34,6 +35,7 @@ import de.mq.merchandise.util.Equals;
 
 @Entity(name="Opportunity")
 @NamedQuery(name=OpportunityRepository.OPPORTUNITY_FOR_NAME_PATTERN, query="select o from Opportunity o where o.name like :name and o.customer.id = :customerId")
+@Cacheable(false)
 public class OpportunityImpl implements Opportunity {
 	
 	
@@ -75,7 +77,7 @@ public class OpportunityImpl implements Opportunity {
 	@JoinColumn(name="customer_id" )
 	private Customer customer;
 	
-	@OneToMany(mappedBy="opportunity", targetEntity=CommercialRelationImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE,  CascadeType.REMOVE })
+	@OneToMany( orphanRemoval=true, mappedBy="opportunity",   targetEntity=CommercialRelationImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE,  CascadeType.REMOVE })
 	private Set<CommercialRelation> commercialRelations = new HashSet<>(); 
 	
 	
@@ -86,7 +88,7 @@ public class OpportunityImpl implements Opportunity {
 	//@Lob()
 	private Map<String,String> storedDocuments=new HashMap<>();
 	
-	@OneToMany( orphanRemoval=true, targetEntity=AbstractCityAddress.class, fetch=FetchType.LAZY , cascade={CascadeType.PERSIST, CascadeType.MERGE})
+	@OneToMany( targetEntity=AbstractCityAddress.class, fetch=FetchType.LAZY , cascade={CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name="opportunity_id")
 	private Collection<Address> addresses= new HashSet<>();
 	
@@ -256,7 +258,7 @@ public class OpportunityImpl implements Opportunity {
 		if( relation == null){
 			return;
 		}
-		this.commercialRelations.remove(relation);
+		System.out.println(">>>>" + this.commercialRelations.remove(relation));
 		
 	}
 	

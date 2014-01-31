@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import de.mq.merchandise.BasicRepository;
+import de.mq.merchandise.opportunity.support.Opportunity;
 
 public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 
@@ -16,8 +17,15 @@ public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 	 */
 	
 	@Override
-	public final T save(final T commercialSubject) {
-		return entityManager.merge(commercialSubject);
+	public  T save(final T commercialSubject) {
+		T result = entityManager.merge(commercialSubject);
+		
+		if (commercialSubject instanceof Opportunity) {
+			 System.out.println("????" + ((Opportunity)commercialSubject).commercialRelations().size());
+			
+		}
+		
+		return result;
 	}
 
 	/* (non-Javadoc)
@@ -25,7 +33,7 @@ public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 	 */
 	
 	@Override
-	public final  void delete(final V id ) {
+	public   void delete(final V id ) {
 		final T existing = (T) entityManager.find(entityImplementationClass(),  id);
 		if( existing==null){
 			return;
@@ -39,7 +47,7 @@ public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 	
 
 	
-	public final T forId(final V id) {
+	public  T forId(final V id) {
 		return entityManager.find(entityImplementationClass(), id);
 		
 	}

@@ -3,6 +3,7 @@ package de.mq.merchandise.opportunity.support;
 
 import java.util.UUID;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +22,7 @@ import de.mq.merchandise.util.Equals;
 
 
 @Entity(name="OpportunityIndex")
+@Cacheable(false)
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 @NamedQueries(@NamedQuery(name = OpportunityIndexRepository.INDEX_BY_OPPORTUNITY_ID, query = "Select i from OpportunityIndex i where i.opportunity.id=:id"))
 abstract class AbstractOpportunityIndex implements OpportunityIndex {

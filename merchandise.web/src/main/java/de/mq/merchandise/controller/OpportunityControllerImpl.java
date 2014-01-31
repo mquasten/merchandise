@@ -97,9 +97,9 @@ class OpportunityControllerImpl {
 	String  save(final Opportunity opportunity, final Customer customer) {
 		System.out.println("save opportunity with activities:" +opportunity.activityClassifications().size());
 		System.out.println("save opportunity with product:" +opportunity.productClassifications().size());
-		
+		System.out.println("save opportunity with relation:" +opportunity.commercialRelations().size());
 		EntityUtil.setDependency(opportunity, Customer.class, customer);
-		removeNewCommercialRelationsFromConditionEspeciallyForHibernate(opportunity); 
+	//	removeNewCommercialRelationsFromConditionEspeciallyForHibernate(opportunity); 
 		
 		opportunityService.createOrUpdate(opportunity);
 		conversation.end();
@@ -112,6 +112,7 @@ class OpportunityControllerImpl {
 	void removeNewCommercialRelationsFromConditionEspeciallyForHibernate(final Opportunity opportunity) {
 		for(final CommercialRelation commercialRelation : opportunity.commercialRelations()) {
 			if( commercialRelation.hasId() ) {
+			
 				continue;
 			}
 			for(final Condition condition : commercialRelation.conditions().values()) {

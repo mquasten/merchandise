@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,6 +27,7 @@ import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
 @Entity(name="CommercialRelation")
+@Cacheable(false)
 class CommercialRelationImpl implements CommercialRelation {
 	
 	
@@ -40,7 +42,7 @@ class CommercialRelationImpl implements CommercialRelation {
 	@JoinColumn(name="commercial_subject_id" )
 	private CommercialSubject commercialSubject;
 
-	@ManyToOne(targetEntity=OpportunityImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST} )
+	@ManyToOne(targetEntity=OpportunityImpl.class,  cascade={CascadeType.MERGE, CascadeType.PERSIST },fetch=FetchType.LAZY )
 	@Equals
 	@JoinColumn(name="opportunity_id" )
 	private Opportunity opportunity;
@@ -51,13 +53,14 @@ class CommercialRelationImpl implements CommercialRelation {
 	@Column(length=250)
 	private String calculation;
  
-	@OneToMany(targetEntity=ConditionImpl.class  , mappedBy="commercialRelation",  cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH} )
+	@OneToMany(targetEntity=ConditionImpl.class  , mappedBy="commercialRelation",  cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE} )
 	@MapKeyColumn(name="condition_type", length=20)
     @MapKeyEnumerated(EnumType.STRING)
 	private Map<Condition.ConditionType, Condition> conditions = new HashMap<>();
 	
 	@OneToMany(mappedBy="commercialRelation", targetEntity=RuleInstanceImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE,  CascadeType.REMOVE })
 	@OrderBy("priority")
+	
 	private List<RuleInstance> ruleInstances = new ArrayList<>();
 	
 	

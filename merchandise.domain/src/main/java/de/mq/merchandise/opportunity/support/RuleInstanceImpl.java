@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Basic;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -24,6 +25,7 @@ import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
 @Entity(name="RuleInstance")
+@Cacheable(false)
 @Table(name="rule_instance")
 class RuleInstanceImpl implements RuleInstance {
 	

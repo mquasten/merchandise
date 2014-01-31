@@ -1,5 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
+import javax.persistence.Cacheable;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -8,6 +9,7 @@ import javax.persistence.NamedQuery;
 
 
 @Entity(name="ActivityClassification")
+@Cacheable(false)
 @DiscriminatorValue("A")
 @NamedQueries({
 @NamedQuery(name=ClassificationRepository.FIND_ALL_ACTIFITY_CLASSIFICATIONS, query="select a from ActivityClassification a")

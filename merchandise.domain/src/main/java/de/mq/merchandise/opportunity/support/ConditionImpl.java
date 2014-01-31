@@ -2,8 +2,11 @@ package de.mq.merchandise.opportunity.support;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -24,6 +27,7 @@ import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
 @Entity(name="Condition")
+@Cacheable(false)
 class ConditionImpl implements Condition{
 
 	
