@@ -35,10 +35,10 @@ public abstract class RuleModelAO implements Serializable {
 	@Setter(value = "rules")
 	public abstract void setRules(final Collection<? extends Rule> rules);
 
-	@Getter(value = "selected")
+	@Getter(value = "selected" )
 	public abstract RuleAO getSelected();
 
-	@Setter(value = "selected")
+	@Setter(value = "selected" )
 	public abstract void setSelected(final RuleAO selected);
 	
 	@Setter(value = "pattern")

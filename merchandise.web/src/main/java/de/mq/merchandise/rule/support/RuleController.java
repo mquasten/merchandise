@@ -26,7 +26,7 @@ interface RuleController {
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleAO.class, el="#arg.rule.id()", elResultType=Long.class), @Parameter(clazz=RuleAO.class, el="#arg.state", elResultType=Boolean.class)})}, clazz = RuleControllerImpl.class)
 	void changeState();
 	
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleModelAO.class, el="#arg.rules",elResultType=Collection.class)})}, clazz = RuleControllerImpl.class)
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleModelAO.class)})}, clazz = RuleControllerImpl.class)
 	List<SelectItem> ruleItems() ;
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ValueChangeEvent.class,originIndex=0)})}, clazz = RuleControllerImpl.class)

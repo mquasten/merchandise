@@ -75,11 +75,14 @@ class RuleControllerImpl {
 		System.out.println(">>>" + ruleId + ":" +state);
 	}
 	
-	List<SelectItem>  ruleItems(final Collection<RuleAO> ruleAOs) {
+	List<SelectItem>  ruleItems(final RuleModelAO rulesAO) {
+		
 		final List<SelectItem> result = new ArrayList<>(); 
-		for(final RuleAO ruleAO : ruleAOs){
-			result.add( new SelectItem(ruleAO, ruleAO.getName()));
+		for(final RuleAO ruleAO : rulesAO.getRules()){
+			System.out.println(">>>" + ruleAO.getId() + " " + ruleAO.getName());
+			result.add(new SelectItem(ruleAO.getId(), ruleAO.getName()));
 		}
+		
 		return result;
 		
 	}
