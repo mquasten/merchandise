@@ -41,6 +41,14 @@ public abstract class RuleModelAO implements Serializable {
 	@Setter(value = "selected" )
 	public abstract void setSelected(final RuleAO selected);
 	
+	@MethodInvocation(actions={@ActionEvent(name="assignSelected" , params={@Parameter(originIndex=0, clazz = Long.class ), @Parameter(clazz=RuleModelAO.class), @Parameter(clazz=RuleAO.class)})}, clazz = RuleControllerImpl.class)
+	public abstract void setSelectedId(final Long id);
+	
+	@MethodInvocation(actions={@ActionEvent(name="selectedId" , params={@Parameter(clazz = RuleModelAO.class,  el="#arg.selected", elResultType=RuleAO.class )})}, clazz = RuleControllerImpl.class)
+	public abstract Long getSelectedId();
+	
+	
+	
 	@Setter(value = "pattern")
 	public abstract void setPattern(final String pattern);
 	

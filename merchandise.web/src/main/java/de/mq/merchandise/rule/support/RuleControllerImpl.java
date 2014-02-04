@@ -1,10 +1,8 @@
 package de.mq.merchandise.rule.support;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
@@ -91,5 +89,26 @@ class RuleControllerImpl {
 		System.out.println(event.getSource());
 	}
 	
+	
+	void assignSelected(final Long id, final RuleModelAO ruleModelAO, final RuleAO ruleAO) {
+		System.out.println("set:" + id);
+		if( id == null){
+			return ;
+		}
+		
+		ruleAO.setRule(ruleServive.read(id));
+		ruleModelAO.setSelected(ruleAO);
+		
+	}
+	
+	Long selectedId(final RuleAO  ruleAO) {
+		
+		System.out.println("get:" + ruleAO);
+		if( ruleAO == null){
+			return null;
+		}
+		
+		return ruleAO.getIdAsLong(); 
+	}
 	
 }

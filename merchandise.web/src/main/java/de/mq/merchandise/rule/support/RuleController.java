@@ -1,10 +1,8 @@
 package de.mq.merchandise.rule.support;
 
 
-import java.util.Collection;
 import java.util.List;
 
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
