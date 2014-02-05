@@ -2,9 +2,7 @@ package de.mq.merchandise.opportunity.support;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
