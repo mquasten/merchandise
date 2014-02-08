@@ -57,17 +57,21 @@
             <h:outputLabel  for="rules" value="#{cc.attrs.message.condition_rules}" />  
             
           
+          <h:panelGrid id="rulesGrid" >
             
-            <p:selectOneMenu  id="rules"  value="#{rulesModel.selectedId}"  style="width:100%"  	>
+            <p:selectOneMenu  id="rules"  value="#{ruleInstance.selectedId}"  style="width:100%"  	>
 						
 						
 						<f:selectItems
 							value="#{ruleController.ruleItems()}" />  />
-						
+			
+			 <p:ajax update="rulesGrid"  process="@this" />		
+			 
+			
 		</p:selectOneMenu>
-           		
+           </h:panelGrid>	 		
           
-             <p:message for="rules" display="text" />
+             <p:message for="rulesGrid" display="text" />
              
              
 			 

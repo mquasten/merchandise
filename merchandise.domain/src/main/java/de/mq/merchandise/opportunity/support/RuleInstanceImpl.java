@@ -27,7 +27,7 @@ import de.mq.merchandise.util.Equals;
 @Entity(name="RuleInstance")
 @Cacheable(false)
 @Table(name="rule_instance")
-class RuleInstanceImpl implements RuleInstance {
+public class RuleInstanceImpl implements RuleInstance {
 	
 	private static final long serialVersionUID = 1L;
 

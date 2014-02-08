@@ -1,17 +1,21 @@
-package de.mq.merchandise.opportunity.support;
+package de.mq.merchandise.rule.support;
 
 import java.io.Serializable;
 import java.util.Map;
 
+import de.mq.mapping.util.proxy.ActionEvent;
 import de.mq.mapping.util.proxy.Getter;
 import de.mq.mapping.util.proxy.GetterDomain;
 import de.mq.mapping.util.proxy.GetterProxy;
+import de.mq.mapping.util.proxy.MethodInvocation;
+import de.mq.mapping.util.proxy.Parameter;
 import de.mq.mapping.util.proxy.Setter;
 import de.mq.mapping.util.proxy.SetterDomain;
 import de.mq.mapping.util.proxy.support.Number2StringConverter;
 import de.mq.mapping.util.proxy.support.String2IntegerConverter;
 import de.mq.merchandise.model.support.String2LongConverter;
-import de.mq.merchandise.rule.support.RuleAO;
+import de.mq.merchandise.opportunity.support.RuleInstance;
+import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
 import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 public abstract class RuleInstanceAO implements Serializable  {
@@ -41,5 +45,12 @@ public abstract class RuleInstanceAO implements Serializable  {
 	
 	@Setter(clazz= RuleInstanceImpl.class ,value="priority", converter=String2IntegerConverter.class)
 	public abstract void  setPriority(final String priority); 
+	
+	
+	@MethodInvocation(actions={@ActionEvent(name="assignSelected" , params={@Parameter(originIndex=0, clazz = Long.class ), @Parameter(clazz=RuleInstanceAO.class)})}, clazz = RuleControllerImpl.class)
+	public abstract void setSelectedId(final Long id);
+	
+	@MethodInvocation(actions={@ActionEvent(name="selectedId" , params={@Parameter(clazz = RuleInstanceAO.class, el="#arg.rule" , elResultType=RuleAO.class,skipNotReachableOnNullElException=true )})}, clazz = RuleControllerImpl.class)
+	public abstract Long getSelectedId();
 
 }

@@ -8,10 +8,13 @@ import javax.faces.model.SelectItem;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
+import de.mq.merchandise.opportunity.support.RuleInstance;
+import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.rule.RuleService;
+import de.mq.merchandise.util.EntityUtil;
 
-class RuleControllerImpl {
+public class RuleControllerImpl {
 	
 	static final String RETURN_URL = "rules.xhtml?faces-redirect=true&state=%s";
 	private  final RuleService ruleServive;
@@ -90,25 +93,26 @@ class RuleControllerImpl {
 	}
 	
 	
-	void assignSelected(final Long id, final RuleModelAO ruleModelAO, final RuleAO ruleAO) {
+	void assignSelected(final Long id, final RuleInstanceAO ruleInstanceAO) {
 		System.out.println("set:" + id);
 		if( id == null){
 			return ;
 		}
 		
-		ruleAO.setRule(ruleServive.read(id));
-		ruleModelAO.setSelected(ruleAO);
+		final RuleInstance ruleInstance = EntityUtil.create(RuleInstanceImpl.class);
+		EntityUtil.setDependency(ruleInstance, Rule.class, ruleServive.read(id));
+		ruleInstanceAO.setRuleInstance(ruleInstance);
 		
 	}
 	
-	Long selectedId(final RuleAO  ruleAO) {
+	Long selectedId(final  RuleAO rule) {
 		
-		System.out.println("get:" + ruleAO);
-		if( ruleAO == null){
+		System.out.println("get:" + rule);
+		if( rule == null){
 			return null;
 		}
 		
-		return ruleAO.getIdAsLong(); 
+		return rule.getIdAsLong(); 
 	}
 	
 }

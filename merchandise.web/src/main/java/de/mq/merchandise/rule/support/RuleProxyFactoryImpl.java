@@ -12,6 +12,8 @@ import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
 import de.mq.merchandise.controller.SerialisationControllerImpl;
 import de.mq.merchandise.opportunity.support.PagingAO;
+import de.mq.merchandise.opportunity.support.RuleInstance;
+import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
 import de.mq.merchandise.rule.RuleService;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.SimplePagingImpl;
@@ -68,5 +70,13 @@ public class RuleProxyFactoryImpl {
 	public RuleController ruleController() {
 		return  proxyFactory.createProxy(RuleController.class,  new ModelRepositoryBuilderImpl().withDomain(ruleController).withBeanResolver(beanResolver).build());
 	}
+	
+	@Bean(name="ruleInstance")
+	@Scope("view")
+	public RuleInstanceAO ruleInstance() {
+		return   proxyFactory.createProxy(RuleInstanceAO.class, new ModelRepositoryBuilderImpl().withDomain(EntityUtil.create(RuleInstanceImpl.class)).withDomain(ruleController).withBeanResolver(beanResolver).build());
+		
+	}
+	
 
 }

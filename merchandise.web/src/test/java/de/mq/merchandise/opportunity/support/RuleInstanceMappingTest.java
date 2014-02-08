@@ -12,6 +12,7 @@ import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
 import de.mq.mapping.util.proxy.support.SimpleReflectionBeanResolverImpl;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.rule.support.RuleImpl;
+import de.mq.merchandise.rule.support.RuleInstanceAO;
 import de.mq.merchandise.util.EntityUtil;
 
 public class RuleInstanceMappingTest {
