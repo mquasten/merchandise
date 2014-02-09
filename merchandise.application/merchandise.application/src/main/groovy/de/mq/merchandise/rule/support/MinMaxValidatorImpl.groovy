@@ -3,7 +3,7 @@ package de.mq.merchandise.rule.support
 
 import groovy.lang.MetaClass;
 
-import org.mockito.internal.matchers.InstanceOf;
+
 import org.springframework.context.MessageSource
 
 

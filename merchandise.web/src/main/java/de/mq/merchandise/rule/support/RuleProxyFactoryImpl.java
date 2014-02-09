@@ -30,26 +30,30 @@ public class RuleProxyFactoryImpl {
 	@Autowired
 	private final  RuleService ruleService ;
 	
+	@Autowired
+	private final SourceFactoryImpl sourceFactory;
+	
 	
 	private RuleControllerImpl ruleController;
 	
 	RuleProxyFactoryImpl() {
-		this(null,null,null);
+		this(null,null,null,null);
 	}
 	
 	
-	RuleProxyFactoryImpl(final RuleService ruleService, final AOProxyFactory proxyFactory, final BeanResolver beanResolver) {
+	RuleProxyFactoryImpl(final RuleService ruleService, final SourceFactoryImpl sourceFactory, final AOProxyFactory proxyFactory, final BeanResolver beanResolver) {
 		super();
 		this.proxyFactory = proxyFactory;
 		this.beanResolver = beanResolver;
 		this.ruleService=ruleService;
+		this.sourceFactory=sourceFactory;
 		
 	}
 
 
 	@PostConstruct
 	void init() {
-		this.ruleController=new RuleControllerImpl(ruleService);
+		this.ruleController=new RuleControllerImpl(ruleService, sourceFactory);
 	}
 	
 	

@@ -27,7 +27,9 @@ public class RuleProxyFactoryTest {
 	
 	private BeanResolver beanResolver = Mockito.mock(BeanResolver.class);
 	
-	private RuleProxyFactoryImpl ruleProxyFactory = new RuleProxyFactoryImpl(ruleService,aoProxyFactory, beanResolver);
+	private SourceFactoryImpl sourceFactory = Mockito.mock(SourceFactoryImpl.class);
+	
+	private RuleProxyFactoryImpl ruleProxyFactory = new RuleProxyFactoryImpl(ruleService, sourceFactory, aoProxyFactory, beanResolver);
 	
 	@Test
 	public final void init() {

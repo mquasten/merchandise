@@ -23,7 +23,9 @@ public class RuleControllerTest {
 	private final RuleModelAO ruleModelAO = Mockito.mock(RuleModelAO.class);
 	private final RuleService ruleService = Mockito.mock(RuleService.class);
 	
-	private final RuleControllerImpl ruleController = new RuleControllerImpl(ruleService);
+	private SourceFactoryImpl sourceFactory = Mockito.mock(SourceFactoryImpl.class);
+	
+	private final RuleControllerImpl ruleController = new RuleControllerImpl(ruleService,sourceFactory);
 	
 	private final Customer customer = Mockito.mock(Customer.class);
 	

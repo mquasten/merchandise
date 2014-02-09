@@ -7,13 +7,13 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import de.mq.merchandise.opportunity.support.DocumentService;
 import de.mq.merchandise.util.Parameter;
 
-@Configuration
+@Component
 public class SourceFactoryImpl {
 	
 	@Autowired
@@ -36,7 +36,8 @@ public class SourceFactoryImpl {
 			final GroovyObject result =  doCreate(sourceId);
 			assignParameters(result, parameters);
 			return (T) result;
-		} catch (final InstantiationException | IllegalAccessException | IOException ex) {
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			throw new IllegalStateException("Unable to create Resource",  ex);
 		}
 	}
