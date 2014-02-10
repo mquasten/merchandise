@@ -37,7 +37,6 @@ public class SourceFactoryImpl {
 			assignParameters(result, parameters);
 			return (T) result;
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			throw new IllegalStateException("Unable to create Resource",  ex);
 		}
 	}
