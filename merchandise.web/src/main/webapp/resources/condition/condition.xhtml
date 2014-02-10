@@ -69,6 +69,11 @@
 			 
 			
 		</p:selectOneMenu>
+		
+		<p:dataTable var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}">
+			 <p:column>#{parameterVar.name}</p:column> 
+		</p:dataTable>
+		
            </h:panelGrid>	 		
           
              <p:message for="rulesGrid" display="text" />

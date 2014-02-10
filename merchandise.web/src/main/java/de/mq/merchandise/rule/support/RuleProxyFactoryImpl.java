@@ -12,7 +12,6 @@ import de.mq.mapping.util.proxy.BeanResolver;
 import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
 import de.mq.merchandise.controller.SerialisationControllerImpl;
 import de.mq.merchandise.opportunity.support.PagingAO;
-import de.mq.merchandise.opportunity.support.RuleInstance;
 import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
 import de.mq.merchandise.rule.RuleService;
 import de.mq.merchandise.util.EntityUtil;

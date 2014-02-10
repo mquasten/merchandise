@@ -1,12 +1,14 @@
 package de.mq.merchandise.rule.support;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import de.mq.mapping.util.proxy.ActionEvent;
 import de.mq.mapping.util.proxy.Getter;
 import de.mq.mapping.util.proxy.GetterDomain;
 import de.mq.mapping.util.proxy.GetterProxy;
+import de.mq.mapping.util.proxy.GetterProxyCollection;
 import de.mq.mapping.util.proxy.MethodInvocation;
 import de.mq.mapping.util.proxy.Parameter;
 import de.mq.mapping.util.proxy.Setter;
@@ -37,8 +39,8 @@ public abstract class RuleInstanceAO implements Serializable  {
 	@SetterDomain()
 	public abstract  void setRuleInstance(final RuleInstance ruleInstance);
 	
-	@Getter(clazz = RuleInstanceImpl.class, value = "parameters")
-	public abstract Map<String,String> getParameter();
+	@GetterProxyCollection(clazz= RuleInstanceImpl.class , collectionClass=ArrayList.class, name = "parameters", proxyClass=ParameterAO.class, converter=Map2ParameterCollectionConverter.class)
+	public abstract Collection<ParameterAO> getParameter();
 	
 	@Getter(clazz = RuleInstanceImpl.class, value = "priority", converter = Number2StringConverter.class)
 	public abstract String  getPriority(); 

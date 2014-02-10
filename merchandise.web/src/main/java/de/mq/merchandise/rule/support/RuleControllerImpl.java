@@ -98,7 +98,6 @@ public class RuleControllerImpl {
 	
 	
 	void assignSelected(final Long id, final RuleInstanceAO ruleInstanceAO) {
-		System.out.println("set:" + id);
 		if( id == null){
 			return ;
 		}
@@ -106,20 +105,29 @@ public class RuleControllerImpl {
 		final RuleInstance ruleInstance = EntityUtil.create(RuleInstanceImpl.class);
 		final Rule rule = ruleServive.read(id);
 		EntityUtil.setDependency(ruleInstance, Rule.class, rule);
-		System.out.println("*********************************");
-		System.out.println(sourceFactory);
-		ParameterNamesAware<?>  groovy =  sourceFactory.create(id); 
-	 
-		System.out.println("?" + groovy);
-		System.out.println(groovy.parameters().length);
-		System.out.println("*********************************");
+		
+	
+	    for(final String parameter :source(id)){
+	    	ruleInstance.assign(parameter, "???");
+	    	System.out.println("?" + parameter);
+	    }
+	
 		ruleInstanceAO.setRuleInstance(ruleInstance);
 		
 	}
+
+	private  String[] source(final Long id) {
+		try {
+		return ((ParameterNamesAware<?>)sourceFactory.create(id)).parameters();
+		} catch (Exception ex){
+			return new String[] { };
+		}
+	}
+
 	
 	Long selectedId(final  RuleAO rule) {
 		
-		System.out.println("get:" + rule);
+	
 		if( rule == null){
 			return null;
 		}

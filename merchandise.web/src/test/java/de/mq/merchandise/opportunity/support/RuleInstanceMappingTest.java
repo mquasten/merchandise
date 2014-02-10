@@ -33,6 +33,8 @@ public class RuleInstanceMappingTest {
 	
 	@Test
 	public final void toWeb() {
+		
+	
 		Condition condition = Mockito.mock(Condition.class);
 		final Rule rule = EntityUtil.create(RuleImpl.class);
 		EntityUtil.setId(rule, RULE_ID);
@@ -42,9 +44,11 @@ public class RuleInstanceMappingTest {
 		
 		final RuleInstanceAO web = proxyFactory.createProxy(RuleInstanceAO.class, new ModelRepositoryBuilderImpl().withDomain(ruleInstance).withBeanResolver(beanResolver).build());
 		Assert.assertEquals(String.valueOf(RULE_ID), web.getRule().getId());
+		
 		Assert.assertEquals(1, web.getParameter().size());
-		Assert.assertEquals(PARAMETER_VALUE, web.getParameter().values().iterator().next());
-		Assert.assertEquals(PARAMETER_NAME, web.getParameter().keySet().iterator().next());
+		Assert.assertEquals(PARAMETER_VALUE, web.getParameter().iterator().next().getValue());
+		Assert.assertEquals(PARAMETER_NAME, web.getParameter().iterator().next().getName());
+
 		Assert.assertEquals(String.valueOf(RULE_INSTANCE_ID), web.getId());
 		Assert.assertEquals(String.valueOf(PRIORITY), web.getPriority());
 		Assert.assertEquals(ruleInstance, web.getRuleInstance());
