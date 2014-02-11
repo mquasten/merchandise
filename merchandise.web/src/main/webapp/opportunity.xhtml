@@ -6,6 +6,7 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:p="http://primefaces.org/ui"
 xmlns:in="http://java.sun.com/jsf/composite/input"
 xmlns:co="http://java.sun.com/jsf/composite/condition"
+xmlns:ri="http://java.sun.com/jsf/composite/ruleInstance"
 xmlns:ui="http://java.sun.com/jsf/facelets">
 
 
@@ -70,6 +71,10 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 		  	            <p:commandButton  value="#{message.opportunity_delete_condition}"   action="#{opportunityController.deleteCondition}" icon="ui-icon-remove"  update="conditions"  process="@this"   rendered="#{(conditions.selected.data.class.simpleName == 'CommercialRelationImpl') || (conditions.selected.data.class.simpleName == 'ConditionImpl')}"   />
 		  	          
 			  		  <p:commandButton  value="#{message.opportunity_condition_add}"   action="#{opportunityController.clearCondition}" update="@form"  process="@this"  oncomplete="conditionDlg.show();"  icon="ui-icon-check"  rendered="#{conditions.selected.data.class.simpleName == 'CommercialRelationImpl'}" /> 	
+			  		  
+			  		  
+			  		    <p:commandButton  value="#{message.opportunity_edit_rule}"    oncomplete="ruleInstanceDlg.show();"  update="conditions"  process="@this"   rendered="#{(conditions.selected.data.class.simpleName == 'CommercialRelationImpl') || (conditions.selected.data.class.simpleName == 'ConditionImpl')}"   />
+			  		  
 			  </f:facet>
     			
 		  		</h:panelGrid>
@@ -165,6 +170,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
  </p:panelGrid>
  <in:input   title="#{message.opportunity_keyword_input_title}" submitText="#{message.opportunity_keyword_input_submit_text}" label="#{message.opportunity_keyword_input_label}"  saveAction="#{opportunityController.addKeyWord()}"/>
  <co:condition message="#{message}" addAction="#{opportunityController.addConditionValue()}"  deleteAction="#{opportunityController.deleteConditionValue()}"  saveAction="#{opportunityController.addCondition()}"/>
+ <ri:ruleInstance  message="#{message}"  saveAction="#{ruleController.savexxx()}"/>
  </h:form>
  </ui:define>
  </ui:composition>

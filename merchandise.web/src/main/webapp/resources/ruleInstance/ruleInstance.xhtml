@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:u="http://example.com/functions"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<head>
+
+<title>Input for a ruleInstance</title>
+</head>
+<body>
+
+	<composite:interface>
+		<composite:attribute name="message" required="true" />
+		
+		<composite:attribute name="saveAction" method-signature="void f()" />  
+		
+		
+	</composite:interface>
+
+	<composite:implementation>
+	<p:dialog header="#{cc.attrs.message.rule_instance_title}" widgetVar="ruleInstanceDlg" modal="true" >  
+	
+		<p:ajax event="close" update="@form"  />
+  		
+  		
+       
+        <h:panelGrid id="inputGrid" columns="3"  columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"   style="margin-bottom:10px">  
+           
+          
+            
+            
+            <h:outputLabel  for="rules" value="#{cc.attrs.message.rule_instance_rules}" />  
+            
+          
+          <h:panelGrid id="rulesGrid" >
+            
+            <p:selectOneMenu  id="rules"  value="#{ruleInstance.selectedId}"  style="width:100%"  	>
+						
+						
+						<f:selectItems
+							value="#{ruleController.ruleItems()}" />  />
+			
+			 <p:ajax update="rulesGrid"  process="@this" />		
+			 
+			
+		</p:selectOneMenu>
+		
+		<p:dataTable var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}">
+			 <p:column>#{parameterVar.name}</p:column> 
+		</p:dataTable>
+		
+           </h:panelGrid>	 		
+          
+             <p:message for="rulesGrid" display="text" />
+             
+             
+			 
+			 
+		
+			 
+			 
+			 
+            
+            <f:facet name="footer">
+                <p:commandButton   value="#{cc.attrs.message.condition_save_action}" action="#{cc.attrs.saveAction}"  process="inputGrid"  update="inputGrid" oncomplete="handleConditionRequest(xhr, status, args)"  style="float:right" />     
+            </f:facet>
+        </h:panelGrid>  
+  
+         
+              
+  
+</p:dialog>  
+	
+	
+	<script type="text/javascript">  
+    		function handleConditionRequest(xhr, status, args) {  
+        		if(! args.validationFailed) {  
+            		ruleInstanceDlg.hide(); 
+        		} 
+        		
+    		}  
+		</script>
+	
+	</composite:implementation>
+</body>
+</html>
