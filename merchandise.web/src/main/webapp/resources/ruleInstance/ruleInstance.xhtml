@@ -15,7 +15,7 @@
 	<composite:interface>
 		<composite:attribute name="message" required="true" />
 		
-		<composite:attribute name="saveAction" method-signature="void f()" />  
+		
 		
 		
 	</composite:interface>
@@ -50,6 +50,8 @@
 		
 		<p:dataTable var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}">
 			 <p:column>#{parameterVar.name}</p:column> 
+			 <p:column><p:inputText  value="#{parameterVar.value}" />
+			</p:column>
 		</p:dataTable>
 		
            </h:panelGrid>	 		
@@ -65,7 +67,7 @@
 			 
             
             <f:facet name="footer">
-                <p:commandButton   value="#{cc.attrs.message.condition_save_action}" action="#{cc.attrs.saveAction}"  process="inputGrid"  update="inputGrid" oncomplete="handleConditionRequest(xhr, status, args)"  style="float:right" />     
+                <p:button   value="#{cc.attrs.message.rule_instance_cancel}" outcome="/opportunity.xhtml"  process="inputGrid"  update="inputGrid" oncomplete="handleConditionRequest(xhr, status, args)"  style="float:right" />     
             </f:facet>
         </h:panelGrid>  
   

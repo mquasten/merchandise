@@ -42,7 +42,7 @@
 
 
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">  
-        <property name="basenames" value="/resources/person/person,/resources/person/viewPerson,/resources/contact/contact,/resources/subject/subject,/resources/condition/condition,/resources/document/document,classpath:messages" />  
+        <property name="basenames" value="/resources/person/person,/resources/person/viewPerson,/resources/contact/contact,/resources/subject/subject,/resources/condition/condition,/resources/document/document,/resources/ruleInstance/ruleInstance,classpath:messages" />  
          <property name="defaultEncoding" value="UTF-8"/>
         <property name="cacheSeconds" value="1000" />  
         <property name="fallbackToSystemLocale" value="false"/>
