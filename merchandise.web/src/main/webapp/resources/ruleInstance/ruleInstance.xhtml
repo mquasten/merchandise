@@ -37,16 +37,20 @@
           
           <h:panelGrid id="rulesGrid" >
             
-            <p:selectOneMenu  id="rules"  value="#{ruleInstance.selectedId}"  style="width:100%"  	>
+            <h:panelGrid columns="3">
+            <p:selectOneMenu  id="rules"  value="#{ruleInstance.selectedId}"  style="width:100%"  >
 						
-						
+						 <f:selectItem itemLabel="#{message.select_empty}" itemValue="" />  
 						<f:selectItems
 							value="#{ruleController.ruleItems()}" />  />
 			
-			 <p:ajax update="rulesGrid"  process="@this" />		
+			 <p:ajax update="rulesGrid, rulesMessage"  process="@this" />		
 			 
 			
-		</p:selectOneMenu>
+			</p:selectOneMenu>
+			  <p:message id="rulesMessage" for="rules" display="text" />
+			  <p:messages errorClass="error" globalOnly="true" />  
+			</h:panelGrid>
 		
 		<p:dataTable var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}">
 			 <p:column>#{parameterVar.name}</p:column> 
@@ -56,7 +60,7 @@
 		
            </h:panelGrid>	 		
           
-             <p:message for="rulesGrid" display="text" />
+           
              
              
 			 
@@ -67,7 +71,9 @@
 			 
             
             <f:facet name="footer">
-                <p:button   value="#{cc.attrs.message.rule_instance_cancel}" outcome="/opportunity.xhtml"  process="inputGrid"  update="inputGrid" oncomplete="handleConditionRequest(xhr, status, args)"  style="float:right" />     
+                <p:button   value="#{cc.attrs.message.rule_instance_cancel}" outcome="/opportunity.xhtml"  process="inputGrid"  update="inputGrid"  />     
+               
+            
             </f:facet>
         </h:panelGrid>  
   
@@ -77,14 +83,6 @@
 </p:dialog>  
 	
 	
-	<script type="text/javascript">  
-    		function handleConditionRequest(xhr, status, args) {  
-        		if(! args.validationFailed) {  
-            		ruleInstanceDlg.hide(); 
-        		} 
-        		
-    		}  
-		</script>
 	
 	</composite:implementation>
 </body>

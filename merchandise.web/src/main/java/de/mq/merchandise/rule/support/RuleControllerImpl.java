@@ -105,23 +105,21 @@ public class RuleControllerImpl {
 		final RuleInstance ruleInstance = EntityUtil.create(RuleInstanceImpl.class);
 		final Rule rule = ruleServive.read(id);
 		EntityUtil.setDependency(ruleInstance, Rule.class, rule);
-		
+		ruleInstanceAO.setRuleInstance(ruleInstance);
 	
 	    for(final String parameter :source(id)){
 	    	ruleInstance.assign(parameter, "???");
 	    	System.out.println("?" + parameter);
 	    }
 	
-		ruleInstanceAO.setRuleInstance(ruleInstance);
+		
 		
 	}
 
 	private  String[] source(final Long id) {
-		try {
+		
 		return ((ParameterNamesAware<?>)sourceFactory.create(id)).parameters();
-		} catch (Exception ex){
-			return new String[] { };
-		}
+		
 	}
 
 	
