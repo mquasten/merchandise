@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
-import org.springframework.dao.DataIntegrityViolationException;
 
 import de.mq.mapping.util.proxy.ActionEvent;
 import de.mq.mapping.util.proxy.ExceptionTranslation;
