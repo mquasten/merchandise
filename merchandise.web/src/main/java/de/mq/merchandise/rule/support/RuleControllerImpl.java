@@ -133,4 +133,6 @@ public class RuleControllerImpl {
 		return rule.getIdAsLong(); 
 	}
 	
+	
+	
 }

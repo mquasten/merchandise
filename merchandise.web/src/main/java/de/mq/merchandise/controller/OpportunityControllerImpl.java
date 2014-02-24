@@ -20,6 +20,8 @@ import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
+import de.mq.merchandise.rule.support.ParameterAO;
+import de.mq.merchandise.rule.support.RuleInstanceAO;
 import de.mq.merchandise.util.EntityUtil;
 
 class OpportunityControllerImpl {
@@ -219,7 +221,14 @@ class OpportunityControllerImpl {
 	}
 	
 	
-	
+	void addRuleInstance(final RuleInstanceAO ruleInstanceAO) {
+		System.out.println("********************************");
+		System.out.println(ruleInstanceAO.getParameter().size());
+		for(final ParameterAO p : ruleInstanceAO.getParameter()){
+			System.out.println(p.getName()+ "=" + p.getValue());
+		}
+		System.out.println("********************************");
+	}
 	
 	
 

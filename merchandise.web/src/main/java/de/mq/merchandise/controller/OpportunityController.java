@@ -22,6 +22,8 @@ import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
+import de.mq.merchandise.rule.support.RuleControllerImpl;
+import de.mq.merchandise.rule.support.RuleInstanceAO;
 
 public interface OpportunityController {
 	
@@ -79,5 +81,8 @@ public interface OpportunityController {
 	void deleteCondition();
 	
 
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleInstanceAO.class)})}, clazz = OpportunityControllerImpl.class)
+	void addRuleInstance(); 
 	
 }

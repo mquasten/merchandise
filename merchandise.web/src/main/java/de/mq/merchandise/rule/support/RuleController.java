@@ -29,5 +29,6 @@ interface RuleController {
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ValueChangeEvent.class,originIndex=0)})}, clazz = RuleControllerImpl.class)
 	List<SelectItem> change() ;
+	
 
 }

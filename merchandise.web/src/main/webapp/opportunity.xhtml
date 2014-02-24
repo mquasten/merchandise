@@ -170,7 +170,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
  </p:panelGrid>
  <in:input   title="#{message.opportunity_keyword_input_title}" submitText="#{message.opportunity_keyword_input_submit_text}" label="#{message.opportunity_keyword_input_label}"  saveAction="#{opportunityController.addKeyWord()}"/>
  <co:condition message="#{message}" addAction="#{opportunityController.addConditionValue()}"  deleteAction="#{opportunityController.deleteConditionValue()}"  saveAction="#{opportunityController.addCondition()}"/>
- <ri:ruleInstance  message="#{message}"  />
+ <ri:ruleInstance  message="#{message}"  addAction="#{opportunityController.addRuleInstance()}" />
  </h:form>
  </ui:define>
  </ui:composition>

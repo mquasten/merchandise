@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import de.mq.mapping.util.proxy.ActionEvent;
@@ -46,6 +47,7 @@ public abstract class RuleInstanceAO implements Serializable  {
 	public abstract  void setRuleInstance(final RuleInstance ruleInstance);
 	
 	@GetterProxyCollection(clazz= RuleInstanceImpl.class , collectionClass=ArrayList.class, name = "parameters", proxyClass=ParameterAO.class, converter=Map2ParameterCollectionConverter.class)
+	@Valid()
 	public abstract Collection<ParameterAO> getParameter();
 	
 	@Getter(clazz = RuleInstanceImpl.class, value = "priority", converter = Number2StringConverter.class)

@@ -15,7 +15,7 @@
 	<composite:interface>
 		<composite:attribute name="message" required="true" />
 		
-		
+		<composite:attribute name="addAction" method-signature="void f()" />  
 		
 		
 	</composite:interface>
@@ -52,12 +52,18 @@
 			  <p:messages errorClass="error" globalOnly="true" />  
 			</h:panelGrid>
 		
-		<p:dataTable var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}">
+		<p:dataTable var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}"  >
 			 <p:column>#{parameterVar.name}</p:column> 
-			 <p:column><p:inputText  value="#{parameterVar.value}" />
+			 
+			 <p:column><p:inputText  id="parameterValue" value="#{parameterVar.value}" >
+			 <f:validateBean />
+			 </p:inputText> 
+			   <p:message for="parameterValue" display="text" />
 			</p:column>
-		</p:dataTable>
+			
 		
+		</p:dataTable>
+		     <p:commandButton   value="#{cc.attrs.message.rule_instance_add_parameter}" action="#{cc.attrs.addAction}"  process="rulesGrid"  update="rulesGrid"    style="float:right" />     
            </h:panelGrid>	 		
           
            
