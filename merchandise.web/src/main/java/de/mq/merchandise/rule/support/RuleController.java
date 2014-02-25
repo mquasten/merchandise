@@ -12,6 +12,7 @@ import de.mq.mapping.util.proxy.ActionEvent;
 import de.mq.mapping.util.proxy.MethodInvocation;
 import de.mq.mapping.util.proxy.Parameter;
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.opportunity.support.RuleOperations;
 
 
 interface RuleController {
@@ -31,4 +32,6 @@ interface RuleController {
 	List<SelectItem> change() ;
 	
 
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleOperations.class,originIndex=0), @Parameter(clazz = RuleInstanceAO.class)})}, clazz = RuleControllerImpl.class)
+	void assign(final RuleOperations parent);
 }

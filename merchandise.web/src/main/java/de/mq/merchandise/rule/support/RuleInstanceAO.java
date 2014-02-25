@@ -23,6 +23,7 @@ import de.mq.merchandise.controller.SimpleFacesExceptionTranslatorImpl;
 import de.mq.merchandise.model.support.String2LongConverter;
 import de.mq.merchandise.opportunity.support.RuleInstance;
 import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
+import de.mq.merchandise.opportunity.support.RuleOperations;
 import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 public abstract class RuleInstanceAO implements Serializable  {
@@ -63,5 +64,11 @@ public abstract class RuleInstanceAO implements Serializable  {
 	@MethodInvocation(actions={@ActionEvent(name="selectedId" , params={@Parameter(clazz = RuleInstanceAO.class, el="#arg.rule" , elResultType=RuleAO.class,skipNotReachableOnNullElException=true )} ) }, clazz = RuleControllerImpl.class )
 	@NotNull(message="{mandatory_field}")
 	public abstract Long getSelectedId();
+	
+	@Setter("parent")
+	public abstract void setParent(final RuleOperations ruleOperations); 
+	
+	@Getter("parent")
+	public abstract RuleOperations getParent();
 
 }

@@ -5,7 +5,6 @@ import java.util.List;
 
 import de.mq.mapping.util.proxy.Conversation;
 import de.mq.merchandise.customer.Customer;
-
 import de.mq.merchandise.opportunity.ClassificationService;
 import de.mq.merchandise.opportunity.OpportunityService;
 import de.mq.merchandise.opportunity.support.ActivityClassification;
@@ -226,7 +225,11 @@ class OpportunityControllerImpl {
 		System.out.println(ruleInstanceAO.getParameter().size());
 		for(final ParameterAO p : ruleInstanceAO.getParameter()){
 			System.out.println(p.getName()+ "=" + p.getValue());
+			ruleInstanceAO.getRuleInstance().assign(p.getName(),p.getValue());
 		}
+		
+		ruleInstanceAO.getParent().assign(ruleInstanceAO.getRule().getRule(), 1);
+	
 		System.out.println("********************************");
 	}
 	

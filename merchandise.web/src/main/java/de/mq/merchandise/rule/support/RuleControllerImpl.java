@@ -10,6 +10,7 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.RuleInstance;
 import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
+import de.mq.merchandise.opportunity.support.RuleOperations;
 import de.mq.merchandise.rule.ParameterNamesAware;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.rule.RuleService;
@@ -133,6 +134,12 @@ public class RuleControllerImpl {
 		return rule.getIdAsLong(); 
 	}
 	
+	void assign(final RuleOperations ruleOperations, final RuleInstanceAO ruleInstanceAO){
+		System.out.println(ruleOperations);
+		System.out.println(ruleInstanceAO);
 	
+		ruleInstanceAO.setParent(ruleOperations);
+		
+	}
 	
 }
