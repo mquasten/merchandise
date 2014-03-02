@@ -30,6 +30,15 @@
         <h:panelGrid id="inputGrid" columns="3"  columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"   style="margin-bottom:10px">  
            
           
+           <h:outputLabel  for="instances" value="#{cc.attrs.message.rule_instances}" />  
+           
+           <p:dataTable var="instanceVar" id="instances" paginator="false"  value="#{ruleController.instances()}"  >
+           
+           <p:column> #{instanceVar}</p:column>
+           </p:dataTable>
+           
+           
+         <p:message for="instances" display="text" />
             
             
             <h:outputLabel  for="rules" value="#{cc.attrs.message.rule_instance_rules}" />  
@@ -63,7 +72,7 @@
 			
 		
 		</p:dataTable>
-		     <p:commandButton   value="#{cc.attrs.message.rule_instance_add_parameter}" action="#{cc.attrs.addAction}"  process="rulesGrid"  update="rulesGrid"    style="float:right" />     
+		     <p:commandButton   value="#{cc.attrs.message.rule_instance_add_parameter}" action="#{cc.attrs.addAction}"  process="inputGrid"  update="inputGrid"    style="float:right" />     
            </h:panelGrid>	 		
           
            

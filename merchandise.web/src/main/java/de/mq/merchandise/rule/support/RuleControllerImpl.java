@@ -142,4 +142,14 @@ public class RuleControllerImpl {
 		
 	}
 	
+	
+	List<?> instances(final RuleOperations ruleOperations) {
+		if( ruleOperations==null){
+			return null;
+		}
+		return ruleOperations.ruleInstances();
+		
+		
+	}
+	
 }
