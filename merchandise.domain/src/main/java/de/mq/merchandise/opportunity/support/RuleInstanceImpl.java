@@ -1,7 +1,10 @@
 package de.mq.merchandise.opportunity.support;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Basic;
@@ -188,6 +191,11 @@ public class RuleInstanceImpl implements RuleInstance {
 
 	CommercialRelation commercialRelation() {
 		return commercialRelation;
+	}
+	
+	@Override
+	public List<String> parameterNames() {
+		return Collections.unmodifiableList(new ArrayList<>(parameters.keySet()));
 	}
 
 }

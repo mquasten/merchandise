@@ -34,7 +34,12 @@
            
            <p:dataTable var="instanceVar" id="instances" paginator="false"  value="#{ruleController.instances()}"  >
            
-           <p:column> #{instanceVar}</p:column>
+           <p:column> 
+             <h:outputText  value="#{instanceVar}">
+            	  <f:converter converterId="ruleInstanceConverter" />
+            </h:outputText>
+              
+           </p:column>
            </p:dataTable>
            
            

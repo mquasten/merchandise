@@ -135,9 +135,7 @@ public class RuleControllerImpl {
 	}
 	
 	void assign(final RuleOperations ruleOperations, final RuleInstanceAO ruleInstanceAO){
-		System.out.println(ruleOperations);
-		System.out.println(ruleInstanceAO);
-	
+		
 		ruleInstanceAO.setParent(ruleOperations);
 		
 	}

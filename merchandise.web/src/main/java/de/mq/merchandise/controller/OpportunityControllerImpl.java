@@ -19,6 +19,9 @@ import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
+import de.mq.merchandise.opportunity.support.RuleInstance;
+import de.mq.merchandise.opportunity.support.RuleOperations;
+import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.rule.support.ParameterAO;
 import de.mq.merchandise.rule.support.RuleInstanceAO;
 import de.mq.merchandise.util.EntityUtil;
@@ -221,14 +224,20 @@ class OpportunityControllerImpl {
 	
 	
 	void addRuleInstance(final RuleInstanceAO ruleInstanceAO) {
-		System.out.println("********************************");
+		System.out.println("****************!!!****************");
 		System.out.println(ruleInstanceAO.getParameter().size());
+		RuleOperations parent = ruleInstanceAO.getParent();
+		Rule newRule = ruleInstanceAO.getRule().getRule();
+		parent.assign(newRule, 4711);
 		for(final ParameterAO p : ruleInstanceAO.getParameter()){
 			System.out.println(p.getName()+ "=" + p.getValue());
-			ruleInstanceAO.getRuleInstance().assign(p.getName(),p.getValue());
+			RuleInstance instance = parent.ruleInstance(newRule);
+			
+			instance.assign(p.getName(), p.getValue());
+			//ruleInstanceAO.getRuleInstance().assign(p.getName(),p.getValue());
 		}
 		
-		ruleInstanceAO.getParent().assign(ruleInstanceAO.getRule().getRule(), 1);
+		System.out.println(ruleInstanceAO.getRuleInstance().parameterNames().size());
 	
 		System.out.println("********************************");
 	}
