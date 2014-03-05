@@ -1,5 +1,6 @@
 package de.mq.merchandise.opportunity.support;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import junit.framework.Assert;
@@ -181,6 +182,17 @@ public class RuleInstanceTest {
 		final RuleInstance invalid = new RuleInstanceImpl(Mockito.mock(CommercialRelation.class), null, 1);
 		ReflectionTestUtils.setField(invalid, "condition", Mockito.mock(Condition.class));
 		Assert.assertFalse(ruleInstance.valid(invalid));
+	}
+	
+	@Test
+	public final void parameterNames() {
+		final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
+		final Rule rule = Mockito.mock(Rule.class);
+		final RuleInstance ruleInstance = new RuleInstanceImpl(commercialRelation, rule, PRIORITY);
+		ruleInstance.assign(PARAMETER_NAME , PARAMETER_VALUE);
+		final Collection<String> results = ruleInstance.parameterNames();
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(PARAMETER_NAME, results.iterator().next());
 	}
 	
 

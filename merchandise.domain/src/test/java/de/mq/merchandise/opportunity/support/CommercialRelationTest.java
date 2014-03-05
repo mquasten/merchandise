@@ -1,6 +1,7 @@
 package de.mq.merchandise.opportunity.support;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -108,6 +109,25 @@ public class CommercialRelationTest {
 		Assert.assertEquals(PRIORITY, ruleInstances.get(0).priority());
 		Assert.assertEquals(commercialRelation, (((RuleInstanceImpl)ruleInstances.get(0)).commercialRelation()));
 		Assert.assertNull(((RuleInstanceImpl)ruleInstances.get(0)).condition());
+	}
+	
+	@Test
+	public final void assignExisting() {
+		final CommercialRelation commercialRelation = new CommercialRelationImpl(commercialSubject, opportunity);
+		final Rule rule = Mockito.mock(Rule.class);
+	
+		@SuppressWarnings("unchecked")
+		final Collection<RuleInstance> ruleInstances = (Collection<RuleInstance>) ReflectionTestUtils.getField(commercialRelation, "ruleInstances");
+		final RuleInstanceImpl ruleInstance = new RuleInstanceImpl(commercialRelation, rule, 4711);
+		ruleInstances.add(ruleInstance);
+		Assert.assertEquals(1, ruleInstances.size());
+		Assert.assertEquals(ruleInstance, ruleInstances.iterator().next());
+		Assert.assertEquals(4711, ruleInstances.iterator().next().priority());
+		
+		commercialRelation.assign(rule, 19680528);
+		Assert.assertEquals(1, ruleInstances.size());
+		Assert.assertEquals(ruleInstance, ruleInstances.iterator().next());
+		Assert.assertEquals(19680528, ruleInstances.iterator().next().priority());
 	}
 	
 	@Test

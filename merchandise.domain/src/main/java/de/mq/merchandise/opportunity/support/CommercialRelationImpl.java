@@ -141,13 +141,17 @@ class CommercialRelationImpl implements CommercialRelation {
 	}
 
 	@Override
-	public void assign(Rule rule, int priority) {
+	public void assign(final Rule rule, final int priority) {
+		final RuleInstance existing = instance(rule);
+		if( existing != null) {
+			existing.assign(priority);
+			return;
+		}
 		ruleInstances.add(new RuleInstanceImpl(this, rule, priority));
 		
 	}
-
-	@Override
-	public RuleInstance ruleInstance(final Rule rule) {
+	
+	private RuleInstance instance(final Rule rule) {
 		for(final RuleInstance ruleInstance : ruleInstances){
 			if(! ruleInstance.forRule(rule)){
 				
@@ -155,7 +159,20 @@ class CommercialRelationImpl implements CommercialRelation {
 			}
 			return ruleInstance;
 		}
-		throw new IllegalArgumentException("Rule " + rule.name() + " isn't assigned to condition");
+		return null;
+	}
+	
+
+	@Override
+	public RuleInstance ruleInstance(final Rule rule) {
+		return ruleInstanceExistsGuard(rule, instance(rule));
+	}
+
+	private RuleInstance ruleInstanceExistsGuard(final Rule rule, final RuleInstance result) {
+		if( result == null){
+			throw new IllegalArgumentException("Rule " + rule.name() + " isn't assigned to condition");
+		}
+		return result; 
 	}
 
 	@Override

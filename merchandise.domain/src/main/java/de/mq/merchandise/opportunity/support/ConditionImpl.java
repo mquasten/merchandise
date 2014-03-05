@@ -151,22 +151,40 @@ class ConditionImpl implements Condition{
 		return Collections.unmodifiableList(ruleInstances);
 	}
 	
-	@Override
-	public  final RuleInstance ruleInstance(final Rule rule) {
-		
+	private RuleInstance instance(final Rule rule) {
 		for(final RuleInstance ruleInstance : ruleInstances){
 			if(! ruleInstance.forRule(rule)){
 				continue;
 			}
 			return ruleInstance;
 		}
-		throw new IllegalArgumentException("Rule " + rule.name() + " isn't assigned to condition");
+		return null;
 		
+	}
+	
+	@Override
+	public  final RuleInstance ruleInstance(final Rule rule) {
+		return ruleInstanceExistsGuard(rule, instance(rule));
+		
+	}
+
+
+
+	private RuleInstance ruleInstanceExistsGuard(final Rule rule, RuleInstance result) {
+		if (result == null){ 
+			throw new IllegalArgumentException("Rule " + rule.name() + " isn't assigned to condition");
+		}
+		return result;
 	}
 	
 
 	@Override
 	public final void assign(final Rule rule, final int priority ){
+		final RuleInstance existing = instance(rule);
+		if( existing != null){
+			existing.assign(priority);
+			return;
+		}
 		ruleInstances.add(new RuleInstanceImpl(this, rule, priority));
 	}
 

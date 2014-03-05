@@ -127,6 +127,8 @@ public class ConditionTest {
 		Assert.assertEquals(VALUE, condition.values().iterator().next());
 	}
 	
+	
+	
 	@Test
 	public final void deleteValue() {
 		final Condition condition = new ConditionImpl();
@@ -201,6 +203,28 @@ public class ConditionTest {
 		Assert.assertEquals(rule, results.iterator().next().rule());
 		Assert.assertEquals(condition, ((RuleInstanceImpl) results.iterator().next()).condition());
 		Assert.assertNull(((RuleInstanceImpl) results.iterator().next()).commercialRelation());
+	}
+	@SuppressWarnings("unchecked")
+	@Test
+	public final void assignRuleExists() {
+		final Condition condition =  EntityUtil.create(ConditionImpl.class);
+		final Rule rule = Mockito.mock(Rule.class);
+		final Collection<RuleInstance> ruleInstances = (Collection<RuleInstance>) ReflectionTestUtils.getField(condition, "ruleInstances");
+	
+		final RuleInstance ruleInstance = new RuleInstanceImpl(condition, rule, 4711);
+		ruleInstances.add(ruleInstance);
+		
+		Assert.assertEquals(1, ruleInstances.size());
+		Assert.assertEquals(ruleInstance, ruleInstances.iterator().next());
+		Assert.assertEquals(4711, ruleInstances.iterator().next().priority());
+		
+		condition.assign(rule, 19680528);
+		
+		Assert.assertEquals(1, ruleInstances.size());
+		Assert.assertEquals(ruleInstance, ruleInstances.iterator().next());
+		Assert.assertEquals(19680528, ruleInstances.iterator().next().priority());
+		
+		
 	}
 
 }
