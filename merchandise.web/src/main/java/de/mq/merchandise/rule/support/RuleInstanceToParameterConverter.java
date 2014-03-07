@@ -6,8 +6,8 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
 import de.mq.merchandise.opportunity.support.RuleInstance;
-@FacesConverter("ruleInstanceConverter")
-public class RuleInstanceConverter  implements Converter{
+@FacesConverter("ruleInstanceToParameterConverter")
+public class RuleInstanceToParameterConverter  implements Converter{
 
 	static final String UNDEFINED = "???";
 	@Override
@@ -26,13 +26,13 @@ public class RuleInstanceConverter  implements Converter{
 		final RuleInstance  ruleInstance = (RuleInstance) value; 
 		final StringBuffer buffer = new StringBuffer();
 		for(final String name  : ruleInstance.parameterNames()) {
-			if( buffer.length() !=  0){
-				buffer.append(", " );
+			if( buffer.length() > 0){
+				buffer.append(" ");
 			}
 			buffer.append(name + "=" + ruleInstance.parameter(name));
 		}
-		buffer.append(", priority=" + ruleInstance.priority());
-		return ruleInstance.rule().name() + " " + buffer.toString();
+		
+		return buffer.toString();
 		
 	}
 

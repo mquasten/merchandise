@@ -35,12 +35,36 @@
            <p:dataTable var="instanceVar" id="instances" paginator="false"  value="#{ruleController.instances()}"  >
            
            <p:column> 
-             <h:outputText  value="#{instanceVar}">
-            	  <f:converter converterId="ruleInstanceConverter" />
+            <f:facet name="header">  
+                #{cc.attrs.message.ruletable_name}
+            </f:facet>  
+           
+             <h:outputText  value="#{instanceVar.rule().name()}">
+            	
             </h:outputText>
               
            </p:column>
+           
+           <p:column>
+           <f:facet name="header">  
+                #{cc.attrs.message.ruletable_priority}
+            </f:facet>  
+            <h:outputText  value="#{instanceVar.priority()}"/>
+           </p:column>
+           
+           <p:column>
+           <f:facet name="header">  
+                #{cc.attrs.message.ruletable_parameters}
+            </f:facet>  
+           
+            <h:outputText  value="#{instanceVar}">
+              <f:converter converterId="ruleInstanceToParameterConverter"   />
+            </h:outputText>
+           </p:column>
+           
            </p:dataTable>
+           
+           
            
            
          <p:message for="instances" display="text" />
@@ -67,18 +91,38 @@
 			</h:panelGrid>
 		
 		<p:dataTable var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}"  >
-			 <p:column>#{parameterVar.name}</p:column> 
+			 <p:column>
+			  <f:facet name="header">  
+                #{cc.attrs.message.parametertable_name}
+            </f:facet>  
+			 #{parameterVar.name}
+			 </p:column> 
 			 
-			 <p:column><p:inputText  id="parameterValue" value="#{parameterVar.value}" >
+			 <p:column>
+			 <f:facet name="header">  
+                #{cc.attrs.message.parametertable_value}
+            </f:facet> 
+			 <p:inputText  id="parameterValue" value="#{parameterVar.value}" >
 			 <f:validateBean />
 			 </p:inputText> 
 			   <p:message for="parameterValue" display="text" />
 			</p:column>
-			
+		
+		
 		
 		</p:dataTable>
+		
+		<h:panelGrid columns="2">
+			<h:outputLabel  value="#{cc.attrs.message.rule_priority}" />  
+			<p:inputText  value="#{ruleInstance.priority}" />
+			
+		</h:panelGrid>
+		 <f:facet name="footer">
+		 	 <p:commandButton   value="#{cc.attrs.message.rule_instance_delete_parameter}"   process="inputGrid"  update="inputGrid"    style="float:left" />   
 		     <p:commandButton   value="#{cc.attrs.message.rule_instance_add_parameter}" action="#{cc.attrs.addAction}"  process="inputGrid"  update="inputGrid"    style="float:right" />     
-           </h:panelGrid>	 		
+         <p:messages errorClass="error" globalOnly="false" />  
+        </f:facet> 
+         </h:panelGrid>	 		
           
            
              
@@ -92,8 +136,6 @@
             
             <f:facet name="footer">
                 <p:button   value="#{cc.attrs.message.rule_instance_cancel}" outcome="/opportunity.xhtml"  process="inputGrid"  update="inputGrid"  />     
-               
-            
             </f:facet>
         </h:panelGrid>  
   

@@ -32,7 +32,9 @@ public class ConditionConverterImpl implements Converter{
 	}
 	
 	private void hibernateInitialize(final List<RuleInstance> list){
-		list.size();
+		for(final RuleInstance ruleInstance : list) {
+			ruleInstance.parameterNames().size();
+		}
 	}
 
 }

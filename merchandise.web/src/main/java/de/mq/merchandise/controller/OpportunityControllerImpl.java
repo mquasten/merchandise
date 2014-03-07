@@ -228,7 +228,7 @@ class OpportunityControllerImpl {
 		System.out.println(ruleInstanceAO.getParameter().size());
 		RuleOperations parent = ruleInstanceAO.getParent();
 		Rule newRule = ruleInstanceAO.getRule().getRule();
-		parent.assign(newRule, 4711);
+		parent.assign(newRule, ruleInstanceAO.getRuleInstance().priority());
 		for(final ParameterAO p : ruleInstanceAO.getParameter()){
 			System.out.println(p.getName()+ "=" + p.getValue());
 			RuleInstance instance = parent.ruleInstance(newRule);

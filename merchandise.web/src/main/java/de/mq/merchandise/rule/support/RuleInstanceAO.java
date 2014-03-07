@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import de.mq.mapping.util.proxy.ActionEvent;
@@ -48,14 +47,14 @@ public abstract class RuleInstanceAO implements Serializable  {
 	public abstract  void setRuleInstance(final RuleInstance ruleInstance);
 	
 	@GetterProxyCollection(clazz= RuleInstanceImpl.class , collectionClass=ArrayList.class, name = "parameters", proxyClass=ParameterAO.class, converter=Map2ParameterCollectionConverter.class)
-	@Valid()
+	//@Valid()
 	public abstract Collection<ParameterAO> getParameter();
 	
-	@Getter(clazz = RuleInstanceImpl.class, value = "priority", converter = Number2StringConverter.class)
+	@Getter(clazz = RuleInstanceImpl.class, value = "priority" ,converter = Number2StringConverter.class)
 	public abstract String  getPriority(); 
 	
-	@Setter(clazz= RuleInstanceImpl.class ,value="priority", converter=String2IntegerConverter.class)
-	public abstract void  setPriority(final String priority); 
+	@Setter(clazz = RuleInstanceImpl.class, value="priority" , converter=String2IntegerConverter.class)
+	public abstract void  setPriority(final String priority);  
 	
 	
 	@MethodInvocation(actions={@ActionEvent(name="assignSelected" , params={@Parameter(originIndex=0, clazz = Long.class ), @Parameter(clazz=RuleInstanceAO.class)})}, clazz = RuleControllerImpl.class, value=@ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = Exception.class  , bundle="rule_instance_invalid_rule"))
@@ -70,5 +69,8 @@ public abstract class RuleInstanceAO implements Serializable  {
 	
 	@Getter("parent")
 	public abstract RuleOperations getParent();
+	
+	
+	
 
 }
