@@ -13,6 +13,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
+import de.mq.mapping.util.proxy.Conversation;
 import de.mq.mapping.util.proxy.ModelRepository;
 import de.mq.merchandise.controller.SerialisationControllerImpl;
 import de.mq.merchandise.opportunity.support.PagingAO;
@@ -29,7 +30,9 @@ public class RuleProxyFactoryTest {
 	
 	private SourceFactoryImpl sourceFactory = Mockito.mock(SourceFactoryImpl.class);
 	
-	private RuleProxyFactoryImpl ruleProxyFactory = new RuleProxyFactoryImpl(ruleService, sourceFactory, aoProxyFactory, beanResolver);
+	private Conversation conversation = Mockito.mock(Conversation.class);
+	
+	private RuleProxyFactoryImpl ruleProxyFactory = new RuleProxyFactoryImpl(ruleService, sourceFactory, aoProxyFactory, beanResolver, conversation);
 	
 	@Test
 	public final void init() {

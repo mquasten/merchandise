@@ -6,6 +6,7 @@ import java.util.List;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
+
 import org.springframework.security.core.context.SecurityContext;
 
 import de.mq.mapping.util.proxy.ActionEvent;
@@ -38,5 +39,7 @@ interface RuleController {
 
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleInstanceAO.class ,elResultType=RuleOperations.class,el="#arg.parent"  )})}, clazz = RuleControllerImpl.class)
 	List<RuleInstance> instances(); 
+	
+
 
 }

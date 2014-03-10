@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 
 import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.mapping.util.proxy.BeanResolver;
+import de.mq.mapping.util.proxy.Conversation;
 import de.mq.mapping.util.proxy.support.ModelRepositoryBuilderImpl;
 import de.mq.merchandise.controller.SerialisationControllerImpl;
 import de.mq.merchandise.opportunity.support.PagingAO;
@@ -33,20 +34,24 @@ public class RuleProxyFactoryImpl {
 	private final SourceFactoryImpl sourceFactory;
 	
 	
+	@Autowired
+	private final Conversation conversation;
+	
+	
 	private RuleControllerImpl ruleController;
 	
 	RuleProxyFactoryImpl() {
-		this(null,null,null,null);
+		this(null,null,null,null,null);
 	}
 	
 	
-	RuleProxyFactoryImpl(final RuleService ruleService, final SourceFactoryImpl sourceFactory, final AOProxyFactory proxyFactory, final BeanResolver beanResolver) {
+	RuleProxyFactoryImpl(final RuleService ruleService, final SourceFactoryImpl sourceFactory, final AOProxyFactory proxyFactory, final BeanResolver beanResolver, Conversation conversation) {
 		super();
 		this.proxyFactory = proxyFactory;
 		this.beanResolver = beanResolver;
 		this.ruleService=ruleService;
 		this.sourceFactory=sourceFactory;
-		
+		this.conversation=conversation;
 	}
 
 
@@ -75,8 +80,9 @@ public class RuleProxyFactoryImpl {
 	}
 	
 	@Bean(name="ruleInstance")
-	@Scope("view")
+	@Scope("conversation")
 	public RuleInstanceAO ruleInstance() {
+		conversation.begin();
 		return   proxyFactory.createProxy(RuleInstanceAO.class, new ModelRepositoryBuilderImpl().withDomain(EntityUtil.create(RuleInstanceImpl.class)).withDomain(ruleController).withBeanResolver(beanResolver).build());
 		
 	}
