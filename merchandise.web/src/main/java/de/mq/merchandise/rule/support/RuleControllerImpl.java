@@ -1,7 +1,9 @@
 package de.mq.merchandise.rule.support;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -103,14 +105,22 @@ public class RuleControllerImpl {
 			return ;
 		}
 		
+	
 		final RuleInstance ruleInstance = EntityUtil.create(RuleInstanceImpl.class);
 		final Rule rule = ruleServive.read(id);
 		EntityUtil.setDependency(ruleInstance, Rule.class, rule);
 		ruleInstanceAO.setRuleInstance(ruleInstance);
 	
+		final RuleOperations ruleOperations = ruleInstanceAO.getParent();
+		final Set<String> params = new HashSet<>(ruleOperations.ruleInstance(rule).parameterNames());
 	    for(final String parameter :source(id)){
+	    	
+	    	if( params.contains(parameter)) {
+	    		ruleInstance.assign(parameter,ruleOperations.ruleInstance(rule).parameter(parameter));
+	    		ruleInstance.assign(ruleOperations.ruleInstance(rule).priority());
+	    		continue;
+	    	}
 	    	ruleInstance.assign(parameter, "???");
-	    	System.out.println("?" + parameter);
 	    }
 	
 		
@@ -138,12 +148,14 @@ public class RuleControllerImpl {
 		
 		ruleInstanceAO.setParent(ruleOperations);
 		
+		System.out.println("!!!!!!!!!!!!" + ruleOperations.ruleInstances().size());
 		
 		
 	}
 	
 	
 	List<?> instances(final RuleOperations ruleOperations) {
+	System.out.println("§§§§§§§§§" + ruleOperations);
 		if( ruleOperations==null){
 			return null;
 		}
