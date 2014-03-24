@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
+
 import javax.validation.constraints.NotNull;
 
 import de.mq.mapping.util.proxy.ActionEvent;
@@ -70,7 +71,6 @@ public abstract class RuleInstanceAO implements Serializable  {
 	@Getter("parent")
 	public abstract RuleOperations getParent();
 	
-	
-	
+	;
 
 }

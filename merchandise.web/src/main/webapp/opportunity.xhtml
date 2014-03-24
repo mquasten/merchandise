@@ -73,7 +73,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets">
 			  		  <p:commandButton  value="#{message.opportunity_condition_add}"   action="#{opportunityController.clearCondition}" update="@form"  process="@this"  oncomplete="conditionDlg.show();"  icon="ui-icon-check"  rendered="#{conditions.selected.data.class.simpleName == 'CommercialRelationImpl'}" /> 	
 			  		  
 			  		  
-			  		    <p:commandButton  value="#{message.opportunity_edit_rule}"   action="#{ruleController.assign(conditions.selected.data)}" oncomplete="ruleInstanceDlg.show();"  update="conditions"  process="@this"   rendered="#{(conditions.selected.data.class.simpleName == 'CommercialRelationImpl') || (conditions.selected.data.class.simpleName == 'ConditionImpl')}"   />
+			  		    <p:commandButton  value="#{message.opportunity_edit_rule}"   oncomplete="ruleInstanceDlg.show();"  update="conditions"  process="@this"   rendered="#{(conditions.selected.data.class.simpleName == 'CommercialRelationImpl') || (conditions.selected.data.class.simpleName == 'ConditionImpl')}"   />
 			  		  
 			  </f:facet>
     			

@@ -84,7 +84,6 @@ public class RuleProxyFactoryImpl {
 	public RuleInstanceAO ruleInstance() {
 		conversation.begin();
 		return   proxyFactory.createProxy(RuleInstanceAO.class, new ModelRepositoryBuilderImpl().withDomain(EntityUtil.create(RuleInstanceImpl.class)).withDomain(ruleController).withBeanResolver(beanResolver).build());
-		
 	}
 	
 

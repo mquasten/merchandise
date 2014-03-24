@@ -30,6 +30,7 @@ import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.PagingAO;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
+import de.mq.merchandise.rule.support.RuleInstanceAO;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Paging;
 
@@ -286,14 +287,16 @@ public class OpportunityControllerTest {
 	@Test
 	public final void onConditionNodeSelect() {
 		final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
-		opportunityControllerImpl.onConditionNodeSelect(commercialRelation, conditionAO);
+		final RuleInstanceAO ruleInstanceAO = Mockito.mock(RuleInstanceAO.class);
+		opportunityControllerImpl.onConditionNodeSelect(commercialRelation, conditionAO, ruleInstanceAO);
 
 		Mockito.verify(conditionAO).setCommercialRelation(commercialRelation);
 	}
 
 	@Test
 	public final void onConditionNodeSelectWrongType() {
-		opportunityControllerImpl.onConditionNodeSelect("dontLetMeGetMe", conditionAO);
+		final RuleInstanceAO ruleInstanceAO = Mockito.mock(RuleInstanceAO.class);
+		opportunityControllerImpl.onConditionNodeSelect("dontLetMeGetMe", conditionAO, ruleInstanceAO);
 
 		Mockito.verify(conditionAO, Mockito.times(0)).setCommercialRelation(Mockito.any(CommercialRelation.class));
 	}

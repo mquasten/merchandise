@@ -73,7 +73,7 @@ public interface OpportunityController {
 	void addCondition();
 	
 	
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = NodeSelectEvent.class,originIndex=0,elResultType=Object.class, el="#arg.treeNode.data"), @Parameter(clazz = ConditionAO.class)})}, clazz = OpportunityControllerImpl.class)
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = NodeSelectEvent.class,originIndex=0,elResultType=Object.class, el="#arg.treeNode.data"), @Parameter(clazz = ConditionAO.class), @Parameter(clazz = RuleInstanceAO.class)})}, clazz = OpportunityControllerImpl.class)
 	void onConditionNodeSelect(final NodeSelectEvent nodeSelectEvent);
 	
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class), @Parameter(clazz = ConditionTreeAO.class, elResultType=Object.class, el="#arg.selected.data" , skipNotReachableOnNullElException=true) })}, clazz = OpportunityControllerImpl.class)	

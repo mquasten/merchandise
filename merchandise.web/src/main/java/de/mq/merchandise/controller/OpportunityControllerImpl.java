@@ -203,9 +203,14 @@ class OpportunityControllerImpl {
 	
 	
 	
-	void onConditionNodeSelect(final Object selected, final ConditionAO conditionAO) {
-	    if (selected instanceof CommercialRelation) {
+	void onConditionNodeSelect(final Object selected, final ConditionAO conditionAO, final RuleInstanceAO ruleInstanceAO) {
+	    
+		if (selected instanceof CommercialRelation) {
 	    	conditionAO.setCommercialRelation((CommercialRelation) selected);	
+		}
+		
+		if( selected instanceof RuleOperations){
+			ruleInstanceAO.setParent((RuleOperations) selected);
 		}
 	}
 	

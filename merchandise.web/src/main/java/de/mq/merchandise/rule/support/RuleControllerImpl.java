@@ -144,18 +144,10 @@ public class RuleControllerImpl {
 		return rule.getIdAsLong(); 
 	}
 	
-	void assign(final RuleOperations ruleOperations, final RuleInstanceAO ruleInstanceAO){
-		
-		ruleInstanceAO.setParent(ruleOperations);
-		
-		System.out.println("!!!!!!!!!!!!" + ruleOperations.ruleInstances().size());
-		
-		
-	}
+	
 	
 	
 	List<?> instances(final RuleOperations ruleOperations) {
-	System.out.println("§§§§§§§§§" + ruleOperations);
 		if( ruleOperations==null){
 			return null;
 		}
@@ -163,6 +155,8 @@ public class RuleControllerImpl {
 		
 		
 	}
+	
+	
 	
 	
 		
