@@ -1,7 +1,11 @@
 package de.mq.merchandise.controller;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.util.ReflectionUtils;
 
 import de.mq.mapping.util.proxy.Conversation;
 import de.mq.merchandise.customer.Customer;
@@ -20,6 +24,7 @@ import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
 import de.mq.merchandise.opportunity.support.RuleInstance;
+import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
 import de.mq.merchandise.opportunity.support.RuleOperations;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.rule.support.ParameterAO;
@@ -229,8 +234,6 @@ class OpportunityControllerImpl {
 	
 	
 	void addRuleInstance(final RuleInstanceAO ruleInstanceAO) {
-		System.out.println("****************!!!****************");
-		System.out.println(ruleInstanceAO.getParameter().size());
 		RuleOperations parent = ruleInstanceAO.getParent();
 		Rule newRule = ruleInstanceAO.getRule().getRule();
 		parent.assign(newRule, ruleInstanceAO.getRuleInstance().priority());
@@ -242,9 +245,20 @@ class OpportunityControllerImpl {
 			//ruleInstanceAO.getRuleInstance().assign(p.getName(),p.getValue());
 		}
 		
-		System.out.println(ruleInstanceAO.getRuleInstance().parameterNames().size());
+		
+	}
 	
-		System.out.println("********************************");
+	
+	void deleteRuleInstance(final RuleInstanceAO ruleInstanceAO) throws IllegalArgumentException, IllegalAccessException {
+		
+		final RuleOperations parent = ruleInstanceAO.getParent();
+		Field field = ReflectionUtils.findField(RuleInstanceImpl.class, "parameters");
+		field.setAccessible(true);
+		Map<?,?> params = (Map<?, ?>) field.get(ruleInstanceAO.getRuleInstance());
+		params.clear();
+		parent.remove(ruleInstanceAO.getRule().getRule());
+		ruleInstanceAO.setSelectedId(-1L);
+	
 	}
 	
 	

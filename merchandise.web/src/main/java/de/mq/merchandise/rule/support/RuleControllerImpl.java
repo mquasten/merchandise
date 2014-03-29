@@ -101,18 +101,32 @@ public class RuleControllerImpl {
 	
 	
 	void assignSelected(final Long id, final RuleInstanceAO ruleInstanceAO) {
+		System.out.println("********************************************");
+		System.out.println(id);
 		if( id == null){
 			return ;
 		}
 		
 	
 		final RuleInstance ruleInstance = EntityUtil.create(RuleInstanceImpl.class);
+		
 		final Rule rule = ruleServive.read(id);
+		System.out.println("********************************************");
 		EntityUtil.setDependency(ruleInstance, Rule.class, rule);
 		ruleInstanceAO.setRuleInstance(ruleInstance);
+		
+		
 	
 		final RuleOperations ruleOperations = ruleInstanceAO.getParent();
-		final Set<String> params = new HashSet<>(ruleOperations.ruleInstance(rule).parameterNames());
+		
+		
+		final Set<String> params = new HashSet<>();
+		// :TODO ugly add hasRule ... 
+		try {
+			params.addAll(ruleOperations.ruleInstance(rule).parameterNames());
+		} catch ( Exception ex) {
+			
+		}
 	    for(final String parameter :source(id)){
 	    	
 	    	if( params.contains(parameter)) {

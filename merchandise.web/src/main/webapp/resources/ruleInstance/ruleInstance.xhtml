@@ -17,7 +17,7 @@
 		
 		<composite:attribute name="addAction" method-signature="void f()" />  
 		
-		
+		<composite:attribute name="deleteAction" method-signature="void f()" />  
 		
 		
 	</composite:interface>
@@ -92,7 +92,7 @@
 			  <p:messages errorClass="error" globalOnly="true" />  
 			</h:panelGrid>
 		
-		<p:dataTable var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}"  >
+		<p:dataTable  var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}"  >
 			 <p:column>
 			  <f:facet name="header">  
                 #{cc.attrs.message.parametertable_name}
@@ -120,7 +120,7 @@
 			
 		</h:panelGrid>
 		 <f:facet name="footer">
-		 	 <p:commandButton   value="#{cc.attrs.message.rule_instance_delete_parameter}"   process="inputGrid"  update="inputGrid"    style="float:left" />   
+		 	 <p:commandButton   value="#{cc.attrs.message.rule_instance_delete_parameter}"  action="#{cc.attrs.deleteAction}"   process="inputGrid"  update="inputGrid"    style="float:left" />   
 		     <p:commandButton   value="#{cc.attrs.message.rule_instance_add_parameter}" action="#{cc.attrs.addAction}"  process="inputGrid"  update="inputGrid"    style="float:right" />     
          <p:messages errorClass="error" globalOnly="false" />  
         </f:facet> 

@@ -84,4 +84,7 @@ public interface OpportunityController {
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleInstanceAO.class)})}, clazz = OpportunityControllerImpl.class)
 	void addRuleInstance(); 
 	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleInstanceAO.class)})}, clazz = OpportunityControllerImpl.class)
+	void deleteRuleInstance(); 
+	
 }
