@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
 import de.mq.merchandise.customer.Customer;
@@ -77,17 +76,12 @@ public class RuleControllerImpl {
 		
 	}
 	
-	void changeState(final Long ruleId, final Boolean state) {
-		
-		
-		System.out.println(">>>" + ruleId + ":" +state);
-	}
+	
 	
 	List<SelectItem>  ruleItems(final RuleModelAO rulesAO) {
 		
 		final List<SelectItem> result = new ArrayList<>(); 
 		for(final RuleAO ruleAO : rulesAO.getRules()){
-			System.out.println(">>>" + ruleAO.getId() + " " + ruleAO.getName());
 			result.add(new SelectItem(ruleAO.getId(), ruleAO.getName()));
 		}
 		
@@ -95,23 +89,18 @@ public class RuleControllerImpl {
 		
 	}
 	
-	void change(final ValueChangeEvent  event) {
-		System.out.println(event.getSource());
-	}
-	
+
 	
 	void assignSelected(final Long id, final RuleInstanceAO ruleInstanceAO) {
-		System.out.println("********************************************");
-		System.out.println(id);
 		if( id == null){
 			return ;
 		}
 		
 	
+		ruleInstanceAO.setPriority(null);
 		final RuleInstance ruleInstance = EntityUtil.create(RuleInstanceImpl.class);
 		
 		final Rule rule = ruleServive.read(id);
-		System.out.println("********************************************");
 		EntityUtil.setDependency(ruleInstance, Rule.class, rule);
 		ruleInstanceAO.setRuleInstance(ruleInstance);
 		
@@ -124,17 +113,19 @@ public class RuleControllerImpl {
 		// :TODO ugly add hasRule ... 
 		try {
 			params.addAll(ruleOperations.ruleInstance(rule).parameterNames());
+			ruleInstance.assign(ruleOperations.ruleInstance(rule).priority());
 		} catch ( Exception ex) {
 			
 		}
+		
 	    for(final String parameter :source(id)){
 	    	
 	    	if( params.contains(parameter)) {
 	    		ruleInstance.assign(parameter,ruleOperations.ruleInstance(rule).parameter(parameter));
-	    		ruleInstance.assign(ruleOperations.ruleInstance(rule).priority());
+	    		
 	    		continue;
 	    	}
-	    	ruleInstance.assign(parameter, "???");
+	    	ruleInstance.assign(parameter, "");
 	    }
 	
 		

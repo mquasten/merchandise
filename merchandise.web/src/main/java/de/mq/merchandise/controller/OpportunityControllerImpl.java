@@ -28,6 +28,7 @@ import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
 import de.mq.merchandise.opportunity.support.RuleOperations;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.rule.support.ParameterAO;
+import de.mq.merchandise.rule.support.RuleImpl;
 import de.mq.merchandise.rule.support.RuleInstanceAO;
 import de.mq.merchandise.util.EntityUtil;
 
@@ -234,15 +235,15 @@ class OpportunityControllerImpl {
 	
 	
 	void addRuleInstance(final RuleInstanceAO ruleInstanceAO) {
-		RuleOperations parent = ruleInstanceAO.getParent();
-		Rule newRule = ruleInstanceAO.getRule().getRule();
+		final RuleOperations parent = ruleInstanceAO.getParent();
+		final Rule newRule = ruleInstanceAO.getRule().getRule();
 		parent.assign(newRule, ruleInstanceAO.getRuleInstance().priority());
 		for(final ParameterAO p : ruleInstanceAO.getParameter()){
-			System.out.println(p.getName()+ "=" + p.getValue());
-			RuleInstance instance = parent.ruleInstance(newRule);
+			
+			final RuleInstance instance = parent.ruleInstance(newRule);
 			
 			instance.assign(p.getName(), p.getValue());
-			//ruleInstanceAO.getRuleInstance().assign(p.getName(),p.getValue());
+			
 		}
 		
 		
@@ -254,10 +255,13 @@ class OpportunityControllerImpl {
 		final RuleOperations parent = ruleInstanceAO.getParent();
 		Field field = ReflectionUtils.findField(RuleInstanceImpl.class, "parameters");
 		field.setAccessible(true);
-		Map<?,?> params = (Map<?, ?>) field.get(ruleInstanceAO.getRuleInstance());
+		// :TODO ugly delete all Parameters for ruleInstance
+		final Map<?,?> params = (Map<?, ?>) field.get(ruleInstanceAO.getRuleInstance());
 		params.clear();
 		parent.remove(ruleInstanceAO.getRule().getRule());
-		ruleInstanceAO.setSelectedId(-1L);
+		
+		ruleInstanceAO.getRule().setRule(EntityUtil.create(RuleImpl.class));
+		ruleInstanceAO.setPriority(null);
 	
 	}
 	
