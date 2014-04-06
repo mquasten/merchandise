@@ -34,8 +34,8 @@
           
            <h:outputLabel  for="instances" value="#{cc.attrs.message.rule_instances}" />  
            
-           <p:dataTable var="instanceVar" id="instances" paginator="false"  value="#{ruleController.instances()}"  >
-           
+           <p:dataTable var="instanceVar" id="instances" paginator="false"  value="#{ruleController.instances()}"    >
+            
            <p:column> 
             <f:facet name="header">  
                 #{cc.attrs.message.ruletable_name}
@@ -92,7 +92,8 @@
 			  <p:messages errorClass="error" globalOnly="true" />  
 			</h:panelGrid>
 		
-		<p:dataTable  var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}"  >
+		<p:dataTable  var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}"   >
+		
 			 <p:column>
 			  <f:facet name="header">  
                 #{cc.attrs.message.parametertable_name}
@@ -110,7 +111,7 @@
 			   <p:message for="parameterValue" display="text" />
 			</p:column>
 		
-		
+		   
 		
 		</p:dataTable>
 		

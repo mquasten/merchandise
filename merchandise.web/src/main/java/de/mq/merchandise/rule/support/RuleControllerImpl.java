@@ -7,7 +7,9 @@ import java.util.Set;
 
 import javax.faces.model.SelectItem;
 
+import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.model.support.SimpleMapDataModel;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.RuleInstance;
 import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
@@ -23,6 +25,8 @@ public class RuleControllerImpl {
 	private  final RuleService ruleServive;
 	
 	private final SourceFactoryImpl sourceFactory;
+	
+	
 	
 	RuleControllerImpl(RuleService ruleServive, SourceFactoryImpl sourceFactory) {
 		this.ruleServive = ruleServive;
@@ -156,6 +160,7 @@ public class RuleControllerImpl {
 		if( ruleOperations==null){
 			return null;
 		}
+		
 		return ruleOperations.ruleInstances();
 		
 		
