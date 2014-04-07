@@ -28,14 +28,17 @@
 		<p:ajax event="close" update="@form"  />
   		
   		
-       
+      
         <h:panelGrid id="inputGrid" columns="3"  columnClasses="labelColumnStyle,inputColumnStyle,messageColumnStyle"   style="margin-bottom:10px">  
-           
+          
           
            <h:outputLabel  for="instances" value="#{cc.attrs.message.rule_instances}" />  
            
-           <p:dataTable var="instanceVar" id="instances" paginator="false"  value="#{ruleController.instances()}"    >
+           <p:dataTable var="instanceVar" id="instances" paginator="false"  value="#{ruleController.instances()}"   selection="#{ruleInstance.selected}" >
             
+            <p:column selectionMode="single" style="width:2%" />   
+            
+           
            <p:column> 
             <f:facet name="header">  
                 #{cc.attrs.message.ruletable_name}
@@ -63,7 +66,7 @@
               <f:converter converterId="ruleInstanceToParameterConverter"   />
             </h:outputText>
            </p:column>
-           
+            <p:ajax event="rowSelectRadio"  update="@parent" process="@this"/> 
            </p:dataTable>
            
            
@@ -141,6 +144,7 @@
                 
                 
             </f:facet>
+        
         </h:panelGrid>  
   
          

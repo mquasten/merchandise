@@ -158,15 +158,31 @@ public class RuleControllerImpl {
 	
 	List<?> instances(final RuleOperations ruleOperations) {
 		if( ruleOperations==null){
-			return null;
+			return new SimpleMapDataModel<>();
 		}
 		
-		return ruleOperations.ruleInstances();
+		return new SimpleMapDataModel<>(ruleOperations.ruleInstances());
 		
 		
 	}
 	
 	
+	void assignSelected(final RuleInstance ruleInstance, final RuleInstanceAO ruleInstanceAO) {
+		System.out.println("setSelected:"+  ruleInstance.rule().id());
+		assignSelected(ruleInstance.rule().id(), ruleInstanceAO);
+	}
+	
+	
+	RuleInstance selected(final  RuleInstanceAO ruleInstanceAO) {
+		
+		if( ruleInstanceAO == null){
+			return null;
+		}
+		
+		System.out.println("getSelected" +  ruleInstanceAO.getRuleInstance());
+		return ruleInstanceAO.getRuleInstance();
+		
+	}
 	
 	
 		

@@ -65,6 +65,14 @@ public abstract class RuleInstanceAO implements Serializable  {
 	@NotNull(message="{mandatory_field}")
 	public abstract Long getSelectedId();
 	
+	
+	@MethodInvocation(actions={@ActionEvent(name="assignSelected" , params={@Parameter(originIndex=0, clazz = RuleInstance.class ), @Parameter(clazz=RuleInstanceAO.class)})}, clazz = RuleControllerImpl.class, value=@ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = Exception.class  , bundle="rule_instance_invalid_rule"))
+	public abstract void setSelected(final Object id);
+	
+	@MethodInvocation(actions={@ActionEvent(name="selected" , params={@Parameter(clazz = RuleInstanceAO.class   )} ) }, clazz = RuleControllerImpl.class )
+	@NotNull(message="{mandatory_field}")
+	public abstract Object getSelected();
+	
 	@Setter("parent")
 	public abstract void setParent(final RuleOperations ruleOperations); 
 	

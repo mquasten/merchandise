@@ -20,6 +20,8 @@ import javax.faces.model.DataModel;
 import org.primefaces.model.SelectableDataModel;
 import org.springframework.util.ReflectionUtils;
 
+import de.mq.merchandise.BasicEntity;
+
 
 
 public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDataModel<T> , List<T> {
@@ -41,7 +43,9 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 	@Override
 	public final UUID getRowKey(T object) {
 	 	try {
-			return id(object);
+	 		UUID x = id(object);
+	 		
+	 		return x;
 			
 		} catch (final Exception  ex) {
 			 throw new IllegalArgumentException("Unable to get id for Row.",  ex);
@@ -60,17 +64,34 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 
 	private Object invokeGetId(T object) throws IllegalAccessException, InvocationTargetException {
 		
+		if (object instanceof BasicEntity) {
+			
+			final BasicEntity basicEntity = (BasicEntity) object;
+			if( ! basicEntity.hasId()) {
+				return null; 
+			}
+		
+			return basicEntity.id();
+			
+		}
 		
 		final Method method =  ReflectionUtils.findMethod(object.getClass(), "getId" );
 		if ( method == null){
 			return null;
 		}
+		
+		
+		
 		return method.invoke(object);
 	}
 
 	@Override
 	public final T getRowData(String rowKey) {
-		return map.get(UUID.fromString(rowKey));
+		System.out.println(map);
+		
+		T x =  map.get(UUID.fromString(rowKey));
+		System.out.println(rowKey + "=" + x);
+		return x; 
 	}
 
 	@Override
