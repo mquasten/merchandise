@@ -235,6 +235,7 @@ class OpportunityControllerImpl {
 	
 	
 	void addRuleInstance(final RuleInstanceAO ruleInstanceAO) {
+		
 		final RuleOperations parent = ruleInstanceAO.getParent();
 		final Rule newRule = ruleInstanceAO.getRule().getRule();
 		parent.assign(newRule, ruleInstanceAO.getRuleInstance().priority());

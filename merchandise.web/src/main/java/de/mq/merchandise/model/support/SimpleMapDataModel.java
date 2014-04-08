@@ -43,9 +43,7 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 	@Override
 	public final UUID getRowKey(T object) {
 	 	try {
-	 		UUID x = id(object);
-	 		
-	 		return x;
+	 		return id(object);
 			
 		} catch (final Exception  ex) {
 			 throw new IllegalArgumentException("Unable to get id for Row.",  ex);
@@ -87,11 +85,7 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 
 	@Override
 	public final T getRowData(String rowKey) {
-		System.out.println(map);
-		
-		T x =  map.get(UUID.fromString(rowKey));
-		System.out.println(rowKey + "=" + x);
-		return x; 
+		return map.get(UUID.fromString(rowKey)); 
 	}
 
 	@Override

@@ -96,6 +96,7 @@ public class RuleControllerImpl {
 
 	
 	void assignSelected(final Long id, final RuleInstanceAO ruleInstanceAO) {
+		
 		if( id == null){
 			return ;
 		}
@@ -166,21 +167,35 @@ public class RuleControllerImpl {
 		
 	}
 	
-	
+	// :TODO ugly remove implementation, only interface and use assignSelected with id 
 	void assignSelected(final RuleInstance ruleInstance, final RuleInstanceAO ruleInstanceAO) {
 		System.out.println("setSelected:"+  ruleInstance.rule().id());
 		assignSelected(ruleInstance.rule().id(), ruleInstanceAO);
 	}
 	
 	
+	// :TODO ugly remove the null guards and add ruleInstances to method parameters
 	RuleInstance selected(final  RuleInstanceAO ruleInstanceAO) {
 		
 		if( ruleInstanceAO == null){
 			return null;
 		}
 		
-		System.out.println("getSelected" +  ruleInstanceAO.getRuleInstance());
-		return ruleInstanceAO.getRuleInstance();
+		if( ruleInstanceAO.getRuleInstance().rule() == null ) {
+			return null;
+		}
+		    
+		if( ruleInstanceAO.getParent() == null ) {
+			return null;
+		}
+	
+		for(final RuleInstance ruleInstance : ruleInstanceAO.getParent().ruleInstances()){
+			if(ruleInstance.rule().equals(ruleInstanceAO.getRule().getRule())) {
+				return ruleInstance ;
+			}
+		}
+		
+		return null;
 		
 	}
 	
