@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.faces.model.SelectItem;
 
-import de.mq.mapping.util.proxy.AOProxyFactory;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.model.support.SimpleMapDataModel;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
@@ -167,27 +166,18 @@ public class RuleControllerImpl {
 		
 	}
 	
-	// :TODO ugly remove implementation, only interface and use assignSelected with id 
-	void assignSelected(final RuleInstance ruleInstance, final RuleInstanceAO ruleInstanceAO) {
-		System.out.println("setSelected:"+  ruleInstance.rule().id());
-		assignSelected(ruleInstance.rule().id(), ruleInstanceAO);
-	}
 	
 	
 	// :TODO ugly remove the null guards and add ruleInstances to method parameters
 	RuleInstance selected(final  RuleInstanceAO ruleInstanceAO) {
 		
-		if( ruleInstanceAO == null){
-			return null;
-		}
-		
 		if( ruleInstanceAO.getRuleInstance().rule() == null ) {
 			return null;
-		}
+		} 
 		    
 		if( ruleInstanceAO.getParent() == null ) {
 			return null;
-		}
+		} 
 	
 		for(final RuleInstance ruleInstance : ruleInstanceAO.getParent().ruleInstances()){
 			if(ruleInstance.rule().equals(ruleInstanceAO.getRule().getRule())) {

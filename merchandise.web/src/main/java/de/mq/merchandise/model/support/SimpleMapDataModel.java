@@ -20,8 +20,6 @@ import javax.faces.model.DataModel;
 import org.primefaces.model.SelectableDataModel;
 import org.springframework.util.ReflectionUtils;
 
-import de.mq.merchandise.BasicEntity;
-
 
 
 public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDataModel<T> , List<T> {
@@ -60,25 +58,11 @@ public class SimpleMapDataModel<T> extends DataModel<T> implements SelectableDat
 		return UUID.nameUUIDFromBytes(Long.valueOf(object.hashCode()).toString().getBytes());
 	}
 
-	private Object invokeGetId(T object) throws IllegalAccessException, InvocationTargetException {
-		
-		if (object instanceof BasicEntity) {
-			
-			final BasicEntity basicEntity = (BasicEntity) object;
-			if( ! basicEntity.hasId()) {
-				return null; 
-			}
-		
-			return basicEntity.id();
-			
-		}
-		
+	private Object invokeGetId(T object) throws IllegalAccessException, InvocationTargetException {	
 		final Method method =  ReflectionUtils.findMethod(object.getClass(), "getId" );
 		if ( method == null){
 			return null;
 		}
-		
-		
 		
 		return method.invoke(object);
 	}
