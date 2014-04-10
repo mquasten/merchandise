@@ -169,18 +169,18 @@ public class RuleControllerImpl {
 	
 	
 	// :TODO ugly remove the null guards and add ruleInstances to method parameters
-	RuleInstance selected(final  RuleInstanceAO ruleInstanceAO) {
+	RuleInstance selected(final  Rule rule, final RuleOperations ruleOperations) {
 		
-		if( ruleInstanceAO.getRuleInstance().rule() == null ) {
+		if(rule == null ) {
 			return null;
 		} 
 		    
-		if( ruleInstanceAO.getParent() == null ) {
+		if( ruleOperations == null ) {
 			return null;
-		} 
+		}  
 	
-		for(final RuleInstance ruleInstance : ruleInstanceAO.getParent().ruleInstances()){
-			if(ruleInstance.rule().equals(ruleInstanceAO.getRule().getRule())) {
+		for(final RuleInstance ruleInstance : ruleOperations.ruleInstances()){
+			if(ruleInstance.rule().equals(rule)) {
 				return ruleInstance ;
 			}
 		}
