@@ -131,7 +131,6 @@ public class CopyEntityTest {
         }
       
         if( Modifier.isAbstract( clazz.getModifiers() )){
-        	printInterfaces(clazz);
         	continue;
         }
         System.out.println(clazz);
@@ -141,11 +140,20 @@ public class CopyEntityTest {
    
 	}
 	
-	private void printInterfaces(Class<?>clazz) {
-		for(Class x : clazz.getInterfaces()) {
+	private void printInterfaces(final Class<?>clazz) {
+		for(Class<?> x : clazz.getInterfaces()) {
         	System.out.println("\t" + x);
         	printInterfaces(x);
         }
+		
+		Class<?> x =  clazz.getSuperclass(); 
+		while(x != null){
+			printInterfaces(x);
+			x=x.getSuperclass();
+		}
+	
+		
+			
 	}
 	
 	private String resolveBasePackage(String basePackage) {
