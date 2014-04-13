@@ -212,7 +212,7 @@ public class CustomerImpl implements Customer {
 		return (id != null);
 	}
 
-	
+
 
 	@Override
 	public int hashCode() {
