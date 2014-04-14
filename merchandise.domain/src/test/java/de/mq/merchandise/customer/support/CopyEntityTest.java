@@ -1,30 +1,13 @@
 package de.mq.merchandise.customer.support;
 
-import java.io.IOException;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Locale;
-
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
 
 import junit.framework.Assert;
 
-import org.hamcrest.core.IsAnything;
 import org.junit.Test;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
-import org.springframework.core.type.classreading.MetadataReader;
-import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.SystemPropertyUtils;
 
 import de.mq.merchandise.contact.Address;
 import de.mq.merchandise.contact.Contact;
@@ -106,58 +89,5 @@ public class CopyEntityTest {
 		
 	}
 	
-	@Test
-	public final void test () throws IOException, ClassNotFoundException {
-    final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-	final MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
-
-  
-    final String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
-                               resolveBasePackage("de.mq.merchandise") + "/" + "**/*.class";
-    final Resource[] resources = resourcePatternResolver.getResources(packageSearchPath);
-    for (Resource resource : resources) {
-        if (!resource.isReadable()) {
-        	continue;
-        }
-        final MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
-           
-        final Class<?> clazz = Class.forName(metadataReader.getClassMetadata().getClassName());
-       
-        /*if( clazz.isInterface() && ! clazz.isAnnotation()) {
-        	System.out.println(">>>" + clazz);
-        } */
-        if( ! clazz.isAnnotationPresent(Entity.class)&&! clazz.isAnnotationPresent(Embeddable.class) ){
-        	continue;
-        }
-      
-        if( Modifier.isAbstract( clazz.getModifiers() )){
-        	continue;
-        }
-        System.out.println(clazz);
-        printInterfaces( clazz);
-      
-    }
-   
-	}
-	
-	private void printInterfaces(final Class<?>clazz) {
-		for(Class<?> x : clazz.getInterfaces()) {
-        	System.out.println("\t" + x);
-        	printInterfaces(x);
-        }
-		
-		Class<?> x =  clazz.getSuperclass(); 
-		while(x != null){
-			printInterfaces(x);
-			x=x.getSuperclass();
-		}
-	
-		
-			
-	}
-	
-	private String resolveBasePackage(String basePackage) {
-	    return ClassUtils.convertClassNameToResourcePath(SystemPropertyUtils.resolvePlaceholders(basePackage));
-	}
 }
 
