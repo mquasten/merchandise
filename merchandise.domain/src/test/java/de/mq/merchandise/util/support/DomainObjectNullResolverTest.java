@@ -3,9 +3,8 @@ package de.mq.merchandise.util.support;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
-
-
 
 import junit.framework.Assert;
 
@@ -19,6 +18,10 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.CollectionUtils;
+
+import de.mq.merchandise.BasicEntity;
+import de.mq.merchandise.customer.LegalPerson;
+import de.mq.merchandise.customer.Person;
 
 
 public class DomainObjectNullResolverTest {
@@ -107,6 +110,68 @@ public class DomainObjectNullResolverTest {
 		Mockito.when(reader.getClassMetadata()).thenReturn(classMetadata);
 		Mockito.when(classMetadata.getClassName()).thenReturn("don'tLetMeGet");
 		domainObjectNullResolver.entities();
+	}
+	
+	@Test
+	public final void hierarchy()  {
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		final Collection<Entry<Class<?>, Integer>> results = domainObjectNullResolver.hierarchy(legalPersonClass());
+		
+	
+		Assert.assertEquals(5, results.size());
+		final Set<Integer> hash = new HashSet<>();
+		
+		for(final Entry<Class<?>, Integer> interfaceEntry : results ){
+			
+			Assert.assertFalse(hash.contains(interfaceEntry.getKey().hashCode()));
+			hash.add(interfaceEntry.getKey().hashCode());
+			if (LegalPerson.class.equals( interfaceEntry.getKey())) {
+				Assert.assertEquals(0,(int) interfaceEntry.getValue());
+				continue;
+			}
+			if (Person.class.equals( interfaceEntry.getKey())) {
+				Assert.assertEquals(1,(int) interfaceEntry.getValue());
+				continue;
+			}
+			if (BasicEntity.class.equals( interfaceEntry.getKey())) {
+				Assert.assertEquals(2,(int) interfaceEntry.getValue());
+				continue;
+			}
+			
+			if (abstractPersonClass().equals( interfaceEntry.getKey())) {
+				Assert.assertEquals(1,(int) interfaceEntry.getValue());
+				continue;
+			}
+			if (legalPersonClass().equals( interfaceEntry.getKey())) {
+				Assert.assertEquals(0,(int) interfaceEntry.getValue());
+				continue;
+			}
+			Assert.fail("Wrong Type: "+ interfaceEntry.getKey() );
+		}
+		Assert.assertEquals(results.size(), hash.size());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void entryNullGuard()  {
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		domainObjectNullResolver.hierarchy(null);
+	}
+
+
+	private Class<?> abstractPersonClass() {
+		try {
+			return Class.forName("de.mq.merchandise.customer.support.AbstractPerson");
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException();
+		}
+	}
+	
+	private Class<?> legalPersonClass() {
+		try {
+			return Class.forName("de.mq.merchandise.customer.support.LegalPersonImpl");
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException();
+		}
 	}
 
 

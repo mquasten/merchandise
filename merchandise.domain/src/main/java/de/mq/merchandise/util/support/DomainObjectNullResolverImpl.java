@@ -2,8 +2,11 @@ package de.mq.merchandise.util.support;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map.Entry;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
@@ -29,9 +32,6 @@ public class DomainObjectNullResolverImpl {
 	
 	
 	final Collection<Class<?>> entities()  {
-		 
-		
-
 	    final Collection<Class<?>> results = new HashSet<>();
 	    final Resource[] resources = resources();
 	    for (Resource resource : resources) {
@@ -51,6 +51,69 @@ public class DomainObjectNullResolverImpl {
 	    }
 		return results;
 
+	}
+	
+	
+	final Collection<Entry<Class<?>, Integer>>hierarchy(Class<?> parentClass) {
+		final Collection<Entry<Class<?>, Integer>> childs = new HashSet<>();
+		childs.add(createEntry(parentClass,0));
+		childs.addAll(childs(parentClass,0));
+		
+		return childs;
+		
+	}
+	
+	
+	private   Collection<Entry<Class<?>, Integer>> childs(final Class<?> parentClass, final int level) {
+		final Collection<Entry<Class<?>, Integer>> childs = new HashSet<>();
+		for(Class<?> clazz : parentClass.getInterfaces()) {
+			if( !clazz.getName().startsWith(PACKAGE_SCAN)){
+				continue;
+			}
+			childs.add(createEntry(clazz, level));
+			childs.addAll(childs(clazz, level+1));
+		}
+		
+		Class<?> clazz =  parentClass.getSuperclass();
+		int i=1;
+		while(clazz!=null){
+			if( !clazz.getName().startsWith(PACKAGE_SCAN)){
+				break;
+			} 
+			childs.add(createEntry(clazz, level+i));
+			childs.addAll(childs(clazz, level+i+1));
+			clazz=clazz.getSuperclass();
+			i++;
+		}
+		return childs;
+	}
+
+
+	private SimpleEntry<Class<?>, Integer> createEntry(final  Class<?> clazz, final int level) {
+		if( clazz == null) {
+			throw new IllegalArgumentException("Class should be mandatory");
+		}
+		return new AbstractMap.SimpleEntry<Class<?>, Integer>(clazz, level) {
+			
+			
+			
+			private static final long serialVersionUID = 1L;
+			
+			
+
+			@Override
+			public boolean equals(Object o) {
+				return ((Entry<?,?>)o).getKey().equals(getKey());
+			}
+
+			@Override
+			public int hashCode() {
+			
+				return getKey().hashCode();
+			}
+			
+			
+		};
 	}
 
 	private Class<?> entityClass(final MetadataReaderFactory metadataReaderFactory, Resource resource)  {
