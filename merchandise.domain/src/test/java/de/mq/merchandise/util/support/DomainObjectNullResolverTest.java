@@ -28,8 +28,6 @@ public class DomainObjectNullResolverTest {
 	
 	
 	
-	
-	
 	private static final IOException IO_EXCEPTION = new IOException("Don't worry only for test");
 	@SuppressWarnings("unchecked")
 	final Set<String> CLASS_NAMES =  new HashSet<>(CollectionUtils.arrayToList(new String[] {
