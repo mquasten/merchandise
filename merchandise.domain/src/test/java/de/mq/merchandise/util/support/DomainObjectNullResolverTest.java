@@ -1,18 +1,26 @@
 package de.mq.merchandise.util.support;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.ClassMetadata;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
@@ -59,7 +67,10 @@ public class DomainObjectNullResolverTest {
 			"de.mq.merchandise.customer.support.TradeRegisterImpl",
 			"de.mq.merchandise.customer.support.StateImpl",
 			"de.mq.merchandise.customer.support.NativityImpl",
-			"de.mq.merchandise.contact.support.CoordinatesImpl"}));
+			"de.mq.merchandise.contact.support.CoordinatesImpl",
+			
+			"de.mq.merchandise.util.support.MockImpl"
+	}));
 	
 	
 	@Test
@@ -171,6 +182,42 @@ public class DomainObjectNullResolverTest {
 			throw new IllegalStateException();
 		}
 	}
+	@Test
+	public final void init() throws IOException {
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		
+		final ResourcePatternResolver resourcePatternResolver = Mockito.mock(ResourcePatternResolver.class);
+		final Resource[] resources = new Resource[] {new ClassPathResource(legalPersonClass().getSimpleName()+ ".class",  legalPersonClass()), new ClassPathResource(MockImpl.class.getSimpleName()+ ".class",  getClass()) };
+		
+	
+		Mockito.when(resourcePatternResolver.getResources(Mockito.anyString())).thenReturn(resources);
+		ReflectionTestUtils.setField(domainObjectNullResolver, "resourcePatternResolver", resourcePatternResolver);
+		
+		domainObjectNullResolver.init();
+		
+		
+		@SuppressWarnings("unchecked")
+		final Map<Class<?>, Object> results = (Map<Class<?>, Object>) ReflectionTestUtils.getField(domainObjectNullResolver, "nullObjects");
+		Assert.assertEquals(6, results.size());
+		Assert.assertTrue(results.containsKey(legalPersonClass()));
+		Assert.assertTrue(results.containsKey(MockImpl.class));
+		final Object entity= results.get(legalPersonClass());
+		final Object mock= results.get(MockImpl.class);
+		
+		Assert.assertEquals(entity, results.get(abstractPersonClass()));
+		Assert.assertEquals(entity, results.get(LegalPerson.class));
+		Assert.assertEquals(entity, results.get(Person.class));
+		
+		
+		Assert.assertEquals(mock, results.get(BasicEntity.class));
+		
+		
+		
+		
+	}
+	
+
+	
 
 
 }

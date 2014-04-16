@@ -5,8 +5,11 @@ import java.lang.reflect.Modifier;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
@@ -20,8 +23,11 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
+import de.mq.mapping.util.proxy.support.BasicNullObjectResolverImpl;
+import de.mq.merchandise.util.EntityUtil;
+
 @Component
-public class DomainObjectNullResolverImpl {
+public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 	
 	
 	private final String PACKAGE_SCAN = "de.mq.merchandise";
@@ -29,6 +35,32 @@ public class DomainObjectNullResolverImpl {
 	private final MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(new PathMatchingResourcePatternResolver());
 	
 	private final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+	
+	
+	final void init() {
+		final Map<Class<?>,Integer> levels = new HashMap<>();
+		for(final Class<?> clazz: entities()){
+			addHierarchy(levels, clazz);	
+		}
+	}
+
+
+	private void addHierarchy(final Map<Class<?>, Integer> levels, final Class<?> clazz) {
+		final Object entity = EntityUtil.create(clazz);
+		for(final Entry<Class<?>,Integer> entry : hierarchy(clazz)){
+			if(! levels.containsKey(entry.getKey())){
+				put(entry.getKey(), entity);
+				levels.put(entry.getKey(), entry.getValue());
+				continue;
+			}
+			
+			if( levels.get(entry.getKey() ) > entry.getValue() ) {
+				put(entry.getKey(), entity);
+				levels.put(entry.getKey(), entry.getValue());
+				continue;
+			}
+		}
+	}
 	
 	
 	final Collection<Class<?>> entities()  {

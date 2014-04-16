@@ -47,6 +47,13 @@
     		<version>${hsql.version}</version>
     		<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>de.mq</groupId>
+			<artifactId>mapping.util</artifactId>
+			<version>${mapping.util.version}</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
