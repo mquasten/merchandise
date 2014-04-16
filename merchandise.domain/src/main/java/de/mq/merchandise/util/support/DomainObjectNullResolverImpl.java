@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 
@@ -36,7 +36,7 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 	
 	private final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 	
-	
+	@PostConstruct()
 	final void init() {
 		final Map<Class<?>,Integer> levels = new HashMap<>();
 		for(final Class<?> clazz: entities()){
