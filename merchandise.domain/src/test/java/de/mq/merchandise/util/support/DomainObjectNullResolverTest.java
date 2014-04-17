@@ -64,7 +64,6 @@ public class DomainObjectNullResolverTest {
 			"de.mq.merchandise.customer.support.NativityImpl",
 			"de.mq.merchandise.contact.support.CoordinatesImpl",
 			
-			"de.mq.merchandise.util.support.MockImpl"
 	}));
 	
 	
@@ -177,9 +176,12 @@ public class DomainObjectNullResolverTest {
 			throw new IllegalStateException();
 		}
 	}
+	
 	@Test
 	public final void init() throws IOException {
 		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		
+		addTestEntityAnnotation(domainObjectNullResolver);
 		
 		final ResourcePatternResolver resourcePatternResolver = Mockito.mock(ResourcePatternResolver.class);
 		final Resource[] resources = new Resource[] {new ClassPathResource(legalPersonClass().getSimpleName()+ ".class",  legalPersonClass()), new ClassPathResource(MockImpl.class.getSimpleName()+ ".class",  getClass()) };
@@ -209,6 +211,12 @@ public class DomainObjectNullResolverTest {
 		
 		
 		
+	}
+
+
+	@SuppressWarnings("unchecked")
+	private void addTestEntityAnnotation(final DomainObjectNullResolverImpl domainObjectNullResolver) {
+		((Collection<Class<?>>) ReflectionTestUtils.getField(domainObjectNullResolver, "entityAnnotations")).add(TestEntity.class);
 	}
 	
 

@@ -1,6 +1,7 @@
 package de.mq.merchandise.util.support;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Embeddable;
@@ -22,6 +24,9 @@ import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.CollectionUtils;
+
+
 
 import de.mq.mapping.util.proxy.support.BasicNullObjectResolverImpl;
 import de.mq.merchandise.util.EntityUtil;
@@ -35,6 +40,10 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 	private final MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(new PathMatchingResourcePatternResolver());
 	
 	private final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+	
+	
+	@SuppressWarnings("unchecked")
+	private final Set<Class<Annotation>> entityAnnotations = new HashSet<Class<Annotation>>(CollectionUtils.arrayToList(new Class<?>[]{Entity.class, Embeddable.class} )); 
 	
 	@PostConstruct()
 	final void init() {
@@ -71,7 +80,7 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 	        final Class<?> clazz = entityClass(metadataReaderFactory, resource);
 	       
 	       
-	        if( ! clazz.isAnnotationPresent(Entity.class)&&! clazz.isAnnotationPresent(Embeddable.class) ){
+	        if( ! isAnnotationPresent(clazz) ){
 	        	continue;
 	        }
 	      
@@ -85,6 +94,16 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 
 	}
 	
+	
+	private boolean isAnnotationPresent(Class<?> clazz) {
+		for(final Class<Annotation> annotationClass : entityAnnotations){
+			if( clazz.isAnnotationPresent((Class<? extends java.lang.annotation.Annotation>) annotationClass)) {
+				return true;
+			}
+		}
+		return false;
+		
+	}
 	
 	final Collection<Entry<Class<?>, Integer>>hierarchy(Class<?> parentClass) {
 		final Collection<Entry<Class<?>, Integer>> childs = new HashSet<>();
