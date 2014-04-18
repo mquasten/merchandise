@@ -2,10 +2,14 @@ package de.mq.merchandise.util.support;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.validation.constraints.AssertFalse;
 
 import junit.framework.Assert;
 
@@ -23,8 +27,18 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.CollectionUtils;
 
 import de.mq.merchandise.BasicEntity;
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.LegalPerson;
+import de.mq.merchandise.customer.Nativity;
+import de.mq.merchandise.customer.NaturalPerson;
 import de.mq.merchandise.customer.Person;
+import de.mq.merchandise.customer.State;
+import de.mq.merchandise.customer.support.CustomerImpl;
+import de.mq.merchandise.customer.support.Digest;
+import de.mq.merchandise.customer.support.NativityBuilderFactoryImpl;
+import de.mq.merchandise.customer.support.StateBuilderImpl;
+
+import de.mq.merchandise.util.EntityUtil;
 
 
 public class DomainObjectNullResolverTest {
@@ -220,7 +234,58 @@ public class DomainObjectNullResolverTest {
 	}
 	
 
+	@Test
+	public final void inject() throws ClassNotFoundException {
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		@SuppressWarnings("unchecked")
+		final NaturalPerson  person = EntityUtil.create((Class<? extends NaturalPerson>) Class.forName("de.mq.merchandise.customer.support.NaturalPersonImpl"));
+		ReflectionTestUtils.setField(person, "digest", null);
+		ReflectionTestUtils.setField(person, "state", null);
+		Assert.assertNull(person.state());
+		Assert.assertNull(person.digest());
+		Assert.assertNull(person.nativity());
+		
+		
+		final Customer customer = EntityUtil.create(CustomerImpl.class);
+		ReflectionTestUtils.setField(customer, "state", null);
+		
+		
+		final Map<Class<?>, Object> dependencies = new HashMap<>();
+		
+		dependencies.put(Nativity.class, new NativityBuilderFactoryImpl().nativityBuilder().withBirthDate(new GregorianCalendar(1968, 4, 28).getTime()).withBirthPlace("Melborne").build() );
+		dependencies.put(State.class, new StateBuilderImpl().forState(true).build());
+		dependencies.put(Digest.class, EntityUtil.create(Class.forName("de.mq.merchandise.customer.support.DigestImpl")));
+		dependencies.put(Person.class, person);
+		dependencies.put(Customer.class, customer);
+		
+		domainObjectNullResolver.inject(person, dependencies);
+		domainObjectNullResolver.inject(customer, dependencies);
+		
+		Assert.assertEquals(person, customer.person());
+		Assert.assertEquals(dependencies.get(State.class), customer.state());
+		
+		Assert.assertEquals(dependencies.get(State.class), person.state());
+		Assert.assertEquals(dependencies.get(Nativity.class), person.nativity());
+		Assert.assertEquals(dependencies.get(Digest.class), person.digest());
+		
+		
+		
+	}
 	
+	@Test
+	public final void injectNotOverwriteExisting() {
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		final Customer customer = EntityUtil.create(CustomerImpl.class);
+		
+		final Map<Class<?>, Object> dependencies = new HashMap<>();
+		dependencies.put(State.class, new StateBuilderImpl().forState(true).build());
+		
+		domainObjectNullResolver.inject(customer, dependencies);
+		
+		Assert.assertFalse(dependencies.get(State.class) == customer.state());
+		
+		
+	}
 
 
 }

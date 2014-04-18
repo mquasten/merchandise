@@ -51,4 +51,20 @@ public class StateImpl implements State {
 		this.active=false;
 	}
 
+	@Override
+	public int hashCode() {
+		return Boolean.valueOf(active).hashCode();
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (!( obj instanceof State)) {
+			return false;
+			
+		}
+		return ((State)obj).isActive() == active;
+	}
+	
+	
+
 }

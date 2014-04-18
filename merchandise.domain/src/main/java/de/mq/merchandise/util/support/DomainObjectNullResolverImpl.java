@@ -2,6 +2,7 @@ package de.mq.merchandise.util.support;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
@@ -25,6 +26,9 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.ReflectionUtils.FieldCallback;
+import org.springframework.util.ReflectionUtils.FieldFilter;
 
 
 
@@ -51,6 +55,43 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 		for(final Class<?> clazz: entities()){
 			addHierarchy(levels, clazz);	
 		}
+		
+	}
+	
+	
+	
+	@Override
+	protected <T> T postProcess(final T object) {
+		return  EntityUtil.copy(object);
+	}
+
+
+
+	void inject(final Object entity, final Map<Class<?>,Object> entities) {
+		ReflectionUtils.doWithFields(entity.getClass(), new FieldCallback() {
+
+			@Override
+			public void doWith(final Field field) throws IllegalArgumentException, IllegalAccessException {
+				field.setAccessible(true);
+				
+				//System.out.println(field.getType() + ":" + entities.get(field.getType()));
+				if( field.get(entity)!=null){
+					return;
+				}
+				field.set(entity, entities.get(field.getType()));
+			}
+			
+			
+		}, new FieldFilter() {
+			
+			@Override
+			public boolean matches(final Field field) {
+				
+				field.setAccessible(true);
+				
+				return entities.containsKey(field.getType());
+			}
+		});
 	}
 
 
@@ -186,6 +227,8 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 			throw new BeanDefinitionStoreException("Unable to read Entities", e);
 		}
 	}
+	
+	
 	  
 
 }
