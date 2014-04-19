@@ -18,6 +18,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 
 import org.springframework.beans.factory.BeanDefinitionStoreException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -60,6 +61,16 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 	
 	
 	
+	@Override
+	protected void objectExistsGuard(final Class<?> clazz) {
+		if( super.nullObjects.containsKey(clazz)){
+			return;
+		}
+		throw new NoSuchBeanDefinitionException(clazz);
+	}
+
+
+
 	@Override
 	protected <T> T postProcess(final T object) {
 		return  EntityUtil.copy(object);

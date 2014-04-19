@@ -9,13 +9,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.validation.constraints.AssertFalse;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -37,7 +36,6 @@ import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.customer.support.Digest;
 import de.mq.merchandise.customer.support.NativityBuilderFactoryImpl;
 import de.mq.merchandise.customer.support.StateBuilderImpl;
-
 import de.mq.merchandise.util.EntityUtil;
 
 
@@ -286,6 +284,38 @@ public class DomainObjectNullResolverTest {
 		
 		
 	}
+	
+	@Test
+	public final void get() {
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		final Customer customer = EntityUtil.create(CustomerImpl.class);
+		ReflectionTestUtils.setField(customer, "id", 19680528L);
+		Person person = Mockito.mock(Person.class);
+		ReflectionTestUtils.setField(customer, "person", person);
+		
+		assignCustomer(domainObjectNullResolver, customer);
+		
+		final Customer result = domainObjectNullResolver.forType(Customer.class);
+		Assert.assertEquals(customer, result);
+		Assert.assertFalse(customer==result);
+		Assert.assertNotNull(result.person());
+		Assert.assertFalse(person==result.person());
+		
+		Assert.assertTrue(customer.id() == result.id());
+		
+		
+	}
 
 
+	@SuppressWarnings("unchecked")
+	private void assignCustomer(final DomainObjectNullResolverImpl domainObjectNullResolver, final Customer customer) {
+		((Map<Class<?>, Object>) ReflectionTestUtils.getField(domainObjectNullResolver, "nullObjects")).put(Customer.class, customer);
+	}
+
+
+	@Test(expected=NoSuchBeanDefinitionException.class)
+	public void beanExistsGuardTest() {
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		domainObjectNullResolver.forType(Customer.class);
+	}
 }
