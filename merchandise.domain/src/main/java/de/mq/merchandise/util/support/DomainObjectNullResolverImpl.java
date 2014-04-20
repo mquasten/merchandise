@@ -42,11 +42,11 @@ public class DomainObjectNullResolverImpl  implements NullObjectResolver {
 	private final String PACKAGE_SCAN = "de.mq.merchandise";
 
 	
-	private  final ResourcePatternResolver resourcePatternResolver; // = new PathMatchingResourcePatternResolver();
+	private  final ResourcePatternResolver resourcePatternResolver; 
 	
 	
 
-	private  final MetadataReaderFactory metadataReaderFactory; // = new CachingMetadataReaderFactory();
+	private  final MetadataReaderFactory metadataReaderFactory;
 	
 	
 	
