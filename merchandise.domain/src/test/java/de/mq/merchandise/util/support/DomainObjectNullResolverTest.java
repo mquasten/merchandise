@@ -20,6 +20,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.ClassMetadata;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -44,6 +45,12 @@ public class DomainObjectNullResolverTest {
 	
 	
 	private static final IOException IO_EXCEPTION = new IOException("Don't worry only for test");
+	
+	private  final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+	
+	
+
+	private  final MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory();
 	@SuppressWarnings("unchecked")
 	final Set<String> CLASS_NAMES =  new HashSet<>(CollectionUtils.arrayToList(new String[] {
 	
@@ -81,7 +88,7 @@ public class DomainObjectNullResolverTest {
 	
 	@Test
 	public final void  entities ()  {
-		DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
 			final Collection<Class<?>> results = domainObjectNullResolver.entities();
 			Assert.assertEquals(CLASS_NAMES.size(), results.size());
 			
@@ -96,40 +103,44 @@ public class DomainObjectNullResolverTest {
 	
 	@Test(expected=BeanDefinitionStoreException.class)
 	public final void entiesResolverException() throws IOException {
-		DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
-		PathMatchingResourcePatternResolver resourcePatternResolver = Mockito.mock(PathMatchingResourcePatternResolver.class);
-		ReflectionTestUtils.setField(domainObjectNullResolver, "resourcePatternResolver", resourcePatternResolver);
+		
+		final PathMatchingResourcePatternResolver resourcePatternResolver = Mockito.mock(PathMatchingResourcePatternResolver.class);
+		//ReflectionTestUtils.setField(domainObjectNullResolver, "resourcePatternResolver", resourcePatternResolver);
 		Mockito.when(resourcePatternResolver.getResources(Mockito.anyString())).thenThrow(IO_EXCEPTION);
+		
+		DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
 		domainObjectNullResolver.entities();
 	}
 		
 	
 	@Test(expected=BeanDefinitionStoreException.class)
 	public final void entiesMetaDataFactoryException() throws IOException {
-		DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		
 		final MetadataReaderFactory metadataReaderFactory = Mockito.mock(MetadataReaderFactory.class);
-		ReflectionTestUtils.setField(domainObjectNullResolver,"metadataReaderFactory", metadataReaderFactory);
+		//ReflectionTestUtils.setField(domainObjectNullResolver,"metadataReaderFactory", metadataReaderFactory);
 		Mockito.when(metadataReaderFactory.getMetadataReader(Mockito.any(Resource.class))).thenThrow(IO_EXCEPTION);
 		
+		DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
 		domainObjectNullResolver.entities();
 	}
 	
 	@Test(expected=BeanDefinitionStoreException.class)
 	public final void entiesWrongClassException() throws IOException {
-		DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		
 		final MetadataReaderFactory metadataReaderFactory = Mockito.mock(MetadataReaderFactory.class);
-		ReflectionTestUtils.setField(domainObjectNullResolver,"metadataReaderFactory", metadataReaderFactory);
+	//	ReflectionTestUtils.setField(domainObjectNullResolver,"metadataReaderFactory", metadataReaderFactory);
 		MetadataReader reader = Mockito.mock(MetadataReader.class);
 		Mockito.when(metadataReaderFactory.getMetadataReader(Mockito.any(Resource.class))).thenReturn(reader);
 		final ClassMetadata classMetadata = Mockito.mock(ClassMetadata.class);
 		Mockito.when(reader.getClassMetadata()).thenReturn(classMetadata);
 		Mockito.when(classMetadata.getClassName()).thenReturn("don'tLetMeGet");
+		DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
 		domainObjectNullResolver.entities();
 	}
 	
 	@Test
 	public final void hierarchy()  {
-		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
 		final Collection<Entry<Class<?>, Integer>> results = domainObjectNullResolver.hierarchy(legalPersonClass());
 		
 	
@@ -168,7 +179,7 @@ public class DomainObjectNullResolverTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public final void entryNullGuard()  {
-		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
 		domainObjectNullResolver.hierarchy(null);
 	}
 
@@ -191,17 +202,19 @@ public class DomainObjectNullResolverTest {
 	
 	@Test
 	public final void init() throws IOException {
-		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+	
 		
-		addTestEntityAnnotation(domainObjectNullResolver);
+		
 		
 		final ResourcePatternResolver resourcePatternResolver = Mockito.mock(ResourcePatternResolver.class);
 		final Resource[] resources = new Resource[] {new ClassPathResource(legalPersonClass().getSimpleName()+ ".class",  legalPersonClass()), new ClassPathResource(MockImpl.class.getSimpleName()+ ".class",  getClass()) };
 		
 	
 		Mockito.when(resourcePatternResolver.getResources(Mockito.anyString())).thenReturn(resources);
-		ReflectionTestUtils.setField(domainObjectNullResolver, "resourcePatternResolver", resourcePatternResolver);
+		//ReflectionTestUtils.setField(domainObjectNullResolver, "resourcePatternResolver", resourcePatternResolver);
 		
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
+		addTestEntityAnnotation(domainObjectNullResolver);
 		domainObjectNullResolver.init();
 		
 		
@@ -234,7 +247,7 @@ public class DomainObjectNullResolverTest {
 
 	@Test
 	public final void inject() throws ClassNotFoundException {
-		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
 		@SuppressWarnings("unchecked")
 		final NaturalPerson  person = EntityUtil.create((Class<? extends NaturalPerson>) Class.forName("de.mq.merchandise.customer.support.NaturalPersonImpl"));
 		ReflectionTestUtils.setField(person, "digest", null);
@@ -272,7 +285,7 @@ public class DomainObjectNullResolverTest {
 	
 	@Test
 	public final void injectNotOverwriteExisting() {
-		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
 		final Customer customer = EntityUtil.create(CustomerImpl.class);
 		
 		final Map<Class<?>, Object> dependencies = new HashMap<>();
@@ -287,7 +300,7 @@ public class DomainObjectNullResolverTest {
 	
 	@Test
 	public final void get() {
-		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
 		final Customer customer = EntityUtil.create(CustomerImpl.class);
 		ReflectionTestUtils.setField(customer, "id", 19680528L);
 		Person person = Mockito.mock(Person.class);
@@ -315,7 +328,7 @@ public class DomainObjectNullResolverTest {
 
 	@Test(expected=NoSuchBeanDefinitionException.class)
 	public void beanExistsGuardTest() {
-		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl();
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
 		domainObjectNullResolver.forType(Customer.class);
 	}
 }

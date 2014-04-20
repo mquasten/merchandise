@@ -162,23 +162,13 @@ public class RuleControllerImpl {
 		}
 		
 		return new SimpleMapDataModel<>(ruleOperations.ruleInstances());
-		
+		 
 		
 	}
 	
 	
 	
-	// :TODO ugly remove the null guards and add ruleInstances to method parameters
 	RuleInstance selected(final  Rule rule, final RuleOperations ruleOperations) {
-		
-		if(rule == null ) {
-			return null;
-		} 
-		    
-		if( ruleOperations == null ) {
-			return null;
-		}  
-	
 		for(final RuleInstance ruleInstance : ruleOperations.ruleInstances()){
 			if(ruleInstance.rule().equals(rule)) {
 				return ruleInstance ;

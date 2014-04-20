@@ -25,6 +25,7 @@ import de.mq.merchandise.opportunity.support.RuleInstance;
 import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
 import de.mq.merchandise.opportunity.support.RuleOperations;
 import de.mq.merchandise.rule.Rule;
+import de.mq.merchandise.util.support.DomainObjectNullResolverImpl;
 import de.mq.merchandise.util.support.HibernateProxyConverter;
 
 public abstract class RuleInstanceAO implements Serializable  {
@@ -70,7 +71,7 @@ public abstract class RuleInstanceAO implements Serializable  {
 	@MethodInvocation(actions={@ActionEvent(name="assignSelected" , params={@Parameter(originIndex=0, clazz = RuleInstance.class, el="#arg.rule().id()", elResultType=Long.class ), @Parameter(clazz=RuleInstanceAO.class)})}, clazz = RuleControllerImpl.class, value=@ExceptionTranslation(  action = SimpleFacesExceptionTranslatorImpl.class, source = Exception.class  , bundle="rule_instance_invalid_rule"))
 	public abstract void setSelected(final RuleInstance id);
 	
-	@MethodInvocation(actions={@ActionEvent(name="selected" , params={@Parameter(clazz = RuleInstanceAO.class, el="#arg.ruleInstance.rule()", elResultType=Rule.class  , skipNotReachableOnNullElException=true, nvl=true ), @Parameter(clazz = RuleInstanceAO.class, el="#arg.parent", elResultType=RuleOperations.class , skipNotReachableOnNullElException=true , nvl=true  )} ) }, clazz = RuleControllerImpl.class )
+	@MethodInvocation(actions={@ActionEvent(name="selected" , params={@Parameter(clazz = RuleInstanceAO.class, el="#arg.ruleInstance.rule()", elResultType=Rule.class  , skipNotReachableOnNullElException=true, nvl=true ,nullObjectResolver=DomainObjectNullResolverImpl.class ), @Parameter(clazz = RuleInstanceAO.class, el="#arg.parent", elResultType=RuleOperations.class , skipNotReachableOnNullElException=true , nvl=true  , nullObjectResolver=DomainObjectNullResolverImpl.class )} ) }, clazz = RuleControllerImpl.class )
 	@NotNull(message="{mandatory_field}")
 	public abstract RuleInstance getSelected();
 	

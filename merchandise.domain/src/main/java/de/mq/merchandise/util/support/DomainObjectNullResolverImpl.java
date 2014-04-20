@@ -19,10 +19,10 @@ import javax.persistence.Entity;
 
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
@@ -31,21 +31,34 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 import org.springframework.util.ReflectionUtils.FieldFilter;
 
-
-
-import de.mq.mapping.util.proxy.support.BasicNullObjectResolverImpl;
+import de.mq.mapping.util.proxy.NullObjectResolver;
 import de.mq.merchandise.util.EntityUtil;
 
 @Component
-public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
+@Profile({"CGLib-Proxy", "Dynamic-Proxy"})
+public class DomainObjectNullResolverImpl  implements NullObjectResolver {
 	
 	
 	private final String PACKAGE_SCAN = "de.mq.merchandise";
 
-	private final MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(new PathMatchingResourcePatternResolver());
 	
-	private final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+	private  final ResourcePatternResolver resourcePatternResolver; // = new PathMatchingResourcePatternResolver();
 	
+	
+
+	private  final MetadataReaderFactory metadataReaderFactory; // = new CachingMetadataReaderFactory();
+	
+	
+	
+	
+	private final Map<Class<?>, Object> nullObjects = new HashMap<>();
+	
+	@Autowired
+	DomainObjectNullResolverImpl(final MetadataReaderFactory metadataReaderFactory, final ResourcePatternResolver resourcePatternResolver) {
+		
+		this.resourcePatternResolver = resourcePatternResolver;
+		this.metadataReaderFactory = metadataReaderFactory;
+	}
 	
 	@SuppressWarnings("unchecked")
 	private final Set<Class<Annotation>> entityAnnotations = new HashSet<Class<Annotation>>(CollectionUtils.arrayToList(new Class<?>[]{Entity.class, Embeddable.class} )); 
@@ -61,19 +74,21 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 	
 	
 	
-	@Override
-	protected void objectExistsGuard(final Class<?> clazz) {
-		if( super.nullObjects.containsKey(clazz)){
+	
+	private void objectExistsGuard(final Class<?> clazz) {
+		if( nullObjects.containsKey(clazz)){
 			return;
 		}
 		throw new NoSuchBeanDefinitionException(clazz);
 	}
 
 
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
-	protected <T> T postProcess(final T object) {
-		return  EntityUtil.copy(object);
+	public <T> T forType(Class<? extends T> clazz) {
+		objectExistsGuard(clazz);
+		return   EntityUtil.copy((T)nullObjects.get(clazz));
 	}
 
 
@@ -110,13 +125,13 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 		final Object entity = EntityUtil.create(clazz);
 		for(final Entry<Class<?>,Integer> entry : hierarchy(clazz)){
 			if(! levels.containsKey(entry.getKey())){
-				put(entry.getKey(), entity);
+				nullObjects.put(entry.getKey(), entity);
 				levels.put(entry.getKey(), entry.getValue());
 				continue;
 			}
 			
 			if( levels.get(entry.getKey() ) > entry.getValue() ) {
-				put(entry.getKey(), entity);
+				nullObjects.put(entry.getKey(), entity);
 				levels.put(entry.getKey(), entry.getValue());
 				continue;
 			}
@@ -126,10 +141,11 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 	
 	final Collection<Class<?>> entities()  {
 	    final Collection<Class<?>> results = new HashSet<>();
+	   
 	    final Resource[] resources = resources();
 	    for (Resource resource : resources) {
 	       
-	        final Class<?> clazz = entityClass(metadataReaderFactory, resource);
+	        final Class<?> clazz = entityClass(resource);
 	       
 	       
 	        if( ! isAnnotationPresent(clazz) ){
@@ -219,8 +235,9 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 		};
 	}
 
-	private Class<?> entityClass(final MetadataReaderFactory metadataReaderFactory, Resource resource)  {
+	private Class<?> entityClass(final Resource resource)  {
 		try {
+		
 			return Class.forName(metadataReaderFactory.getMetadataReader(resource).getClassMetadata().getClassName());
 		} catch (final IOException   ex ) {
 			throw new BeanDefinitionStoreException("Unable to read meta data for Entity:"  ,  ex);
@@ -238,6 +255,10 @@ public class DomainObjectNullResolverImpl extends BasicNullObjectResolverImpl {
 			throw new BeanDefinitionStoreException("Unable to read Entities", e);
 		}
 	}
+
+
+
+	
 	
 	
 	  

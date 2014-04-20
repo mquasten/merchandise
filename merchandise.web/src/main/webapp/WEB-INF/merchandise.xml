@@ -84,6 +84,11 @@
     <bean id="validator" factory-bean="validatorFactory"
         factory-method="getValidator" />
         
+        
+    <bean class="org.springframework.core.type.classreading.CachingMetadataReaderFactory" />
+    
+    <bean  class="org.springframework.core.io.support.PathMatchingResourcePatternResolver" />
+        
   <mvc:annotation-driven />
         
         
