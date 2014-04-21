@@ -34,5 +34,18 @@ public class StateTest {
 		state.deActivate();
 		Assert.assertFalse(state.isActive());
 	}
+	
+	@Test
+	public final void hash() {
+		Assert.assertEquals(Boolean.FALSE.hashCode(), new StateImpl(false).hashCode());
+		Assert.assertEquals(Boolean.TRUE.hashCode(), new StateImpl(true).hashCode());
+	}
+	
+	@Test
+	public final void equals() {
+		Assert.assertTrue(new StateImpl(false).equals(new StateImpl(false)));
+		Assert.assertFalse(new StateImpl(false).equals(new StateImpl(true)));
+		Assert.assertFalse(new StateImpl(false).equals("dontLetMeGetMe"));
+	}
 
 }
