@@ -79,12 +79,5 @@ public interface OpportunityController {
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = OpportunityAO.class), @Parameter(clazz = ConditionTreeAO.class, elResultType=Object.class, el="#arg.selected.data" , skipNotReachableOnNullElException=true) })}, clazz = OpportunityControllerImpl.class)	
 	void deleteCondition();
 	
-
-	
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleInstanceAO.class)})}, clazz = OpportunityControllerImpl.class)
-	void addRuleInstance(); 
-	
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleInstanceAO.class)})}, clazz = OpportunityControllerImpl.class)
-	void deleteRuleInstance(); 
 	
 }

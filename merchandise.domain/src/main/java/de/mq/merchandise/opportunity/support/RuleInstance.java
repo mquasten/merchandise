@@ -7,8 +7,6 @@ import de.mq.merchandise.rule.Rule;
 
 public interface RuleInstance  extends BasicEntity {
 
-	
-
 	void assign(final String name, final String value);
 
 	void assign(final int priority);
@@ -22,6 +20,8 @@ public interface RuleInstance  extends BasicEntity {
 	boolean forRule(final Rule rule);
 	
 	List<String> parameterNames();
+	
+	void clearAllParameter();
 
 	
 }

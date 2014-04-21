@@ -179,6 +179,16 @@ class CommercialRelationImpl implements CommercialRelation {
 	public void remove(Rule rule) {
 		ruleInstances.remove(new RuleInstanceImpl(this, rule, 0));
 		
+	}
+
+	@Override
+	public boolean hasRule(Rule rule) {
+		for(RuleInstance ruleInstance : ruleInstances) {
+			if( ruleInstance.forRule(rule)) {
+				return true;
+			}
+		}
+		return false;
 	} 
 	
 	

@@ -13,5 +13,7 @@ public interface RuleOperations {
 	void remove(final Rule rule);
 
 	RuleInstance ruleInstance(final Rule rule);
+	
+	boolean hasRule(final Rule rule) ; 
 
 }

@@ -15,6 +15,7 @@ import de.mq.mapping.util.proxy.Parameter;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.RuleInstance;
 import de.mq.merchandise.opportunity.support.RuleOperations;
+import de.mq.merchandise.util.support.DomainObjectNullResolverImpl;
 
 
 interface RuleController {
@@ -37,9 +38,15 @@ interface RuleController {
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleOperations.class,originIndex=0), @Parameter(clazz = RuleInstanceAO.class)})}, clazz = RuleControllerImpl.class)
 	void assign(final RuleOperations parent);
 
-	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleInstanceAO.class ,elResultType=RuleOperations.class,el="#arg.parent"  )})}, clazz = RuleControllerImpl.class)
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = RuleInstanceAO.class ,elResultType=RuleOperations.class,el="#arg.parent" , skipNotReachableOnNullElException=true ,  nvl=true , nullObjectResolver=DomainObjectNullResolverImpl.class )})}, clazz = RuleControllerImpl.class)
 	List<RuleInstance> instances(); 
 	
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleInstanceAO.class)})}, clazz = RuleControllerImpl.class)
+	void addRuleInstance(); 
+	
+	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz=RuleInstanceAO.class)})}, clazz = RuleControllerImpl.class)
+	void deleteRuleInstance(); 
 
 
 }

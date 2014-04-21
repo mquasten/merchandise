@@ -205,22 +205,24 @@ public class DomainObjectNullResolverTest {
 	
 		
 		
-		
+		//resourcePatternResolver
 		final ResourcePatternResolver resourcePatternResolver = Mockito.mock(ResourcePatternResolver.class);
-		final Resource[] resources = new Resource[] {new ClassPathResource(legalPersonClass().getSimpleName()+ ".class",  legalPersonClass()), new ClassPathResource(MockImpl.class.getSimpleName()+ ".class",  getClass()) };
-		
+		final Resource[] resources = new Resource[] {new ClassPathResource(legalPersonClass().getSimpleName()+ ".class",  legalPersonClass()), new ClassPathResource(MockImpl.class.getSimpleName()+ ".class",  getClass()), new ClassPathResource(CustomerImpl.class.getSimpleName()+ ".class",  CustomerImpl.class) };
+		Mockito.when(resourcePatternResolver.getResources(Mockito.anyString())).thenReturn(resources);	
+		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
 	
-		Mockito.when(resourcePatternResolver.getResources(Mockito.anyString())).thenReturn(resources);
 		//ReflectionTestUtils.setField(domainObjectNullResolver, "resourcePatternResolver", resourcePatternResolver);
 		
-		final DomainObjectNullResolverImpl domainObjectNullResolver = new DomainObjectNullResolverImpl(metadataReaderFactory, resourcePatternResolver);
+		
 		addTestEntityAnnotation(domainObjectNullResolver);
 		domainObjectNullResolver.init();
 		
 		
 		@SuppressWarnings("unchecked")
 		final Map<Class<?>, Object> results = (Map<Class<?>, Object>) ReflectionTestUtils.getField(domainObjectNullResolver, "nullObjects");
-		Assert.assertEquals(6, results.size());
+		
+		//System.out.println(results);
+		Assert.assertEquals(8, results.size());
 		Assert.assertTrue(results.containsKey(legalPersonClass()));
 		Assert.assertTrue(results.containsKey(MockImpl.class));
 		final Object entity= results.get(legalPersonClass());
@@ -233,7 +235,7 @@ public class DomainObjectNullResolverTest {
 		
 		Assert.assertEquals(mock, results.get(BasicEntity.class));
 		
-		
+		Assert.assertEquals(results.get(CustomerImpl.class), results.get(Customer.class));
 		
 		
 	}

@@ -1,11 +1,7 @@
 package de.mq.merchandise.controller;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import org.springframework.util.ReflectionUtils;
 
 import de.mq.mapping.util.proxy.Conversation;
 import de.mq.merchandise.customer.Customer;
@@ -23,12 +19,7 @@ import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
-import de.mq.merchandise.opportunity.support.RuleInstance;
-import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
 import de.mq.merchandise.opportunity.support.RuleOperations;
-import de.mq.merchandise.rule.Rule;
-import de.mq.merchandise.rule.support.ParameterAO;
-import de.mq.merchandise.rule.support.RuleImpl;
 import de.mq.merchandise.rule.support.RuleInstanceAO;
 import de.mq.merchandise.util.EntityUtil;
 
@@ -232,40 +223,6 @@ class OpportunityControllerImpl {
 			return;
 		}
 	}
-	
-	
-	void addRuleInstance(final RuleInstanceAO ruleInstanceAO) {
-		
-		final RuleOperations parent = ruleInstanceAO.getParent();
-		final Rule newRule = ruleInstanceAO.getRule().getRule();
-		parent.assign(newRule, ruleInstanceAO.getRuleInstance().priority());
-		for(final ParameterAO p : ruleInstanceAO.getParameter()){
-			
-			final RuleInstance instance = parent.ruleInstance(newRule);
-			
-			instance.assign(p.getName(), p.getValue());
-			
-		}
-		
-		
-	}
-	
-	
-	void deleteRuleInstance(final RuleInstanceAO ruleInstanceAO) throws IllegalArgumentException, IllegalAccessException {
-		
-		final RuleOperations parent = ruleInstanceAO.getParent();
-		Field field = ReflectionUtils.findField(RuleInstanceImpl.class, "parameters");
-		field.setAccessible(true);
-		// :TODO ugly delete all Parameters for ruleInstance
-		final Map<?,?> params = (Map<?, ?>) field.get(ruleInstanceAO.getRuleInstance());
-		params.clear();
-		parent.remove(ruleInstanceAO.getRule().getRule());
-		
-		ruleInstanceAO.getRule().setRule(EntityUtil.create(RuleImpl.class));
-		ruleInstanceAO.setPriority(null);
-	
-	}
-	
 	
 
 }

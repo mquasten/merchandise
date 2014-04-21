@@ -198,4 +198,10 @@ public class RuleInstanceImpl implements RuleInstance {
 		return Collections.unmodifiableList(new ArrayList<>(parameters.keySet()));
 	}
 
+	@Override
+	public void clearAllParameter() {
+		parameters.clear();
+		
+	}
+
 }

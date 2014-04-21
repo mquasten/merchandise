@@ -27,15 +27,13 @@ public class RuleControllerImpl {
 	
 	
 	
-	RuleControllerImpl(RuleService ruleServive, SourceFactoryImpl sourceFactory) {
+	RuleControllerImpl(final RuleService ruleServive, final SourceFactoryImpl sourceFactory) {
 		this.ruleServive = ruleServive;
 		this.sourceFactory=sourceFactory;
 	}
 
 	void rules(final RuleModelAO ruleModelAO, final Customer customer) {
-		
 		ruleModelAO.setRules(ruleServive.rules(customer,nvl(ruleModelAO.getPattern()) + "%", ruleModelAO.getPaging().getPaging()));
-		
 		updateSelection(ruleModelAO);
 	}
 
@@ -114,13 +112,12 @@ public class RuleControllerImpl {
 		
 		
 		final Set<String> params = new HashSet<>();
-		// :TODO ugly add hasRule ... 
-		try {
+		
+		if(ruleOperations.hasRule(rule) ){
 			params.addAll(ruleOperations.ruleInstance(rule).parameterNames());
 			ruleInstance.assign(ruleOperations.ruleInstance(rule).priority());
-		} catch ( Exception ex) {
-			
 		}
+		
 		
 	    for(final String parameter :source(id)){
 	    	
@@ -157,10 +154,6 @@ public class RuleControllerImpl {
 	
 	
 	List<?> instances(final RuleOperations ruleOperations) {
-		if( ruleOperations==null){
-			return new SimpleMapDataModel<>();
-		}
-		
 		return new SimpleMapDataModel<>(ruleOperations.ruleInstances());
 		 
 		
@@ -178,6 +171,29 @@ public class RuleControllerImpl {
 		return null;
 		
 	}
+	
+	
+	void addRuleInstance(final RuleInstanceAO ruleInstanceAO) {
+		final RuleOperations parent = ruleInstanceAO.getParent();
+		final Rule newRule = ruleInstanceAO.getRule().getRule();
+		parent.assign(newRule, ruleInstanceAO.getRuleInstance().priority());
+		for(final ParameterAO parameter : ruleInstanceAO.getParameter()){
+			parent.ruleInstance(newRule).assign(parameter.getName(), parameter.getValue());
+		}
+		
+}		
+
+	
+	
+	void deleteRuleInstance(final RuleInstanceAO ruleInstanceAO) throws IllegalArgumentException, IllegalAccessException {
+		ruleInstanceAO.getRuleInstance().clearAllParameter();
+		ruleInstanceAO.getParent().remove(ruleInstanceAO.getRule().getRule());
+		ruleInstanceAO.getRule().setRule(EntityUtil.create(RuleImpl.class));
+		ruleInstanceAO.setPriority(null);
+	
+	}
+	
+	
 	
 	
 		

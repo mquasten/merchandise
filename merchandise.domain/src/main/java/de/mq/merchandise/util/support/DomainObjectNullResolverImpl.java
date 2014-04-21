@@ -9,6 +9,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -61,7 +62,7 @@ public class DomainObjectNullResolverImpl  implements NullObjectResolver {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private final Set<Class<Annotation>> entityAnnotations = new HashSet<Class<Annotation>>(CollectionUtils.arrayToList(new Class<?>[]{Entity.class, Embeddable.class} )); 
+	private final Set<Class<Annotation>> entityAnnotations = new HashSet<>(CollectionUtils.arrayToList(new Class<?>[]{Entity.class, Embeddable.class} )); 
 	
 	@PostConstruct()
 	final void init() {
@@ -125,7 +126,7 @@ public class DomainObjectNullResolverImpl  implements NullObjectResolver {
 		final Object entity = EntityUtil.create(clazz);
 		for(final Entry<Class<?>,Integer> entry : hierarchy(clazz)){
 			if(! levels.containsKey(entry.getKey())){
-				nullObjects.put(entry.getKey(), entity);
+				nullObjects.put(entry.getKey(), entity);	
 				levels.put(entry.getKey(), entry.getValue());
 				continue;
 			}
@@ -140,7 +141,7 @@ public class DomainObjectNullResolverImpl  implements NullObjectResolver {
 	
 	
 	final Collection<Class<?>> entities()  {
-	    final Collection<Class<?>> results = new HashSet<>();
+	    final Collection<Class<?>> results = new LinkedHashSet <>();
 	   
 	    final Resource[] resources = resources();
 	    for (Resource resource : resources) {
