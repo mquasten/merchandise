@@ -101,7 +101,6 @@ public class DomainObjectNullResolverImpl  implements NullObjectResolver {
 			public void doWith(final Field field) throws IllegalArgumentException, IllegalAccessException {
 				field.setAccessible(true);
 				
-				//System.out.println(field.getType() + ":" + entities.get(field.getType()));
 				if( field.get(entity)!=null){
 					return;
 				}
