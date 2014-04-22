@@ -91,6 +91,8 @@ public class RuleInstanceImpl implements RuleInstance {
 	}
 	
 	
+	
+	
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.opportunity.support.RuleInstance#assign(java.lang.String, java.lang.String)
 	 */

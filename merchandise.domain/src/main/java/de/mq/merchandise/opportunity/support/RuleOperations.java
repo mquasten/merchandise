@@ -15,5 +15,6 @@ public interface RuleOperations {
 	RuleInstance ruleInstance(final Rule rule);
 	
 	boolean hasRule(final Rule rule) ; 
+	
 
 }
