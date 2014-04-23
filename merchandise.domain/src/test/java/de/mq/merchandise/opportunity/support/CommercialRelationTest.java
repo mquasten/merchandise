@@ -171,4 +171,18 @@ public class CommercialRelationTest {
 		Assert.assertTrue(commercialRelation.ruleInstances().isEmpty());
 	}
 	
+	@Test
+	public final void hasRole() {
+		
+		final CommercialRelation commercialRelation = new CommercialRelationImpl(commercialSubject, opportunity);
+		
+		final RuleInstance ruleInstance =addSingleRuleinstance(commercialRelation);
+		
+		Assert.assertTrue(commercialRelation.hasRule(ruleInstance.rule()));
+		
+		final Rule rule = Mockito.mock(Rule.class);
+		Assert.assertFalse(commercialRelation.hasRule(rule));
+		
+	}
+	
 }

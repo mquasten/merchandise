@@ -226,5 +226,20 @@ public class ConditionTest {
 		
 		
 	}
+	
+	@Test
+	public final void hasRule() {
+		final Condition condition =  EntityUtil.create(ConditionImpl.class);
+		final Rule rule = Mockito.mock(Rule.class);
+		@SuppressWarnings("unchecked")
+		final Collection<RuleInstance> ruleInstances = (Collection<RuleInstance>) ReflectionTestUtils.getField(condition, "ruleInstances");
+	
+		final RuleInstance ruleInstance = new RuleInstanceImpl(condition, rule, 4711);
+		ruleInstances.add(ruleInstance);
+		
+		Assert.assertTrue(condition.hasRule(rule));
+		final Rule anOtherRule = Mockito.mock(Rule.class);
+		Assert.assertFalse(condition.hasRule(anOtherRule));
+	}
 
 }
