@@ -68,7 +68,7 @@ class CommercialRelationImpl  implements CommercialRelation {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		protected RuleInstance ruleInstance(final Rule rule, final int priority) {
+		final protected RuleInstance ruleInstance(final Rule rule, final int priority) {
 			return new RuleInstanceImpl(CommercialRelationImpl.this, rule, priority);
 		} };
 	
