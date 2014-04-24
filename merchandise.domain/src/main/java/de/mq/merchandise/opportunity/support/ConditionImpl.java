@@ -19,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.Transient;
 
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.util.EntityUtil;
@@ -59,6 +60,17 @@ class ConditionImpl implements Condition{
 	@OneToMany(mappedBy="condition", targetEntity=RuleInstanceImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE,  CascadeType.REMOVE })
 	@OrderBy("priority")
 	private List<RuleInstance> ruleInstances = new ArrayList<>();
+	
+	@Transient
+	private RuleOperationsInternal ruleOperationsInternal = new AbstractRuleTemplate() {
+		
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		protected final RuleInstance ruleInstance(final Rule rule, final int priority) {
+			return new RuleInstanceImpl(ConditionImpl.this, rule, priority);
+		}
+	};
 
 	protected ConditionImpl() {
 		
@@ -148,63 +160,34 @@ class ConditionImpl implements Condition{
 	
 	@Override
 	public List<RuleInstance> ruleInstances() {
-		return Collections.unmodifiableList(ruleInstances);
+		return ruleOperationsInternal.ruleInstances(ruleInstances);
 	}
 	
-	private RuleInstance instance(final Rule rule) {
-		for(final RuleInstance ruleInstance : ruleInstances){
-			if(! ruleInstance.forRule(rule)){
-				continue;
-			}
-			return ruleInstance;
-		}
-		return null;
-		
-	}
 	
 	@Override
 	public  final RuleInstance ruleInstance(final Rule rule) {
-		return ruleInstanceExistsGuard(rule, instance(rule));
+		return ruleOperationsInternal.ruleInstance(ruleInstances, rule);
 		
 	}
 
 
-
-	private RuleInstance ruleInstanceExistsGuard(final Rule rule, RuleInstance result) {
-		if (result == null){ 
-			throw new IllegalArgumentException("Rule " + rule.name() + " isn't assigned to condition");
-		}
-		return result;
-	}
-	
-
 	@Override
 	public final void assign(final Rule rule, final int priority ){
-		final RuleInstance existing = instance(rule);
-		if( existing != null){
-			existing.assign(priority);
-			return;
-		}
-		ruleInstances.add(new RuleInstanceImpl(this, rule, priority));
+		ruleOperationsInternal.assign(ruleInstances, rule, priority);
 	}
 
 
 
 	@Override
 	public void remove(final Rule rule) {
-		ruleInstances.remove(new RuleInstanceImpl(this, rule, 0));
+		ruleOperationsInternal.remove(ruleInstances, rule);
 	}
 
 
 
 	@Override
-	public boolean hasRule(Rule rule) {
-		for(RuleInstance ruleInstance : ruleInstances) {
-			if( ruleInstance.forRule(rule)) {
-				return true;
-			}
-		}
-		return false;
+	public boolean hasRule(final Rule rule) {
+		return ruleOperationsInternal.hasRule(ruleInstances, rule);
 	} 
 	
 }
