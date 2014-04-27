@@ -17,6 +17,7 @@ import de.mq.mapping.util.proxy.Conversation;
 import de.mq.mapping.util.proxy.ModelRepository;
 import de.mq.merchandise.controller.SerialisationControllerImpl;
 import de.mq.merchandise.opportunity.support.PagingAO;
+import de.mq.merchandise.opportunity.support.RuleInstanceImpl;
 import de.mq.merchandise.rule.RuleService;
 
 public class RuleProxyFactoryTest {
@@ -193,5 +194,40 @@ public class RuleProxyFactoryTest {
 	private String keyName(Entry<?, ?> x) {
 		return (String) ReflectionTestUtils.getField(x.getKey(), "name");
 	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public final void ruleInstance() {
+		final RuleInstanceAO ruleInstanceAO = Mockito.mock(RuleInstanceAO.class);
+		ruleProxyFactory.init();
+		@SuppressWarnings("rawtypes")
+		final ArgumentCaptor<Class> classCaptor = ArgumentCaptor.forClass(Class.class);
+	
+		final ArgumentCaptor<ModelRepository> modelRepositoryCaptor = ArgumentCaptor.forClass(ModelRepository.class);
+		Mockito.when(aoProxyFactory.createProxy(classCaptor.capture(), modelRepositoryCaptor.capture())).thenReturn(ruleInstanceAO);
+		
+		Assert.assertEquals(ruleInstanceAO, ruleProxyFactory.ruleInstance());
+		
+		Assert.assertEquals(RuleInstanceAO.class, classCaptor.getValue());
+		int ruleInstanceCounter=0;
+		int ruleControllerCounter=0;
+		for(final Object model : ((Map<?,?>)ReflectionTestUtils.getField(modelRepositoryCaptor.getValue(), "modelItems")).values()){
+			if(model.getClass().equals(RuleInstanceImpl.class)) {
+			   ruleInstanceCounter++;	
+			   continue;	
+			}
+			
+			if(model.getClass().equals(RuleControllerImpl.class)) {
+				ruleControllerCounter++;
+				continue;	
+		    }
+			Assert.fail("Wrong class: " + model.getClass() );
+		}
+		Assert.assertEquals(1, ruleInstanceCounter);
+		Assert.assertEquals(1, ruleControllerCounter);
+	}
+	
 
 }
