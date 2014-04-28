@@ -3,6 +3,8 @@ package de.mq.merchandise.rule.support;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.model.SelectItem;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -139,6 +141,22 @@ public class RuleControllerTest {
 		
 		Mockito.verify(ruleService).createOrUpdate(rule);
 		
+	}
+	
+	@Test
+	public final void ruleItems() {
+		final RuleModelAO  ruleModelAO = Mockito.mock(RuleModelAO.class);
+		final List<RuleAO> ruleAOs = new ArrayList<>();
+		Mockito.when(ruleModelAO.getRules()).thenReturn(ruleAOs);
+		final RuleAO ruleAO = Mockito.mock(RuleAO.class);
+		Mockito.when(ruleAO.getId()).thenReturn("19680528");
+		Mockito.when(ruleAO.getName()).thenReturn("hotScore");
+		ruleAOs.add(ruleAO);
+		
+		final List<SelectItem> results = ruleController.ruleItems(ruleModelAO);
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(ruleAO.getId(), results.iterator().next().getValue());
+		Assert.assertEquals(ruleAO.getName(), results.iterator().next().getLabel());
 	}
 	
 
