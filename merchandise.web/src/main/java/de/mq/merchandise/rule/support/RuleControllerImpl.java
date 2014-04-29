@@ -140,14 +140,14 @@ public class RuleControllerImpl {
 	}
 
 	
-	Long selectedId(final  RuleAO rule) {
+	Long selectedId(final  Rule rule) {
 		
 	
-		if( rule == null){
+		if( ! rule.hasId()){
 			return null;
 		}
 		
-		return rule.getIdAsLong(); 
+		return rule.id(); 
 	}
 	
 	

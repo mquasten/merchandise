@@ -1,6 +1,7 @@
 package de.mq.merchandise.rule.support;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
@@ -11,8 +12,11 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.model.support.SimpleMapDataModel;
 import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.PagingAO;
+import de.mq.merchandise.opportunity.support.RuleInstance;
+import de.mq.merchandise.opportunity.support.RuleOperations;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.rule.RuleService;
 import de.mq.merchandise.util.Paging;
@@ -157,6 +161,41 @@ public class RuleControllerTest {
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals(ruleAO.getId(), results.iterator().next().getValue());
 		Assert.assertEquals(ruleAO.getName(), results.iterator().next().getLabel());
+	}
+	
+	@Test
+	public final void selectedId() {
+		final Rule rule = Mockito.mock(Rule.class);
+		Mockito.when(rule.hasId()).thenReturn(true);
+		Mockito.when(rule.id()).thenReturn(ID);
+		Assert.assertEquals(ID, (long) ruleController.selectedId(rule));
+		Mockito.verify(rule).hasId();
+		Mockito.verify(rule).id();
+	}
+	
+	@Test
+	public final void selectedIdNoId() {
+		final Rule rule = Mockito.mock(Rule.class);
+		
+		Assert.assertNull(ruleController.selectedId(rule));
+		
+		Mockito.verify(rule).hasId();
+		Mockito.verify(rule, Mockito.times(0)).id();
+	
+	}
+	
+	@Test
+	public final void instances() {
+		final RuleOperations ruleOperations = Mockito.mock(RuleOperations.class);
+		final List<RuleInstance>  ruleInstances = new ArrayList<>();
+		final RuleInstance ruleInstance = Mockito.mock(RuleInstance.class);
+		ruleInstances.add(ruleInstance);
+		Mockito.when(ruleOperations.ruleInstances()).thenReturn(ruleInstances);
+		final Collection<?> results = ruleController.instances(ruleOperations);
+		Assert.assertTrue(results instanceof SimpleMapDataModel);
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(ruleInstance, results.iterator().next());
+			
 	}
 	
 
