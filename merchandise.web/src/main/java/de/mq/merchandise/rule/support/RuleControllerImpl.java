@@ -178,6 +178,7 @@ public class RuleControllerImpl {
 		final Rule newRule = ruleInstanceAO.getRule().getRule();
 		parent.assign(newRule, ruleInstanceAO.getRuleInstance().priority());
 		for(final ParameterAO parameter : ruleInstanceAO.getParameter()){
+		
 			parent.ruleInstance(newRule).assign(parameter.getName(), parameter.getValue());
 		}
 		
@@ -185,7 +186,7 @@ public class RuleControllerImpl {
 
 	
 	
-	void deleteRuleInstance(final RuleInstanceAO ruleInstanceAO) throws IllegalArgumentException, IllegalAccessException {
+	void deleteRuleInstance(final RuleInstanceAO ruleInstanceAO)  {
 		ruleInstanceAO.getRuleInstance().clearAllParameter();
 		ruleInstanceAO.getParent().remove(ruleInstanceAO.getRule().getRule());
 		ruleInstanceAO.getRule().setRule(EntityUtil.create(RuleImpl.class));

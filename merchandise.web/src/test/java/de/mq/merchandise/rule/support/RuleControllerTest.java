@@ -9,6 +9,7 @@ import javax.faces.model.SelectItem;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import de.mq.merchandise.customer.Customer;
@@ -197,6 +198,87 @@ public class RuleControllerTest {
 		Assert.assertEquals(ruleInstance, results.iterator().next());
 			
 	}
+	
+	@Test
+	public final void selected() {
+		Rule matchingRule = Mockito.mock(Rule.class);
+		RuleInstance matchingRuleInstance = Mockito.mock(RuleInstance.class);
+		Mockito.when(matchingRuleInstance.rule()).thenReturn(matchingRule);
+		Rule rule = Mockito.mock(Rule.class);
+		RuleInstance ruleInstance = Mockito.mock(RuleInstance.class);
+		Mockito.when(ruleInstance.rule()).thenReturn(rule);
+		final RuleOperations ruleOperations = Mockito.mock(RuleOperations.class);
+		final List<RuleInstance> ruleInstances = new ArrayList<>();
+		ruleInstances.add(ruleInstance);
+		ruleInstances.add(matchingRuleInstance);
+		Mockito.when(ruleOperations.ruleInstances()).thenReturn(ruleInstances);
+		
+		Assert.assertEquals(matchingRuleInstance, ruleController.selected(matchingRule, ruleOperations));
+		
+		Assert.assertNull( ruleController.selected(Mockito.mock(Rule.class), ruleOperations));
+	}
+	
+	
+	@Test
+	public final void addRuleInstance() {
+		final RuleInstanceAO ruleInstanceAO = Mockito.mock(RuleInstanceAO.class);
+		final RuleAO ruleAO = Mockito.mock(RuleAO.class);
+		final Rule rule = Mockito.mock(Rule.class);
+		Mockito.when(ruleInstanceAO.getRule()).thenReturn(ruleAO);
+		Mockito.when(ruleAO.getRule()).thenReturn(rule);
+		final RuleInstance ruleInstance = Mockito.mock(RuleInstance.class);
+		Mockito.when(ruleInstance.priority()).thenReturn(11);
+		Mockito.when(ruleInstanceAO.getRuleInstance()).thenReturn(ruleInstance);
+		RuleOperations parent = Mockito.mock(RuleOperations.class);
+		Mockito.when(ruleInstanceAO.getParent()).thenReturn(parent);
+		
+		Mockito.when(parent.ruleInstance(rule)).thenReturn(ruleInstance);
+		
+		final List<ParameterAO> params = new ArrayList<>();
+		params.add(Mockito.mock(ParameterAO.class));
+		Mockito.when(params.get(0).getName()).thenReturn("hotScore");
+		Mockito.when(params.get(0).getValue()).thenReturn("10");
+		
+		Mockito.when(ruleInstanceAO.getParameter()).thenReturn(params);
+		
+		ruleController.addRuleInstance(ruleInstanceAO);
+		
+		
+		
+		Mockito.verify(parent).assign(rule, ruleInstance.priority());
+		Mockito.verify(parent).ruleInstance(rule);
+		Mockito.verify(ruleInstance).assign(params.get(0).getName(), params.get(0).getValue());
+		
+	}
+	
+	
+	@Test
+	public final void deleteRuleInstance() {
+		
+		final RuleInstanceAO ruleInstanceAO = Mockito.mock(RuleInstanceAO.class);
+		final RuleInstance ruleInstance = Mockito.mock(RuleInstance.class);
+		Mockito.when(ruleInstanceAO.getRuleInstance()).thenReturn(ruleInstance);
+		RuleOperations parent = Mockito.mock(RuleOperations.class);
+		Mockito.when(ruleInstanceAO.getParent()).thenReturn(parent);
+		final RuleAO ruleAO = Mockito.mock(RuleAO.class);
+		final Rule rule = Mockito.mock(Rule.class);
+		Mockito.when(ruleInstanceAO.getRule()).thenReturn(ruleAO);
+		Mockito.when(ruleAO.getRule()).thenReturn(rule);
+		
+		
+		ruleController.deleteRuleInstance(ruleInstanceAO);
+		
+		Mockito.verify(ruleInstance).clearAllParameter();
+		Mockito.verify(parent).remove(rule);
+		Mockito.verify(ruleInstanceAO).setPriority(null);
+		final ArgumentCaptor<Rule> ruleCaptor = ArgumentCaptor.forClass(Rule.class);
+		Mockito.verify(ruleAO).setRule(ruleCaptor.capture());
+		
+		Assert.assertEquals(RuleImpl.class, ruleCaptor.getValue().getClass());
+		
+		
+	}
+	
 	
 
 }
