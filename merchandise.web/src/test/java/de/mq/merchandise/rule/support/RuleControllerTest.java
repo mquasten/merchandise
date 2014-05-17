@@ -1,6 +1,5 @@
 package de.mq.merchandise.rule.support;
 
-import groovy.lang.GroovyObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
