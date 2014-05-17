@@ -117,13 +117,11 @@ public class RuleControllerImpl {
 			params.addAll(ruleOperations.ruleInstance(rule).parameterNames());
 			ruleInstance.assign(ruleOperations.ruleInstance(rule).priority());
 		}
-		
-		
+	
 	    for(final String parameter :source(id)){
 	    	
 	    	if( params.contains(parameter)) {
 	    		ruleInstance.assign(parameter,ruleOperations.ruleInstance(rule).parameter(parameter));
-	    		
 	    		continue;
 	    	}
 	    	ruleInstance.assign(parameter, "");

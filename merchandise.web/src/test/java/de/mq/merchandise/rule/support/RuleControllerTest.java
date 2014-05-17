@@ -1,5 +1,7 @@
 package de.mq.merchandise.rule.support;
 
+import groovy.lang.GroovyObject;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,6 +13,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.springframework.util.CollectionUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.model.support.SimpleMapDataModel;
@@ -18,12 +21,16 @@ import de.mq.merchandise.opportunity.support.DocumentModelAO;
 import de.mq.merchandise.opportunity.support.PagingAO;
 import de.mq.merchandise.opportunity.support.RuleInstance;
 import de.mq.merchandise.opportunity.support.RuleOperations;
+import de.mq.merchandise.rule.ParameterNamesAware;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.rule.RuleService;
 import de.mq.merchandise.util.Paging;
 
 public class RuleControllerTest {
 	
+	private static final String PARAMETER_VALUE = "10";
+	private static final String PARAMETER_NAME = "hotScore";
+	private static final int PRIORITY = 4711;
 	private static final String STATE = "state";
 	private static final long ID = 19680528L;
 	private final Rule rule = Mockito.mock(Rule.class);
@@ -64,7 +71,7 @@ public class RuleControllerTest {
 	
 	@Test
 	public final void rulesWithPattern() {
-		Mockito.when(ruleModelAO.getPattern()).thenReturn("hotScore");
+		Mockito.when(ruleModelAO.getPattern()).thenReturn(PARAMETER_NAME);
 		
 		rules.add(rule);
 		Mockito.when(ruleService.rules(customer, "hotScore%", paging)).thenReturn(rules);
@@ -155,7 +162,7 @@ public class RuleControllerTest {
 		Mockito.when(ruleModelAO.getRules()).thenReturn(ruleAOs);
 		final RuleAO ruleAO = Mockito.mock(RuleAO.class);
 		Mockito.when(ruleAO.getId()).thenReturn("19680528");
-		Mockito.when(ruleAO.getName()).thenReturn("hotScore");
+		Mockito.when(ruleAO.getName()).thenReturn(PARAMETER_NAME);
 		ruleAOs.add(ruleAO);
 		
 		final List<SelectItem> results = ruleController.ruleItems(ruleModelAO);
@@ -236,8 +243,8 @@ public class RuleControllerTest {
 		
 		final List<ParameterAO> params = new ArrayList<>();
 		params.add(Mockito.mock(ParameterAO.class));
-		Mockito.when(params.get(0).getName()).thenReturn("hotScore");
-		Mockito.when(params.get(0).getValue()).thenReturn("10");
+		Mockito.when(params.get(0).getName()).thenReturn(PARAMETER_NAME);
+		Mockito.when(params.get(0).getValue()).thenReturn(PARAMETER_VALUE);
 		
 		Mockito.when(ruleInstanceAO.getParameter()).thenReturn(params);
 		
@@ -276,6 +283,39 @@ public class RuleControllerTest {
 		
 		Assert.assertEquals(RuleImpl.class, ruleCaptor.getValue().getClass());
 		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public final void assignSelected() {
+		Rule rule = new RuleImpl(customer, "ArtitsHotScore");
+		final RuleInstanceAO ruleInstanceAO = Mockito.mock(RuleInstanceAO.class);
+		Mockito.when(ruleService.read(ID)).thenReturn(rule);
+		final RuleOperations ruleOperations = Mockito.mock(RuleOperations.class);
+		Mockito.when(ruleInstanceAO.getParent()).thenReturn(ruleOperations);
+		ParameterNamesAware<String> groovyObject = Mockito.mock(ParameterNamesAware.class);
+		Mockito.when(sourceFactory.create(ID)).thenReturn(groovyObject);
+		final String[] params = new String[] { PARAMETER_NAME};
+		Mockito.when(groovyObject.parameters()).thenReturn(params);
+		Mockito.when(ruleOperations.hasRule(rule)).thenReturn(true);
+		RuleInstance ruleInstance = Mockito.mock(RuleInstance.class);
+		Mockito.when(ruleOperations.ruleInstance(rule)).thenReturn(ruleInstance);
+		Mockito.when(ruleInstance.parameterNames()).thenReturn(CollectionUtils.arrayToList(params));
+		Mockito.when(ruleInstance.priority()).thenReturn(PRIORITY);
+		Mockito.when(ruleInstance.parameter(PARAMETER_NAME)).thenReturn(PARAMETER_VALUE);
+		ruleController.assignSelected(ID, ruleInstanceAO);
+		
+		ArgumentCaptor<RuleInstance> ruleInstanceArgumentCaptor = ArgumentCaptor.forClass(RuleInstance.class);
+		Mockito.verify(ruleInstanceAO).setRuleInstance(ruleInstanceArgumentCaptor.capture());
+		
+		
+		
+		final RuleInstance ruleInstanceResult = ruleInstanceArgumentCaptor.getValue();
+		Assert.assertEquals(PRIORITY, ruleInstanceResult.priority());
+		Assert.assertEquals(PARAMETER_VALUE, ruleInstanceResult.parameter(PARAMETER_NAME));
+		Assert.assertEquals(1, ruleInstanceResult.parameterNames().size());
+		Assert.assertEquals(PARAMETER_NAME, ruleInstanceResult.parameterNames().get(0));
 		
 	}
 	
