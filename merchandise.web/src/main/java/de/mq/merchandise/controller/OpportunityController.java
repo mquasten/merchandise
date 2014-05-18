@@ -2,6 +2,9 @@ package de.mq.merchandise.controller;
 
 
 
+
+import java.util.Collection;
+
 import org.primefaces.event.NodeSelectEvent;
 import org.springframework.security.core.context.SecurityContext;
 
@@ -42,7 +45,7 @@ public interface OpportunityController {
 	@MethodInvocation(actions={@ActionEvent(params={@Parameter(clazz = ActivityClassificationTreeAO.class), @Parameter(clazz = ProductClassificationTreeAO.class)})}, clazz = OpportunityControllerImpl.class)
 	String create();
 	
-	@MethodInvocation(actions={ @ActionEvent(params={@Parameter(clazz = ActivityClassificationTreeAO.class), @Parameter(clazz = ProductClassificationTreeAO.class)} ,name="create") , @ActionEvent(params={@Parameter(clazz=OpportunityAO.class), @Parameter(clazz = OpportunityModelAO.class, el="#arg.selected.opportunity.id()", elResultType=Long.class ,skipNotReachableOnNullElException=true)}, name="change" )}, clazz = OpportunityControllerImpl.class)
+	@MethodInvocation(actions={ @ActionEvent(params={@Parameter(clazz = ActivityClassificationTreeAO.class), @Parameter(clazz = ProductClassificationTreeAO.class)} ,name="create") , @ActionEvent(params={@Parameter(clazz=OpportunityAO.class), @Parameter(clazz = OpportunityModelAO.class, el="#arg.selected.opportunity.id()", elResultType=Long.class ,skipNotReachableOnNullElException=true)}, name="change" ),@ActionEvent(name="init",  params={@Parameter(clazz=OpportunityAO.class, elResultType=Collection.class, el="#arg.opportunity.commercialRelations()")})}, clazz = OpportunityControllerImpl.class)
 	String change();
 
 

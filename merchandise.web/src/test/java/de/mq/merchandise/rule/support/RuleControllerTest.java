@@ -288,12 +288,12 @@ public class RuleControllerTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public final void assignSelected() {
-		Rule rule = new RuleImpl(customer, "ArtitsHotScore");
+		final Rule rule = new RuleImpl(customer, "ArtitsHotScore");
 		final RuleInstanceAO ruleInstanceAO = Mockito.mock(RuleInstanceAO.class);
 		Mockito.when(ruleService.read(ID)).thenReturn(rule);
 		final RuleOperations ruleOperations = Mockito.mock(RuleOperations.class);
 		Mockito.when(ruleInstanceAO.getParent()).thenReturn(ruleOperations);
-		ParameterNamesAware<String> groovyObject = Mockito.mock(ParameterNamesAware.class);
+		final ParameterNamesAware<String> groovyObject = Mockito.mock(ParameterNamesAware.class);
 		Mockito.when(sourceFactory.create(ID)).thenReturn(groovyObject);
 		final String[] params = new String[] { PARAMETER_NAME};
 		Mockito.when(groovyObject.parameters()).thenReturn(params);
@@ -318,6 +318,39 @@ public class RuleControllerTest {
 		
 	}
 	
+	
+	@Test
+	public final void assignSelectedRuleNotFound() {
+		final Rule rule = new RuleImpl(customer, "ArtitsHotScore");
+		final RuleInstanceAO ruleInstanceAO = Mockito.mock(RuleInstanceAO.class);
+		final RuleOperations ruleOperations = Mockito.mock(RuleOperations.class);
+		Mockito.when(ruleService.read(ID)).thenReturn(rule);
+		@SuppressWarnings("unchecked")
+		final ParameterNamesAware<String> groovyObject = Mockito.mock(ParameterNamesAware.class);
+		Mockito.when(ruleInstanceAO.getParent()).thenReturn(ruleOperations);
+        Mockito.when(sourceFactory.create(ID)).thenReturn(groovyObject);
+    	final String[] params = new String[] { PARAMETER_NAME};
+    	Mockito.when(groovyObject.parameters()).thenReturn(params);
+		
+		
+		ruleController.assignSelected(ID, ruleInstanceAO);
+		
+		ArgumentCaptor<RuleInstance> ruleInstanceArgumentCaptor = ArgumentCaptor.forClass(RuleInstance.class);
+		Mockito.verify(ruleInstanceAO).setRuleInstance(ruleInstanceArgumentCaptor.capture());
+		
+		Assert.assertEquals(0, ruleInstanceArgumentCaptor.getValue().priority());
+		Assert.assertEquals(1, ruleInstanceArgumentCaptor.getValue().parameterNames().size());
+		Assert.assertEquals(PARAMETER_NAME, ruleInstanceArgumentCaptor.getValue().parameterNames().get(0));
+		Assert.assertEquals("", ruleInstanceArgumentCaptor.getValue().parameter(PARAMETER_NAME));
+		
+	}
+	
+	@Test
+	public final void assignSelectedIdNull() {
+		final RuleInstanceAO ruleInstanceAO = Mockito.mock(RuleInstanceAO.class);
+		ruleController.assignSelected(null, ruleInstanceAO );
+		Mockito.verifyZeroInteractions(ruleInstanceAO, ruleService, sourceFactory);
+	}
 	
 
 }

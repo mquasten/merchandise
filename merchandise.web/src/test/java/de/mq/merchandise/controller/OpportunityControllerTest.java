@@ -30,6 +30,8 @@ import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.PagingAO;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
+import de.mq.merchandise.opportunity.support.RuleInstance;
+
 import de.mq.merchandise.rule.support.RuleInstanceAO;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Paging;
@@ -416,6 +418,24 @@ public class OpportunityControllerTest {
 	}
 	
 	
-	
+	@Test
+	public final void init() {
+		final Collection<CommercialRelation> relations = new ArrayList<>();
+		CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
+		relations.add(commercialRelation);
+		final List<RuleInstance> ruleInstances = new ArrayList<>();
+		
+		Mockito.when(commercialRelation.ruleInstances()).thenReturn(ruleInstances);
+		
+		final RuleInstance ruleInstance = Mockito.mock(RuleInstance.class);
+		ruleInstances.add(ruleInstance);
+		@SuppressWarnings("unchecked")
+		final List<String> params = Mockito.mock(List.class);
+		Mockito.when(ruleInstance.parameterNames()).thenReturn(params);
+		
+		Assert.assertEquals(OpportunityControllerImpl.OPPORTUNITY_PAGE, opportunityControllerImpl.init(relations));
+		
+		Mockito.verify(params).size();
+	}
 
 }

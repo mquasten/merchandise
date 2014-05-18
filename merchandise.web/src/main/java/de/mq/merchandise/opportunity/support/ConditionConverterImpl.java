@@ -1,7 +1,5 @@
 package de.mq.merchandise.opportunity.support;
 
-import java.util.List;
-
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -18,12 +16,12 @@ public class ConditionConverterImpl implements Converter{
 	@Override
 	public String getAsString(final FacesContext context, final UIComponent component, final Object value) {
 		if (value instanceof CommercialRelation) {
-			hibernateInitialize(((CommercialRelation) value).ruleInstances());
+			
 			return ((CommercialRelation) value).commercialSubject().name();
 		}
 		
 		if (value instanceof Condition) {
-			hibernateInitialize( ((Condition)value).ruleInstances());
+			
 			return ((Condition)value).conditionType().name();
 			
 		}
@@ -31,10 +29,6 @@ public class ConditionConverterImpl implements Converter{
 		return value.toString();
 	}
 	
-	private void hibernateInitialize(final List<RuleInstance> list){
-		for(final RuleInstance ruleInstance : list) {
-			ruleInstance.parameterNames().size();
-		}
-	}
+	
 
 }

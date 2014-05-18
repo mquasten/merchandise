@@ -103,6 +103,7 @@ public class RuleControllerImpl {
 		final RuleInstance ruleInstance = EntityUtil.create(RuleInstanceImpl.class);
 		
 		final Rule rule = ruleServive.read(id);
+		
 		EntityUtil.setDependency(ruleInstance, Rule.class, rule);
 		ruleInstanceAO.setRuleInstance(ruleInstance);
 		

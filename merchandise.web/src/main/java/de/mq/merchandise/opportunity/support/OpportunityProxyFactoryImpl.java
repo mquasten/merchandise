@@ -20,6 +20,7 @@ public class OpportunityProxyFactoryImpl {
 	
 	final ConditionsChangedObserverableControllerImpl conditionsChangedObserverableController = EntityUtil.create(ConditionsChangedObserverableControllerImpl.class);
 	
+	
 	@Autowired
 	private AOProxyFactory proxyFactory;
 	@Autowired
@@ -89,6 +90,7 @@ public class OpportunityProxyFactoryImpl {
 	public ConditionAO condition() {
 		 return proxyFactory.createProxy(ConditionAO.class, new ModelRepositoryBuilderImpl().withBeanResolver(beanResolver).withDomain(EntityUtil.create(ConditionImpl.class)).build());
 	}
+	
 	
 	
 	

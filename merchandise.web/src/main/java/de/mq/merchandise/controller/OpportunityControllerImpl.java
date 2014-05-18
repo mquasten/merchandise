@@ -1,6 +1,7 @@
 package de.mq.merchandise.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import de.mq.mapping.util.proxy.Conversation;
@@ -19,11 +20,14 @@ import de.mq.merchandise.opportunity.support.OpportunityAO;
 import de.mq.merchandise.opportunity.support.OpportunityModelAO;
 import de.mq.merchandise.opportunity.support.ProductClassification;
 import de.mq.merchandise.opportunity.support.ProductClassificationTreeAO;
+import de.mq.merchandise.opportunity.support.RuleInstance;
 import de.mq.merchandise.opportunity.support.RuleOperations;
 import de.mq.merchandise.rule.support.RuleInstanceAO;
 import de.mq.merchandise.util.EntityUtil;
 
 class OpportunityControllerImpl {
+
+	static final String OPPORTUNITY_PAGE = "opportunity.xhtml";
 
 	private final OpportunityService opportunityService;
 	
@@ -79,7 +83,7 @@ class OpportunityControllerImpl {
 		opportunityAO.notifyActivityClassificationChanged();
 		opportunityAO.notifyProductClassificationChanged();
 		
-		return "opportunity.xhtml";
+		return OPPORTUNITY_PAGE;
 	}
 	
 	void delete(final OpportunityModelAO opportunityModelAO){
@@ -158,7 +162,7 @@ class OpportunityControllerImpl {
 		final Opportunity opportunity = opportunityAO.getOpportunity();
 		opportunity.assignConditions(commercialSubject);
 		opportunityAO.notifyConditionsChanged();
-		return "opportunity.xhtml";
+		return OPPORTUNITY_PAGE;
 	}
 	
 	
@@ -224,5 +228,19 @@ class OpportunityControllerImpl {
 		}
 	}
 	
+	
+	String init(final Collection<CommercialRelation> relations) {
+		for(final CommercialRelation relation: relations){
+		
+			init(relation);
+		}
+		return OPPORTUNITY_PAGE;
+	}
+
+	private void init(final CommercialRelation relation) {
+		for(final RuleInstance ruleinInstance : relation.ruleInstances()) {
+			ruleinInstance.parameterNames().size();
+		}
+	}
 
 }
