@@ -62,7 +62,7 @@ class ConditionImpl implements Condition{
 	private List<RuleInstance> ruleInstances = new ArrayList<>();
 	
 	@Transient
-	private RuleOperationsInternal ruleOperationsInternal = new AbstractRuleTemplate() {
+	private final RuleOperationsInternal ruleOperationsInternal = new AbstractRuleTemplate() {
 		
 		private static final long serialVersionUID = 1L;
 

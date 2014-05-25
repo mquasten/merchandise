@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
@@ -124,6 +125,10 @@ public  abstract   class EntityUtil {
 			
 			@Override
 			public void doWith(final Field field) throws IllegalArgumentException, IllegalAccessException {
+				if( field.isAnnotationPresent(Transient.class)){
+					return;
+				}
+				
 				field.setAccessible(true);
 				setField(source, field, null);
 				
