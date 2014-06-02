@@ -62,7 +62,7 @@ class ConditionImpl implements Condition{
 	private List<RuleInstance> ruleInstances = new ArrayList<>();
 	
 	@Transient
-	private final RuleOperationsInternal ruleOperationsInternal = new AbstractRuleTemplate() {
+	private final RuleOperationsInternal ruleOperations = new AbstractRuleTemplate() {
 		
 		private static final long serialVersionUID = 1L;
 
@@ -160,34 +160,37 @@ class ConditionImpl implements Condition{
 	
 	@Override
 	public List<RuleInstance> ruleInstances() {
-		return ruleOperationsInternal.ruleInstances(ruleInstances);
+		return ruleOperations.ruleInstances(ruleInstances);
 	}
 	
 	
 	@Override
 	public  final RuleInstance ruleInstance(final Rule rule) {
-		return ruleOperationsInternal.ruleInstance(ruleInstances, rule);
+		return ruleOperations.ruleInstance(ruleInstances, rule);
 		
 	}
 
 
 	@Override
 	public final void assign(final Rule rule, final int priority ){
-		ruleOperationsInternal.assign(ruleInstances, rule, priority);
+		ruleOperations.assign(ruleInstances, rule, priority);
 	}
 
 
 
 	@Override
 	public void remove(final Rule rule) {
-		ruleOperationsInternal.remove(ruleInstances, rule);
+		ruleOperations.remove(ruleInstances, rule);
 	}
 
 
 
 	@Override
 	public boolean hasRule(final Rule rule) {
-		return ruleOperationsInternal.hasRule(ruleInstances, rule);
+		return ruleOperations.hasRule(ruleInstances, rule);
 	} 
+	
+	
+	
 	
 }

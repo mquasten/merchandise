@@ -1,8 +1,11 @@
 package de.mq.merchandise.controller;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+
+
+import org.springframework.util.ReflectionUtils;
 
 import de.mq.mapping.util.proxy.Conversation;
 import de.mq.merchandise.customer.Customer;
@@ -167,7 +170,6 @@ class OpportunityControllerImpl {
 	
 	
 	void addConditionValue(final ConditionAO conditionAO)  {
-		
 		if(conditionAO.getValue() == null ){
 			return;
 		}
@@ -191,29 +193,58 @@ class OpportunityControllerImpl {
 		final CommercialRelation relation = conditionAO.getCommercialRelation();
 		
 		EntityUtil.setFieldsToNull(conditionAO.getCondition());
-		EntityUtil.setDependency(conditionAO.getCondition(), List.class, new ArrayList<>());
+		//EntityUtil.setDependency(conditionAO.getCondition(), List.class, new ArrayList<>());
+		
+		setField(conditionAO.getCondition(), "values", new ArrayList<>());
+		setField(conditionAO.getCondition(), "ruleInstances", new ArrayList<>());
+		
 		
 		conditionAO.setCommercialRelation(relation);
 		
 	}
+
+	// TODO refactor put that code to EntityUtil etc. 
+	private void setField(final Object target, final String name, Object value) {
+		final Field field = ReflectionUtils.findField(target.getClass(),name);
+		field.setAccessible(true);
+		try {
+			field.set(target,  value);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	void addCondition(final OpportunityAO opportunityAO, final Condition condition) {
-		opportunityAO.getOpportunity().assignConditions(condition.commercialRelation().commercialSubject(), EntityUtil.copy(condition));
+		
+		final Condition newCondition = EntityUtil.copy(condition);
+		
+		System.out.println(newCondition.ruleInstances());
+		opportunityAO.getOpportunity().assignConditions(condition.commercialRelation().commercialSubject(), newCondition);
 		opportunityAO.notifyConditionsChanged();
 	}
+
+	
 	
 	
 	
 	void onConditionNodeSelect(final Object selected, final ConditionAO conditionAO, final RuleInstanceAO ruleInstanceAO) {
-	    
+	
 		if (selected instanceof CommercialRelation) {
 	    	conditionAO.setCommercialRelation((CommercialRelation) selected);	
+	    	
 		}
 		
+		
 		if( selected instanceof RuleOperations){
+		     
 			ruleInstanceAO.setParent((RuleOperations) selected);
-		}
+			
+			
+		} 
 	}
+	
+	
 	
 	void deleteCondition(final OpportunityAO opportunityAO, final Object data){
 		if (data instanceof CommercialRelation) {
