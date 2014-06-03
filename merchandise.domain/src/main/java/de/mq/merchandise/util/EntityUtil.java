@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.persistence.Id;
@@ -120,7 +121,7 @@ public  abstract   class EntityUtil {
 	
 	
 	
-	public static void setFieldsToNull(final Object source) {
+	public static void clearFields(final Object source) {
 		ReflectionUtils.doWithFields(source.getClass(), new FieldCallback() {
 			
 			@Override
@@ -130,6 +131,14 @@ public  abstract   class EntityUtil {
 				}
 				
 				field.setAccessible(true);
+				final Object value = field.get(source);
+				if (value instanceof Collection) {
+					final Collection<?> collection = (Collection<?>) value;
+					collection.clear();
+					return;
+				}
+				
+				
 				setField(source, field, null);
 				
 			}

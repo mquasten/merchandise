@@ -3,7 +3,9 @@ package de.mq.merchandise.util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 import java.util.Locale;
@@ -22,10 +24,11 @@ import de.mq.merchandise.contact.Contact;
 import de.mq.merchandise.contact.Coordinates;
 import de.mq.merchandise.contact.support.ContactBuilderFactoryImpl;
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.customer.Person;
+import de.mq.merchandise.customer.support.CustomerImpl;
+import de.mq.merchandise.opportunity.support.CommercialRelation;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectImpl;
-import de.mq.merchandise.util.EntityUtil;
-import de.mq.merchandise.util.EqualsBuilder;
 import de.mq.merchandise.util.support.SimpleReflectionEqualsBuilderImpl;
 
 
@@ -186,14 +189,14 @@ public class EntityUtilTest {
 	}
 	
 	@Test
-	public final void  setFieldsToNull() {
+	public final void  clearFields() {
 		final Address address = newAddressWithValues();
 		Assert.assertNotNull(address.id());
 		Assert.assertNotNull(address.city());
 		Assert.assertNotNull(address.street());
 		Assert.assertNotNull(address.houseNumber());
 		Assert.assertNotNull(address.country());
-		EntityUtil.setFieldsToNull(address);
+		EntityUtil.clearFields(address);
 		
 		Assert.assertNull(address.city());
 		Assert.assertNull(address.street());
@@ -207,6 +210,30 @@ public class EntityUtilTest {
 			
 		}
 	}
+	
+	@Test
+	public final void clearFieldsCollection() {
+		final Customer customer = new CustomerImpl(Mockito.mock(Person.class)); 
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		customer.assign(commercialSubject);
+		Assert.assertEquals(1, customer.commercialSubjects().size());
+		
+		EntityUtil.clearFields(customer);
+		Assert.assertEquals(0, customer.commercialSubjects().size());
+	}
+	
+	
+	
+	@Test
+	public final void clearFieldsTransient() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		@SuppressWarnings("unchecked")
+		final Constructor<CommercialRelation> constructor  = (Constructor<CommercialRelation>) Class.forName("de.mq.merchandise.opportunity.support.CommercialRelationImpl").getDeclaredConstructor();
+		constructor.setAccessible(true);
+		final CommercialRelation commercialRelation = constructor.newInstance();
+		EntityUtil.clearFields(commercialRelation);
+		Assert.assertNotNull(ReflectionTestUtils.getField(commercialRelation, "ruleOperations"));
+	}
+	
 	
 	@Test
 	public final void setId() {

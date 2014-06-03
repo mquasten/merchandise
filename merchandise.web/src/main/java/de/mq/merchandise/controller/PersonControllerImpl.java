@@ -50,7 +50,7 @@ public class PersonControllerImpl {
 		}
 
 		person.assign(address); 
-		EntityUtil.setFieldsToNull(cityAddress);
+		EntityUtil.clearFields(cityAddress);
 	}
 	
 	
@@ -68,7 +68,7 @@ public class PersonControllerImpl {
 	
 	public  void addContact(final Person person, final LoginContact loginContact) {	
 		person.assign(EntityUtil.copy(loginContact));
-		EntityUtil.setFieldsToNull(loginContact);
+		EntityUtil.clearFields(loginContact);
 		
 	}
 	
