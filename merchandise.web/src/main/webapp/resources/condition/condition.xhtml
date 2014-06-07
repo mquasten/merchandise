@@ -52,35 +52,7 @@
         		</p:selectOneMenu >  
             
             <p:message for="type" display="text" />
-            
-            
-            <h:outputLabel  for="rules" value="#{cc.attrs.message.condition_rules}" />  
-            
-          
-          <h:panelGrid id="rulesGrid" >
-            
-            <p:selectOneMenu  id="rules"  value="#{ruleInstance.selectedId}"  style="width:100%"  	>
-						
-						
-						<f:selectItems
-							value="#{ruleController.ruleItems()}" />  />
-			
-			 <p:ajax update="rulesGrid"  process="@this" />		
-			 
-			
-		</p:selectOneMenu>
-		
-		<p:dataTable var="parameterVar" paginator="false"  value="#{ruleInstance.parameter}">
-			 <p:column>#{parameterVar.name}</p:column> 
-		</p:dataTable>
-		
-           </h:panelGrid>	 		
-          
-             <p:message for="rulesGrid" display="text" />
              
-             
-			 
-			 
 			 <h:outputLabel  for="valueTable" value="#{cc.attrs.message.condition_values}" />
 			 
 			 
