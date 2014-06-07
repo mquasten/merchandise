@@ -241,16 +241,23 @@ class OpportunityControllerImpl {
 	
 	String init(final Collection<CommercialRelation> relations) {
 		for(final CommercialRelation relation: relations){
-		
 			init(relation);
+			initCondition(relation);
 		}
 		return OPPORTUNITY_PAGE;
 	}
 
-	private void init(final CommercialRelation relation) {
-		for(final RuleInstance ruleinInstance : relation.ruleInstances()) {
+	private void initCondition(final CommercialRelation relation) {
+		for(final Condition.ConditionType conditionType :   relation.conditions().keySet()) {
+			init(relation.condition(conditionType));
+		}
+	}
+
+	private void init(final RuleOperations ruleOperation) {
+		for(final RuleInstance ruleinInstance : ruleOperation.ruleInstances()) {
 			ruleinInstance.parameterNames().size();
 		}
+		
 	}
 
 }

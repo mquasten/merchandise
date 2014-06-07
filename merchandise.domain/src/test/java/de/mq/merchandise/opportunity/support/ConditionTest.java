@@ -20,8 +20,6 @@ public class ConditionTest {
 	
 	private static final String VALUE = "value";
 	private static final long ID = 19680528L;
-	private static final String CALCULATION = "calculation";
-	private static final String VALIDATION = "validation";
 	private final List<String> values = new ArrayList<>();
 	@SuppressWarnings("unused")
 	private final CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
@@ -31,23 +29,14 @@ public class ConditionTest {
 		values.add("Kylie");
 	}
 	
-	@Test
-	public final void createConditionAllValues() {		
-		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values, VALIDATION, CALCULATION );
-		Assert.assertEquals(values, condition.values());
-		Assert.assertEquals(VALIDATION, condition.validation());
-		Assert.assertEquals(CALCULATION, condition.calculation());
-		Assert.assertEquals(ConditionType.PricePerUnit, condition.conditionType());
-		Assert.assertNull(condition.commercialRelation());
-	}
+	
 	
 	@Test
 	public final void createOnlyValues() {
 		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values);
 		Assert.assertEquals(values, condition.values());
 		Assert.assertEquals(ConditionType.PricePerUnit, condition.conditionType());
-		Assert.assertNull(condition.validation());
-		Assert.assertNull(condition.calculation());
+		
 		Assert.assertNull(condition.commercialRelation());
 	}
 	

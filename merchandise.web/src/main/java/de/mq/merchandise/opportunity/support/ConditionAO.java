@@ -31,18 +31,6 @@ public abstract class ConditionAO implements Serializable {
 	@Setter(clazz=ConditionImpl.class, value = "conditionType" , converter=String2ConditionType.class)
 	public abstract void setConditionType(final String type);
 	
-	@Getter(clazz=ConditionImpl.class, value = "calculation")
-	public abstract String getCalculation();
-
-	@Setter(clazz=ConditionImpl.class, value = "calculation")
-	public abstract void setCalculation(final String calculation);
-	
-	@Getter(clazz=ConditionImpl.class, value = "validation")
-	public abstract String getValidation();
-
-	@Setter(clazz=ConditionImpl.class, value = "validation")
-	public abstract void setValidation(final String validation);
-	
 	
 	@Getter(clazz=ConditionImpl.class, value = "values" , converter=String2SimpleMapDataModel.class )
 	public abstract DataModel<String> getValues();

@@ -19,9 +19,7 @@ public class ConditionMappingTest {
 
 	private static final String PRICE = "47.11 EUR";
 
-	private static final String CALCULATION = "calculation";
-
-	private static final String VALIDATION = "validation";
+	
 
 	private static final long CONDITION_ID = 19680528L;
 
@@ -33,15 +31,14 @@ public class ConditionMappingTest {
 	public final void toWeb() {
 		final List<String> values = new ArrayList<>();
 		values.add(PRICE);
-		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values, VALIDATION, CALCULATION);
+		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values);
 		EntityUtil.setId(condition, CONDITION_ID);
 
 		final ConditionAO web = proxyFactory.createProxy(ConditionAO.class, new ModelRepositoryBuilderImpl().withDomain(condition).withBeanResolver(beanResolver).build());
 
 		Assert.assertEquals(""+ CONDITION_ID, web.getId());
 		Assert.assertEquals(ConditionType.PricePerUnit.name(), web.getConditionType());
-		Assert.assertEquals(VALIDATION, web.getValidation());
-		Assert.assertEquals(CALCULATION, web.getCalculation());
+		
 	}
 	
 	@Test
@@ -51,21 +48,14 @@ public class ConditionMappingTest {
 		
 		Assert.assertFalse(condition.hasId());
 		Assert.assertNull(condition.conditionType());
-		Assert.assertNull(condition.validation());
-		Assert.assertNull(condition.calculation());
-		
 		web.setId(""+CONDITION_ID);
 		web.setConditionType(ConditionType.Quantity.name());
-		web.setValidation(VALIDATION);
-		web.setCalculation(CALCULATION);
 		
 		Assert.assertTrue(condition.hasId());
 		Assert.assertEquals(CONDITION_ID, condition.id());
 		Assert.assertEquals(ConditionType.Quantity, condition.conditionType());
-		Assert.assertEquals(VALIDATION, condition.validation());
-		Assert.assertEquals(CALCULATION, condition.calculation());
+		
 	}
-	
 	
 
 }

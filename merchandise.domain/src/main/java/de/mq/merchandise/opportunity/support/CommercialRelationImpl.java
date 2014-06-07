@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.FetchType;
@@ -47,12 +46,6 @@ class CommercialRelationImpl  implements CommercialRelation {
 	@Equals
 	@JoinColumn(name="opportunity_id" )
 	private Opportunity opportunity;
-	
-	@Column(length=250)
-	private String validate;
-	
-	@Column(length=250)
-	private String calculation;
  
 	@OneToMany(targetEntity=ConditionImpl.class  , mappedBy="commercialRelation",  cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE} )
 	@MapKeyColumn(name="condition_type", length=20)

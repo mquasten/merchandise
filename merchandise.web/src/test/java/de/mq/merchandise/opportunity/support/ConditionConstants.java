@@ -16,7 +16,7 @@ public class ConditionConstants {
 		final List<String> values = new ArrayList<>();
 		final CommercialRelation commercialRelation = EntityUtil.create(CommercialRelationImpl.class);
 		values.add("value");
-		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values, "validation", "calculation");
+		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values);
 		ReflectionTestUtils.setField(condition, "commercialRelation", commercialRelation);
 		ReflectionTestUtils.setField(condition, "id", 19680528L);
 		return condition;

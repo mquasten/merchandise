@@ -260,16 +260,14 @@ public class OpportunityControllerTest {
 		Mockito.when(conditionAO.getCommercialRelation()).thenReturn(ConditionConstants.CONDITION.commercialRelation());
 
 		Assert.assertNotNull(condition.commercialRelation());
-		Assert.assertNotNull(condition.calculation());
-		Assert.assertNotNull(condition.validation());
+		
 		Assert.assertTrue(condition.values().size() > 0);
 		Assert.assertNotNull(condition.conditionType());
 
 		opportunityControllerImpl.clearCondition(conditionAO);
 
 		Assert.assertNull(condition.commercialRelation());
-		Assert.assertNull(condition.calculation());
-		Assert.assertNull(condition.validation());
+		
 		Assert.assertFalse(condition.values().size() > 0);
 		Assert.assertNull(condition.conditionType());
 

@@ -40,12 +40,7 @@ class ConditionImpl implements Condition{
 	@ElementCollection()
 	@Column(name="value" , length=50)
 	private List<String> values=new ArrayList<>();
-	
-	@Column(length=250)
-	private String validation;
-	
-	@Column(length=250)
-	private String calculation;
+
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name="condition_type")
@@ -79,15 +74,10 @@ class ConditionImpl implements Condition{
 	
 	
 	ConditionImpl(final ConditionType conditionType,final List<String> values) {
-		this(conditionType, values, null, null);
+		this.conditionType=conditionType;
+		this.values=values;
 	}
 	
-	ConditionImpl(final ConditionType conditionType, final List<String> values, final String validation, final String calculation) {
-		this.conditionType=conditionType;
-		this.validation = validation;
-		this.calculation = calculation;
-		this.values.addAll(values);
-	}
 	
 	
 	@Override
@@ -95,17 +85,6 @@ class ConditionImpl implements Condition{
 		return Collections.unmodifiableList(values);
 	}
 	
-	@Override
-	public String calculation() {
-		return calculation;
-	}
-	
-	@Override
-	public String validation() {
-		return validation;
-	}
-	
-
 	@Override
 	public CommercialRelation commercialRelation() {
 		return commercialRelation;

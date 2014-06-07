@@ -10,14 +10,12 @@ public interface Condition extends BasicEntity, RuleOperations {
 		Quantity,
 		Unit,
 		PricePerUnit,
+		Quality,
 		Currency; 
+		
 	}
 
 	List<String> values();
-
-	String calculation();
-
-	String validation(); 
 	
 	CommercialRelation commercialRelation();
 	
