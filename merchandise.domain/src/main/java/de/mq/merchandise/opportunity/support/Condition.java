@@ -15,12 +15,19 @@ public interface Condition extends BasicEntity, RuleOperations {
 		Currency; 
 		
 	}
+	
+	enum InputType {
+		User,
+		Calculated
+	}
 
 	List<String> values();
 	
 	CommercialRelation commercialRelation();
 	
 	ConditionType conditionType();
+	
+	InputType inputTyp();
 	
 	void assignValue(final String value);
 	

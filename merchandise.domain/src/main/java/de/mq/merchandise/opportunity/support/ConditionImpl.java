@@ -43,9 +43,16 @@ class ConditionImpl implements Condition{
 
 	
 	@Enumerated(EnumType.STRING)
-	@Column(name="condition_type")
+	@Column(name="condition_type",nullable=false, length=20)
 	@Equals
+	
 	private ConditionType conditionType;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name="input_type", nullable=false, length=20)
+	private InputType inputType;
+	
+	
 	
 	@ManyToOne(targetEntity=CommercialRelationImpl.class )
 	@JoinColumn(name="commercial_relation_id")
@@ -73,8 +80,9 @@ class ConditionImpl implements Condition{
 	
 	
 	
-	ConditionImpl(final ConditionType conditionType,final List<String> values) {
+	ConditionImpl(final ConditionType conditionType, final InputType inputType, final List<String> values) {
 		this.conditionType=conditionType;
+		this.inputType=inputType;
 		this.values=values;
 	}
 	
@@ -167,6 +175,13 @@ class ConditionImpl implements Condition{
 	@Override
 	public boolean hasRule(final Rule rule) {
 		return ruleOperations.hasRule(ruleInstances, rule);
+	}
+
+
+
+	@Override
+	public InputType inputTyp() {
+		return inputType;
 	} 
 	
 	

@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
+import de.mq.merchandise.opportunity.support.Condition.InputType;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.util.EntityUtil;
 
@@ -33,10 +34,10 @@ public class ConditionTest {
 	
 	@Test
 	public final void createOnlyValues() {
-		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values);
+		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, InputType.User, values);
 		Assert.assertEquals(values, condition.values());
 		Assert.assertEquals(ConditionType.PricePerUnit, condition.conditionType());
-		
+		Assert.assertEquals(InputType.User, condition.inputTyp());
 		Assert.assertNull(condition.commercialRelation());
 	}
 	
@@ -44,6 +45,13 @@ public class ConditionTest {
 	public final void conditionType() {
 		for(final ConditionType conditionType : ConditionType.values()){
 			Assert.assertEquals(conditionType, ConditionType.valueOf(conditionType.name()));
+		}
+	}
+	
+	@Test
+	public final void inputTypes() {
+		for(final InputType inputType : InputType.values()) {
+			Assert.assertEquals(inputType, InputType.valueOf(inputType.name()));
 		}
 	}
 	
@@ -64,7 +72,7 @@ public class ConditionTest {
 	}
 
 	private RuleOperations newCondition(final CommercialRelation commercialRelation, final ConditionType conditionType) {
-		final RuleOperations condition = new ConditionImpl(conditionType, values);
+		final RuleOperations condition = new ConditionImpl(conditionType, InputType.User, values);
 		ReflectionTestUtils.setField(condition, "commercialRelation", commercialRelation);
 		return condition;
 	}
@@ -73,7 +81,7 @@ public class ConditionTest {
 	public final void create() {
 		final Opportunity opportunity = new OpportunityImpl();
 		CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
-		opportunity.assignConditions(commercialSubject,new ConditionImpl(ConditionType.PricePerUnit, new ArrayList<String>()), new ConditionImpl(ConditionType.Quantity, new ArrayList<String>()));
+		opportunity.assignConditions(commercialSubject,new ConditionImpl(ConditionType.PricePerUnit,InputType.User, new ArrayList<String>()), new ConditionImpl(ConditionType.Quantity, InputType.User, new ArrayList<String>()));
 		Assert.assertEquals(1, opportunity.commercialRelations().size());
 		Assert.assertEquals(2,  opportunity.commercialRelations().iterator().next().conditions().keySet().size());
 		Assert.assertTrue(opportunity.commercialRelations().iterator().next().conditions().containsKey(ConditionType.PricePerUnit));

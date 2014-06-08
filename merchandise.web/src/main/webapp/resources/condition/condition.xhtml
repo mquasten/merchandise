@@ -55,6 +55,15 @@
         		</p:selectOneMenu >  
             
             <p:message for="type" display="text" />
+            
+            <h:outputLabel  for="inputType" value="#{cc.attrs.message.condition_type}" />  
+            <p:selectOneMenu  id="inputType" value="#{condition.inputType}"  style="width:100%"  >  
+               	<f:selectItem itemLabel="#{message.select_empty}" itemValue="" />
+               	<f:selectItem itemLabel="#{message.input_type_user}" itemValue="User" /> 
+               	<f:selectItem itemLabel="#{message.input_type_calculation}" itemValue="Calculated" /> 
+               	
+            </p:selectOneMenu>
+            <p:message for="inputType" display="text" />
              
 			 <h:outputLabel  for="valueTable" value="#{cc.attrs.message.condition_values}" />
 			 

@@ -32,6 +32,14 @@ public abstract class ConditionAO implements Serializable {
 	public abstract void setConditionType(final String type);
 	
 	
+	@NotNull(message="{mandatory_field}")
+	@Getter(clazz=ConditionImpl.class, value = "inputType", converter=Enum2StringConverter.class)
+	public abstract String getInputType();
+	
+	@Setter(clazz=ConditionImpl.class, value = "inputType" , converter=String2InputType.class)
+	public abstract void setInputType(final String type);
+	
+	
 	@Getter(clazz=ConditionImpl.class, value = "values" , converter=String2SimpleMapDataModel.class )
 	public abstract DataModel<String> getValues();
 	

@@ -24,6 +24,7 @@ import de.mq.merchandise.contact.support.ContactBuilderFactoryImpl;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.PersonConstants;
 import de.mq.merchandise.opportunity.support.Condition.ConditionType;
+import de.mq.merchandise.opportunity.support.Condition.InputType;
 import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.rule.support.RuleImpl;
@@ -110,7 +111,7 @@ public class OpportunityIntegrationTest {
 		
 		
 		
-		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, values);
+		final Condition condition = new ConditionImpl(ConditionType.PricePerUnit, InputType.Calculated, values);
 	
 		condition.assign(rule, 4711);
 	 
@@ -176,7 +177,7 @@ public class OpportunityIntegrationTest {
 		Assert.assertEquals(PARAMETER_VALUE, result.condition(commercialSubject, ConditionType.PricePerUnit).ruleInstance(rule).parameter(PARAMETER_NAME));
 		
 		Assert.assertEquals(result.condition(commercialSubject, condition.conditionType()), ReflectionTestUtils.getField(result.condition(commercialSubject, ConditionType.PricePerUnit).ruleInstances().get(0), "condition"));
-		
+		Assert.assertEquals(InputType.Calculated, result.condition(commercialSubject, ConditionType.PricePerUnit).inputTyp());
 		
 		Assert.assertNull(ReflectionTestUtils.getField(result.condition(commercialSubject, ConditionType.PricePerUnit).ruleInstances().get(0), "commercialRelation"));
 		
