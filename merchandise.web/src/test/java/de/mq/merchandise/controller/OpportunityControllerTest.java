@@ -2,7 +2,9 @@ package de.mq.merchandise.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -422,8 +424,23 @@ public class OpportunityControllerTest {
 		CommercialRelation commercialRelation = Mockito.mock(CommercialRelation.class);
 		relations.add(commercialRelation);
 		final List<RuleInstance> ruleInstances = new ArrayList<>();
+		final Condition condition =Mockito.mock(Condition.class);
+		final List<RuleInstance> ruleInstancesForCondition = new ArrayList<>();
+
+		@SuppressWarnings("unchecked")
+		final List<String> parametersForConditionRuleInstances = Mockito.mock(List.class);
+		final RuleInstance ruleInstanceForCondition = Mockito.mock(RuleInstance.class);
+		Mockito.when(ruleInstanceForCondition.parameterNames()).thenReturn(parametersForConditionRuleInstances);
+		ruleInstancesForCondition.add(ruleInstanceForCondition);
+		Mockito.when(condition.ruleInstances()).thenReturn(ruleInstancesForCondition);
 		
 		Mockito.when(commercialRelation.ruleInstances()).thenReturn(ruleInstances);
+		
+		final Map<Condition.ConditionType, Condition> conditions = new HashMap<>();
+		conditions.put(Condition.ConditionType.Unit, condition);
+		Mockito.when(commercialRelation.conditions()).thenReturn(conditions);
+		Mockito.when(commercialRelation.condition(Condition.ConditionType.Unit)).thenReturn(condition);
+			
 		
 		final RuleInstance ruleInstance = Mockito.mock(RuleInstance.class);
 		ruleInstances.add(ruleInstance);
@@ -434,6 +451,7 @@ public class OpportunityControllerTest {
 		Assert.assertEquals(OpportunityControllerImpl.OPPORTUNITY_PAGE, opportunityControllerImpl.init(relations));
 		
 		Mockito.verify(params).size();
+		Mockito.verify(parametersForConditionRuleInstances).size();
 	}
 
 }
