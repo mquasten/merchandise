@@ -21,7 +21,6 @@ public class ConditionConverterImpl implements Converter{
 		}
 		
 		if (value instanceof Condition) {
-			
 			return ((Condition)value).conditionType().name();
 			
 		}

@@ -42,10 +42,13 @@
             
             
              <p:selectOneMenu  id="type" value="#{condition.conditionType}"  style="width:100%"  >  
-                      				 <f:selectItem itemLabel="#{message.select_empty}" itemValue="" />
-            						 <f:selectItem itemLabel="#{message.condition_type_price_per_unit}" itemValue="PricePerUnit" />  
+                      				<f:selectItem itemLabel="#{message.select_empty}" itemValue="" />
+                      				<f:selectItem itemLabel="#{message.condition_type_product}" itemValue="Product" /> 
+            						<f:selectItem itemLabel="#{message.condition_type_price_per_unit}" itemValue="PricePerUnit" />  
             						<f:selectItem itemLabel="#{message.condition_type_quantity}" itemValue="Quantity" />  
             						<f:selectItem itemLabel="#{message.condition_type_unit}" itemValue="Unit" />  
+            						<f:selectItem itemLabel="#{message.condition_type_quality}" itemValue="Quality" />  
+            						<f:selectItem itemLabel="#{message.condition_type_currency}" itemValue="Currency" />  
            							<f:validateBean />
            							
 		

@@ -7,6 +7,7 @@ import de.mq.merchandise.BasicEntity;
 public interface Condition extends BasicEntity, RuleOperations {
 	
 	enum ConditionType {
+		Product,
 		Quantity,
 		Unit,
 		PricePerUnit,
