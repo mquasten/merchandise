@@ -1,17 +1,17 @@
 package de.mq.merchandise.opportunity.support;
 
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import de.mq.mapping.util.proxy.support.AbstractString2EnumConverter;
+
 @Component
-public class String2OpportunityKindConverter implements Converter<String,Opportunity.Kind> {
+public class String2OpportunityKindConverter  extends AbstractString2EnumConverter{
 
 	@Override
-	public Opportunity.Kind convert(final String source) {
-		if(source == null){
-			return null;
-		}
-		return Opportunity.Kind.valueOf(source);
+	protected Enum<?> value(final String value) {
+		return Opportunity.Kind.valueOf(value);
 	}
+
+	
 
 }

@@ -10,7 +10,7 @@ import de.mq.merchandise.opportunity.support.Condition.InputType;
 
 public class String2InputTypeTest {
 	
-	private final Converter<String, InputType>  converter = new String2InputType(); 
+	private final Converter<String, Enum<?>>  converter = new String2InputType(); 
 	
 	@Test
 	public final void toEnum() {

@@ -9,7 +9,7 @@ import de.mq.merchandise.opportunity.support.Opportunity.Kind;
 
 public class String2OpportunityKindConverterTest {
 	
-	private Converter<String,Kind> string2OpportunityKindConverter = new String2OpportunityKindConverter();
+	private Converter<String,Enum<?>> string2OpportunityKindConverter = new String2OpportunityKindConverter();
 	
 	@Test
 	public final void convert() {

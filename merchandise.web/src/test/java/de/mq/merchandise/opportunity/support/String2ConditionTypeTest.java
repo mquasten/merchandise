@@ -9,7 +9,7 @@ import de.mq.merchandise.opportunity.support.Condition.ConditionType;
 
 public class String2ConditionTypeTest {
 	
-	private Converter<String, ConditionType> converter = new String2ConditionType(); 
+	private Converter<String, Enum<?>> converter = new String2ConditionType(); 
 	
 	@Test
 	public final void convert() {
