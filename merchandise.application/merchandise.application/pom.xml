@@ -120,7 +120,13 @@
 	<artifactId>groovy</artifactId>
 	<version>1.8.9</version>
 	
-</dependency>
+	</dependency>
+	
+	<dependency>
+    <groupId>org.codehaus.groovy.modules.http-builder</groupId>
+    <artifactId>http-builder</artifactId>
+    <version>0.7</version>
+  </dependency>
 
 
             
