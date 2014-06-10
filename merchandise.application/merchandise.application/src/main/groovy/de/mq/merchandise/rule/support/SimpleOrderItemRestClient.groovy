@@ -18,13 +18,11 @@ class SimpleOrderItemRestClient implements  de.mq.merchandise.rule.Converter<Ord
 	@Override
 	public Map<String,Object> convert(final OrderItem source) {
 	
-		Map map = new HashMap();
-		map.put("key" , "\"nicole\"");
+		final Map<String,String> map = new HashMap<>();
+		map.put("key" , String.format("\"%s\"" , "nicole"));
 	
-	    def HttpResponseDecorator results  = restClient.get( 'query' :  map );
+	    final HttpResponseDecorator results  = restClient.get( 'query' :  map );
 	
-	
-		
 
 		final  String quality = DataAccessUtils.requiredSingleResult(results.responseData.get("rows")).get("value");
 		
