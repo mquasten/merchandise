@@ -1,6 +1,10 @@
 package de.mq.merchandise.rule.support
 
  
+import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.util.CollectionUtils;
+
+
 import groovy.lang.MetaClass;
 import groovy.util.slurpersupport.NodeChild
 import groovyx.net.http.HTTPBuilder
@@ -9,14 +13,24 @@ import groovyx.net.http.RESTClient;
 
 class SimpleOrderItemRestClient implements  de.mq.merchandise.rule.Converter<OrderItem, Map<String,Object>>  {
 
-	def RESTClient restClient = new RESTClient('http://echo.jsontest.com',  groovyx.net.http.ContentType.JSON);
+	def RESTClient restClient = new RESTClient('http://localhost:5984/petstore/_design/qualityByArtist/_view/QualityByArtist',   groovyx.net.http.ContentType.JSON);
 	
 	@Override
 	public Map<String,Object> convert(final OrderItem source) {
 	
-	    def HttpResponseDecorator results  = restClient.get('path' :  '/quantity/2/quality/platinum/product/nicole/unit/date/priceperunit/999.00/currency/EUR');
+		Map map = new HashMap();
+		map.put("key" , "\"nicole\"");
 	
-		return results.responseData
+	    def HttpResponseDecorator results  = restClient.get( 'query' :  map );
+	
+	
+		
+
+		final  String quality = DataAccessUtils.requiredSingleResult(results.responseData.get("rows")).get("value");
+		
+		println quality
+		
+		return null;
 	   
 	}
 
