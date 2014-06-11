@@ -26,8 +26,6 @@ class SimpleOrderItemRestClient implements  de.mq.merchandise.rule.Converter<Ord
 		final Map<String,String> queryMap = new HashMap<>();
 		queryMap.put("key" , String.format("\"%s\"" , "nicole"));
 		
-	
-		
 	    final HttpResponseDecorator results  = rest.get(  'path' :'qualityByArtist/_view/QualityByArtist', query : queryMap );
 	
 		final  String quality = DataAccessUtils.requiredSingleResult(results.responseData.get("rows")).get("value");
@@ -42,7 +40,7 @@ class SimpleOrderItemRestClient implements  de.mq.merchandise.rule.Converter<Ord
 		
 		final HttpResponseDecorator prices  = rest.get(  'path' :'pricePerUnit/_view/PricePerUnit', query : queryMap );
 		
-	    int quantity = 4;
+	    int quantity =7;
 		if( CollectionUtils.isEmpty(prices.responseData.get("rows")) ){
 			throw new InvalidDataAccessApiUsageException("Result is invalid");
 		}
@@ -61,10 +59,20 @@ class SimpleOrderItemRestClient implements  de.mq.merchandise.rule.Converter<Ord
 				max=Integer.MAX_VALUE;
 			}
 			
-			if( (quantity >=  min.intValue()) && (quantity <=  max.intValue()) ) {
-				println "***" + price.value.pricePerUnit + "***"
-				return;
+			if( quantity <  min.intValue()) {
+			   continue;
 			}
+				
+		    if (quantity >  max.intValue()  ) {
+			   continue;
+			}
+			
+			if( price.value.pricePerUnit == null) {
+				throw new InvalidDataAccessApiUsageException("Result is invalid");
+			}
+			println "***" + price.value.pricePerUnit + "***"
+			return;
+			
 		}
 		throw new InvalidDataAccessApiUsageException("PricePerUnit not found for Parameters");
 		
