@@ -19,7 +19,7 @@ import groovyx.net.http.RESTClient;
 class SimpleOrderItemRestClient implements  de.mq.merchandise.rule.Converter<OrderItem, Map<String,Object>>  {
 
 	def RESTClient rest = new RESTClient('http://localhost:5984/petstore/_design/',   groovyx.net.http.ContentType.JSON);
-	
+	// http://localhost:5984/petstore/_design/pricePerUnit/_list/quantityFilter/PricePerUnit?key={%22quality%22:%22platinium%22,%22unit%22:%22date%22}&quantity=11
 	@Override
 	public Map<String,Object> convert(final OrderItem source) {
 	
