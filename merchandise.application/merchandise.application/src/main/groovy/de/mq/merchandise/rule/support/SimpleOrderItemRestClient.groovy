@@ -3,6 +3,7 @@ package de.mq.merchandise.rule.support
  
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.dao.DataAccessException
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.util.CollectionUtils;
@@ -19,68 +20,47 @@ import groovyx.net.http.RESTClient;
 class SimpleOrderItemRestClient implements  de.mq.merchandise.rule.Converter<OrderItem, Map<String,Object>>  {
 
 	def RESTClient rest = new RESTClient('http://localhost:5984/petstore/_design/',   groovyx.net.http.ContentType.JSON);
-	// http://localhost:5984/petstore/_design/pricePerUnit/_list/quantityFilter/PricePerUnit?key={%22quality%22:%22platinium%22,%22unit%22:%22date%22}&quantity=11
 	@Override
-	public Map<String,Object> convert(final OrderItem source) {
-	
-		final Map<String,String> queryMap = new HashMap<>();
-		queryMap.put("key" , String.format("\"%s\"" , "nicole"));
+	def Map<String,Object> convert(final OrderItem source) {
+		def product="nicole";
+		def unit = "date";
+		def quantity = 3;
 		
-	    final HttpResponseDecorator results  = rest.get(  'path' :'qualityByArtist/_view/QualityByArtist', query : queryMap );
-	
-		final  String quality = DataAccessUtils.requiredSingleResult(results.responseData.get("rows")).get("value");
-		if( quality == null){
-			throw new InvalidDataAccessApiUsageException("Result is invalid");
-		}
+	    def HttpResponseDecorator results  = rest.get(  'path' :'qualityByArtist/_view/QualityByArtist', query : map( "key" ,  String.format("\"%s\"" , product )) );
+		def  String quality = requiredResult(DataAccessUtils.requiredSingleResult(requiredResult(results.responseData, "rows")), "value");
 		
-		
-		queryMap.clear();
-		
-		queryMap.put("key" , String.format("{\"quality\":\"%s\",\"unit\":\"date\"  }", quality));
-		
-		final HttpResponseDecorator prices  = rest.get(  'path' :'pricePerUnit/_view/PricePerUnit', query : queryMap );
-		
-	    int quantity =7;
-		if( CollectionUtils.isEmpty(prices.responseData.get("rows")) ){
-			throw new InvalidDataAccessApiUsageException("Result is invalid");
-		}
-	
-		for( final Map<String,Object> price : prices.responseData.get("rows")) {
-			
-			if( CollectionUtils.isEmpty(price.value)){
-				throw new InvalidDataAccessApiUsageException("Result is invalid");
-			}
-			Integer min  =  price.value.min ;
-			if( min == null){
-				min = 0 ;  
-			}
-			Integer max = price.value.max ;
-			if( max == null) {
-				max=Integer.MAX_VALUE;
-			}
-			
-			if( quantity <  min.intValue()) {
-			   continue;
-			}
-				
-		    if (quantity >  max.intValue()  ) {
-			   continue;
-			}
-			
-			if( price.value.pricePerUnit == null) {
-				throw new InvalidDataAccessApiUsageException("Result is invalid");
-			}
-			println "***" + price.value.pricePerUnit + "***"
-			return;
-			
-		}
-		throw new InvalidDataAccessApiUsageException("PricePerUnit not found for Parameters");
-		
+		def HttpResponseDecorator prices  = rest.get(  'path' :'pricePerUnit/_list/quantityFilter/PricePerUnit', query : map("key" , String.format("{\"quality\":\"%s\",\"unit\":\"%s\"  }", quality, unit) , "quantity", quantity ) );
+		def x =  requiredResult(requiredResult(DataAccessUtils.requiredSingleResult(requiredResult(prices.responseData, "rows")), "value"), "pricePerUnit");
+	    
+		println x
 	   
 	}
 
+	private requiredResult(final Map<String,?> map, final String key) {
+		def value = map.get(key);
+		if( value== null ) {
+		   throw new IllegalStateException("Incorrect result: Property: " + key + " not aware in  Response" );
+	    }
+		return value;
+    }
+			
+	private Map<?,?> map(final Object ...  values) {
+		def Map<?,?> results = new HashMap<>();
+		def key =null 
+		for(final Object value : values) {
+			
+			if( key==null) {
+			   key=value;
+			} else {
+			   results.put(key,value);
+			   key=null;
+			}
+			
+		}
+		return results;
+	}
 	
-
+	
 	@Override
 	public String[] parameters() {
 		// TODO Auto-generated method stub
