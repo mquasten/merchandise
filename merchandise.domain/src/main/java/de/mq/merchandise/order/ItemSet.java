@@ -1,7 +1,8 @@
-package de.mq.merchandise.order.support;
+package de.mq.merchandise.order;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.Opportunity;
@@ -20,14 +21,14 @@ public interface ItemSet {
 
 	void assign(final Item item);
 
-	void remove(final String productId);
+	void remove(final UUID itemId);
 
-	Item item(final String productId);
+	Item item(final UUID itemId);
 
 	Collection<Item> items();
 
 	Date created();
 
-	void remove(final Item item);
+	
 
 }

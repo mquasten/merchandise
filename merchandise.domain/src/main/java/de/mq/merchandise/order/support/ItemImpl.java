@@ -4,9 +4,14 @@ package de.mq.merchandise.order.support;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Currency;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.UUID;
 
 
+import de.mq.merchandise.order.Item;
+import de.mq.merchandise.order.ItemSet;
+import de.mq.merchandise.order.Money;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
@@ -15,35 +20,35 @@ import de.mq.merchandise.util.Equals;
 class ItemImpl implements Item {
 	@Equals()
 	private final ItemSet itemSet;
-	
 	@Equals()
 	private final String itemId; 
 	
 	private String productId;
 	
     private String quality;
-    
+	
     private String unit;
-    
+	
     private Integer quantity; 
-
+	
     private Money  pricePerUnit;
 	
     private Collection<String>currencies=new HashSet<>(); 
     
-    ItemImpl(final ItemSet itemSet, final String itemId ) {
+    public ItemImpl(ItemSet itemSet) {
 		this.itemSet = itemSet;
-		this.itemId=itemId;
-		EntityUtil.notNullGuard(this.itemSet, "ItemSet");
-    	EntityUtil.notNullGuard(this.productId, "itemId");
+		this.itemId = new UUID(new Date().getTime(), Double.valueOf(1e18 * Math.random()).longValue()).toString();
 	}
+
+    
+   
     
     /* (non-Javadoc)
 	 * @see de.mq.merchandise.order.support.Item#itemId()
 	 */
     @Override
-	public String itemId() {
-    	return itemId;
+	public UUID itemId() {
+    	return UUID.fromString(itemId);
     }
     
     /* (non-Javadoc)
@@ -99,14 +104,7 @@ public String quality() {
     
     
     
-    /* (non-Javadoc)
-	 * @see de.mq.merchandise.order.support.Item#assignProductId(java.lang.String)
-	 */
-    @Override
-	public void assignProductId(final String productId) {
-    	EntityUtil.notNullGuard(productId, "ProductId");
-		this.productId=productId;
-	}
+  
 	
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.order.support.Item#assignQuantity(java.lang.Integer)
@@ -117,24 +115,30 @@ public String quality() {
 		this.quantity=quantity();
 	}
 	
-   /* (non-Javadoc)
- * @see de.mq.merchandise.order.support.Item#assignQuality(java.lang.String)
- */
-@Override
-public void assignQuality(final String quality) {
-	   EntityUtil.notNullGuard(quality, "Quality");
-	   this.quality=quality;
-   }
-    
-    /* (non-Javadoc)
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.order.support.Item#assignProductId(java.lang.String)
+	 */
+	@Override
+    public final void assignProductId(final String productId) {
+    	EntityUtil.notNullGuard(productId, "ProductId");
+    	this.productId=productId;
+    }
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.order.support.Item#assignQuality(java.lang.String)
+	 */
+	public final void assignQuality(final String quality){
+		EntityUtil.notNullGuard(quality, "Quality");
+		this.quality=quality;
+	}
+	/* (non-Javadoc)
 	 * @see de.mq.merchandise.order.support.Item#assignUnit(java.lang.String)
 	 */
-    @Override
-	public void assignUnit(final String unit) {
-    	EntityUtil.notNullGuard(unit, "Unit");
-    	this.unit=unit;
-    }
-
+	@Override
+	public final void assignUnit(final String unit){
+		EntityUtil.notNullGuard(unit, "Unit");
+		this.unit=unit;
+	}
+	
    
     /* (non-Javadoc)
 	 * @see de.mq.merchandise.order.support.Item#pricePerUnit()

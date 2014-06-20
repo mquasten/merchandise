@@ -1,4 +1,4 @@
-package de.mq.merchandise.order.support;
+package de.mq.merchandise.order;
 
 import java.util.Currency;
 /**

@@ -7,6 +7,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import de.mq.merchandise.order.Money;
+
 public class MoneyTest {
 
 	@Test

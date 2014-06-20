@@ -2,6 +2,8 @@ package de.mq.merchandise.order.support;
 
 import java.util.Currency;
 
+import de.mq.merchandise.order.Money;
+
 public class MoneyImpl implements Comparable<Money>, Money {
 
 	private static final String DEFAULT_CURRENCY = "EUR";

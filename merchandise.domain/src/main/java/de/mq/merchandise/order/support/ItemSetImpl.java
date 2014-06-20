@@ -1,15 +1,17 @@
 package de.mq.merchandise.order.support;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
+import java.util.UUID;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.Opportunity;
+import de.mq.merchandise.order.Item;
+import de.mq.merchandise.order.ItemSet;
+import de.mq.merchandise.order.Money;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
@@ -27,7 +29,7 @@ public class ItemSetImpl implements ItemSet  {
 	@Equals
 	private final Date created = new Date(); 
 	
-	private Map<String,Item> items = new HashMap<>();
+	private final List<Item> items = new ArrayList<>();
 	
 	
 	public ItemSetImpl(final Customer tradingPartner, final Opportunity opportunity) {
@@ -90,8 +92,8 @@ public class ItemSetImpl implements ItemSet  {
 			throw new IllegalArgumentException("No items aware, amount can't be calculated");
 		}
 		
-		Money amount = new MoneyImpl(0, items.values().iterator().next().amount().currency());
-		for(final Item item : items.values()){
+		Money amount = new MoneyImpl(0, items.iterator().next().amount().currency());
+		for(final Item item : items){
 			amount=amount.add(item.amount());
 		}
 		return amount;
@@ -103,42 +105,19 @@ public class ItemSetImpl implements ItemSet  {
 	 */
 	@Override
 	public void assign(final Item item) {
-		if(items.containsKey(item.itemId())){
-			throw new IllegalArgumentException("Item for " + item.itemId() + "already exists.");
-		}
-		items.put(item.itemId(), item);
+		items.add(item);
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.mq.merchandise.order.support.ItemSet#remove(java.lang.String)
-	 */
-	@Override
-	public void remove(final String itemId) {
-		items.remove(itemId);
-	}
 	
-	@Override
-	public void remove(final Item item) {
-		items.remove(item.itemId());
-	}
 
-	/* (non-Javadoc)
-	 * @see de.mq.merchandise.order.support.ItemSet#item(java.lang.String)
-	 */
-	@Override
-	public Item item(final String itemId) {
-		if(! items.containsKey(itemId)){
-			throw new IllegalArgumentException("Item for id " + itemId + "not assigned.");
-		}
-		return items.get(itemId);
-	}
+	
 	
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.order.support.ItemSet#items()
 	 */
 	@Override
 	public Collection<Item> items() {
-		return Collections.unmodifiableSet(new HashSet<>(items.values()));
+		return Collections.unmodifiableList(items);
 	}
 	
 	@Override
@@ -150,4 +129,50 @@ public class ItemSetImpl implements ItemSet  {
 	public boolean equals(final Object obj) {
 	    return EntityUtil.equalsBuilder().withSource(this).withTarget(obj).forInstance(ItemSet.class).isEquals();
 	}
+
+
+
+	
+
+
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.order.support.ItemSet#item(java.util.UUID)
+	 */
+	@Override
+	public Item item(final UUID itemId) {
+		final Item result = findItem(itemId);
+		if ( result == null) {
+			throw new IllegalArgumentException("Item not found in itemSet id: " + itemId);
+		}
+		return result;
+	}
+
+
+
+	private Item findItem(final UUID itemId) {
+		for(final Item item : items) {
+			if( item.itemId().equals(itemId)){
+			   return item;	
+			}
+		}
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.order.support.ItemSet#remove(java.util.UUID)
+	 */
+	@Override
+	public void remove(UUID itemId) {
+		final Item item = findItem(itemId);
+		if (item==null){
+			return;
+		}
+		remove(itemId);
+		
+	}
+
+
+
+	
 }
