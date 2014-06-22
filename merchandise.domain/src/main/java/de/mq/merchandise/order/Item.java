@@ -1,9 +1,11 @@
 package de.mq.merchandise.order;
 
+import java.util.Collection;
 import java.util.Currency;
 import java.util.UUID;
 
 import de.mq.merchandise.opportunity.support.CommercialSubject;
+import de.mq.merchandise.opportunity.support.Condition;
 
 
 public interface Item {
@@ -29,5 +31,7 @@ public interface Item {
 	CommercialSubject subject();
 
 	String detail();
+
+	void assign(final Collection<Condition> conditions);
 
 }

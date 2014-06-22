@@ -1,5 +1,7 @@
 package de.mq.merchandise.order.support;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Currency;
 
 import junit.framework.Assert;
@@ -9,11 +11,13 @@ import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.opportunity.support.CommercialSubject;
+import de.mq.merchandise.opportunity.support.Condition;
 import de.mq.merchandise.order.Item;
 import de.mq.merchandise.order.ItemSet;
 import de.mq.merchandise.order.Money;
 
 public class ItemTest {
+	private static final String PRICE_PER_UNIT_AS_STRING = "1000 USD";
 	private static final Currency CURRENCY = Currency.getInstance("USD");
 	private static final String DETAIL = "Details zum Date";
 	private static final String UNIT = "private date";
@@ -143,6 +147,60 @@ public class ItemTest {
 	@Test(expected=IllegalArgumentException.class)
 	public final void currencyWithoutPricePerUnit() {
 		newItem().currency();
+	}
+	
+	@Test
+	public final void assign() {
+		final Item item = newItem();
+		final Collection<Condition> conditions = new ArrayList<>();
+		
+		final Condition productCondition = Mockito.mock(Condition.class);
+		Mockito.when(productCondition.conditionType()).thenReturn(Condition.ConditionType.Product);
+		Mockito.when(productCondition.hasInput()).thenReturn(true);
+		Mockito.when(productCondition.input()).thenReturn(PRODUCT_ID);
+		
+		final Condition qualityCondition = Mockito.mock(Condition.class);
+		Mockito.when(qualityCondition.conditionType()).thenReturn(Condition.ConditionType.Quality);
+		Mockito.when(qualityCondition.hasInput()).thenReturn(true);
+		Mockito.when(qualityCondition.input()).thenReturn(QUALITY);
+		
+		final Condition unitCondition = Mockito.mock(Condition.class);
+		Mockito.when(unitCondition.conditionType()).thenReturn(Condition.ConditionType.Unit);
+		Mockito.when(unitCondition.hasInput()).thenReturn(true);
+		Mockito.when(unitCondition.input()).thenReturn(UNIT);
+		
+		final Condition detailCondition = Mockito.mock(Condition.class);
+		Mockito.when(detailCondition.conditionType()).thenReturn(Condition.ConditionType.Detail);
+		Mockito.when(detailCondition.hasInput()).thenReturn(true);
+		Mockito.when(detailCondition.input()).thenReturn(DETAIL);
+		
+		final Condition quantityCondition = Mockito.mock(Condition.class);
+		Mockito.when(quantityCondition.conditionType()).thenReturn(Condition.ConditionType.Quantity);
+		Mockito.when(quantityCondition.hasInput()).thenReturn(true);
+		Mockito.when(quantityCondition.input()).thenReturn(String.valueOf(QUANTITY.intValue()));
+		
+		
+		final Condition pricePerUnitCondition = Mockito.mock(Condition.class);
+		Mockito.when(pricePerUnitCondition.conditionType()).thenReturn(Condition.ConditionType.PricePerUnit);
+		Mockito.when(pricePerUnitCondition.hasInput()).thenReturn(true);
+		Mockito.when(pricePerUnitCondition.input()).thenReturn(PRICE_PER_UNIT_AS_STRING);
+		
+		conditions.add(productCondition);
+		conditions.add(qualityCondition);
+		conditions.add(unitCondition);
+		conditions.add(detailCondition);
+		conditions.add(quantityCondition);
+		conditions.add(pricePerUnitCondition);
+		
+		item.assign(conditions);
+		
+		Assert.assertEquals(PRODUCT_ID, item.productId());
+		Assert.assertEquals(QUALITY, item.quality());
+		Assert.assertEquals(UNIT, item.unit());
+		Assert.assertEquals(DETAIL, item.detail());
+		Assert.assertEquals(QUANTITY, item.quantity());
+		Assert.assertEquals(new String2MoneyConverter().convert(PRICE_PER_UNIT_AS_STRING), item.pricePerUnit());
+		
 	}
 
 }
