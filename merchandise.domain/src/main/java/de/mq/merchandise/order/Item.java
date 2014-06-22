@@ -1,8 +1,9 @@
 package de.mq.merchandise.order;
 
-import java.util.Collection;
 import java.util.Currency;
 import java.util.UUID;
+
+import de.mq.merchandise.opportunity.support.CommercialSubject;
 
 
 public interface Item {
@@ -13,24 +14,20 @@ public interface Item {
 
 	String productId();
 
-	Integer quantity();
+	Number quantity();
 
 	String quality();
 
 	String unit();
 
-	void assignPricePerUnit(Money pricePerUnit);
-
-	void assignQuantity(Integer quantity);
-
 	Money pricePerUnit();
 
-	Collection<Currency> currencies();
+	Currency currency();
 
 	Money amount();
 
-	void assignProductId(String productId);
+	CommercialSubject subject();
 
-	void assignUnit(String unit);
+	String detail();
 
 }

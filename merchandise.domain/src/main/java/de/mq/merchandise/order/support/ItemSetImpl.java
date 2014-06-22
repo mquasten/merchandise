@@ -3,6 +3,7 @@ package de.mq.merchandise.order.support;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -31,12 +32,18 @@ public class ItemSetImpl implements ItemSet  {
 	
 	private final List<Item> items = new ArrayList<>();
 	
+	private String currencyCode; 
+	
 	
 	public ItemSetImpl(final Customer tradingPartner, final Opportunity opportunity) {
 		this.tradingPartner = tradingPartner;
 		this.opportunity = opportunity;
 	}
 	
+	public ItemSetImpl(final Customer tradingPartner, final Opportunity opportunity, Currency currency) {
+		this(tradingPartner,opportunity);
+		currencyCode=currency.getCurrencyCode();
+	}
 	
 	
 	/* (non-Javadoc)
@@ -84,15 +91,20 @@ public class ItemSetImpl implements ItemSet  {
 	}
 	
 	/* (non-Javadoc)
+	 * @see de.mq.merchandise.order.support.ItemSet#currency()
+	 */
+	@Override
+	public Currency currency() {
+		EntityUtil.mandatoryGuard(currencyCode, "Currency");
+		return Currency.getInstance(currencyCode);
+	}
+	
+	/* (non-Javadoc)
 	 * @see de.mq.merchandise.order.support.ItemSet#amount()
 	 */
 	@Override
 	public Money amount() {
-		if(items.isEmpty()){
-			throw new IllegalArgumentException("No items aware, amount can't be calculated");
-		}
-		
-		Money amount = new MoneyImpl(0, items.iterator().next().amount().currency());
+		Money amount = new MoneyImpl(0, currency());
 		for(final Item item : items){
 			amount=amount.add(item.amount());
 		}
@@ -105,6 +117,12 @@ public class ItemSetImpl implements ItemSet  {
 	 */
 	@Override
 	public void assign(final Item item) {
+		if( currencyCode != null) {
+			currencyCode=item.currency().getCurrencyCode();
+		}
+		if( ! currencyCode.equals(item.currency().getCurrencyCode())){
+			throw new IllegalArgumentException("Wrong currency for item: " + item.itemId());
+		}
 		items.add(item);
 	}
 	

@@ -12,8 +12,8 @@ public interface Condition extends BasicEntity, RuleOperations {
 		Unit,
 		PricePerUnit,
 		Quality,
-		Currency; 
-		
+		Currency, 
+		Detail;
 	}
 	
 	enum InputType {
@@ -32,5 +32,11 @@ public interface Condition extends BasicEntity, RuleOperations {
 	void assignValue(final String value);
 	
 	void removeValue(final String value);
+
+	void assignInput(final String input);
+
+	boolean hasInput();
+
+	String input();
 	
 }

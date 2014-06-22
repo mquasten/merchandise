@@ -238,5 +238,19 @@ public class ConditionTest {
 		final Rule anOtherRule = Mockito.mock(Rule.class);
 		Assert.assertFalse(condition.hasRule(anOtherRule));
 	}
+	
+	@Test
+	public final void assignInput() {
+		final Condition condition =  EntityUtil.create(ConditionImpl.class);
+		Assert.assertFalse(condition.hasInput());
+		condition.assignInput(VALUE);
+		Assert.assertTrue(condition.hasInput());
+		Assert.assertEquals(VALUE, condition.input());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void inputNoValue() {
+		EntityUtil.create(ConditionImpl.class).input();
+	}
 
 }

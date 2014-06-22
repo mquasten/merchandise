@@ -1,6 +1,7 @@
 package de.mq.merchandise.order;
 
 import java.util.Collection;
+import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
@@ -28,6 +29,8 @@ public interface ItemSet {
 	Collection<Item> items();
 
 	Date created();
+
+	Currency currency();
 
 	
 

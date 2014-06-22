@@ -21,6 +21,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
+import org.springframework.util.StringUtils;
+
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
@@ -29,7 +31,6 @@ import de.mq.merchandise.util.Equals;
 @Cacheable(false)
 class ConditionImpl implements Condition{
 
-	
 	private static final long serialVersionUID = 8021776550000024158L;
 
 	@Id
@@ -45,14 +46,11 @@ class ConditionImpl implements Condition{
 	@Enumerated(EnumType.STRING)
 	@Column(name="condition_type",nullable=false, length=20)
 	@Equals
-	
 	private ConditionType conditionType;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name="input_type", nullable=false, length=20)
 	private InputType inputType;
-	
-	
 	
 	@ManyToOne(targetEntity=CommercialRelationImpl.class )
 	@JoinColumn(name="commercial_relation_id")
@@ -73,6 +71,9 @@ class ConditionImpl implements Condition{
 			return new RuleInstanceImpl(ConditionImpl.this, rule, priority);
 		}
 	};
+	
+	@Transient
+	private String input;
 
 	protected ConditionImpl() {
 		
@@ -184,7 +185,21 @@ class ConditionImpl implements Condition{
 		return inputType;
 	} 
 	
+	@Override
+	public void assignInput(final String input) {
+		this.input=input;
+	}
 	
+	@Override
+	public boolean hasInput() {
+		return StringUtils.hasText(input);
+	}
 	
+	@Override
+	public String input() {
+		EntityUtil.notNullGuard(input, "Input");
+		return input;
+		
+	}
 	
 }
