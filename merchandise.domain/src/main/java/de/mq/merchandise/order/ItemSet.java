@@ -3,7 +3,6 @@ package de.mq.merchandise.order;
 import java.util.Collection;
 import java.util.Currency;
 import java.util.Date;
-import java.util.UUID;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.Opportunity;
@@ -22,15 +21,17 @@ public interface ItemSet {
 
 	void assign(final Item item);
 
-	void remove(final UUID itemId);
+	void remove(final String itemId);
 
-	Item item(final UUID itemId);
+	Item item(final String itemId);
 
 	Collection<Item> items();
 
 	Date created();
 
 	Currency currency();
+
+
 
 	
 

@@ -2,7 +2,6 @@ package de.mq.merchandise.order;
 
 import java.util.Collection;
 import java.util.Currency;
-import java.util.UUID;
 
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.Condition;
@@ -10,7 +9,7 @@ import de.mq.merchandise.opportunity.support.Condition;
 
 public interface Item {
 
-	UUID itemId();
+	String itemId();
 
 	ItemSet itemSet();
 
@@ -33,5 +32,7 @@ public interface Item {
 	String detail();
 
 	void assign(final Collection<Condition> conditions);
+
+	void assign(final String itemId);
 
 }

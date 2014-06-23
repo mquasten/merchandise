@@ -25,7 +25,7 @@ class ItemImpl implements Item {
 	@Equals()
 	private final ItemSet itemSet;
 	@Equals()
-	private final String itemId;
+	private  String itemId;
 
 	private final CommercialSubject subject;
 
@@ -50,6 +50,11 @@ class ItemImpl implements Item {
 		this.subject = subject;
 		this.itemId = new UUID(new Date().getTime(), Double.valueOf(1e18 * Math.random()).longValue()).toString();
 	}
+	
+	@Override
+	public void assign(final String itemId) {
+		this.itemId=itemId;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -68,8 +73,8 @@ class ItemImpl implements Item {
 	 * @see de.mq.merchandise.order.support.Item#itemId()
 	 */
 	@Override
-	public UUID itemId() {
-		return UUID.fromString(itemId);
+	public String itemId() {
+		return itemId;
 	}
 
 	/*

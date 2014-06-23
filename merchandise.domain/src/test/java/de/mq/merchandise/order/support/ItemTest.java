@@ -17,6 +17,7 @@ import de.mq.merchandise.order.ItemSet;
 import de.mq.merchandise.order.Money;
 
 public class ItemTest {
+	private static final String EXTERN_ID = "externId";
 	private static final String PRICE_PER_UNIT_AS_STRING = "1000 USD";
 	private static final Currency CURRENCY = Currency.getInstance("USD");
 	private static final String DETAIL = "Details zum Date";
@@ -201,6 +202,13 @@ public class ItemTest {
 		Assert.assertEquals(QUANTITY, item.quantity());
 		Assert.assertEquals(new String2MoneyConverter().convert(PRICE_PER_UNIT_AS_STRING), item.pricePerUnit());
 		
+	}
+	
+	@Test
+	public final void assignItemId() {
+		final Item item = newItem();
+		item.assign(EXTERN_ID);
+		Assert.assertEquals(EXTERN_ID, item.itemId());
 	}
 
 }

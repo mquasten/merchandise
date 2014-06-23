@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
-
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.order.Item;
@@ -117,7 +115,7 @@ public class ItemSetImpl implements ItemSet  {
 	 */
 	@Override
 	public void assign(final Item item) {
-		if( currencyCode != null) {
+		if( currencyCode == null) {
 			currencyCode=item.currency().getCurrencyCode();
 		}
 		if( ! currencyCode.equals(item.currency().getCurrencyCode())){
@@ -154,10 +152,10 @@ public class ItemSetImpl implements ItemSet  {
 
 
 	/* (non-Javadoc)
-	 * @see de.mq.merchandise.order.support.ItemSet#item(java.util.UUID)
+	 * @see de.mq.merchandise.order.support.ItemSet#item(java.util.String)
 	 */
 	@Override
-	public Item item(final UUID itemId) {
+	public Item item(final String itemId) {
 		final Item result = findItem(itemId);
 		if ( result == null) {
 			throw new IllegalArgumentException("Item not found in itemSet id: " + itemId);
@@ -167,7 +165,7 @@ public class ItemSetImpl implements ItemSet  {
 
 
 
-	private Item findItem(final UUID itemId) {
+	private Item findItem(final String itemId) {
 		for(final Item item : items) {
 			if( item.itemId().equals(itemId)){
 			   return item;	
@@ -178,10 +176,10 @@ public class ItemSetImpl implements ItemSet  {
 
 
 	/* (non-Javadoc)
-	 * @see de.mq.merchandise.order.support.ItemSet#remove(java.util.UUID)
+	 * @see de.mq.merchandise.order.support.ItemSet#remove(java.util.String)
 	 */
 	@Override
-	public void remove(UUID itemId) {
+	public void remove(final String itemId) {
 		final Item item = findItem(itemId);
 		if (item==null){
 			return;
@@ -189,8 +187,6 @@ public class ItemSetImpl implements ItemSet  {
 		remove(itemId);
 		
 	}
-
-
 
 	
 }
