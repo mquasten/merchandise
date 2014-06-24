@@ -184,7 +184,7 @@ public class ItemSetImpl implements ItemSet  {
 		if (item==null){
 			return;
 		}
-		remove(itemId);
+		items.remove(item);
 		
 	}
 

@@ -210,5 +210,25 @@ public class ItemTest {
 		item.assign(EXTERN_ID);
 		Assert.assertEquals(EXTERN_ID, item.itemId());
 	}
+	
+	@Test
+	public final void assignWithOutValue() {
+		final Item item = newItem();
+		final Collection<Condition> conditions = new ArrayList<>();
+		
+		final Condition productCondition = Mockito.mock(Condition.class);
+		Mockito.when(productCondition.conditionType()).thenReturn(Condition.ConditionType.Product);
+		
+		
+		conditions.add(productCondition);
+		
+		
+		ReflectionTestUtils.setField(item, "productId", PRODUCT_ID);
+		
+		Assert.assertEquals(PRODUCT_ID, item.productId());
+		
+		item.assign(conditions);
+		Assert.assertNull(item.productId());
+	}
 
 }

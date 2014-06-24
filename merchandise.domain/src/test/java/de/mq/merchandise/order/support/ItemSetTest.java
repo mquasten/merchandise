@@ -18,6 +18,7 @@ import de.mq.merchandise.order.ItemSet;
 
 public class ItemSetTest {
 	
+	private static final String ITEM_ID = "externalId";
 	private static final MoneyImpl AMOUNT2 = new MoneyImpl(20, Currency.getInstance("EUR"));
 	private static final MoneyImpl AMOUNT1 = new MoneyImpl(10, Currency.getInstance("EUR"));
 	private static final Currency CURRENCY = Currency.getInstance("USD");
@@ -140,5 +141,49 @@ public class ItemSetTest {
 		ReflectionTestUtils.setField(itemSet2, "created", itemSet1.created());
 		Assert.assertTrue(itemSet1.equals(itemSet2));
 	}
+	
+	@Test
+	public final void item() {
+		final ItemSet itemSet = newItemSet();
+		final Item item = Mockito.mock(Item.class);
+		
+		Mockito.when(item.itemId()).thenReturn(ITEM_ID);
+		
+		items(itemSet).add(item);
+		Assert.assertEquals(item, itemSet.item(ITEM_ID));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void itemNotFound() {
+		final Item item = Mockito.mock(Item.class);
+		Mockito.when(item.itemId()).thenReturn("dontLetMeGetMe");
+		final ItemSet itemSet= newItemSet();
+		items(itemSet).add(item);
+		
+		itemSet.item(ITEM_ID);
+		
+	}
+	
+	@Test
+	public final void remove() {
+		final ItemSet itemSet = newItemSet();
+		final Item item = Mockito.mock(Item.class);
+		
+		Mockito.when(item.itemId()).thenReturn(ITEM_ID);
+		items(itemSet).add(item);
+		
+		Assert.assertFalse(items(itemSet).isEmpty());
+		itemSet.remove(ITEM_ID);
+		
+		Assert.assertTrue(items(itemSet).isEmpty());
+		
+	}
+	
+	@Test
+	public final void removeNotFound() {
+		 newItemSet().remove(ITEM_ID);
+	}
+	
+	
 
 }
