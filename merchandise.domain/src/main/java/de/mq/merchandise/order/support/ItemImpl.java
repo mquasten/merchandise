@@ -8,25 +8,46 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.Target;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 
 import de.mq.mapping.util.proxy.support.String2IntegerConverter;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
+import de.mq.merchandise.opportunity.support.CommercialSubjectImpl;
 import de.mq.merchandise.opportunity.support.Condition;
 import de.mq.merchandise.order.Item;
 import de.mq.merchandise.order.ItemSet;
 import de.mq.merchandise.order.Money;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
-
+@Entity(name="Item")
+@Cacheable(false)
 class ItemImpl implements Item {
+	
+	@GeneratedValue
+	@Id
+	private Long id; 
+	
 	@Equals()
+	@ManyToOne(targetEntity=ItemSetImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
+	@JoinColumn(name="itemset_id" )
 	private final ItemSet itemSet;
 	@Equals()
 	private  String itemId;
 
+	@ManyToOne(targetEntity=CommercialSubjectImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
+	@JoinColumn(name="commercial_subject_id" )
 	private final CommercialSubject subject;
 
 	@Condition.Item(type = Condition.ConditionType.Product)
@@ -40,10 +61,20 @@ class ItemImpl implements Item {
 	
 	@Condition.Item(type = Condition.ConditionType.Detail)
 	private String detail;
+	
 	@Condition.Item(type = Condition.ConditionType.Quantity, converter=String2IntegerConverter.class)
 	private Number quantity;
+	
 	@Condition.Item(type = Condition.ConditionType.PricePerUnit, converter=String2MoneyConverter.class)
+	@Embedded
+	@Target(MoneyImpl.class)
 	private Money pricePerUnit;
+	
+	@SuppressWarnings("unused")
+	private ItemImpl() {
+		itemSet=null;
+		subject=null;
+	}
 	
 	public ItemImpl(final ItemSet itemSet, final CommercialSubject subject) {
 		this.itemSet = itemSet;

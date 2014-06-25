@@ -2,16 +2,23 @@ package de.mq.merchandise.order.support;
 
 import java.util.Currency;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
 import de.mq.merchandise.order.Money;
 
+@Embeddable
 public class MoneyImpl implements Comparable<Money>, Money {
 
 	private static final String DEFAULT_CURRENCY = "EUR";
 
+	@Column()
 	private long amount;
 
+	@Column(length=3, name="currency_code")
 	private String currencyCode;
 
+	@Column(name="fraction_digits")
 	private int fractionDigits;
 
 	final static int CENT_FRACTION_DIGITS = 3;

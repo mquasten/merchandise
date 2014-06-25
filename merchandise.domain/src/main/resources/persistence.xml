@@ -40,6 +40,9 @@
 	<class>de.mq.merchandise.opportunity.support.OpportunityGeoLocationIndexImpl</class>
 	<class>de.mq.merchandise.opportunity.support.RuleInstanceImpl</class>
 	
+	<class>de.mq.merchandise.order.support.ItemSetImpl</class>
+	<class>de.mq.merchandise.order.support.ItemImpl</class>
+	
 	<class>de.mq.merchandise.rule.support.RuleImpl</class>
 	
 		<!--  properties>

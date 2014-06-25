@@ -81,7 +81,10 @@ public class DomainObjectNullResolverTest {
 			"de.mq.merchandise.customer.support.TradeRegisterImpl",
 			"de.mq.merchandise.customer.support.StateImpl",
 			"de.mq.merchandise.customer.support.NativityImpl",
-			"de.mq.merchandise.contact.support.CoordinatesImpl",
+			"de.mq.merchandise.contact.support.CoordinatesImpl" ,
+			"de.mq.merchandise.order.support.ItemSetImpl",
+			"de.mq.merchandise.order.support.ItemImpl",
+			"de.mq.merchandise.order.support.MoneyImpl",
 			
 	}));
 	

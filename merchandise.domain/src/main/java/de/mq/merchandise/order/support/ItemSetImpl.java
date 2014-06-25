@@ -6,32 +6,71 @@ import java.util.Collections;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.customer.support.CustomerImpl;
+
 import de.mq.merchandise.opportunity.support.Opportunity;
+import de.mq.merchandise.opportunity.support.OpportunityImpl;
 import de.mq.merchandise.order.Item;
 import de.mq.merchandise.order.ItemSet;
 import de.mq.merchandise.order.Money;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
 
+@Entity(name="ItemSet")
+@Cacheable(false)
 public class ItemSetImpl implements ItemSet  {
 
+	/**
+	 * Serializeable
+	 */
+	private static final long serialVersionUID = 1L;
 
+	@GeneratedValue
+	@Id
+	private Long id; 
+	
 	@Equals
+	@ManyToOne(targetEntity=OpportunityImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
+	@JoinColumn(name="opportunity_id" )
 	private final Opportunity opportunity;
 	
 	@Equals
+	@ManyToOne(targetEntity=CustomerImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
+	@JoinColumn(name="trading_partner_id" )
 	private final Customer tradingPartner;
 	
+	@Temporal(TemporalType.DATE)
 	private Date submitted; 
 	
 	@Equals
+	@Temporal(TemporalType.DATE)
 	private final Date created = new Date(); 
 	
+	@OneToMany(  mappedBy="itemSet",   targetEntity=ItemImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE,  CascadeType.REMOVE })
 	private final List<Item> items = new ArrayList<>();
 	
 	private String currencyCode; 
 	
+
+	@SuppressWarnings("unused")
+	private ItemSetImpl() {
+		opportunity=null;
+		tradingPartner=null;
+	}
 	
 	public ItemSetImpl(final Customer tradingPartner, final Opportunity opportunity) {
 		this.tradingPartner = tradingPartner;
@@ -186,6 +225,17 @@ public class ItemSetImpl implements ItemSet  {
 		}
 		items.remove(item);
 		
+	}
+
+	@Override
+	public long id() {
+		EntityUtil.idAware(id);
+		return id;
+	}
+
+	@Override
+	public boolean hasId() {
+		return id != null;
 	}
 
 	
