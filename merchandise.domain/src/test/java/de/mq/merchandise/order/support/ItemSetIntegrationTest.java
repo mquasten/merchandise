@@ -1,12 +1,10 @@
 package de.mq.merchandise.order.support;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 
 import org.junit.After;
 import org.junit.Before;
