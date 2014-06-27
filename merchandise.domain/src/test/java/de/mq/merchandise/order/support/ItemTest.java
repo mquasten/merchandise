@@ -15,14 +15,16 @@ import de.mq.merchandise.opportunity.support.Condition;
 import de.mq.merchandise.order.Item;
 import de.mq.merchandise.order.ItemSet;
 import de.mq.merchandise.order.Money;
+import de.mq.merchandise.util.EntityUtil;
 
 public class ItemTest {
+	private static final long ID = 19680528L;
 	private static final String EXTERN_ID = "externId";
 	private static final String PRICE_PER_UNIT_AS_STRING = "1000 USD";
 	private static final Currency CURRENCY = Currency.getInstance("USD");
 	private static final String DETAIL = "Details zum Date";
 	private static final String UNIT = "private date";
-	private static final Integer QUANTITY = 42;
+	private static final Double QUANTITY = 42d;
 	private static final String QUALITY = "Platinium";
 	private static final String PRODUCT_ID = "Nicole";
 	private final ItemSet itemSet = Mockito.mock(ItemSet.class);
@@ -178,7 +180,7 @@ public class ItemTest {
 		final Condition quantityCondition = Mockito.mock(Condition.class);
 		Mockito.when(quantityCondition.conditionType()).thenReturn(Condition.ConditionType.Quantity);
 		Mockito.when(quantityCondition.hasInput()).thenReturn(true);
-		Mockito.when(quantityCondition.input()).thenReturn(String.valueOf(QUANTITY.intValue()));
+		Mockito.when(quantityCondition.input()).thenReturn(String.valueOf(QUANTITY));
 		
 		
 		final Condition pricePerUnitCondition = Mockito.mock(Condition.class);
@@ -229,6 +231,26 @@ public class ItemTest {
 		
 		item.assign(conditions);
 		Assert.assertNull(item.productId());
+	}
+	
+	@Test
+	public final void hasId() {
+		final Item item = newItem();
+		Assert.assertFalse(item.hasId());
+		EntityUtil.setId(item, ID);
+		Assert.assertTrue(item.hasId());
+	}
+	
+	@Test
+	public final void id() {
+		final Item item = newItem();
+		EntityUtil.setId(item, ID);
+		Assert.assertEquals(ID, item.id());
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public final void idNotSet() {
+		newItem().id();
 	}
 
 }

@@ -6,8 +6,11 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -29,8 +32,11 @@ import de.mq.merchandise.order.ItemSet;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
+@Ignore
 public class ItemSetIntegrationTest {
 	
+	private static final double AMOUNT = 47.11;
+
 	@PersistenceContext
 	private EntityManager entityManager;
 	
@@ -61,7 +67,7 @@ public class ItemSetIntegrationTest {
 		
 		final ItemSet order = new ItemSetImpl(tradingPartner, opportunity);
 		final Item item = new ItemImpl(order, subject);
-		ReflectionTestUtils.setField(item, "pricePerUnit", new MoneyImpl(47.11));
+		ReflectionTestUtils.setField(item, "pricePerUnit", new MoneyImpl(AMOUNT));
 		
 		order.assign(item);
 		ItemSet itemSet = entityManager.merge(order);
@@ -73,9 +79,35 @@ public class ItemSetIntegrationTest {
 		waste.add(tradingPartner.person());
 		waste.add(customer.person());
 	
-	//	entityManager.merge(itemSet);
-	
-		System.out.println(entityManager);
+
+		entityManager.flush();
+		entityManager.clear();
+		
+		
+		final ItemSet result = entityManager.find(ItemSetImpl.class, itemSet.id());
+		Assert.assertEquals(opportunity, result.opportunity());
+		Assert.assertEquals(opportunity.id(), result.opportunity().id());
+		Assert.assertEquals(tradingPartner, result.tradingPartner());
+		Assert.assertEquals(tradingPartner.id(), result.tradingPartner().id());
+		Assert.assertEquals(itemSet.created(), result.created());
+		Assert.assertEquals(itemSet, result);
+		Assert.assertEquals(itemSet.id(), result.id());
+		
+		
+		Assert.assertEquals(itemSet.items().size(), result.items().size());
+		for(final Item itemResult : result.items()){
+			Assert.assertEquals(item.itemId(), itemResult.itemId());
+			Assert.assertNotNull(itemResult.id());
+			Assert.assertEquals(itemSet, itemResult.itemSet());
+			Assert.assertEquals(subject, itemResult.subject());
+			Assert.assertEquals(subject.id(), itemResult.subject().id());
+			Assert.assertEquals(new MoneyImpl(AMOUNT), itemResult.pricePerUnit());
+		}
+		
+		
+		
 		
 	}
+
+	
 }

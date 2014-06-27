@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +23,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 
-import de.mq.mapping.util.proxy.support.String2IntegerConverter;
+import de.mq.mapping.util.proxy.support.String2DoubleConverter;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectImpl;
 import de.mq.merchandise.opportunity.support.Condition;
@@ -35,35 +36,46 @@ import de.mq.merchandise.util.Equals;
 @Cacheable(false)
 class ItemImpl implements Item {
 	
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	@GeneratedValue
 	@Id
 	private Long id; 
 	
 	@Equals()
-	@ManyToOne(targetEntity=ItemSetImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
+	@ManyToOne(targetEntity=ItemSetImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} , optional=false)
 	@JoinColumn(name="itemset_id" )
 	private final ItemSet itemSet;
 	@Equals()
+	@Column(length=50,nullable=false, name="item_id")
 	private  String itemId;
 
-	@ManyToOne(targetEntity=CommercialSubjectImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
+	@ManyToOne(targetEntity=CommercialSubjectImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} , optional=false)
 	@JoinColumn(name="commercial_subject_id" )
 	private final CommercialSubject subject;
 
 	@Condition.Item(type = Condition.ConditionType.Product)
+	@Column(length=50, name="product_id")
 	private String productId;
 
 	@Condition.Item(type = Condition.ConditionType.Quality)
+	@Column(length=50)
 	private String quality;
 
 	@Condition.Item(type = Condition.ConditionType.Unit)
+	@Column(length=50)
 	private String unit;
 	
 	@Condition.Item(type = Condition.ConditionType.Detail)
+	@Column(length=50)
 	private String detail;
 	
-	@Condition.Item(type = Condition.ConditionType.Quantity, converter=String2IntegerConverter.class)
-	private Number quantity;
+	@Condition.Item(type = Condition.ConditionType.Quantity, converter=String2DoubleConverter.class)
+	@Column()
+	private Double quantity;
 	
 	@Condition.Item(type = Condition.ConditionType.PricePerUnit, converter=String2MoneyConverter.class)
 	@Embedded
@@ -239,6 +251,17 @@ class ItemImpl implements Item {
 
 			
 		});
+	}
+
+	@Override
+	public long id() {
+        EntityUtil.idAware(id);
+		return id;
+	}
+
+	@Override
+	public boolean hasId() {
+		return (id != null);
 	}
 	
 	

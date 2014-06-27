@@ -3,11 +3,12 @@ package de.mq.merchandise.order;
 import java.util.Collection;
 import java.util.Currency;
 
+import de.mq.merchandise.BasicEntity;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.Condition;
 
 
-public interface Item {
+public interface Item extends BasicEntity{
 
 	String itemId();
 

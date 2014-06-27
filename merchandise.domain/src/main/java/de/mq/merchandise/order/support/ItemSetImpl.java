@@ -7,8 +7,10 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -44,12 +46,12 @@ public class ItemSetImpl implements ItemSet  {
 	private Long id; 
 	
 	@Equals
-	@ManyToOne(targetEntity=OpportunityImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
+	@ManyToOne(targetEntity=OpportunityImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} , optional=false)
 	@JoinColumn(name="opportunity_id" )
 	private final Opportunity opportunity;
 	
 	@Equals
-	@ManyToOne(targetEntity=CustomerImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
+	@ManyToOne(targetEntity=CustomerImpl.class, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} ,optional=false)
 	@JoinColumn(name="trading_partner_id" )
 	private final Customer tradingPartner;
 	
@@ -57,12 +59,13 @@ public class ItemSetImpl implements ItemSet  {
 	private Date submitted; 
 	
 	@Equals
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Basic(optional=false)
 	private final Date created = new Date(); 
 	
 	@OneToMany(  mappedBy="itemSet",   targetEntity=ItemImpl.class,  fetch=FetchType.LAZY,  cascade={CascadeType.PERSIST, CascadeType.MERGE,  CascadeType.REMOVE })
 	private final List<Item> items = new ArrayList<>();
-	
+	@Column(name="currency_code", length=3)
 	private String currencyCode; 
 	
 

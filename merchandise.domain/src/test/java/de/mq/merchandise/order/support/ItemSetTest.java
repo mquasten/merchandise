@@ -15,9 +15,11 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.opportunity.support.Opportunity;
 import de.mq.merchandise.order.Item;
 import de.mq.merchandise.order.ItemSet;
+import de.mq.merchandise.util.EntityUtil;
 
 public class ItemSetTest {
 	
+	private static final long ID = 19680528L;
 	private static final String ITEM_ID = "externalId";
 	private static final MoneyImpl AMOUNT2 = new MoneyImpl(20, Currency.getInstance("EUR"));
 	private static final MoneyImpl AMOUNT1 = new MoneyImpl(10, Currency.getInstance("EUR"));
@@ -183,6 +185,28 @@ public class ItemSetTest {
 	public final void removeNotFound() {
 		 newItemSet().remove(ITEM_ID);
 	}
+	
+	@Test
+	public final void hasId() {
+		final ItemSet itemSet = newItemSet();
+		Assert.assertFalse(itemSet.hasId());
+		EntityUtil.setId(itemSet, ID);
+		Assert.assertTrue(itemSet.hasId());
+		
+	}
+	
+	@Test
+	public final void id() {
+		final ItemSet itemSet = newItemSet();
+		EntityUtil.setId(itemSet, ID);
+		Assert.assertEquals(ID, itemSet.id());
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public final void idNotSet() {
+		newItemSet().id();
+	}
+	
 	
 	
 
