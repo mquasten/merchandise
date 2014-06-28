@@ -10,7 +10,6 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -32,7 +31,6 @@ import de.mq.merchandise.order.ItemSet;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
-@Ignore
 public class ItemSetIntegrationTest {
 	
 	private static final double AMOUNT = 47.11;

@@ -159,33 +159,33 @@ public class ItemTest {
 		
 		final Condition productCondition = Mockito.mock(Condition.class);
 		Mockito.when(productCondition.conditionType()).thenReturn(Condition.ConditionType.Product);
-		Mockito.when(productCondition.hasInput()).thenReturn(true);
+	
 		Mockito.when(productCondition.input()).thenReturn(PRODUCT_ID);
 		
 		final Condition qualityCondition = Mockito.mock(Condition.class);
 		Mockito.when(qualityCondition.conditionType()).thenReturn(Condition.ConditionType.Quality);
-		Mockito.when(qualityCondition.hasInput()).thenReturn(true);
+		
 		Mockito.when(qualityCondition.input()).thenReturn(QUALITY);
 		
 		final Condition unitCondition = Mockito.mock(Condition.class);
 		Mockito.when(unitCondition.conditionType()).thenReturn(Condition.ConditionType.Unit);
-		Mockito.when(unitCondition.hasInput()).thenReturn(true);
+		
 		Mockito.when(unitCondition.input()).thenReturn(UNIT);
 		
 		final Condition detailCondition = Mockito.mock(Condition.class);
 		Mockito.when(detailCondition.conditionType()).thenReturn(Condition.ConditionType.Detail);
-		Mockito.when(detailCondition.hasInput()).thenReturn(true);
+		
 		Mockito.when(detailCondition.input()).thenReturn(DETAIL);
 		
 		final Condition quantityCondition = Mockito.mock(Condition.class);
 		Mockito.when(quantityCondition.conditionType()).thenReturn(Condition.ConditionType.Quantity);
-		Mockito.when(quantityCondition.hasInput()).thenReturn(true);
+		
 		Mockito.when(quantityCondition.input()).thenReturn(String.valueOf(QUANTITY));
 		
 		
 		final Condition pricePerUnitCondition = Mockito.mock(Condition.class);
 		Mockito.when(pricePerUnitCondition.conditionType()).thenReturn(Condition.ConditionType.PricePerUnit);
-		Mockito.when(pricePerUnitCondition.hasInput()).thenReturn(true);
+		
 		Mockito.when(pricePerUnitCondition.input()).thenReturn(PRICE_PER_UNIT_AS_STRING);
 		
 		conditions.add(productCondition);

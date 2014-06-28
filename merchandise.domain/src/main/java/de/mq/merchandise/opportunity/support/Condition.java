@@ -49,8 +49,6 @@ public interface Condition extends BasicEntity, RuleOperations {
 
 	void assignInput(final String input);
 
-	boolean hasInput();
-
 	String input();
 	
 }

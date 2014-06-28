@@ -21,8 +21,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
-import org.springframework.util.StringUtils;
-
 import de.mq.merchandise.rule.Rule;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
@@ -191,13 +189,7 @@ class ConditionImpl implements Condition{
 	}
 	
 	@Override
-	public boolean hasInput() {
-		return StringUtils.hasText(input);
-	}
-	
-	@Override
 	public String input() {
-		EntityUtil.notNullGuard(input, "Input");
 		return input;
 		
 	}

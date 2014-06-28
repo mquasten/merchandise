@@ -1,11 +1,8 @@
 package de.mq.merchandise.order.support;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Currency;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Cacheable;
@@ -17,11 +14,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Target;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.FieldCallback;
 
 import de.mq.mapping.util.proxy.support.String2DoubleConverter;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
@@ -87,6 +82,9 @@ class ItemImpl implements Item {
 		itemSet=null;
 		subject=null;
 	}
+	
+	@Transient
+	private transient ConditionOperations conditionOperations = new ConditionReflectionTemplate();
 	
 	public ItemImpl(final ItemSet itemSet, final CommercialSubject subject) {
 		this.itemSet = itemSet;
@@ -227,30 +225,7 @@ class ItemImpl implements Item {
 	
 	@Override
 	public void assign(final Collection<Condition> conditions) {
-		final Map<Condition.ConditionType,String> values = new HashMap<>();
-		for(final Condition condition : conditions) {
-			if(! condition.hasInput()){
-				continue;
-			}
-			values.put(condition.conditionType(), condition.input());
-		}
-		
-		ReflectionUtils.doWithFields(this.getClass(), new FieldCallback() {
-			
-			
-			@Override
-			public void doWith(final Field field) throws IllegalArgumentException, IllegalAccessException {
-				if( ! field.isAnnotationPresent(Condition.Item.class)) {
-					return; 
-				}
-				field.setAccessible(true);
-				@SuppressWarnings("unchecked")
-				final Converter<Object, ?> converter = (Converter<Object, String>) EntityUtil.create(field.getAnnotation(Condition.Item.class).converter());
-				ReflectionUtils.setField(field, ItemImpl.this, converter.convert(values.get(field.getAnnotation(Condition.Item.class).type())));
-			}
-
-			
-		});
+		conditionOperations.copy(conditions, this);
 	}
 
 	@Override
