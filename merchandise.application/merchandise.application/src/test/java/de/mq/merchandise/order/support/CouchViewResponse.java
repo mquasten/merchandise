@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
-public class Response {
+public class CouchViewResponse {
+	
 	
 	
 	private Long total_rows;

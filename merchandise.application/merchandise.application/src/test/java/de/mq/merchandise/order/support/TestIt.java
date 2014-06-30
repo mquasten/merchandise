@@ -2,34 +2,21 @@ package de.mq.merchandise.order.support;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
 
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.annotate.JacksonAnnotation;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
-import org.codehaus.jackson.annotate.JsonManagedReference;
 import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
-
-import com.sun.xml.bind.v2.model.core.PropertyKind;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})
@@ -58,8 +45,8 @@ public class TestIt {
 		
 		final Map<String,String> pars = new HashMap<>();
 		pars.put("key", "nicole" );
-		@SuppressWarnings("unchecked")
-		Response response = restOperations.getForObject(URL,Response.class,pars);
+	
+		CouchViewResponse response = restOperations.getForObject(URL,CouchViewResponse.class,pars);
 		System.out.println( response.rows().iterator().next().singleValue());
 		
 		pars.clear();
@@ -73,7 +60,7 @@ public class TestIt {
 		
 		
 	
-		Response prices = restOperations.getForObject(URL2,Response.class, pars);
+		CouchViewResponse prices = restOperations.getForObject(URL2,CouchViewResponse.class, pars);
 		
 		for(CouchViewResultRow row : prices.rows()) {
 			System.out.println(row.composedValue());
