@@ -18,8 +18,10 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
@@ -57,8 +59,8 @@ public class TestIt {
 		final Map<String,String> pars = new HashMap<>();
 		pars.put("key", "nicole" );
 		@SuppressWarnings("unchecked")
-		Map<String,Object> response = restOperations.getForObject(URL,Map.class,pars);
-		System.out.println(response);
+		Response response = restOperations.getForObject(URL,Response.class,pars);
+		System.out.println( response.rows().iterator().next().singleValue());
 		
 		pars.clear();
 		
@@ -70,16 +72,14 @@ public class TestIt {
 		System.out.println(mapper.writeValueAsString(new PetPriceKey("platinium", "date")));
 		
 		
-		@SuppressWarnings("unchecked")
-		Response<PetPriceKey,Map<String,Object>> prices = restOperations.getForObject(URL2,Response.class, pars);
+	
+		Response prices = restOperations.getForObject(URL2,Response.class, pars);
 		
-		for(Object row : prices.rows) {
-			 System.out.println(((Row)row).value);
+		for(CouchViewResultRow row : prices.rows()) {
+			System.out.println(row.composedValue());
+			System.out.println(row.composedKey());
 			 
-			 PetPriceKey p = (PetPriceKey) ((Row)row).key;
-			 System.out.println(p.unit);
-			 System.out.println(p.quality);
-			 System.out.println(((Row)row).value);
+			
 		}
 	}
 	

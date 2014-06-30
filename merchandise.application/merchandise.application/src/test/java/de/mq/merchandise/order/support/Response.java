@@ -1,16 +1,27 @@
 package de.mq.merchandise.order.support;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
-public class Response<K,V> {
+public class Response {
 	
 	
-	Long total_rows;
-	Long offset;
+	private Long total_rows;
+	private Long offset;
 	
 	
-	@JsonDeserialize(contentAs=Row.class)
-	List<Row<K,V>> rows;
+	@JsonDeserialize(contentAs=SimpleCouchViewRowImpl.class)
+	private List<CouchViewResultRow>  rows;
+	
+	public final List<CouchViewResultRow> rows() {
+		if( rows == null){
+			rows=new ArrayList<>();
+		}
+		return rows; 
+	}
+	
+	
+	
 }
