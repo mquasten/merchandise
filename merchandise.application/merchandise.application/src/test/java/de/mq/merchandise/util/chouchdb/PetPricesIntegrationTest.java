@@ -1,4 +1,4 @@
-package de.mq.merchandise.order.support;
+package de.mq.merchandise.util.chouchdb;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})
-public class TestIt {
+public class PetPricesIntegrationTest {
 
 	@Autowired
 	private RestOperations restOperations;

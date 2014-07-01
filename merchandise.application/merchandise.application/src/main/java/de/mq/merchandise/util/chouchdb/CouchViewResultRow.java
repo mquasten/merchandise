@@ -1,4 +1,4 @@
-package de.mq.merchandise.order.support;
+package de.mq.merchandise.util.chouchdb;
 
 import java.util.Map;
 
@@ -13,5 +13,9 @@ interface CouchViewResultRow {
 	Map<String, ? extends Object> composedKey();
 
 	Map<String, ? extends Object> composedValue();
+	
+	<T> T composedValue(final Class<? extends T> targetClass);
+	
+	<T> T composedKey(final Class<? extends T> targetClass) ;
 
 }
