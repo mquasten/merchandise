@@ -1,4 +1,4 @@
-package de.mq.merchandise.util.chouchdb;
+package de.mq.merchandise.util.chouchdb.support;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -9,6 +9,7 @@ import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
+import de.mq.merchandise.util.chouchdb.ChouchViewResponse;
+import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
+import de.mq.merchandise.util.chouchdb.support.CouchViewResponseImpl;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})
+@Ignore
 public class PetPricesIntegrationTest {
 
 	@Autowired
@@ -46,7 +52,7 @@ public class PetPricesIntegrationTest {
 		final Map<String,String> pars = new HashMap<>();
 		pars.put("key", "nicole" );
 	
-		CouchViewResponse response = restOperations.getForObject(URL,CouchViewResponse.class,pars);
+		ChouchViewResponse response = restOperations.getForObject(URL,CouchViewResponseImpl.class,pars);
 		System.out.println( response.rows().iterator().next().singleValue());
 		
 		pars.clear();
@@ -60,7 +66,7 @@ public class PetPricesIntegrationTest {
 		
 		
 	
-		CouchViewResponse prices = restOperations.getForObject(URL2,CouchViewResponse.class, pars);
+		ChouchViewResponse prices = restOperations.getForObject(URL2,CouchViewResponseImpl.class, pars);
 		
 		for(CouchViewResultRow row : prices.rows()) {
 			System.out.println(row.composedValue());

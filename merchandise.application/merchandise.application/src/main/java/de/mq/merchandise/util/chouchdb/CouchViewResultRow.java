@@ -2,7 +2,7 @@ package de.mq.merchandise.util.chouchdb;
 
 import java.util.Map;
 
-interface CouchViewResultRow {
+public interface CouchViewResultRow {
 
 	String id();
 

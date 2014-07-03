@@ -1,4 +1,4 @@
-package de.mq.merchandise.util.chouchdb;
+package de.mq.merchandise.util.chouchdb.support;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
