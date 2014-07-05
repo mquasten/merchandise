@@ -9,7 +9,7 @@ public interface ChouchViewResponse {
 
 	List<String> single();
 
-	List<Map<String, ?>> composed();
+	List<Map<String, Object>> composed();
 
 	<T> List<T> composed(Class<? extends T> targetClass);
 

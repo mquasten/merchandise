@@ -47,14 +47,18 @@ class CouchViewResponseImpl implements ChouchViewResponse {
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.util.chouchdb.ChouchViewResponse#composed()
 	 */
-	@Override
+	
 	@SuppressWarnings("unchecked")
-	public final List<Map<String, ?>> composed() {
-		return  new CollectionTemplate<Map<String,?>>() {
+	@Override
+	public final List<Map<String, Object>> composed() {
+		
+		   return (List<Map<String, Object>>)  (List<? extends Map<String, Object>>)  new CollectionTemplate<Map<?,?>> () {
 			@Override
-			protected Map<String, ?> readRows(final CouchViewResultRow row, final Class<? extends Map<String, ?>> target) {
+			protected Map<?,?> readRows(final CouchViewResultRow row, final Class<? extends Map<?,?>> target) {
 				return row.composedValue();
-			}}.results((Class<? extends Map<String, ?>>) Map.class);
+			}}.results( (Class<? extends Map<?, ?>>) Map.class);
+			
+			
 	}
 
 	/* (non-Javadoc)
@@ -67,15 +71,15 @@ class CouchViewResponseImpl implements ChouchViewResponse {
 			protected T readRows(CouchViewResultRow row, Class<? extends T> target) {
 				return row.composedValue(targetClass);
 			}
-		}.results(targetClass);
+		}.results(  targetClass);
 	}
 	
 
 	abstract class CollectionTemplate<T> {
-		final List<T> results(final Class<? extends T> target) {
-			final List<T> results = new ArrayList<>();
+		final List<T> results(final Class<? extends T> targetClass) {
+			final List<T> results = new ArrayList<T>();
 			for (final CouchViewResultRow row : rows) {
-				results.add(readRows(row, target));
+				results.add(readRows(row, targetClass));
 			}
 			return Collections.unmodifiableList(results);
 		}

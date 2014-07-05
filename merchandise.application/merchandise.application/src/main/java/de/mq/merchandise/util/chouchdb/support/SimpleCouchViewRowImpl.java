@@ -64,7 +64,7 @@ class SimpleCouchViewRowImpl implements CouchViewResultRow {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public final Map<String, ? extends Object> composedKey() {
+	public final Map<String, Object> composedKey() {
 		composedKeyGuard();
 		return Collections.unmodifiableMap((Map<String, ? extends Object>) key);
 	}
@@ -82,7 +82,7 @@ class SimpleCouchViewRowImpl implements CouchViewResultRow {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public final Map<String, ? extends Object> composedValue() {
+	public final Map<String, Object> composedValue() {
 		composedValueGuard();
 		return Collections.unmodifiableMap((Map<String, ? extends Object>) value);
 	}

@@ -12,7 +12,7 @@ import org.springframework.util.ReflectionUtils.FieldCallback;
 public class MapCopyTemplate {
 
 	
-      <T> T createShallowCopyFieldsFromMap(final Class<? extends T> targetClass, final Map<String, ?> values) {
+      <T> T createShallowCopyFieldsFromMap(final Class<? extends T> targetClass, final Map<String, ? extends Object> values) {
 		final T target = BeanUtils.instantiateClass(targetClass);
 		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
 			

@@ -10,9 +10,9 @@ public interface CouchViewResultRow {
 
 	String singleValue();
 
-	Map<String, ? extends Object> composedKey();
+	Map<String, Object> composedKey();
 
-	Map<String, ? extends Object> composedValue();
+	Map<String, Object> composedValue();
 	
 	<T> T composedValue(final Class<? extends T> targetClass);
 	
