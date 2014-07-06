@@ -142,7 +142,7 @@
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
-				<forceJavacCompilerUse>false</forceJavacCompilerUse>
+				<forceJavacCompilerUse>true</forceJavacCompilerUse>
 				</configuration>
 			</plugin>
 		

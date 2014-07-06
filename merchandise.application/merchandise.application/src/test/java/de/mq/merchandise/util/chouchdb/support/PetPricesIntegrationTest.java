@@ -1,31 +1,38 @@
 package de.mq.merchandise.util.chouchdb.support;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 import de.mq.merchandise.util.chouchdb.ChouchViewResponse;
 import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
-import de.mq.merchandise.util.chouchdb.support.CouchViewResponseImpl;
+import de.mq.merchandise.util.chouchdb.Field;
+import de.mq.merchandise.util.chouchdb.support.CouchResponseViewImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})
-@Ignore
+//@Ignore
 public class PetPricesIntegrationTest {
 
 	@Autowired
@@ -42,21 +49,21 @@ public class PetPricesIntegrationTest {
 	
 	@Test
 	public final void test() throws JsonGenerationException, JsonMappingException, IOException {
-	
+		
 		RestTemplate x = (RestTemplate) restOperations;
 		MappingJacksonHttpMessageConverter c  = (MappingJacksonHttpMessageConverter) x.getMessageConverters().iterator().next() ;
 		final  ObjectMapper mapper= c.getObjectMapper() ;
-		
+	
 		mapper.setVisibility(JsonMethod.FIELD, Visibility.ANY);
 		
 		final Map<String,String> pars = new HashMap<>();
 		pars.put("key", "nicole" );
 	
-		ChouchViewResponse response = restOperations.getForObject(URL,CouchViewResponseImpl.class,pars);
+		ChouchViewResponse response = restOperations.getForObject(URL,CouchResponseViewImpl.class,pars);
+		
 		System.out.println( response.rows().iterator().next().singleValue());
 		
 		pars.clear();
-		
 		
 		
 		
@@ -66,11 +73,12 @@ public class PetPricesIntegrationTest {
 		
 		
 	
-		ChouchViewResponse prices = restOperations.getForObject(URL2,CouchViewResponseImpl.class, pars);
+		ChouchViewResponse prices = restOperations.getForObject(URL2,CouchResponseViewImpl.class, pars);
 		
 		for(CouchViewResultRow row : prices.rows()) {
 			System.out.println(row.composedValue());
 			System.out.println(row.composedKey());
+			System.out.println(row.id());
 			 
 			
 		}

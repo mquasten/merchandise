@@ -6,17 +6,19 @@ import java.util.Map;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
+import de.mq.merchandise.util.chouchdb.Field;
 
 class SimpleCouchViewRowImpl implements CouchViewResultRow {
 
 	private Object key;
 
+	@Field
 	private Object value;
 
 	private String id;
 
 	@JsonIgnore
-	private MapCopyTemplate mapCopyTemplate = new MapCopyTemplate();
+	private MapCopyOperations mapCopyTemplate = new MapCopyTemplate();
 
 	/*
 	 * (non-Javadoc)
