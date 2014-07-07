@@ -1,34 +1,25 @@
 package de.mq.merchandise.util.chouchdb.support;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 import de.mq.merchandise.util.chouchdb.ChouchViewResponse;
 import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
-import de.mq.merchandise.util.chouchdb.Field;
-import de.mq.merchandise.util.chouchdb.support.CouchResponseViewImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})

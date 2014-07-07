@@ -9,19 +9,21 @@ import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
-
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
-
 
 import de.mq.merchandise.util.chouchdb.ChouchViewResponse;
 import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
-import de.mq.merchandise.util.chouchdb.Field;
 
  class CouchResponseViewImpl extends HashMap<String,Object> implements ChouchViewResponse {
 	 
 	
 
 	
+	public CouchResponseViewImpl() {
+		addMapping("rows", "rows");
+	}
+
 	/**
 	 * Serializeable
 	 */
@@ -37,14 +39,12 @@ import de.mq.merchandise.util.chouchdb.Field;
 
 	
 	@JsonIgnore
-	@Field
 	private final boolean messageFieldAware = false;
 
-	//@JsonDeserialize(contentAs = SimpleCouchViewRowImpl.class)
-  // @JsonProperty("rows")
+	@JsonIgnore
 	private List<CouchViewResultRow> results= new ArrayList<>();
 
-	@JsonProperty("status")
+	
 	@JsonIgnore(true)
 	private Object status;
 
@@ -52,13 +52,23 @@ import de.mq.merchandise.util.chouchdb.Field;
 	@JsonIgnore(false)
 	private Object info;
 
-	@JsonProperty("message")
+	
 	@JsonIgnore(true)
 	private Object message;
 
-	@JsonProperty("offset")
+	
 	@JsonIgnore(false)
 	private Object description;
+	
+	@JsonIgnore(false)
+	private Collection<Map.Entry<String[],String>>  mappings = new ArrayList<>();
+	
+	protected void addMapping(final String path, final String attribute){
+		final String[] paths = path.split("[.]");
+	    mappings.add(new SimpleEntry<>(paths, attribute));
+		
+		
+	}
 	
 
 	/*
@@ -143,21 +153,44 @@ import de.mq.merchandise.util.chouchdb.Field;
 
 
 	
+	
 	@Override
 	public Object put(String key, Object value) {
+		
+		
 		System.out.println(">>>>" + key + "="+  value);
-	    if( key.equals("rows")) {
-	    	@SuppressWarnings("unchecked")
-	    	Collection<Map<String,Object>> rows =  (Collection<Map<String, Object>>) value;
+		for(java.util.Map.Entry<String[], String> entry : mappings){
+			System.out.println(entry.getKey()[0]);
+			if(! entry.getKey()[0].equals(key)){
+				continue;
+			}
+			@SuppressWarnings("unchecked")
+			final List<String> paths = new ArrayList<>(CollectionUtils.arrayToList(entry.getKey()));
+			System.out.println("???" +paths);
+			paths.remove(key);
+			Object object = value;
+			for(final String path: paths ){
+				if (object instanceof Map) {
+					object=(((Map<?,?>) object).get(path));
+				}
+				if( object == null){
+					break;
+				}
+				throw new IllegalArgumentException("Value should be a Map");
+			}
+			@SuppressWarnings("unchecked")
+			final Collection<Map<String,Object>> rows =  (Collection<Map<String, Object>>) object;
 	    	for(Map<String,Object> row : rows){
-	    		CouchViewResultRow result = new SimpleCouchViewRowImpl();
+	    		final CouchViewResultRow result = new SimpleCouchViewRowImpl();
 	    		
 	    		assignField(row, result, "value");
 	    		assignField(row, result, "key");
 	    		assignField(row, result, "id");
 	    		results.add(result);
 	    	}
-	    }
+		}
+		
+	    
 		return null;
 	}
 
