@@ -9,19 +9,18 @@ import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.util.chouchdb.ChouchViewResponse;
 import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
 
- class CouchResponseViewImpl extends HashMap<String,Object> implements ChouchViewResponse {
-	 
-	
+class CouchResponseViewImpl extends HashMap<String, Object> implements ChouchViewResponse {
 
-	
 	public CouchResponseViewImpl() {
-		addMapping("rows", "rows");
+		mappings.add(new Mapping("rows"));
+		mappings.add(new Mapping("value", false));
+		mappings.add(new Mapping("key", false));
+		mappings.add(new Mapping("id", false));
 	}
 
 	/**
@@ -29,22 +28,15 @@ import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
 	 */
 	private static final long serialVersionUID = 1L;
 
-
-
-
 	@JsonIgnore
 	private final MapCopyTemplate mapCopyTemplate = new MapCopyTemplate();
-	 
-	
 
-	
 	@JsonIgnore
 	private final boolean messageFieldAware = false;
 
 	@JsonIgnore
-	private List<CouchViewResultRow> results= new ArrayList<>();
+	private List<CouchViewResultRow> results = new ArrayList<>();
 
-	
 	@JsonIgnore(true)
 	private Object status;
 
@@ -52,24 +44,14 @@ import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
 	@JsonIgnore(false)
 	private Object info;
 
-	
 	@JsonIgnore(true)
 	private Object message;
 
-	
 	@JsonIgnore(false)
 	private Object description;
-	
+
 	@JsonIgnore(false)
-	private Collection<Map.Entry<String[],String>>  mappings = new ArrayList<>();
-	
-	protected void addMapping(final String path, final String attribute){
-		final String[] paths = path.split("[.]");
-	    mappings.add(new SimpleEntry<>(paths, attribute));
-		
-		
-	}
-	
+	private Collection<Mapping> mappings = new ArrayList<>();
 
 	/*
 	 * (non-Javadoc)
@@ -114,7 +96,7 @@ import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
 			protected Map readRows(final CouchViewResultRow row, final Class<? extends Map> target) {
 				return row.composedValue();
 			}
-		}.results( Map.class);
+		}.results(Map.class);
 
 	}
 
@@ -134,8 +116,6 @@ import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
 			}
 		}.results(targetClass);
 	}
-	
-	
 
 	abstract class CollectionTemplate<T> {
 		final List<T> results(final Class<? extends T> targetClass) {
@@ -149,60 +129,52 @@ import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
 		protected abstract T readRows(final CouchViewResultRow row, final Class<? extends T> target);
 	}
 
-
-
-
-	
-	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object put(String key, Object value) {
-		
-		
-		System.out.println(">>>>" + key + "="+  value);
-		for(java.util.Map.Entry<String[], String> entry : mappings){
-			System.out.println(entry.getKey()[0]);
-			if(! entry.getKey()[0].equals(key)){
+
+		for (final Mapping mapping : mappings) {
+
+			if (!mapping.matchesForParent(key)) {
 				continue;
 			}
-			@SuppressWarnings("unchecked")
-			final List<String> paths = new ArrayList<>(CollectionUtils.arrayToList(entry.getKey()));
-			System.out.println("???" +paths);
-			paths.remove(key);
-			Object object = value;
-			for(final String path: paths ){
-				if (object instanceof Map) {
-					object=(((Map<?,?>) object).get(path));
-				}
-				if( object == null){
-					break;
-				}
-				throw new IllegalArgumentException("Value should be a Map");
+			if (mapping.mapToSubRow()) {
+				mapSubRows((Collection<Map<String, Object>>) mapping.valueFor(value));
+				continue;
 			}
-			@SuppressWarnings("unchecked")
-			final Collection<Map<String,Object>> rows =  (Collection<Map<String, Object>>) object;
-	    	for(Map<String,Object> row : rows){
-	    		final CouchViewResultRow result = new SimpleCouchViewRowImpl();
-	    		
-	    		assignField(row, result, "value");
-	    		assignField(row, result, "key");
-	    		assignField(row, result, "id");
-	    		results.add(result);
-	    	}
+
 		}
-		
-	    
+
 		return null;
 	}
 
-	private void assignField(Map<String, Object> row, CouchViewResultRow result, String name) {
-		java.lang.reflect.Field field = ReflectionUtils.findField(SimpleCouchViewRowImpl.class, name);
-		field.setAccessible(true);
-		ReflectionUtils.setField(field, result, row.get(name));
+	private void mapSubRows(final Collection<Map<String, Object>> rows) {
+		for (final Map<String, Object> row : rows) {
+			final CouchViewResultRow result = createRow();
+			mapSubRow(row, result);
+			results.add(result);
+		}
 	}
 	
-	
-	
-	
-	
+	protected CouchViewResultRow createRow(){
+		return new SimpleCouchViewRowImpl();
+	}
+
+	private void mapSubRow(final Map<String, Object> row, final CouchViewResultRow result) {
+		for (Mapping mapping : mappings) {
+			if (!mapping.matchesForRow()) {
+				continue;
+			}
+
+			assignField(mapping.valueFor(row), result, mapping.key());
+		}
+
+	}
+
+	private void assignField(Object value, CouchViewResultRow result, String name) {
+		java.lang.reflect.Field field = ReflectionUtils.findField(SimpleCouchViewRowImpl.class, name);
+		field.setAccessible(true);
+		ReflectionUtils.setField(field, result, value);
+	}
 
 }
