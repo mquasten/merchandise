@@ -1,41 +1,64 @@
 package de.mq.merchandise.util.chouchdb.support;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.util.ReflectionUtils;
+
 class Mapping  {
 	
 	
 	
-	final private boolean isParent; 
+	
 	
 	private final String key ;
 	
-	private final boolean mapToSubRow;
+	private final String field;
+	
+	final Class<?> clazz;
 	
 	private List<String> paths = new ArrayList<>();
-	Mapping(final String key) {
+	public Mapping(final String key,final Class<?> clazz, final String field, final String ... paths) {
 		this.key=key;
-		isParent=true;
-		mapToSubRow=true;
+		this.field=field;
+		this.clazz=clazz;
+		for(String path : paths){
+			this.paths.add(path);
+		}
 	}
 	
-	Mapping(final String key,final  boolean isParent) {
-		this.key=key;
-		this.isParent=isParent;
-		paths.add(key);
-		mapToSubRow=false;
+	Mapping(final Class<?> clazz, final String field, final String ... paths) {
+	
+		this(null,clazz, field, paths);
 	}
+	Mapping(final String key, final String ... paths) {
+		this(key,null,null, paths);
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	boolean matchesForParent(final String key) {
-		return this.key.equals(key)&&isParent;
+		if (this.key==null) {
+			return false;
+		}
+		return this.key.equals(key);
 	}
 	
 	boolean matchesForRow(){
-		return !isParent;
+		return (key==null);
+	}
+	
+	boolean hasField() {
+		return (field!=null);
 	}
 	
 	final Object valueFor(final Object value) {
@@ -48,9 +71,10 @@ class Mapping  {
 			if( result == null){
 				break;
 			}
+			
 			throw new IllegalArgumentException("Value should be a Map");
 		}
-		if(! mapToSubRow) {
+		if( field != null ) {
 			return result;
 		}
 		if (result instanceof Collection<?>) {
@@ -66,13 +90,28 @@ class Mapping  {
 		throw new IllegalArgumentException("Value should be a Map");
 		
 	}
-	
-	final boolean  mapToSubRow() {
-		return mapToSubRow;
+
+
+
+	public void assignField(final Object target, final Object value) {
+		if( field == null ){
+			throw new IllegalArgumentException("Field isn't defined");
+		}
+		if( clazz == null ){
+			throw new IllegalArgumentException("Class isn't defined");
+		}
+		final Field targetField = ReflectionUtils.findField(clazz, field);
+		if( field == null){
+			throw new IllegalArgumentException("Field " + field + " not found for Class: " + clazz );
+		}
+		targetField.setAccessible(true);
+		
+		ReflectionUtils.setField(targetField, target, valueFor(value));
+		
 	}
 	
-	final String key() {
-		return key;
-	}
+	
+	
+	
 	
 }

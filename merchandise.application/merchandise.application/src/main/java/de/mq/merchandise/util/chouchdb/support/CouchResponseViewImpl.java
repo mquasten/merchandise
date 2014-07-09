@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.util.chouchdb.ChouchViewResponse;
 import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
@@ -18,9 +16,11 @@ class CouchResponseViewImpl extends HashMap<String, Object> implements ChouchVie
 
 	public CouchResponseViewImpl() {
 		mappings.add(new Mapping("rows"));
-		mappings.add(new Mapping("value", false));
-		mappings.add(new Mapping("key", false));
-		mappings.add(new Mapping("id", false));
+		mappings.add(new Mapping("total_rows", CouchResponseViewImpl.class, "info" ));
+		mappings.add(new Mapping("offset", CouchResponseViewImpl.class, "description" ));
+		mappings.add(new Mapping(SimpleCouchViewRowImpl.class, "value",  "value"));
+		mappings.add(new Mapping(SimpleCouchViewRowImpl.class, "key", "key"));
+		mappings.add(new Mapping(SimpleCouchViewRowImpl.class, "id", "id"));
 	}
 
 	/**
@@ -40,8 +40,8 @@ class CouchResponseViewImpl extends HashMap<String, Object> implements ChouchVie
 	@JsonIgnore(true)
 	private Object status;
 
-	@JsonProperty("total_rows")
-	@JsonIgnore(false)
+	
+	@JsonIgnore(true)
 	private Object info;
 
 	@JsonIgnore(true)
@@ -138,11 +138,11 @@ class CouchResponseViewImpl extends HashMap<String, Object> implements ChouchVie
 			if (!mapping.matchesForParent(key)) {
 				continue;
 			}
-			if (mapping.mapToSubRow()) {
+			if (!mapping.hasField()) {
 				mapSubRows((Collection<Map<String, Object>>) mapping.valueFor(value));
 				continue;
 			}
-
+            mapping.assignField(this, value); 
 		}
 
 		return null;
@@ -161,20 +161,17 @@ class CouchResponseViewImpl extends HashMap<String, Object> implements ChouchVie
 	}
 
 	private void mapSubRow(final Map<String, Object> row, final CouchViewResultRow result) {
-		for (Mapping mapping : mappings) {
+		for (final Mapping mapping : mappings) {
 			if (!mapping.matchesForRow()) {
 				continue;
 			}
 
-			assignField(mapping.valueFor(row), result, mapping.key());
+			mapping.assignField(result, row);
 		}
 
 	}
 
-	private void assignField(Object value, CouchViewResultRow result, String name) {
-		java.lang.reflect.Field field = ReflectionUtils.findField(SimpleCouchViewRowImpl.class, name);
-		field.setAccessible(true);
-		ReflectionUtils.setField(field, result, value);
-	}
+
+	
 
 }

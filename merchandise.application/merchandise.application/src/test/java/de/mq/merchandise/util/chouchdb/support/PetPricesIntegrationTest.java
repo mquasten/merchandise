@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
@@ -53,6 +54,8 @@ public class PetPricesIntegrationTest {
 		ChouchViewResponse response = restOperations.getForObject(URL,CouchResponseViewImpl.class,pars);
 		
 		System.out.println( response.rows().iterator().next().singleValue());
+		System.out.println(ReflectionTestUtils.getField(response, "info"));
+		System.out.println(ReflectionTestUtils.getField(response, "description"));
 		
 		pars.clear();
 		
@@ -60,7 +63,7 @@ public class PetPricesIntegrationTest {
 		
 		pars.put("key", mapper.writeValueAsString(new PetPriceKey("platinium", "date")));
 		pars.put("quantity", "3");
-		System.out.println(mapper.writeValueAsString(new PetPriceKey("platinium", "date")));
+	//	System.out.println(mapper.writeValueAsString(new PetPriceKey("platinium", "date")));
 		
 		
 	
@@ -70,9 +73,11 @@ public class PetPricesIntegrationTest {
 			System.out.println(row.composedValue());
 			System.out.println(row.composedKey());
 			System.out.println(row.id());
-			 
+			
+			
 			
 		}
+		
 	}
 	
 	
