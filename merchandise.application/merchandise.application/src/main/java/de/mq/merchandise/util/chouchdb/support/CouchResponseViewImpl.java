@@ -61,9 +61,6 @@ class CouchResponseViewImpl extends HashMap<String, Object> implements ChouchVie
 	 */
 	@Override
 	public final List<CouchViewResultRow> rows() {
-		if (results == null) {
-			results = new ArrayList<>();
-		}
 		return results;
 	}
 
@@ -117,6 +114,18 @@ class CouchResponseViewImpl extends HashMap<String, Object> implements ChouchVie
 			}
 		}.results(targetClass);
 	}
+	
+	
+	@Override
+	public final Object put(final String key, final Object value) {
+
+		for (final Mapping mapping : mappings) {
+			results.addAll(mapping.map(this, key, value));
+		}
+
+		return null;
+	}
+	
 
 	abstract class CollectionTemplate<T> {
 		final List<T> results(final Class<? extends T> targetClass) {
@@ -134,22 +143,8 @@ class CouchResponseViewImpl extends HashMap<String, Object> implements ChouchVie
 	
 
 	
-	@Override
-	public Object put(String key, Object value) {
-
-		for (final Mapping mapping : mappings) {
-			results.addAll(mapping.map(this, key, value));
-		}
-
-		return null;
-	}
-
-	
-	
 	
 
-
-	
 	
 
 }
