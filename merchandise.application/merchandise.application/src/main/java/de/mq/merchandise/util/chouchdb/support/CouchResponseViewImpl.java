@@ -15,12 +15,13 @@ import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
 class CouchResponseViewImpl extends HashMap<String, Object> implements ChouchViewResponse {
 
 	public CouchResponseViewImpl() {
-		mappings.add(new Mapping("rows"));
+		final Mapping parent = new Mapping("rows");
+		mappings.add(parent);
 		mappings.add(new Mapping("total_rows", CouchResponseViewImpl.class, "info" ));
 		mappings.add(new Mapping("offset", CouchResponseViewImpl.class, "description" ));
-		mappings.add(new Mapping(SimpleCouchViewRowImpl.class, "value",  "value"));
-		mappings.add(new Mapping(SimpleCouchViewRowImpl.class, "key", "key"));
-		mappings.add(new Mapping(SimpleCouchViewRowImpl.class, "id", "id"));
+		new Mapping(SimpleCouchViewRowImpl.class, parent, "value",  "value");
+		new Mapping(SimpleCouchViewRowImpl.class,parent, "key", "key");
+		new Mapping(SimpleCouchViewRowImpl.class, parent, "id", "id");
 	}
 
 	/**
@@ -127,51 +128,28 @@ class CouchResponseViewImpl extends HashMap<String, Object> implements ChouchVie
 		}
 
 		protected abstract T readRows(final CouchViewResultRow row, final Class<? extends T> target);
+		
 	}
+	
+	
 
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public Object put(String key, Object value) {
 
 		for (final Mapping mapping : mappings) {
-
-			if (!mapping.matchesForParent(key)) {
-				continue;
-			}
-			if (!mapping.hasField()) {
-				mapSubRows((Collection<Map<String, Object>>) mapping.valueFor(value));
-				continue;
-			}
-            mapping.assignField(this, value); 
+			results.addAll(mapping.map(this, key, value));
 		}
 
 		return null;
 	}
 
-	private void mapSubRows(final Collection<Map<String, Object>> rows) {
-		for (final Map<String, Object> row : rows) {
-			final CouchViewResultRow result = createRow();
-			mapSubRow(row, result);
-			results.add(result);
-		}
-	}
 	
-	protected CouchViewResultRow createRow(){
-		return new SimpleCouchViewRowImpl();
-	}
-
-	private void mapSubRow(final Map<String, Object> row, final CouchViewResultRow result) {
-		for (final Mapping mapping : mappings) {
-			if (!mapping.matchesForRow()) {
-				continue;
-			}
-
-			mapping.assignField(result, row);
-		}
-
-	}
+	
+	
 
 
+	
 	
 
 }
