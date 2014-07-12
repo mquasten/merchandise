@@ -19,8 +19,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
-import de.mq.merchandise.util.chouchdb.ChouchViewResponse;
-import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
+import de.mq.merchandise.util.chouchdb.MapBasedResponse;
+import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})
@@ -51,11 +51,10 @@ public class PetPricesIntegrationTest {
 		final Map<String,String> pars = new HashMap<>();
 		pars.put("key", "nicole" );
 	
-		ChouchViewResponse response = restOperations.getForObject(URL,CouchResponseViewImpl.class,pars);
+		MapBasedResponse response = restOperations.getForObject(URL,SimpleCouchDBResultImpl.class,pars);
 		
 		System.out.println( response.rows().iterator().next().singleValue());
-		System.out.println(ReflectionTestUtils.getField(response, "info"));
-		System.out.println(ReflectionTestUtils.getField(response, "description"));
+		
 		
 		pars.clear();
 		
@@ -67,12 +66,12 @@ public class PetPricesIntegrationTest {
 		
 		
 	
-		ChouchViewResponse prices = restOperations.getForObject(URL2,CouchResponseViewImpl.class, pars);
+		MapBasedResponse prices = restOperations.getForObject(URL2,SimpleCouchDBResultImpl.class, pars);
 		
-		for(CouchViewResultRow row : prices.rows()) {
+		for(MapBasedResultRow row : prices.rows()) {
 			System.out.println(row.composedValue());
 			System.out.println(row.composedKey());
-			System.out.println(row.id());
+			
 			
 			
 			

@@ -3,9 +3,9 @@ package de.mq.merchandise.util.chouchdb;
 import java.util.List;
 import java.util.Map;
 
-public interface ChouchViewResponse {
+public interface MapBasedResponse {
 
-	List<CouchViewResultRow> rows();
+	List<MapBasedResultRow> rows();
 
 	List<String> single();
 

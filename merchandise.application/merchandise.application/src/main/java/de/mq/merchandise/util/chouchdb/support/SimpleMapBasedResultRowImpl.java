@@ -5,10 +5,10 @@ import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
+import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
 import de.mq.merchandise.util.chouchdb.Field;
 
-class SimpleCouchViewRowImpl implements CouchViewResultRow {
+class SimpleMapBasedResultRowImpl implements MapBasedResultRow {
 
 	private Object key;
 

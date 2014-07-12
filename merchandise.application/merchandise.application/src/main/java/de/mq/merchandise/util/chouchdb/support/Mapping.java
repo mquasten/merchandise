@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,39 +12,40 @@ import java.util.Set;
 
 import org.springframework.util.ReflectionUtils;
 
-import de.mq.merchandise.util.chouchdb.CouchViewResultRow;
-
-class Mapping  {
+class Mapping<T>  {
 	
 	
-	final Set<Mapping> childs = new HashSet<>();
+	final Set<Mapping<T>> childs = new HashSet<>();
 	
 	
 	private final String key ;
 	
 	private final String field;
 	
-	final Class<?> clazz;
-	
 	private List<String> paths = new ArrayList<>();
 	
-	Mapping(final String key,final Class<?> clazz, final String field, final String ... paths) {
+
+	
+	Mapping(final String key, final String field, final String ... paths) {
 		this.key=key;
 		this.field=field;
-		this.clazz=clazz;
+		//this.clazz=clazz;
+		assignPaths(paths);
+	}
+
+	private void assignPaths(final String... paths) {
 		for(String path : paths){
 			this.paths.add(path);
 		}
 	}
 	
-	Mapping( final Class<?> clazz, final Mapping parent,  final String field, final String ... paths) {
-		this(null,clazz, field, paths);
+	Mapping(final Mapping<T> parent,  final String field, final String ... paths) {
+		this.key=null;
+		this.field=field;
+		assignPaths(paths);
 		parent.childs.add(this);
 	}
-	Mapping(final String key, final String ... paths) {
-		this(key,null,null, paths);
-	}
-	
+   
 	private boolean matchesForParent(final String key) {
 		if (this.key==null) {
 			return false;
@@ -91,13 +93,11 @@ class Mapping  {
 
 
 
-	private void assignField(final Object target, final Object value) {
+	private void assignField(final Class<?> clazz, final Object target, final Object value) {
 		if( field == null ){
 			throw new IllegalArgumentException("Field isn't defined");
 		}
-		if( clazz == null ){
-			throw new IllegalArgumentException("Class isn't defined");
-		}
+		
 		final Field targetField = ReflectionUtils.findField(clazz, field);
 		if( field == null){
 			throw new IllegalArgumentException("Field " + field + " not found for Class: " + clazz );
@@ -109,9 +109,9 @@ class Mapping  {
 	}
 	
 	
-	private void mapRow(final Map<String, Object> row, final Object result) {
+	private void mapRow(final Class<?> clazz, final Map<String, Object> row, final Object result) {
 		if (this.matchesForRow()) {
-			this.assignField(result, row);	
+			this.assignField(clazz, result, row);	
 		}
 	}
 	
@@ -120,37 +120,46 @@ class Mapping  {
 	
 	
 
-	private void mapSubRow(final Map<String, Object> row, final CouchViewResultRow result) {
-		for (final Mapping child : childs) {
-			child.mapRow(row, result);
+	private T mapSubRow(final Class<? extends T> clazz, final Map<String, Object> row /*, final Object result*/) {
+		final T result = newRow((Class<? extends T>) clazz);
+		for (final Mapping<T>  child : childs) {
+			child.mapRow(clazz, row, result);
 		}
 
-		
+		return result;
 	}
 
 
-   private Collection<CouchViewResultRow> mapSubRows(final Collection<Map<String, Object>> rows ) {
-		final Collection<CouchViewResultRow> results = new ArrayList<>();
+   private Collection<T> mapSubRows(final Class<? extends T> rowClass, final Collection<Map<String, Object>> rows ) {
+		final Collection<T> results = new ArrayList<>();
 		for (final Map<String, Object> row : rows) {
-			final CouchViewResultRow result = new SimpleCouchViewRowImpl();
-		    mapSubRow(row, result);
+			//final T result = newRow();
+			final T result =  mapSubRow(rowClass, row);
 			results.add(result);
 		}
 		return results;
 	}
+
+private T newRow(final Class<? extends T> clazz)  {
+	try {
+		return   clazz.newInstance();
+	} catch (final InstantiationException | IllegalAccessException ex) {
+		throw new IllegalArgumentException(ex);
+	}
+}
 	
 	@SuppressWarnings("unchecked")
-	Collection<CouchViewResultRow> map(final Object parent, final String key, final Object value) {
+	Collection<T> map(final Object parent, final Class<? extends T> rowClass, final String key, final Object value) {
 	
 		if (!matchesForParent(key)) {
 		  return new ArrayList<>(); 
 		} 
 		
 		if (! hasField()) {
-			return mapSubRows((Collection<Map<String, Object>>) valueFor(value));
+			return  mapSubRows( rowClass , (Collection<Map<String, Object>>) valueFor(value));
 			
 		}
-        this.assignField(parent, value); 
+        this.assignField(parent.getClass(), parent , value); 
         return new ArrayList<>();
 	}
 	
