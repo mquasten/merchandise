@@ -7,10 +7,12 @@ public interface MapBasedResponse {
 
 	List<MapBasedResultRow> rows();
 
-	List<String> single();
+	<T> List<T> single(Class<? extends T> clazz);
 
 	List<Map<String, Object>> composed();
 
 	<T> List<T> composed(Class<? extends T> targetClass);
+
+
 
 }

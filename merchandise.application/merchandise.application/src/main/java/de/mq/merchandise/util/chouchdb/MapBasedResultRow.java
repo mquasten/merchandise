@@ -6,9 +6,9 @@ public interface MapBasedResultRow {
 
 	String id();
 
-	String singleKey();
+	<T> T singleValue(Class<? extends T> clazz);
 
-	String singleValue();
+	<T> T singleKey(Class<? extends T> clazz);
 
 	Map<String, Object> composedKey();
 
@@ -17,5 +17,9 @@ public interface MapBasedResultRow {
 	<T> T composedValue(final Class<? extends T> targetClass);
 	
 	<T> T composedKey(final Class<? extends T> targetClass) ;
+
+	
+
+	
 
 }

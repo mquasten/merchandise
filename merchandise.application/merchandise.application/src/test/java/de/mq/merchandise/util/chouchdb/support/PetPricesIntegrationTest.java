@@ -9,13 +9,13 @@ import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,7 +24,7 @@ import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})
-//@Ignore
+@Ignore
 public class PetPricesIntegrationTest {
 
 	@Autowired
@@ -53,7 +53,7 @@ public class PetPricesIntegrationTest {
 	
 		MapBasedResponse response = restOperations.getForObject(URL,SimpleCouchDBResultImpl.class,pars);
 		
-		System.out.println( response.rows().iterator().next().singleValue());
+		System.out.println( response.rows().iterator().next().singleValue(String.class));
 		
 		
 		pars.clear();

@@ -88,14 +88,16 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 	 * 
 	 * @see de.mq.merchandise.util.chouchdb.ChouchViewResponse#single()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public final List<String> single() {
-		return new CollectionTemplate<String>() {
+	public final <T> List<T> single(Class<? extends T> clazz) {
+		return   new CollectionTemplate<T>() {
 			@Override
-			protected String readRows(final MapBasedResultRow row, Class<? extends String> target) {
-				return row.singleValue();
+			protected T readRows(final MapBasedResultRow row, Class<? extends T> target) {
+				return row.singleValue(null);
 			}
-		}.results(String.class);
+		}.results( (Class<? extends T>) Object.class);
+		
 	}
 
 	/*
@@ -108,7 +110,7 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 	@Override
 	public final List<Map<String, Object>> composed() {
 
-		return (List<Map<String, Object>>) (List<? extends Map<String, Object>>) new CollectionTemplate<Map>() {
+		return (List<Map<String, Object>>) (List<? extends Map>) new CollectionTemplate<Map>() {
 			@Override
 			protected Map readRows(final MapBasedResultRow row, final Class<? extends Map> target) {
 				return row.composedValue();

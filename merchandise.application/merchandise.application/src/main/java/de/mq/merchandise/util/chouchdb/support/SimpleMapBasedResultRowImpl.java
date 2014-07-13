@@ -4,18 +4,24 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.springframework.core.convert.support.ConfigurableConversionService;
+import org.springframework.core.convert.support.ConversionServiceFactory;
+import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.core.convert.support.GenericConversionService;
 
 import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
-import de.mq.merchandise.util.chouchdb.Field;
 
+@SuppressWarnings("unused")
 class SimpleMapBasedResultRowImpl implements MapBasedResultRow {
 
 	private Object key;
 
-	@Field
 	private Object value;
 
 	private String id;
+	
+	@JsonIgnore
+	final ConfigurableConversionService conversionService = new DefaultConversionService();
 
 	@JsonIgnore
 	private MapCopyOperations mapCopyTemplate = new MapCopyTemplate();
@@ -35,15 +41,21 @@ class SimpleMapBasedResultRowImpl implements MapBasedResultRow {
 	 * 
 	 * @see de.mq.merchandise.order.support.CouchViewResultRow#singleKey()
 	 */
+	
 	@Override
-	public final String singleKey() {
+	public final <T> T singleKey(Class<? extends T> clazz) {
 
 		if (key instanceof Map) {
 			throw new IllegalArgumentException("Key is a Composed Key");
 		}
-		return (String) key;
+
+		
+		return conversionService.convert(key, clazz);
+		
 
 	}
+	
+	
 
 	/*
 	 * (non-Javadoc)
@@ -51,12 +63,12 @@ class SimpleMapBasedResultRowImpl implements MapBasedResultRow {
 	 * @see de.mq.merchandise.order.support.CouchViewResultRow#singleValue()
 	 */
 	@Override
-	public final String singleValue() {
-		if (key instanceof Map) {
-			throw new IllegalArgumentException("Key is a Composed Key");
+	public final <T> T singleValue(Class<? extends T> clazz) {
+		if (value instanceof Map) {
+			throw new IllegalArgumentException("Value is a Composed Key");
 		}
 
-		return (String) value;
+		return conversionService.convert(value, clazz);
 	}
 
 	/*
@@ -121,4 +133,5 @@ class SimpleMapBasedResultRowImpl implements MapBasedResultRow {
 		return mapCopyTemplate.createShallowCopyFieldsFromMap(targetClass, composedKey());
 	}
 
+	
 }

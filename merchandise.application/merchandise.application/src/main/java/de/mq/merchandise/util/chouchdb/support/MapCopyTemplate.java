@@ -46,7 +46,6 @@ public class MapCopyTemplate implements MapCopyOperations {
 				final Converter<Object, Object> converter = (Converter<Object, Object>) BeanUtils.instantiateClass(field.getAnnotation(de.mq.merchandise.util.chouchdb.Field.class).converter());
 				field.setAccessible(true);
 
-				System.out.println(field.getName() + "=" + values.get(name));
 				field.set(target, converter.convert(values.get(name)));
 
 			}
