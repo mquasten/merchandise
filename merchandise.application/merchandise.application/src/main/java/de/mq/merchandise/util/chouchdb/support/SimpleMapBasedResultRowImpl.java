@@ -52,7 +52,7 @@ class SimpleMapBasedResultRowImpl implements MapBasedResultRow {
 		
 		return conversionService.convert(key, clazz);
 		
-
+		
 	}
 	
 	

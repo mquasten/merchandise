@@ -6,7 +6,6 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
