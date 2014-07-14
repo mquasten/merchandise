@@ -80,7 +80,7 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 	 */
 	@Override
 	public final List<MapBasedResultRow> rows() {
-		return results;
+		return Collections.unmodifiableList(results);
 	}
 
 	/*
