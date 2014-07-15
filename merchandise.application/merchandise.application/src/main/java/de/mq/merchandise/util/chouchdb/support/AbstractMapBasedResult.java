@@ -88,15 +88,14 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 	 * 
 	 * @see de.mq.merchandise.util.chouchdb.ChouchViewResponse#single()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public final <T> List<T> single(Class<? extends T> clazz) {
+	public final <T> List<T> single(final Class<? extends T> clazz) {
 		return   new CollectionTemplate<T>() {
 			@Override
 			protected T readRows(final MapBasedResultRow row, Class<? extends T> target) {
-				return row.singleValue(null);
+				return row.singleValue(clazz);
 			}
-		}.results( (Class<? extends T>) Object.class);
+		}.results(clazz);
 		
 	}
 
@@ -142,11 +141,11 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 		
 		Assert.notNull(rowClass);
 
-		for (final Mapping<MapBasedResultRow> mapping : mappings) {
+		for (final Mapping<MapBasedResultRow> mapping : mappings) {	
 			results.addAll( mapping.map(this, rowClass, key, value));
 		}
 
-		return null;
+		return value;
 	}
 	
 

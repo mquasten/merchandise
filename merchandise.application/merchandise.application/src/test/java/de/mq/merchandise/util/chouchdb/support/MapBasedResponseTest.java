@@ -2,6 +2,8 @@ package de.mq.merchandise.util.chouchdb.support;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -14,13 +16,17 @@ import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
 
 public class MapBasedResponseTest {
 	
+	private static final String QUALITY = "platinium";
+	private static final String UNIT = "private date";
+	private static final String SINGLE_VALUE = "19680528";
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public final void testMapping() {
 		
 		final MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
 		
-		final Collection<Mapping<?>> mappings =  (Collection<Mapping<?>>) ReflectionTestUtils.getField(mapBasedResponse, "mappings");
+		final Collection<Mapping<?>> mappings =  mappingsField(mapBasedResponse);
 	    Assert.assertEquals(1, mappings.size());
 	    Assert.assertEquals("rows", ReflectionTestUtils.getField(mappings.iterator().next(), "key"));
 	    Assert.assertEquals(2,  ((Collection<Mapping<?>>) ReflectionTestUtils.getField(mappings.iterator().next(), "childs")).size());
@@ -39,6 +45,10 @@ public class MapBasedResponseTest {
 		
 		
 	}
+	@SuppressWarnings("unchecked")
+	private Collection<Mapping<?>> mappingsField(final MapBasedResponse mapBasedResponse) {
+		return  (Collection<Mapping<?>>) ReflectionTestUtils.getField(mapBasedResponse, "mappings");
+	}
 	@Test
 	@SuppressWarnings("unchecked")
 	public final void mapOtherParentField(){
@@ -56,7 +66,7 @@ public class MapBasedResponseTest {
 			}};
 			
 		
-			final Collection<Mapping<?>> mappings =  (Collection<Mapping<?>>) ReflectionTestUtils.getField(mapBasedResponse, "mappings");
+			final Collection<Mapping<?>> mappings =  mappingsField(mapBasedResponse);
 			Assert.assertEquals(1, mappings.size());
 			Assert.assertEquals(0,  ((Collection<Mapping<?>>) ReflectionTestUtils.getField(mappings.iterator().next(), "childs")).size());
 			
@@ -77,5 +87,79 @@ public class MapBasedResponseTest {
 		Assert.assertEquals(1,  mapBasedResponse.rows().size());
 		Assert.assertEquals(rows, mapBasedResponse.rows());
 	}
+	
+	@Test
+	public final void single() {
+		final MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+	
+		final Collection<MapBasedResultRow> rows = rowField(mapBasedResponse);
+		final MapBasedResultRow row = new SimpleMapBasedResultRowImpl();
+		ReflectionTestUtils.setField(row, "value", SINGLE_VALUE);
+		rows.add( row);
+		final Collection<Long> results = mapBasedResponse.single(Long.class);
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(Long.valueOf(SINGLE_VALUE), results.iterator().next());
+	}
+	@SuppressWarnings("unchecked")
+	private Collection<MapBasedResultRow> rowField(final MapBasedResponse mapBasedResponse) {
+		
+		return  (Collection<MapBasedResultRow>) ReflectionTestUtils.getField(mapBasedResponse, "results");
+	}
+	@Test
+	public final void composed() {
+		final MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+		final Collection<MapBasedResultRow> rows = rowField(mapBasedResponse);
+		final Map<String,Object> values = new HashMap<>();
+		values.put("id", SINGLE_VALUE);
+		final MapBasedResultRow row = new SimpleMapBasedResultRowImpl();
+		ReflectionTestUtils.setField(row, "value", values);
+		rows.add(row);
+		final Collection<Map<String,Object>> results = mapBasedResponse.composed();
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(values, results.iterator().next());
+	}
+	
+	@Test
+	public final void composedClass() {
+		final MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+		final Collection<MapBasedResultRow> rows = rowField(mapBasedResponse);
+		final Map<String,Object> values = new HashMap<>();
+		values.put("unit", UNIT);
+		values.put("quality", QUALITY);
+		final MapBasedResultRow row = new SimpleMapBasedResultRowImpl();
+		ReflectionTestUtils.setField(row, "value", values);
+		rows.add(row);
+		final Collection<PetPriceKey> results = mapBasedResponse.composed(PetPriceKey.class);
+		Assert.assertEquals(1, results.size());
+		final PetPriceKey result = results.iterator().next();
+		Assert.assertEquals(QUALITY, result.quality);
+		Assert.assertEquals(UNIT, result.unit);
+	}
+	
+
+	@Test
+	public final void put() {
+		final SimpleCouchDBResultImpl mapBasedResponse = new SimpleCouchDBResultImpl() ;
+		
+		final Collection<Mapping<?>> mappings = mappingsField(mapBasedResponse);
+		mappings.clear();
+		@SuppressWarnings("unchecked")
+		final Mapping<MapBasedResultRow> mapping = Mockito.mock(Mapping.class);
+		mappings.add(mapping);
+		
+		final Map<?,?> values = new HashMap<>();
+		final Collection<MapBasedResultRow> rows = new ArrayList<>();
+		MapBasedResultRow mapBasedResultRow = Mockito.mock(MapBasedResultRow.class);
+		rows.add(mapBasedResultRow);
+		Mockito.when(mapping.map(mapBasedResponse, SimpleMapBasedResultRowImpl.class, "rows", values)).thenReturn(rows);
+		
+		mapBasedResponse.put("rows", values);
+		final Collection<MapBasedResultRow> results = mapBasedResponse.rows();
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(rows, results);
+		
+			
+	}
+	
 
 }
