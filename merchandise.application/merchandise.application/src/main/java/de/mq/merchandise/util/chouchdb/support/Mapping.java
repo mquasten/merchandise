@@ -18,7 +18,7 @@ class Mapping<T>  {
 	final Set<Mapping<T>> childs = new HashSet<>();
 	
 	
-	private final String key ;
+	private  final  String key ;
 	
 	private final String field;
 	
