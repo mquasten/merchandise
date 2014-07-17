@@ -1,13 +1,16 @@
 package de.mq.merchandise.util.chouchdb.support;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import de.mq.merchandise.util.chouchdb.MapBasedResponse;
 import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
 
 public class MappingTest {
@@ -57,5 +60,25 @@ public class MappingTest {
 	private Collection<Mapping<MapBasedResultRow>>  childs(final Mapping<MapBasedResultRow> parent) {
 		return (Collection<Mapping<MapBasedResultRow>>) ReflectionTestUtils.getField(parent,"childs");
 	}	
+	
+	
+	@Test
+	public final void field() {
+		final Mapping<MapBasedResultRow> mapping =  new Mapping<>("hotScore" , "info" , "hotScore" );
+		final MapBasedResponse  parent = new SimpleCouchDBResultImpl();
+		final Map<String,Object> values = new HashMap<>();
+		values.put("hotScore", 10);
+		mapping.map(parent, null, "hotScore", values);
+		Assert.assertEquals(10, ReflectionTestUtils.getField(parent, "info"));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void fieldNotFound() {
+		final Mapping<MapBasedResultRow> mapping =  new Mapping<>("hotScore" , "xxx" , "hotScore" );
+	
+		final Map<String,Object> values = new HashMap<>();
+		values.put("hotScore", 10);
+		mapping.map(new SimpleCouchDBResultImpl(), null, "hotScore", values);
+	}
 
 }

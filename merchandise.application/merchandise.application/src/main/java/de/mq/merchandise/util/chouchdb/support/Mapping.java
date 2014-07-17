@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
+
+import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
 class Mapping<T>  {
@@ -94,14 +97,11 @@ class Mapping<T>  {
 
 
 	private void assignField(final Class<?> clazz, final Object target, final Object value) {
-		if( field == null ){
-			throw new IllegalArgumentException("Field isn't defined");
-		}
+		Assert.notNull(field,"Field isn't defined" );
 		
 		final Field targetField = ReflectionUtils.findField(clazz, field);
-		if( field == null){
-			throw new IllegalArgumentException("Field " + field + " not found for Class: " + clazz );
-		}
+		Assert.notNull(targetField, "Field " + field + " not found for Class: " + clazz );
+		
 		targetField.setAccessible(true);
 		
 		ReflectionUtils.setField(targetField, target, valueFor(value));
