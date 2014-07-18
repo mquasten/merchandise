@@ -86,6 +86,7 @@ class Mapping<T>  {
 		}
 		if (result instanceof Map<?,?>) {
 			final Collection<Object> results = new ArrayList<>();
+			System.out.println(result);
 			results.add(result);
 			return Collections.unmodifiableCollection(results);
 			

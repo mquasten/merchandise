@@ -1,7 +1,9 @@
 package de.mq.merchandise.util.chouchdb.support;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -79,6 +81,34 @@ public class MappingTest {
 		final Map<String,Object> values = new HashMap<>();
 		values.put("hotScore", 10);
 		mapping.map(new SimpleCouchDBResultImpl(), null, "hotScore", values);
+	}        
+	@Test
+	public final void rows() {
+		Mapping<MapBasedResultRow> parent = new Mapping<>("rows" , null);
+		new Mapping<>(parent, "value");
+		
+		MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+		final Collection<Map<String,Object>> rows = new ArrayList<>();
+		final Map<String, Object> row1 = new HashMap<>();
+		row1.put("name", "Nicole");
+		row1.put("quality", "Platinium");
+		row1.put("unit", "date");
+		rows.add(row1);
+		final Map<String, Object> row2 = new HashMap<>();
+		row2.put("name", "Carmit");
+		row2.put("quality", "Gold");
+		row2.put("unit", "date");
+		rows.add(row2);
+		
+		
+		final Collection<MapBasedResultRow> results =  parent.map(mapBasedResponse, SimpleMapBasedResultRowImpl.class, "rows", rows);
+		
+		final Iterator<Map<String,Object>> it = rows.iterator();
+		for(MapBasedResultRow result : results) {
+			Assert.assertEquals(it.next(), result.composedValue());
+		}
+	
+		
 	}
 
 }
