@@ -88,17 +88,7 @@ public class MappingTest {
 		new Mapping<>(parent, "value");
 		
 		MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
-		final Collection<Map<String,Object>> rows = new ArrayList<>();
-		final Map<String, Object> row1 = new HashMap<>();
-		row1.put("name", "Nicole");
-		row1.put("quality", "Platinium");
-		row1.put("unit", "date");
-		rows.add(row1);
-		final Map<String, Object> row2 = new HashMap<>();
-		row2.put("name", "Carmit");
-		row2.put("quality", "Gold");
-		row2.put("unit", "date");
-		rows.add(row2);
+		final Collection<Map<String, Object>> rows = listResult();
 		
 		
 		final Collection<MapBasedResultRow> results =  parent.map(mapBasedResponse, SimpleMapBasedResultRowImpl.class, "rows", rows);
@@ -111,4 +101,49 @@ public class MappingTest {
 		
 	}
 
+	private Collection<Map<String, Object>> listResult() {
+		final Collection<Map<String,Object>> rows = new ArrayList<>();
+		final Map<String, Object> row1 = new HashMap<>();
+		row1.put("name", "Nicole");
+		row1.put("quality", "Platinium");
+		row1.put("unit", "date");
+		rows.add(row1);
+		final Map<String, Object> row2 = new HashMap<>();
+		row2.put("name", "Carmit");
+		row2.put("quality", "Gold");
+		row2.put("unit", "date");
+		rows.add(row2);
+		return rows;
+	}
+	@Test
+	public final void rowsFromMap() {
+		Mapping<MapBasedResultRow> parent = new Mapping<>("rows" , null);
+		new Mapping<>(parent, "value");
+		final Map<String, Object> row = new HashMap<>();
+		row.put("name", "Nicole");
+		row.put("quality", "Platinium");
+		row.put("unit", "date");
+		MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+		final Collection<MapBasedResultRow> results =  parent.map( mapBasedResponse, SimpleMapBasedResultRowImpl.class, "rows", row);
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(row, results.iterator().next().composedValue());
+		
+	
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void notMatchesForParent() {
+		Mapping<MapBasedResultRow> parent = new Mapping<>( "row" , null);
+		ReflectionTestUtils.setField(parent, "key", null);
+	    Assert.assertTrue(parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", new HashMap<String,Object>()).isEmpty());
+	}	
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void notMatchesForRow() {
+		Mapping<MapBasedResultRow> parent = new Mapping<>("rows" , null);
+		Mapping<MapBasedResultRow> child = new Mapping<>(parent, "value");
+		ReflectionTestUtils.setField(child, "key", "name");
+		parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", listResult());
+		
+	}	
 }

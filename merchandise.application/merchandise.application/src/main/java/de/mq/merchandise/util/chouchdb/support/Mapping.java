@@ -50,15 +50,13 @@ class Mapping<T>  {
 	}
    
 	private boolean matchesForParent(final String key) {
-		if (this.key==null) {
-			return false;
-		}
+		
+		Assert.notNull(key, "Key is mandatory");
+		Assert.notNull(this.key, "Mapping.key is mandatory");
 		return this.key.equals(key);
 	}
 	
-	private boolean matchesForRow(){
-		return (key==null);
-	}
+	
 	
 	private boolean hasField() {
 		return (field!=null);
@@ -86,7 +84,6 @@ class Mapping<T>  {
 		}
 		if (result instanceof Map<?,?>) {
 			final Collection<Object> results = new ArrayList<>();
-			System.out.println(result);
 			results.add(result);
 			return Collections.unmodifiableCollection(results);
 			
@@ -111,9 +108,9 @@ class Mapping<T>  {
 	
 	
 	private void mapRow(final Class<?> clazz, final Map<String, Object> row, final Object result) {
-		if (this.matchesForRow()) {
+		    Assert.isNull(key,"Key must be empty");
 			this.assignField(clazz, result, row);	
-		}
+		
 	}
 	
 	
