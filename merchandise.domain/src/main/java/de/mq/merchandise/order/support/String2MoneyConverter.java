@@ -7,7 +7,8 @@ import org.springframework.util.StringUtils;
 
 import de.mq.merchandise.order.Money;
 
-public class String2MoneyConverter implements Converter<String,Money> {
+
+class String2MoneyConverter implements Converter<String,Money> {
 
 	@Override
 	public Money convert(final String source) {

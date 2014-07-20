@@ -18,7 +18,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Target;
 
-import de.mq.mapping.util.proxy.support.String2DoubleConverter;
 import de.mq.merchandise.opportunity.support.CommercialSubject;
 import de.mq.merchandise.opportunity.support.CommercialSubjectImpl;
 import de.mq.merchandise.opportunity.support.Condition;
@@ -52,27 +51,27 @@ class ItemImpl implements Item {
 	@JoinColumn(name="commercial_subject_id" )
 	private final CommercialSubject subject;
 
-	@Condition.Item(type = Condition.ConditionType.Product)
+	@Condition.Item(Condition.ConditionType.Product)
 	@Column(length=50, name="product_id")
 	private String productId;
 
-	@Condition.Item(type = Condition.ConditionType.Quality)
+	@Condition.Item(Condition.ConditionType.Quality)
 	@Column(length=50)
 	private String quality;
 
-	@Condition.Item(type = Condition.ConditionType.Unit)
+	@Condition.Item(Condition.ConditionType.Unit)
 	@Column(length=50)
 	private String unit;
 	
-	@Condition.Item(type = Condition.ConditionType.Detail)
+	@Condition.Item(Condition.ConditionType.Detail)
 	@Column(length=50)
 	private String detail;
 	
-	@Condition.Item(type = Condition.ConditionType.Quantity, converter=String2DoubleConverter.class)
+	@Condition.Item(Condition.ConditionType.Quantity)
 	@Column()
 	private Double quantity;
 	
-	@Condition.Item(type = Condition.ConditionType.PricePerUnit, converter=String2MoneyConverter.class)
+	@Condition.Item(Condition.ConditionType.PricePerUnit )
 	@Embedded
 	@Target(MoneyImpl.class)
 	private Money pricePerUnit;

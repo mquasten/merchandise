@@ -5,15 +5,22 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.convert.support.ConfigurableConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 
 import de.mq.merchandise.opportunity.support.Condition;
 import de.mq.merchandise.order.Item;
-import de.mq.merchandise.util.EntityUtil;
 
-public class ConditionReflectionTemplate implements ConditionOperations {
+class ConditionReflectionTemplate implements ConditionOperations {
+	
+
+	private ConfigurableConversionService configurableConversionService= new DefaultConversionService();
+	
+	ConditionReflectionTemplate() {
+		configurableConversionService.addConverter(new String2MoneyConverter());
+	}
 	
 	
 	/* (non-Javadoc)
@@ -25,6 +32,7 @@ public class ConditionReflectionTemplate implements ConditionOperations {
 	for(final Condition condition : conditions) {
 		values.put(condition.conditionType(), condition.input());
 	}
+	
 	
 	copy(values, item);
 	
@@ -43,14 +51,12 @@ public class ConditionReflectionTemplate implements ConditionOperations {
 				if( ! field.isAnnotationPresent(Condition.Item.class)) {
 					return; 
 				}
-				if(! values.containsKey(field.getAnnotation(Condition.Item.class).type())) {
+				if(! values.containsKey(field.getAnnotation(Condition.Item.class).value())) {
 				    return; 	
 				}	
 				
 				field.setAccessible(true);
-				@SuppressWarnings("unchecked")
-				final Converter<Object, ?> converter = (Converter<Object, String>) EntityUtil.create(field.getAnnotation(Condition.Item.class).converter());
-				ReflectionUtils.setField(field, item, converter.convert(values.get(field.getAnnotation(Condition.Item.class).type())));
+				ReflectionUtils.setField(field, item, configurableConversionService.convert(values.get(field.getAnnotation(Condition.Item.class).value()), field.getType() ));
 			}
 
 			
