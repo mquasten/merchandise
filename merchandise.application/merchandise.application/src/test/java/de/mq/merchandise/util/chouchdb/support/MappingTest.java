@@ -146,4 +146,51 @@ public class MappingTest {
 		parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", listResult());
 		
 	}	
+	
+	@Test
+	public final void rowNoMap() {
+		Mapping<MapBasedResultRow> parent = new Mapping<>("rows" , null, "artist");
+		
+		new Mapping<>(parent, "value");
+		final Map<String, Object> row = new HashMap<>();
+		row.put("artist", "Kylie");
+		final Collection<MapBasedResultRow> results =  parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", row);
+		Assert.assertEquals(1, results.size());
+		for(final MapBasedResultRow result : results){
+			Assert.assertEquals("Kylie", result.singleValue(String.class));
+			
+		}
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void wrongPrperty() {
+		Mapping<MapBasedResultRow> parent = new Mapping<>("rows" , null, "artist" , "name");
+		new Mapping<>(parent, "value");
+		final Map<String, Object> row = new HashMap<>();
+		row.put("artist", "Kylie");
+		parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", row);
+	}
+	
+	@Test()
+	public final void propertyNull() {
+		Mapping<MapBasedResultRow> parent = new Mapping<>("rows" , null, "artist" , "name");
+		new Mapping<>(parent, "value");
+		parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", new HashMap<>());
+		final Collection<MapBasedResultRow> results =  parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", new HashMap<>());
+		Assert.assertEquals(1, results.size());
+		for(final MapBasedResultRow result : results){
+			Assert.assertNull(result.singleValue(String.class));
+		}
+		
+	}
+	
+	@Test()
+	public final void parentNotMatch() {
+	Mapping<MapBasedResultRow> parent = new Mapping<>("rows" , null);
+	new Mapping<>(parent, "value");
+	
+	MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+	System.out.println(parent.map(mapBasedResponse, SimpleMapBasedResultRowImpl.class, "dontLetMeGetMe", listResult()));
+	
+	}
 }

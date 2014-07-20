@@ -12,6 +12,7 @@ import java.util.Set;
 
 
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
@@ -66,6 +67,7 @@ class Mapping<T>  {
 		Object result = value;
 		for(final String path: paths ){
 			if (result instanceof Map) {
+				
 				result=(((Map<?,?>) result).get(path));
 				continue;
 			}
@@ -73,7 +75,7 @@ class Mapping<T>  {
 				break;
 			}
 			
-			throw new IllegalArgumentException("Value should be a Map");
+			throw new IllegalArgumentException("Value should be a Map, property " +  path  + " can not be resolved");
 		}
 		if( field != null ) {
 			return result;
@@ -82,13 +84,13 @@ class Mapping<T>  {
 			return Collections.unmodifiableCollection((Collection<?>) result);
 			
 		}
-		if (result instanceof Map<?,?>) {
-			final Collection<Object> results = new ArrayList<>();
-			results.add(result);
-			return Collections.unmodifiableCollection(results);
+		
+		final Collection<Object> results = new ArrayList<>();
 			
-		}
-		throw new IllegalArgumentException("Value should be a Map");
+		results.add(result);
+		return Collections.unmodifiableCollection(results);
+			
+		
 		
 	}
 
@@ -107,7 +109,7 @@ class Mapping<T>  {
 	}
 	
 	
-	private void mapRow(final Class<?> clazz, final Map<String, Object> row, final Object result) {
+	private void mapRow(final Class<?> clazz, final Object row, final Object result) {
 		    Assert.isNull(key,"Key must be empty");
 			this.assignField(clazz, result, row);	
 		
@@ -118,7 +120,7 @@ class Mapping<T>  {
 	
 	
 
-	private T mapSubRow(final Class<? extends T> clazz, final Map<String, Object> row /*, final Object result*/) {
+	private T mapSubRow(final Class<? extends T> clazz, final Object row /*, final Object result*/) {
 		final T result = newRow((Class<? extends T>) clazz);
 		for (final Mapping<T>  child : childs) {
 			child.mapRow(clazz, row, result);
@@ -130,7 +132,7 @@ class Mapping<T>  {
 
    private Collection<T> mapSubRows(final Class<? extends T> rowClass, final Collection<Map<String, Object>> rows ) {
 		final Collection<T> results = new ArrayList<>();
-		for (final Map<String, Object> row : rows) {
+		for (final Object row : rows) {
 			//final T result = newRow();
 			final T result =  mapSubRow(rowClass, row);
 			results.add(result);
@@ -139,11 +141,9 @@ class Mapping<T>  {
 	}
 
 private T newRow(final Class<? extends T> clazz)  {
-	try {
-		return   clazz.newInstance();
-	} catch (final InstantiationException | IllegalAccessException ex) {
-		throw new IllegalArgumentException(ex);
-	}
+	
+		return BeanUtils.instantiateClass(clazz);
+
 }
 	
 	@SuppressWarnings("unchecked")
@@ -154,6 +154,7 @@ private T newRow(final Class<? extends T> clazz)  {
 		} 
 		
 		if (! hasField()) {
+			
 			return  mapSubRows( rowClass , (Collection<Map<String, Object>>) valueFor(value));
 			
 		}
