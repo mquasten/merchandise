@@ -40,11 +40,11 @@ class SimpleOrderItemRestClient implements  de.mq.merchandise.rule.Converter<Ite
 		def quantity = item.quantity();
 		
 		
-	    def HttpResponseDecorator results  = rest.get(  'path' :'qualityByArtist/_view/QualityByArtist', query : map( "key" ,  String.format("\"%s\"" , product )) );
+	    def HttpResponseDecorator results  = rest.get(  'path' :'qualityByArtist/_view/qualityByArtist', query : map( "key" ,  String.format("\"%s\"" , product )) );
 	
 		def  String quality = requiredResult(DataAccessUtils.requiredSingleResult(requiredResult(results.responseData, "rows")), "value");
 		
-		def HttpResponseDecorator prices  = rest.get(  'path' :'pricePerUnit/_list/quantityFilter/PricePerUnit', query : map("key" , String.format("{\"quality\":\"%s\",\"unit\":\"%s\"  }", quality, unit) , "quantity", quantity ) );
+		def HttpResponseDecorator prices  = rest.get(  'path' :'pricePerUnit/_list/quantityFilter/pricePerUnit', query : map("key" , String.format("{\"quality\":\"%s\",\"unit\":\"%s\"  }", quality, unit) , "quantity", quantity ) );
 		def x =  requiredResult(requiredResult(DataAccessUtils.requiredSingleResult(requiredResult(prices.responseData, "rows")), "value"), "pricePerUnit");
 	
 		conditionOperations.copy ConditionType.PricePerUnit, x + " EUR", item

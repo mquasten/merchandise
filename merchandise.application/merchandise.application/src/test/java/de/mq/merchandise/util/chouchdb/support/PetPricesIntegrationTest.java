@@ -31,9 +31,9 @@ public class PetPricesIntegrationTest {
 
 	
 	
-	private final String URL = "http://localhost:5984/petstore/_design/qualityByArtist/_view/QualityByArtist?key=\"{key}\""; 
+	private final String URL = "http://localhost:5984/petstore/_design/qualityByArtist/_view/qualityByArtist?key=\"{key}\""; 
 	
-	private final String URL2 = "http://localhost:5984/petstore/_design/pricePerUnit/_list/quantityFilter/PricePerUnit?key={key}&quantity={quantity}";
+	private final String URL2 = "http://localhost:5984/petstore/_design/pricePerUnit/_list/quantityFilter/pricePerUnit?key={key}&quantity={quantity}";
 	
 	
 	

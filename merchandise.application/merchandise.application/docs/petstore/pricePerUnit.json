@@ -1,7 +1,7 @@
 {
    "language": "javascript",
    "views": {
-	   "PricePerUnit": {"map": "function(doc) {
+	   "pricePerUnit": {"map": "function(doc) {
                if( doc.unit && doc.quality && doc.pricePerUnit && doc.min  ) {
                   key = {'quality' : doc.quality, 'unit' : doc.unit }; 
                   values={'min' : doc.min , 'max' : doc.max, 'pricePerUnit': doc.pricePerUnit };
