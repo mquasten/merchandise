@@ -1,8 +1,10 @@
 package de.mq.merchandise.util.chouchdb.support;
 
+
+
 import org.springframework.util.Assert;
 
-public class SimpleChouchDBUrlBuilder {
+class SimpleChouchDBUrlBuilder {
 	
 	
 	private String host = "localhost";
@@ -20,27 +22,54 @@ public class SimpleChouchDBUrlBuilder {
 	public final SimpleChouchDBUrlBuilder withView(final String view) {
 		Assert.notNull(view);
 		this.view=view;
-		this.viewFunction=view;
+		return this;
+	}
+	
+	public final SimpleChouchDBUrlBuilder withViewFunction(final String viewFunction) {
+		Assert.notNull(viewFunction);
+		this.viewFunction=viewFunction;
+		return this;
+	}
+	
+	
+	
+	public final SimpleChouchDBUrlBuilder withDatabase(final String database) {
+		this.database=database;
 		return this;
 	}
 	
 	public final SimpleChouchDBUrlBuilder withListFunction(final String listFunction) {
-		Assert.notNull(listFunction);
+		Assert.notNull(listFunction, "Listfunction is Mandatory");
 		this.listFunktion=listFunction;
+		return this;
+	}
+	
+	public final SimpleChouchDBUrlBuilder withHost(final String host) {
+		Assert.notNull(host, "Host is mandatory");
+		this.host=host;
+		return this;
+	}
+	
+	public final SimpleChouchDBUrlBuilder withPort(final String port) {
+		Assert.notNull(port, "Port is mandatory");
+		this.port=port;
 		return this;
 	}
 
 	
 	public String build() {
-		Assert.notNull(view);
-		Assert.notNull(viewFunction);
-		Assert.notNull(database);
+		if( viewFunction==null){
+			viewFunction=view;
+		}
+		Assert.notNull(view, "View must be defined");
+		Assert.notNull(viewFunction, "ViewFunction must be defined");
+		Assert.notNull(database, "Database must be defined");
 		
-		String list="";
+		String list="_view";
 		if(listFunktion != null){
 			list="_list/quantityFilter";
 		}
 		
-		return String.format( "http://%s:%s/%s/_design/%s/%s/%s", host, port, database, view,list, viewFunction);
+		return "http://" + String.format( "%s:%s/%s/_design/%s/%s/%s", host, port, database, view,list, viewFunction).replaceAll("[/]+", "/");
 	}
 }

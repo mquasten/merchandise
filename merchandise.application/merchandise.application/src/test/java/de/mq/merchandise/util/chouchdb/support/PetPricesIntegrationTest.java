@@ -57,7 +57,7 @@ public class PetPricesIntegrationTest {
 		
 		pars.clear();
 		
-		
+		System.out.println( mapper.writeValueAsString(new PetPriceKey("platinium", "date")));
 		
 		pars.put("key", mapper.writeValueAsString(new PetPriceKey("platinium", "date")));
 		pars.put("quantity", "3");
