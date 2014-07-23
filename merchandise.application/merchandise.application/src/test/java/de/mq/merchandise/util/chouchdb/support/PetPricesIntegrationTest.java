@@ -63,7 +63,8 @@ public class PetPricesIntegrationTest {
 		pars.put("quantity", "3");
 	//	System.out.println(mapper.writeValueAsString(new PetPriceKey("platinium", "date")));
 		
-		
+		System.out.println(URL2);
+		System.out.println(pars);
 	
 		MapBasedResponse prices = restOperations.getForObject(URL2,SimpleCouchDBResultImpl.class, pars);
 		
