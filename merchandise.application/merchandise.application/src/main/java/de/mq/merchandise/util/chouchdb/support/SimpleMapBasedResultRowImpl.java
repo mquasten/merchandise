@@ -135,5 +135,4 @@ class SimpleMapBasedResultRowImpl implements MapBasedResultRow {
 
 	
 	
-	
 }

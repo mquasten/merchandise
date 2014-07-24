@@ -134,6 +134,27 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 			}
 		}.results(targetClass);
 	}
+	@Override
+	@SuppressWarnings("unchecked")
+	public final<T> List<T> result(final Class<? extends T> targetClass){
+		if( instanceOfMap(targetClass) ) {
+			return (List<T>) composed();
+		}
+        if( getClass().getClassLoader().equals(targetClass.getClassLoader())) {
+        	return composed(targetClass);
+        }
+		return single(targetClass);
+		
+	}
+
+	private <T> boolean instanceOfMap(final Class<? extends T> targetClass) {
+		try {
+		targetClass.asSubclass(Map.class);
+		return true;
+		} catch (final ClassCastException ce){
+			return false;
+		}
+	}
 	
 	
 	@Override
@@ -147,6 +168,8 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 
 		return value;
 	}
+	
+	
 	
 
 	abstract class CollectionTemplate<T> {

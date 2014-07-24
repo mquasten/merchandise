@@ -12,6 +12,8 @@ public interface MapBasedResponse {
 	List<Map<String, Object>> composed();
 
 	<T> List<T> composed(Class<? extends T> targetClass);
+	
+	<T> List<T> result(final Class<? extends T> targetClass);
 
 
 
