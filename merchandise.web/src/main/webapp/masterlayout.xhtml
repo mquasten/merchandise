@@ -6,7 +6,8 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:p="http://primefaces.org/ui"
 xmlns:ui="http://java.sun.com/jsf/facelets" >
     <h:head>
-   			<title>#{message.title} </title>
+   			<title>#{message.app_title} </title>
+   			<link rel="shortcut icon" type="image/png" href="#{request.contextPath}/favicon.png" />
     </h:head>
     <h:body>
      <h:outputStylesheet library="css" name="style.css"  />
@@ -16,7 +17,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets" >
       		<f:viewParam name="selectMode" value="#{pageModel.selectMode}" /> 		
   	</f:metadata>
   	  <h:outputStylesheet library="css" name="style.css"  />
-   	 
+  
      <div id="header">
         <ui:insert name="header" >
        
