@@ -5,7 +5,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 public class CouchDBUrlBuilder {
-	private static final String PORT = "4711";
+	private static final int PORT = 4711;
 	private static final String HOST = "www.kylie.com";
 	final static String VIEW_URL = "http://localhost:5984/petstore/_design/qualityByArtist/_view/qualityByArtist";
 	final static String VIEW_FUNCTION_URL = "http://localhost:5984/petstore/_design/qualityByArtist/_view/QualityByArtist";
@@ -29,7 +29,7 @@ public class CouchDBUrlBuilder {
 	}
 	@Test
 	public final void withHost() {
-		Assert.assertEquals(VIEW_URL.replace("localhost", HOST ).replace("5984", PORT),  new SimpleChouchDBUrlBuilder().withView("qualityByArtist").withDatabase("petstore").withHost(HOST).withPort(PORT).build());
+		Assert.assertEquals(VIEW_URL.replace("localhost", HOST ).replace("5984", "" + PORT),  new SimpleChouchDBUrlBuilder().withView("qualityByArtist").withDatabase("petstore").withHost(HOST).withPort(PORT).build());
 	}
 
 }

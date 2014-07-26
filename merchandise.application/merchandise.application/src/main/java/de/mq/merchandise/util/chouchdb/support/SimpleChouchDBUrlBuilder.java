@@ -2,14 +2,19 @@ package de.mq.merchandise.util.chouchdb.support;
 
 
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 class SimpleChouchDBUrlBuilder {
 	
 	
 	private String host = "localhost";
 	
-	private String port= "5984"; 
+	private int port= 5984; 
 	
 	private String view; 
 	
@@ -19,11 +24,25 @@ class SimpleChouchDBUrlBuilder {
 	
 	private String listFunktion;
 	
+	private final Set<String> params = new HashSet<>();
+	
 	public final SimpleChouchDBUrlBuilder withView(final String view) {
 		Assert.notNull(view);
 		this.view=view;
 		return this;
 	}
+	
+	public final SimpleChouchDBUrlBuilder withParams(final Collection<String> params) {
+		this.params.addAll(params);
+		return this;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public final SimpleChouchDBUrlBuilder withParams(final String ... params) {
+		this.params.addAll(new HashSet<String>(CollectionUtils.arrayToList(params)));
+		return this;
+	}
+	 
 	
 	public final SimpleChouchDBUrlBuilder withViewFunction(final String viewFunction) {
 		Assert.notNull(viewFunction);
@@ -50,8 +69,8 @@ class SimpleChouchDBUrlBuilder {
 		return this;
 	}
 	
-	public final SimpleChouchDBUrlBuilder withPort(final String port) {
-		Assert.notNull(port, "Port is mandatory");
+	public final SimpleChouchDBUrlBuilder withPort(final int port) {
+		Assert.isTrue(port > 0, "Port must be > 0");
 		this.port=port;
 		return this;
 	}
@@ -69,7 +88,13 @@ class SimpleChouchDBUrlBuilder {
 		if(listFunktion != null){
 			list="_list/quantityFilter";
 		}
+		final StringBuilder stringBuilder = new StringBuilder();
+		String prefix= "?";	
+		for(final String key : params){	
+			stringBuilder.append(String.format("%s%s={%s}", prefix, key, key));
+			prefix="&";
+		}
 		
-		return "http://" + String.format( "%s:%s/%s/_design/%s/%s/%s", host, port, database, view,list, viewFunction).replaceAll("[/]+", "/");
+		return "http://" + String.format( "%s:%s/%s/_design/%s/%s/%s", host, port, database, view,list, viewFunction).replaceAll("[/]+", "/")+stringBuilder.toString();
 	}
 }
