@@ -1,6 +1,9 @@
 package de.mq.merchandise.util.chouchdb.support;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -100,6 +103,52 @@ class SimpleMapBasedResultRowImpl implements MapBasedResultRow {
 		composedValueGuard();
 		return Collections.unmodifiableMap((Map<String, ? extends Object>) value);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public final  <T> Collection<T> collectionValue(Class<? extends T> targetClass) {
+		valueCollectionGuard();
+		return (Collection<T>) handleCollectionResult(targetClass, value);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public final  <T> Collection<T> collectionKey(Class<? extends T> targetClass) {
+		keyCollectionGuard();
+		return (Collection<T>) handleCollectionResult(targetClass, key);
+	}
+
+	
+	private  Collection<?> handleCollectionResult(Class<?> targetClass, final Object collection) {
+	
+		if( instanceOfMap(targetClass) ) {
+			return Collections.unmodifiableCollection((Collection<?>) collection);
+		}
+       
+        final Collection<Object> results = new ArrayList<>();
+        for(final Object row : (Collection< ? >) collection){
+        	if( getClass().getClassLoader().equals(targetClass.getClassLoader())) {
+        		results.add(row);
+        		continue;
+        	}
+        	results.add(conversionService.convert(row, targetClass));
+        }
+		
+		
+		return Collections.unmodifiableCollection(results);
+	}
+
+	private void keyCollectionGuard() {
+		if (!(key instanceof Collection<?>)) {
+			throw new IllegalArgumentException("Key is not  a collection.");
+		}
+	}
+
+	private void valueCollectionGuard() {
+		if (!(value instanceof Collection<?>)) {
+			throw new IllegalArgumentException("Value is not  a collection.");
+		}
+	}
 
 	private void composedValueGuard() {
 		if (!(value instanceof Map<?, ?>)) {
@@ -134,5 +183,14 @@ class SimpleMapBasedResultRowImpl implements MapBasedResultRow {
 	}
 
 	
+	
+	private <T> boolean instanceOfMap(final Class<? extends T> targetClass) {
+		try {
+		targetClass.asSubclass(Map.class);
+		return true;
+		} catch (final ClassCastException ce){
+			return false;
+		}
+	}
 	
 }

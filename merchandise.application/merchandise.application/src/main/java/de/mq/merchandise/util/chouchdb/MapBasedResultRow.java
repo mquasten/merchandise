@@ -1,5 +1,6 @@
 package de.mq.merchandise.util.chouchdb;
 
+import java.util.Collection;
 import java.util.Map;
 
 public interface MapBasedResultRow {
@@ -17,6 +18,10 @@ public interface MapBasedResultRow {
 	<T> T composedValue(final Class<? extends T> targetClass);
 	
 	<T> T composedKey(final Class<? extends T> targetClass) ;
+
+	<T> Collection<T> collectionKey(Class<? extends T> targetClass);
+
+	<T> Collection<T> collectionValue(Class<? extends T> targetClass);
 
 	
 

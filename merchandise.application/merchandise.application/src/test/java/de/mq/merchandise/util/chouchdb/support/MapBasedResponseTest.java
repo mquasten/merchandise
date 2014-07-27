@@ -24,7 +24,7 @@ public class MapBasedResponseTest {
 	@Test
 	public final void testMapping() {
 		
-		final MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+		final MapBasedResponse mapBasedResponse = new MapsCoordinatesResultImpl();
 		
 		final Collection<Mapping<?>> mappings =  mappingsField(mapBasedResponse);
 	    Assert.assertEquals(1, mappings.size());
@@ -79,7 +79,7 @@ public class MapBasedResponseTest {
 	}
 	@Test
 	public final void rows() {
-		final MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+		final MapBasedResponse mapBasedResponse = new MapsCoordinatesResultImpl();
 		final Collection<MapBasedResultRow> rows = new ArrayList<>();
 		final MapBasedResultRow row = Mockito.mock(MapBasedResultRow.class);
 		rows.add(row);
@@ -90,7 +90,7 @@ public class MapBasedResponseTest {
 	
 	@Test
 	public final void single() {
-		final MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+		final MapBasedResponse mapBasedResponse = new MapsCoordinatesResultImpl();
 	
 		final Collection<MapBasedResultRow> rows = rowField(mapBasedResponse);
 		final MapBasedResultRow row = new SimpleMapBasedResultRowImpl();
@@ -107,7 +107,7 @@ public class MapBasedResponseTest {
 	}
 	@Test
 	public final void composed() {
-		final MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+		final MapBasedResponse mapBasedResponse = new MapsCoordinatesResultImpl();
 		final Collection<MapBasedResultRow> rows = rowField(mapBasedResponse);
 		final Map<String,Object> values = new HashMap<>();
 		values.put("id", SINGLE_VALUE);
@@ -121,7 +121,7 @@ public class MapBasedResponseTest {
 	
 	@Test
 	public final void composedClass() {
-		final MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+		final MapBasedResponse mapBasedResponse = new MapsCoordinatesResultImpl();
 		final Collection<MapBasedResultRow> rows = rowField(mapBasedResponse);
 		final Map<String,Object> values = new HashMap<>();
 		values.put("unit", UNIT);
@@ -139,7 +139,7 @@ public class MapBasedResponseTest {
 
 	@Test
 	public final void put() {
-		final SimpleCouchDBResultImpl mapBasedResponse = new SimpleCouchDBResultImpl() ;
+		final MapsCoordinatesResultImpl mapBasedResponse = new MapsCoordinatesResultImpl() ;
 		
 		final Collection<Mapping<?>> mappings = mappingsField(mapBasedResponse);
 		mappings.clear();

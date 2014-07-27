@@ -1,5 +1,6 @@
 package de.mq.merchandise.util.chouchdb.support;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,14 +9,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.springframework.core.convert.support.ConfigurableConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.util.chouchdb.MapBasedResponse;
 import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
 
 abstract class AbstractMapBasedResult extends HashMap<String, Object> implements MapBasedResponse {
 
-	
 	/**
 	 * Serializeable
 	 */
@@ -33,7 +36,6 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 	@JsonIgnore(true)
 	private Object status;
 
-	
 	@JsonIgnore(true)
 	private Object info;
 
@@ -45,33 +47,35 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 
 	@JsonIgnore(false)
 	private Collection<Mapping<MapBasedResultRow>> mappings = new ArrayList<>();
-	
+
 	private Class<? extends MapBasedResultRow> rowClass;
-	
-	
+
+	@JsonIgnore
+	final ConfigurableConversionService conversionService = new DefaultConversionService();
+
 	public AbstractMapBasedResult() {
 		configure();
 	}
 
-	protected abstract  void configure() ;
-	
-	protected  Mapping<MapBasedResultRow> assignParentResultMapping(final String node, String ... paths) {
-		 final Mapping<MapBasedResultRow> result = new Mapping<MapBasedResultRow>(node, null, paths); 
-		 mappings.add(result);
-		 return  result;
-	}
-	
-	protected  void  assignParentFieldMapping(final String node, final String field, String ... paths) {
-		mappings.add(new Mapping<MapBasedResultRow>(node, field, paths)); 
-	}
-	
-	protected  void  assignChildRowMapping(Mapping<MapBasedResultRow> parent, final String field, String ... paths) {
-		new Mapping<MapBasedResultRow>(parent, field, paths);
-	}
-	protected void assignRowClass(final Class<? extends MapBasedResultRow> rowClass) {
-		this.rowClass=rowClass;
+	protected abstract void configure();
+
+	protected Mapping<MapBasedResultRow> assignParentResultMapping(final String node, String... paths) {
+		final Mapping<MapBasedResultRow> result = new Mapping<MapBasedResultRow>(node, null, paths);
+		mappings.add(result);
+		return result;
 	}
 
+	protected void assignParentFieldMapping(final String node, final String field, String... paths) {
+		mappings.add(new Mapping<MapBasedResultRow>(node, field, paths));
+	}
+
+	protected void assignChildRowMapping(Mapping<MapBasedResultRow> parent, final String field, String... paths) {
+		new Mapping<MapBasedResultRow>(parent, field, paths);
+	}
+
+	protected void assignRowClass(final Class<? extends MapBasedResultRow> rowClass) {
+		this.rowClass = rowClass;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -90,13 +94,13 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 	 */
 	@Override
 	public final <T> List<T> single(final Class<? extends T> clazz) {
-		return   new CollectionTemplate<T>() {
+		return new CollectionTemplate<T>() {
 			@Override
 			protected T readRows(final MapBasedResultRow row, Class<? extends T> target) {
 				return row.singleValue(clazz);
 			}
 		}.results(clazz);
-		
+
 	}
 
 	/*
@@ -134,43 +138,40 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 			}
 		}.results(targetClass);
 	}
+
 	@Override
 	@SuppressWarnings("unchecked")
-	public final<T> List<T> result(final Class<? extends T> targetClass){
-		if( instanceOfMap(targetClass) ) {
+	public final <T> List<T> result(final Class<? extends T> targetClass) {
+		if (instanceOfMap(targetClass)) {
 			return (List<T>) composed();
 		}
-        if( getClass().getClassLoader().equals(targetClass.getClassLoader())) {
-        	return composed(targetClass);
-        }
+		if (getClass().getClassLoader().equals(targetClass.getClassLoader())) {
+			return composed(targetClass);
+		}
 		return single(targetClass);
-		
+
 	}
 
 	private <T> boolean instanceOfMap(final Class<? extends T> targetClass) {
 		try {
-		targetClass.asSubclass(Map.class);
-		return true;
-		} catch (final ClassCastException ce){
+			targetClass.asSubclass(Map.class);
+			return true;
+		} catch (final ClassCastException ce) {
 			return false;
 		}
 	}
-	
-	
+
 	@Override
 	public final Object put(final String key, final Object value) {
-		
+
 		Assert.notNull(rowClass);
 
-		for (final Mapping<MapBasedResultRow> mapping : mappings) {	
-			results.addAll( mapping.map(this, rowClass, key, value));
+		for (final Mapping<MapBasedResultRow> mapping : mappings) {
+			results.addAll(mapping.map(this, rowClass, key, value));
 		}
 
 		return value;
 	}
-	
-	
-	
 
 	abstract class CollectionTemplate<T> {
 		final List<T> results(final Class<? extends T> targetClass) {
@@ -182,14 +183,30 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 		}
 
 		protected abstract T readRows(final MapBasedResultRow row, final Class<? extends T> target);
-		
+
 	}
-	
-	
 
-	
-	
+	@Override
+	@SuppressWarnings("unchecked")
+	public final <T> T field(final InfoField infoField, Class<? extends T> targetClass) {
 
-	
+		final Field field = ReflectionUtils.findField(getClass(), infoField.field());
+		field.setAccessible(true);
+		final Object result = valueFromField(field);
+		if (getClass().getClassLoader().equals(targetClass.getClassLoader())) {
+
+			return mapCopyTemplate.createShallowCopyFieldsFromMap(targetClass, (Map<String, Object>) result);
+		}
+
+		return conversionService.convert(result, targetClass);
+	}
+
+	private Object valueFromField(Field field) {
+		try {
+			return field.get(this);
+		} catch (Exception ex) {
+			throw new IllegalStateException(ex);
+		}
+	}
 
 }

@@ -67,7 +67,7 @@ public class MappingTest {
 	@Test
 	public final void field() {
 		final Mapping<MapBasedResultRow> mapping =  new Mapping<>("hotScore" , "info" , "hotScore" );
-		final MapBasedResponse  parent = new SimpleCouchDBResultImpl();
+		final MapBasedResponse  parent = new MapsCoordinatesResultImpl();
 		final Map<String,Object> values = new HashMap<>();
 		values.put("hotScore", 10);
 		mapping.map(parent, null, "hotScore", values);
@@ -80,14 +80,14 @@ public class MappingTest {
 	
 		final Map<String,Object> values = new HashMap<>();
 		values.put("hotScore", 10);
-		mapping.map(new SimpleCouchDBResultImpl(), null, "hotScore", values);
+		mapping.map(new MapsCoordinatesResultImpl(), null, "hotScore", values);
 	}        
 	@Test
 	public final void rows() {
 		Mapping<MapBasedResultRow> parent = new Mapping<>("rows" , null);
 		new Mapping<>(parent, "value");
 		
-		MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+		MapBasedResponse mapBasedResponse = new MapsCoordinatesResultImpl();
 		final Collection<Map<String, Object>> rows = listResult();
 		
 		
@@ -123,7 +123,7 @@ public class MappingTest {
 		row.put("name", "Nicole");
 		row.put("quality", "Platinium");
 		row.put("unit", "date");
-		MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+		MapBasedResponse mapBasedResponse = new MapsCoordinatesResultImpl();
 		final Collection<MapBasedResultRow> results =  parent.map( mapBasedResponse, SimpleMapBasedResultRowImpl.class, "rows", row);
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals(row, results.iterator().next().composedValue());
@@ -135,7 +135,7 @@ public class MappingTest {
 	public final void notMatchesForParent() {
 		Mapping<MapBasedResultRow> parent = new Mapping<>( "row" , null);
 		ReflectionTestUtils.setField(parent, "key", null);
-	    Assert.assertTrue(parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", new HashMap<String,Object>()).isEmpty());
+	    Assert.assertTrue(parent.map( new MapsCoordinatesResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", new HashMap<String,Object>()).isEmpty());
 	}	
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -143,7 +143,7 @@ public class MappingTest {
 		Mapping<MapBasedResultRow> parent = new Mapping<>("rows" , null);
 		Mapping<MapBasedResultRow> child = new Mapping<>(parent, "value");
 		ReflectionTestUtils.setField(child, "key", "name");
-		parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", listResult());
+		parent.map( new MapsCoordinatesResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", listResult());
 		
 	}	
 	
@@ -154,7 +154,7 @@ public class MappingTest {
 		new Mapping<>(parent, "value");
 		final Map<String, Object> row = new HashMap<>();
 		row.put("artist", "Kylie");
-		final Collection<MapBasedResultRow> results =  parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", row);
+		final Collection<MapBasedResultRow> results =  parent.map( new MapsCoordinatesResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", row);
 		Assert.assertEquals(1, results.size());
 		for(final MapBasedResultRow result : results){
 			Assert.assertEquals("Kylie", result.singleValue(String.class));
@@ -168,15 +168,15 @@ public class MappingTest {
 		new Mapping<>(parent, "value");
 		final Map<String, Object> row = new HashMap<>();
 		row.put("artist", "Kylie");
-		parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", row);
+		parent.map( new MapsCoordinatesResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", row);
 	}
 	
 	@Test()
 	public final void propertyNull() {
 		Mapping<MapBasedResultRow> parent = new Mapping<>("rows" , null, "artist" , "name");
 		new Mapping<>(parent, "value");
-		parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", new HashMap<>());
-		final Collection<MapBasedResultRow> results =  parent.map( new SimpleCouchDBResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", new HashMap<>());
+		parent.map( new MapsCoordinatesResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", new HashMap<>());
+		final Collection<MapBasedResultRow> results =  parent.map( new MapsCoordinatesResultImpl(), SimpleMapBasedResultRowImpl.class, "rows", new HashMap<>());
 		Assert.assertEquals(1, results.size());
 		for(final MapBasedResultRow result : results){
 			Assert.assertNull(result.singleValue(String.class));
@@ -189,7 +189,7 @@ public class MappingTest {
 	Mapping<MapBasedResultRow> parent = new Mapping<>("rows" , null);
 	new Mapping<>(parent, "value");
 	
-	MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
+	MapBasedResponse mapBasedResponse = new MapsCoordinatesResultImpl();
 	System.out.println(parent.map(mapBasedResponse, SimpleMapBasedResultRowImpl.class, "dontLetMeGetMe", listResult()));
 	
 	}

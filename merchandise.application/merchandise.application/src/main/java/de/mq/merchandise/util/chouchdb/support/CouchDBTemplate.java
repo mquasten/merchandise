@@ -36,7 +36,7 @@ public class CouchDBTemplate {
 		
 		final String url = newUrlBuilder().withView(view).withParams(keyMap.keySet()).build() ;
 		
-		return Collections.unmodifiableList(this.restOperations.getForObject(url, SimpleCouchDBResultImpl.class, keyMap).result(target));
+		return Collections.unmodifiableList(this.restOperations.getForObject(url, MapsCoordinatesResultImpl.class, keyMap).result(target));
 		
 	}
 
@@ -58,7 +58,7 @@ public class CouchDBTemplate {
 		final String url = newUrlBuilder().withView(view).withListFunction(list).withParams(keyMap.keySet()).build() ;
 		
 		
-		return Collections.unmodifiableList(this.restOperations.getForObject(url, SimpleCouchDBResultImpl.class, keyMap).result(target));
+		return Collections.unmodifiableList(this.restOperations.getForObject(url, MapsCoordinatesResultImpl.class, keyMap).result(target));
 		
 		
 	}

@@ -47,4 +47,7 @@ public class CouchTemplateIntegrationTest {
 	    Assert.assertEquals(3, results.get(0).get("min" ));
 	    Assert.assertEquals(4, results.get(0).get("max" ));
 	}
+	
+	
+	
 }
