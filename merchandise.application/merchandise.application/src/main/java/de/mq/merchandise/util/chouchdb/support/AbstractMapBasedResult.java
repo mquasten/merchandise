@@ -11,6 +11,7 @@ import java.util.Map;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
+
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
@@ -57,7 +58,9 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 		configure();
 	}
 
-	protected abstract void configure();
+	protected   void configure() {
+		
+	}
 
 	protected Mapping<MapBasedResultRow> assignParentResultMapping(final String node, String... paths) {
 		final Mapping<MapBasedResultRow> result = new Mapping<MapBasedResultRow>(node, null, paths);
@@ -163,7 +166,7 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 
 	@Override
 	public final Object put(final String key, final Object value) {
-
+        
 		Assert.notNull(rowClass);
 
 		for (final Mapping<MapBasedResultRow> mapping : mappings) {
