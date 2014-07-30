@@ -58,9 +58,7 @@ abstract class AbstractMapBasedResult extends HashMap<String, Object> implements
 		configure();
 	}
 
-	protected   void configure() {
-		
-	}
+	protected   abstract void configure() ;
 
 	protected Mapping<MapBasedResultRow> assignParentResultMapping(final String node, String... paths) {
 		final Mapping<MapBasedResultRow> result = new Mapping<MapBasedResultRow>(node, null, paths);

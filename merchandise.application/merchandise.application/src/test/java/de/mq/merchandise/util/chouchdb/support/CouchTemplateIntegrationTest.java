@@ -31,6 +31,7 @@ public class CouchTemplateIntegrationTest {
 	
 	
 	
+
 	@Test
 	public final void composedKey() {
 		final CouchDBTemplate couchDBTemplate = new CouchDBTemplate(restOperations, "petstore");
@@ -40,8 +41,9 @@ public class CouchTemplateIntegrationTest {
 		
 		final Map<String,String> params = new HashMap<>();
 		params.put("quantity", "3");
-		@SuppressWarnings("unchecked")
-		final List<Map<String,String>>  results = couchDBTemplate.forKey("pricePerUnit", "quantityFilter", keys, params, (Class<? extends Map<String,String>>) Map.class);
+	   
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		final List<Map<String,String>>  results =(List) couchDBTemplate.forKey("pricePerUnit", "quantityFilter", keys, params, (Class<? extends Map>)  Map.class);
 	    Assert.assertEquals(1, results.size()) ; 
 	    Assert.assertEquals(949.99, results.get(0).get("pricePerUnit" ));
 	    Assert.assertEquals(3, results.get(0).get("min" ));

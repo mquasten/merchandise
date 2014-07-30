@@ -7,12 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.Assert;
-
-
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
-
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import net.sf.cglib.proxy.NoOp;
@@ -22,17 +19,16 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-
 import org.springframework.web.client.RestOperations;
+
+
 
 import de.mq.merchandise.util.chouchdb.MapBasedResponse;
 import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
-import de.mq.merchandise.util.chouchdb.MapBasedResponse.InfoField;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})
@@ -133,42 +129,54 @@ public class PetPricesIntegrationTest {
 
 			@Override
 			public int accept(Method method) {
-				// TODO Auto-generated method stub
+				
 				if( method.getName().equals("configure")) {
 					System.out.println("**" );
 					return 1;
 				}
 				return 0;
 			}} ); 
-	/*	 enhancer.setCallbacks(new Callback[]  { NoOp.INSTANCE , new MethodInterceptor() {
 
-			@Override
-			public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-				// TODO Auto-generated method stub
-				System.out.println("***" + method);
-				return null;
-			}}});  */
 		
 		enhancer.setCallbackTypes( new Class[] { NoOp.INSTANCE.getClass(), MethodInterceptor.class});
 		Class<?> clazz = enhancer.createClass();
 		Enhancer.registerCallbacks(clazz, (new Callback[]  { NoOp.INSTANCE , new MethodInterceptor() {
 
+			
 			@Override
 			public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-				// TODO Auto-generated method stub
-				System.out.println("***" + method + "***");
+				
+				
+				 ReflectionTestUtils.setField(obj, "rowClass", SimpleMapBasedResultRowImpl.class);
+			
+					Mapping<MapBasedResultRow> parent = new Mapping<>("results", null);
+							
+					new Mapping<>(parent, "value", "geometry",  "location");
+					new Mapping<>(parent, "key", "types");
+					Mapping<MapBasedResultRow> field = new Mapping<>("status", "status");
+					
+					@SuppressWarnings("unchecked")
+					final Collection<Mapping<MapBasedResultRow>> mappings = (Collection<Mapping<MapBasedResultRow>>) ReflectionTestUtils.getField(obj, "mappings");
+				    mappings.add(parent) ;
+				    mappings.add(field);
+				
 				return null;
 			}}})); 
 		
 		
-	 AbstractMapBasedResult x =  (AbstractMapBasedResult) clazz.newInstance(); 
+	// AbstractMapBasedResult x =  (AbstractMapBasedResult) clazz.newInstance(); 
 		
 	
-		
-	  x.put("kylie is nice", "");
-	  ReflectionTestUtils.setField(x, "status", "kylie is nice");
-		
-		System.out.println(x.field(InfoField.Status, String.class));
+	 final Map<String,String> pars = new HashMap<>();
+		pars.put("address", "Wegberg, Am Telt 4");
+		MapBasedResponse response = (MapBasedResponse) restOperations.getForObject(URL3, clazz , pars);
+		for(MapBasedResultRow row : response.rows()  ) {
+			   final Map<String,Object> values = row.composedValue();
+			   System.out.println(values);
+			   final  Collection<String> keys = row.collectionKey(String.class);
+			   System.out.println(keys);
+		}
+	  
 	}
 	
 	

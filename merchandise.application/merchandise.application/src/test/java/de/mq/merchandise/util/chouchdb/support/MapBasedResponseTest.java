@@ -24,7 +24,7 @@ public class MapBasedResponseTest {
 	@Test
 	public final void testMapping() {
 		
-		final MapBasedResponse mapBasedResponse = new MapsCoordinatesResultImpl();
+		final MapBasedResponse mapBasedResponse = new SimpleCouchDBResultImpl();
 		
 		final Collection<Mapping<?>> mappings =  mappingsField(mapBasedResponse);
 	    Assert.assertEquals(1, mappings.size());
