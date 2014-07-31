@@ -1,6 +1,10 @@
 package de.mq.merchandise.util.chouchdb.support;
 
-import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
+import de.mq.mapping.util.json.support.AbstractMapBasedResult;
+import de.mq.mapping.util.json.support.MapBasedResultRow;
+import de.mq.mapping.util.json.support.Mapping;
+import de.mq.mapping.util.json.support.SimpleMapBasedResultRowImpl;
+
 
 public class SimpleCouchDBResultImpl extends AbstractMapBasedResult{
 

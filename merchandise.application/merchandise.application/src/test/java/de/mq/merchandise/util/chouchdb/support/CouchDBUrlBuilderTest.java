@@ -4,7 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-public class CouchDBUrlBuilder {
+public class CouchDBUrlBuilderTest {
 	private static final int PORT = 4711;
 	private static final String HOST = "www.kylie.com";
 	final static String VIEW_URL = "http://localhost:5984/petstore/_design/qualityByArtist/_view/qualityByArtist";

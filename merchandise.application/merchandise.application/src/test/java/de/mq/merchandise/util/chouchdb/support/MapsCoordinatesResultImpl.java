@@ -1,11 +1,14 @@
 package de.mq.merchandise.util.chouchdb.support;
 
-import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
+import de.mq.mapping.util.json.support.AbstractMapBasedResult;
+import de.mq.mapping.util.json.support.MapBasedResultRow;
+import de.mq.mapping.util.json.support.Mapping;
+import de.mq.mapping.util.json.support.SimpleMapBasedResultRowImpl;
 
-public class MapsCoordinatesResultImpl extends AbstractMapBasedResult{
+ class MapsCoordinatesResultImpl extends AbstractMapBasedResult {
 
-	
 	private static final long serialVersionUID = 1L;
+	
 
 	@Override
 	protected void configure() {
@@ -17,6 +20,7 @@ public class MapsCoordinatesResultImpl extends AbstractMapBasedResult{
 		//assignChildRowMapping(parent, "id", "id");
 		//assignParentFieldMapping("total_rows",  "info" );
 		//assignParentFieldMapping("offset",  "description" );
+		
 	}
-
+	
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -25,10 +26,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestOperations;
 
+import de.mq.mapping.util.json.support.AbstractMapBasedResult;
+import de.mq.mapping.util.json.support.MapBasedResponse;
+import de.mq.mapping.util.json.support.MapBasedResultRow;
+import de.mq.mapping.util.json.support.Mapping;
+import de.mq.mapping.util.json.support.SimpleMapBasedResultRowImpl;
 
-
-import de.mq.merchandise.util.chouchdb.MapBasedResponse;
-import de.mq.merchandise.util.chouchdb.MapBasedResultRow;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})
@@ -65,9 +68,10 @@ public class PetPricesIntegrationTest {
 		
 		pars.clear();
 		
-		
-		
-		pars.put("key", mapper.writeValueAsString(new PetPriceKey("platinium", "date")));
+		Map<String,String> parameter = new LinkedHashMap<>();
+		parameter.put("quality", "platinium");
+		parameter.put("unit", "date");
+		pars.put("key", mapper.writeValueAsString(parameter));
 		pars.put("quantity", "3");
 	//	System.out.println(mapper.writeValueAsString(new PetPriceKey("platinium", "date")));
 		
@@ -146,7 +150,7 @@ public class PetPricesIntegrationTest {
 			@Override
 			public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
 				
-				
+				System.out.println("***************************************************");
 				 ReflectionTestUtils.setField(obj, "rowClass", SimpleMapBasedResultRowImpl.class);
 			
 					Mapping<MapBasedResultRow> parent = new Mapping<>("results", null);
@@ -165,19 +169,21 @@ public class PetPricesIntegrationTest {
 		
 		
 	// AbstractMapBasedResult x =  (AbstractMapBasedResult) clazz.newInstance(); 
-		
-	
-	 final Map<String,String> pars = new HashMap<>();
+	//clazz.newInstance();
+		 
+	final Map<String,String> pars = new HashMap<>();
 		pars.put("address", "Wegberg, Am Telt 4");
+		System.out.println(URL3);
 		MapBasedResponse response = (MapBasedResponse) restOperations.getForObject(URL3, clazz , pars);
 		for(MapBasedResultRow row : response.rows()  ) {
 			   final Map<String,Object> values = row.composedValue();
 			   System.out.println(values);
 			   final  Collection<String> keys = row.collectionKey(String.class);
 			   System.out.println(keys);
-		}
+		} 
 	  
 	}
+	
 	
 	
 	
