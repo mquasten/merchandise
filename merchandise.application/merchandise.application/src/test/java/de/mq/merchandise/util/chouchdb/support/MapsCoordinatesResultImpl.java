@@ -5,6 +5,7 @@ import de.mq.mapping.util.json.support.MapBasedResultRow;
 import de.mq.mapping.util.json.support.Mapping;
 import de.mq.mapping.util.json.support.SimpleMapBasedResultRowImpl;
 
+
  class MapsCoordinatesResultImpl extends AbstractMapBasedResult {
 
 	private static final long serialVersionUID = 1L;
@@ -12,7 +13,8 @@ import de.mq.mapping.util.json.support.SimpleMapBasedResultRowImpl;
 
 	@Override
 	protected void configure() {
-		assignRowClass(SimpleMapBasedResultRowImpl.class);
+		
+		super.assignRowClass(SimpleMapBasedResultRowImpl.class);
 		Mapping<MapBasedResultRow> parent = assignParentResultMapping("results");
 		assignChildRowMapping(parent, "value", "geometry",  "location");
 		assignChildRowMapping(parent, "key", "types");

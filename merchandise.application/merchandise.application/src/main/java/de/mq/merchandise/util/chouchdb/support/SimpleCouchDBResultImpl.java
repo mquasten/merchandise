@@ -13,7 +13,7 @@ public class SimpleCouchDBResultImpl extends AbstractMapBasedResult{
 
 	@Override
 	protected void configure() {
-		assignRowClass(SimpleMapBasedResultRowImpl.class);
+		super.assignRowClass(SimpleMapBasedResultRowImpl.class);
 		Mapping<MapBasedResultRow> parent = assignParentResultMapping("rows");
 		assignChildRowMapping(parent, "value", "value");
 		assignChildRowMapping(parent, "key", "key");
