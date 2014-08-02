@@ -9,6 +9,10 @@ import java.util.Map;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.web.client.RestOperations;
 
+import de.mq.mapping.util.json.MapBasedResponseClassFactory;
+import de.mq.mapping.util.json.support.MapBasedResponse;
+import de.mq.mapping.util.json.support.SimpleMapBasedResponseClassFactoryImpl;
+
 public class CouchDBTemplate {
 	
 	private final RestOperations restOperations;
@@ -18,6 +22,16 @@ public class CouchDBTemplate {
 	private final int port;
 	         
 	private final ObjectMapper mapper = new ObjectMapper();
+	
+	
+	
+	private final MapBasedResponseClassFactory mapBasedClassFactory = new SimpleMapBasedResponseClassFactoryImpl();
+	
+	
+	public final Class<MapBasedResponse> clazz() {
+		
+		return  mapBasedClassFactory.createClass(mapBasedClassFactory.mappingBuilder().withParentMapping("rows").withChildMapping("value", "value").withChildMapping("key", "value").build());
+	}
 	
 	public CouchDBTemplate(final RestOperations restOperations, final String database, final String host, final int port) {
 		this.restOperations = restOperations;
@@ -36,7 +50,7 @@ public class CouchDBTemplate {
 		
 		final String url = newUrlBuilder().withView(view).withParams(keyMap.keySet()).build() ;
 		
-		return Collections.unmodifiableList(this.restOperations.getForObject(url, SimpleCouchDBResultImpl.class, keyMap).result(target));
+		return Collections.unmodifiableList(this.restOperations.getForObject(url, clazz(), keyMap).result(target));
 		
 	}
 
@@ -58,7 +72,7 @@ public class CouchDBTemplate {
 		final String url = newUrlBuilder().withView(view).withListFunction(list).withParams(keyMap.keySet()).build() ;
 		
 		
-		return Collections.unmodifiableList(this.restOperations.getForObject(url, SimpleCouchDBResultImpl.class, keyMap).result(target));
+		return Collections.unmodifiableList(this.restOperations.getForObject(url, clazz(), keyMap).result(target));
 		
 		
 	}
