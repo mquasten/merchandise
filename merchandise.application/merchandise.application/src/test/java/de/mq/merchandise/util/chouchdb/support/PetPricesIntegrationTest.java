@@ -22,6 +22,8 @@ import org.springframework.web.client.RestOperations;
 
 import de.mq.mapping.util.json.MapBasedResponseClassFactory;
 import de.mq.mapping.util.json.support.MapBasedResponse;
+import de.mq.mapping.util.json.support.MapBasedResponse.ChildField;
+import de.mq.mapping.util.json.support.MapBasedResponse.InfoField;
 import de.mq.mapping.util.json.support.MapBasedResultRow;
 
 import de.mq.mapping.util.json.support.SimpleMapBasedResponseClassFactoryImpl;
@@ -47,11 +49,11 @@ public class PetPricesIntegrationTest {
 	
 		
 		
-		clazzCouch = mapBasedClassFactory.createClass(mapBasedClassFactory.mappingBuilder().withParentMapping("rows").withChildMapping("value", "value").withChildMapping("key", "key").build());
+		clazzCouch = mapBasedClassFactory.createClass(mapBasedClassFactory.mappingBuilder().withParentMapping("rows").withChildMapping(ChildField.Value, "value").withChildMapping(ChildField.Key, "key").build());
 		
 		
 		
-		clazzGoogleMaps=mapBasedClassFactory.createClass(mapBasedClassFactory.mappingBuilder().withParentMapping("results").withChildMapping("value", "geometry", "location").withChildMapping("key", "types").withFieldMapping("status", "status").build());
+		clazzGoogleMaps=mapBasedClassFactory.createClass(mapBasedClassFactory.mappingBuilder().withParentMapping("results").withChildMapping(ChildField.Value, "geometry", "location").withChildMapping(ChildField.Key, "types").withFieldMapping("status", InfoField.Status).build());
 	}
 
 	private final String URL = "http://localhost:5984/petstore/_design/qualityByArtist/_view/qualityByArtist?key=\"{key}\"";

@@ -28,7 +28,6 @@ public class CommercialSubjectServiceImpl extends BasicServiceImpl<CommercialSub
 		Collection<CommercialSubject>  results = ((CommercialSubjectRepository) repository).forNamePattern(customer, patternForName, paging);
 		
 		 for(final DocumentsAware document : results){
-			 System.out.println("****");
 			 document.documents().size();
 		 }
 		 return results;

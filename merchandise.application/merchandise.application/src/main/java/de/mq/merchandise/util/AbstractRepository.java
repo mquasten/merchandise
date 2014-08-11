@@ -21,7 +21,7 @@ public abstract class AbstractRepository<T,V> implements BasicRepository<T,V>  {
 		T result = entityManager.merge(commercialSubject);
 		
 		if (commercialSubject instanceof Opportunity) {
-			 System.out.println("????" + ((Opportunity)commercialSubject).commercialRelations().size());
+			((Opportunity)commercialSubject).commercialRelations().size();
 			
 		}
 		

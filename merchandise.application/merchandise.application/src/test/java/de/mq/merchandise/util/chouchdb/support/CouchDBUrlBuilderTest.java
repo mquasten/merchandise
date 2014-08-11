@@ -1,5 +1,8 @@
 package de.mq.merchandise.util.chouchdb.support;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -30,6 +33,25 @@ public class CouchDBUrlBuilderTest {
 	@Test
 	public final void withHost() {
 		Assert.assertEquals(VIEW_URL.replace("localhost", HOST ).replace("5984", "" + PORT),  new SimpleChouchDBUrlBuilder().withView("qualityByArtist").withDatabase("petstore").withHost(HOST).withPort(PORT).build());
+	}
+	
+	@Test
+	public final void withParams() {
+		final String result = VIEW_URL+String.format("?%s={%s}", "quality", "quality");
+		Assert.assertEquals(result, new SimpleChouchDBUrlBuilder().withView("qualityByArtist").withDatabase("petstore").withParams("quality").build());
+	}
+	
+	@Test
+	public final void withParamsCollection() {
+		final String result = VIEW_URL+String.format("?%s={%s}", "quality", "quality");
+		final Collection<String> params = new ArrayList<>();
+		params.add("quality");
+		Assert.assertEquals(result, new SimpleChouchDBUrlBuilder().withView("qualityByArtist").withDatabase("petstore").withParams("quality").withParams(params).build());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public final void wrongPort() {
+		new SimpleChouchDBUrlBuilder().withPort(-1);
 	}
 
 }

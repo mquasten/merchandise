@@ -11,6 +11,7 @@ import org.springframework.web.client.RestOperations;
 
 import de.mq.mapping.util.json.MapBasedResponseClassFactory;
 import de.mq.mapping.util.json.support.MapBasedResponse;
+import de.mq.mapping.util.json.support.MapBasedResponse.ChildField;
 import de.mq.mapping.util.json.support.SimpleMapBasedResponseClassFactoryImpl;
 
 public class CouchDBTemplate {
@@ -30,7 +31,7 @@ public class CouchDBTemplate {
 	
 	public final Class<MapBasedResponse> clazz() {
 		
-		return  mapBasedClassFactory.createClass(mapBasedClassFactory.mappingBuilder().withParentMapping("rows").withChildMapping("value", "value").withChildMapping("key", "value").build());
+		return  mapBasedClassFactory.createClass(mapBasedClassFactory.mappingBuilder().withParentMapping("rows").withChildMapping(ChildField.Value, "value").withChildMapping(ChildField.Key, "key").build());
 	}
 	
 	public CouchDBTemplate(final RestOperations restOperations, final String database, final String host, final int port) {
