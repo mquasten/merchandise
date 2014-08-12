@@ -13,6 +13,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import de.mq.mapping.util.json.support.SimpleMapBasedResponseClassFactoryImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/geocodingRepository.xml" })
+@Ignore
 public class PetPricesIntegrationTest {
 
 	private final MapBasedResponseClassFactory mapBasedClassFactory = new SimpleMapBasedResponseClassFactoryImpl();

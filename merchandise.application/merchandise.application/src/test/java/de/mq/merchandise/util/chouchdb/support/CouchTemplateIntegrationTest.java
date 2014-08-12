@@ -7,6 +7,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import de.mq.mapping.util.json.MapBasedResponseClassFactory;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})
+@Ignore
 public class CouchTemplateIntegrationTest {
 	@Autowired
 	private RestOperations restOperations;
