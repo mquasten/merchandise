@@ -14,16 +14,20 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestOperations;
 
+import de.mq.mapping.util.json.MapBasedResponseClassFactory;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})
 public class CouchTemplateIntegrationTest {
 	@Autowired
 	private RestOperations restOperations;
+	@Autowired
+	private MapBasedResponseClassFactory mapBasedResponseClassFactory;
 	
 	
 	@Test
 	public final void singleKey()  {
-		final CouchDBTemplate couchDBTemplate = new CouchDBTemplate(restOperations, "petstore");
+		final CouchDBTemplate couchDBTemplate = new CouchDBTemplate(mapBasedResponseClassFactory, restOperations, "petstore");
 		final List<String> results = couchDBTemplate.forKey("qualityByArtist", "nicole", String.class);
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals("platinium", results.get(0));
@@ -34,7 +38,7 @@ public class CouchTemplateIntegrationTest {
 
 	@Test
 	public final void composedKey() {
-		final CouchDBTemplate couchDBTemplate = new CouchDBTemplate(restOperations, "petstore");
+		final CouchDBTemplate couchDBTemplate = new CouchDBTemplate(mapBasedResponseClassFactory, restOperations, "petstore");
 		Map<String,String> keys = new LinkedHashMap<>();
 		keys.put("quality", "platinium");
 		keys.put("unit", "date");

@@ -12,7 +12,6 @@ import org.springframework.web.client.RestOperations;
 import de.mq.mapping.util.json.MapBasedResponseClassFactory;
 import de.mq.mapping.util.json.support.MapBasedResponse;
 import de.mq.mapping.util.json.support.MapBasedResponse.ChildField;
-import de.mq.mapping.util.json.support.SimpleMapBasedResponseClassFactoryImpl;
 
 public class CouchDBTemplate {
 	
@@ -26,23 +25,23 @@ public class CouchDBTemplate {
 	
 	
 	
-	private final MapBasedResponseClassFactory mapBasedClassFactory = new SimpleMapBasedResponseClassFactoryImpl();
+	private final MapBasedResponseClassFactory mapBasedResponseClassFactory ;
 	
 	
 	public final Class<MapBasedResponse> clazz() {
-		
-		return  mapBasedClassFactory.createClass(mapBasedClassFactory.mappingBuilder().withParentMapping("rows").withChildMapping(ChildField.Value, "value").withChildMapping(ChildField.Key, "key").build());
+		return  mapBasedResponseClassFactory.createClass(mapBasedResponseClassFactory.mappingBuilder().withParentMapping("rows").withChildMapping(ChildField.Value, "value").withChildMapping(ChildField.Key, "key").build());
 	}
 	
-	public CouchDBTemplate(final RestOperations restOperations, final String database, final String host, final int port) {
+	public CouchDBTemplate(final MapBasedResponseClassFactory mapBasedResponseClassFactory, final RestOperations restOperations, final String database, final String host, final int port) {
+		this.mapBasedResponseClassFactory=mapBasedResponseClassFactory;
 		this.restOperations = restOperations;
 		this.database=database;
 		this.host=host;
 		this.port=port;
 	}
 	
-	public CouchDBTemplate(final RestOperations restOperations, final String database) {
-		this(restOperations, database, "localhost",5984 );
+	public CouchDBTemplate(final MapBasedResponseClassFactory mapBasedResponseClassFactory, final RestOperations restOperations, final String database) {
+		this(mapBasedResponseClassFactory, restOperations, database, "localhost",5984 );
 	}
 
 	public final <T> List<T> forKey(final String view, final String key, final Class<? extends T> target)   {

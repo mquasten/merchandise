@@ -23,5 +23,6 @@
         </list>
     </property>
 </bean>
-	
+
+<context:component-scan base-package="de.mq.mapping.util.json" />	
 	</beans>
