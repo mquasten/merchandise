@@ -28,7 +28,7 @@ public class CouchDBTemplate {
 	private final MapBasedResponseClassFactory mapBasedResponseClassFactory ;
 	
 	
-	public final Class<MapBasedResponse> clazz() {
+	final Class<MapBasedResponse> clazz() {
 		return  mapBasedResponseClassFactory.createClass(mapBasedResponseClassFactory.mappingBuilder().withParentMapping("rows").withChildMapping(ChildField.Value, "value").withChildMapping(ChildField.Key, "key").build());
 	}
 	
