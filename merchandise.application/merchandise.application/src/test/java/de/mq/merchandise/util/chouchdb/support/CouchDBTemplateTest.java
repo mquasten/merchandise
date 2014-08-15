@@ -1,6 +1,10 @@
 package de.mq.merchandise.util.chouchdb.support;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -18,6 +22,9 @@ import de.mq.mapping.util.json.support.MappingTestConstants;
 
 public class CouchDBTemplateTest {
 	
+	private static final String KEY_PARAM = "key";
+	private static final String VIEW = "qualityByArtist";
+	private static final String KEY = "nicole";
 	static final Class<MapBasedResponse> CLASS = MapBasedResponse.class;
 	private static final String DATABASE = "petStore";
 	final MapBasedResultBuilder mapBasedResultBuilder = MappingTestConstants.newMappingBuilder();
@@ -39,7 +46,7 @@ public class CouchDBTemplateTest {
 	
 	@Before
 	public void setup() {
-		Mockito.when(mapBasedResponseClassFactory.mappingBuilder()).thenReturn(mapBasedResultBuilder);
+		Mockito.when(mapBasedResponseClassFactory.mappingBuilder()).thenReturn(mapBasedResultBuilder, MappingTestConstants.newMappingBuilder());
 		Mockito.when(mapBasedResponseClassFactory.createClass(mappingCollectionCaptor.capture())).thenReturn(CLASS);
 	}
 	
@@ -50,19 +57,34 @@ public class CouchDBTemplateTest {
 		Assert.assertEquals(CLASS, couchDBTemplate.clazz());
 		final Collection<?> results = mappingCollectionCaptor.getValue();
 		final Object  parent = results.iterator().next();
-		Assert.assertEquals("rows", ReflectionTestUtils.getField(parent, "key"));
+		Assert.assertEquals("rows", ReflectionTestUtils.getField(parent, KEY_PARAM));
 		Assert.assertNull(ReflectionTestUtils.getField(parent, "field"));
 		Assert.assertTrue(((Collection<?>)ReflectionTestUtils.getField(parent, "paths")).isEmpty());
 	
 		final Collection<?> childs = (Collection<?>) ReflectionTestUtils.getField(parent, "childs");
 		Assert.assertEquals(2, childs.size());
 		for(final Object child : childs){
-			Assert.assertNull(ReflectionTestUtils.getField(child, "key"));
+			Assert.assertNull(ReflectionTestUtils.getField(child, KEY_PARAM));
 			final Object field = ReflectionTestUtils.getField(child, "field");
-			Assert.assertTrue(field.equals("key")||field.equals("value"));
+			Assert.assertTrue(field.equals(KEY_PARAM)||field.equals("value"));
 			final Collection<?> paths = (Collection<?>) ReflectionTestUtils.getField(child, "paths");
 			Assert.assertEquals(field, paths.iterator().next());
 			
 		}
+		
+	}
+	
+	@Test
+	public final void forKey() {
+		String url = new SimpleChouchDBUrlBuilder().withDatabase(DATABASE).withView(VIEW).withParams(KEY_PARAM).build();
+		final Map<String,String> map = new HashMap<>();
+		map.put(KEY_PARAM, String.format( "\"%s\"" , KEY));
+		MapBasedResponse mapBasedResponse = Mockito.mock(MapBasedResponse.class);
+		Mockito.when(restOperations.getForObject(url, CLASS, map)).thenReturn(mapBasedResponse);
+		final List<String> results = new ArrayList<>();
+		results.add("platinium");
+		Mockito.when(mapBasedResponse.result(String.class)).thenReturn(results);
+		Assert.assertEquals(results, couchDBTemplate.forKey(VIEW, KEY, String.class));
+	
 	}
 }

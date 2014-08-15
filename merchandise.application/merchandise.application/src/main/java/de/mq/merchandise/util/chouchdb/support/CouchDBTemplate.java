@@ -45,12 +45,8 @@ public class CouchDBTemplate {
 	}
 
 	public final <T> List<T> forKey(final String view, final String key, final Class<? extends T> target)   {
-		
 		final Map<String, String> keyMap = mapFromKey(String.format("\"%s\"", key) );
-		
-		final String url = newUrlBuilder().withView(view).withParams(keyMap.keySet()).build() ;
-		
-		return Collections.unmodifiableList(this.restOperations.getForObject(url, clazz(), keyMap).result(target));
+		return Collections.unmodifiableList(this.restOperations.getForObject(newUrlBuilder().withView(view).withParams(keyMap.keySet()).build(), clazz(), keyMap).result(target));
 		
 	}
 
