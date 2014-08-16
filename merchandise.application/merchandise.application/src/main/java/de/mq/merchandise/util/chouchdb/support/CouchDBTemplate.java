@@ -65,10 +65,7 @@ public class CouchDBTemplate {
 		
 		final Map<String, String> keyMap = mapFromKey( key2Json(keys) );
 		keyMap.putAll(queryParams);
-		final String url = newUrlBuilder().withView(view).withListFunction(list).withParams(keyMap.keySet()).build() ;
-		
-		
-		return Collections.unmodifiableList(this.restOperations.getForObject(url, clazz(), keyMap).result(target));
+		return Collections.unmodifiableList(this.restOperations.getForObject(newUrlBuilder().withView(view).withListFunction(list).withParams(keyMap.keySet()).build(), clazz(), keyMap).result(target));
 		
 		
 	}
