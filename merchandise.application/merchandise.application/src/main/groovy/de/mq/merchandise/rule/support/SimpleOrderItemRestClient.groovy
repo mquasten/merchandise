@@ -1,15 +1,13 @@
 package de.mq.merchandise.rule.support
 
  
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.runner.RunWith;
+
+
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.dao.DataAccessException
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
