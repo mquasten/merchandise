@@ -17,6 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestOperations;
@@ -124,6 +125,7 @@ public class PetPricesIntegrationTest {
 	}
 
 	private double round(final double value) {
+	
 		return Math.round(1e12 * value) / 1e12;
 	}
 

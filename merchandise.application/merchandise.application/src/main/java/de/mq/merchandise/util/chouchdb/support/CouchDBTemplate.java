@@ -13,7 +13,7 @@ import de.mq.mapping.util.json.MapBasedResponseClassFactory;
 import de.mq.mapping.util.json.support.MapBasedResponse;
 import de.mq.mapping.util.json.support.MapBasedResponse.ChildField;
 
-public class CouchDBTemplate {
+public class CouchDBTemplate implements CouchDBOperations {
 	
 	private final RestOperations restOperations;
 	
@@ -44,6 +44,10 @@ public class CouchDBTemplate {
 		this(mapBasedResponseClassFactory, restOperations, database, "localhost",5984 );
 	}
 
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.util.chouchdb.support.CouchDBOperations#forKey(java.lang.String, java.lang.String, java.lang.Class)
+	 */
+	@Override
 	public final <T> List<T> forKey(final String view, final String key, final Class<? extends T> target)   {
 		final Map<String, String> keyMap = mapFromKey(String.format("\"%s\"", key) );
 		return Collections.unmodifiableList(this.restOperations.getForObject(newUrlBuilder().withView(view).withParams(keyMap.keySet()).build(), clazz(), keyMap).result(target));
@@ -61,8 +65,11 @@ public class CouchDBTemplate {
 		return keyMap;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.util.chouchdb.support.CouchDBOperations#forKey(java.lang.String, java.lang.String, java.util.Map, java.util.Map, java.lang.Class)
+	 */
+	@Override
 	public final <T> List<T> forKey(final String view, final String list, final Map<String, String> keys,  final Map<String,String> queryParams, final Class<? extends T> target)   {
-		
 		final Map<String, String> keyMap = mapFromKey( key2Json(keys) );
 		keyMap.putAll(queryParams);
 		return Collections.unmodifiableList(this.restOperations.getForObject(newUrlBuilder().withView(view).withListFunction(list).withParams(keyMap.keySet()).build(), clazz(), keyMap).result(target));
