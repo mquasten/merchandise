@@ -24,5 +24,6 @@
     </property>
 </bean>
 
-<context:component-scan base-package="de.mq.mapping.util.json" />	
+<bean class="org.springframework.core.type.classreading.CachingMetadataReaderFactory" />
+<context:component-scan base-package="de.mq.mapping.util.json, de.mq.mapping.util.proxy" />	
 	</beans>

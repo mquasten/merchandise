@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -15,6 +16,7 @@ import de.mq.merchandise.contact.Coordinates;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/geocodingRepository.xml"})
+@ActiveProfiles("CGLib-Proxy")
 public class CoordinatesRepositoryIntegrationTest {
 	
 	@Autowired
@@ -27,6 +29,7 @@ public class CoordinatesRepositoryIntegrationTest {
 		
 		Assert.assertTrue(Math.abs(6.2829833D - result.longitude()) < 1e-14 );
 		Assert.assertTrue(Math.abs(51.166913D - result.latitude()) < 1e-14);
+		
 		
 	}
 	

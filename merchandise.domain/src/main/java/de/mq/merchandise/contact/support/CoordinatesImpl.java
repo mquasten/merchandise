@@ -2,6 +2,7 @@ package de.mq.merchandise.contact.support;
 
 import javax.persistence.Embeddable;
 
+import de.mq.mapping.util.json.FieldMapping;
 import de.mq.merchandise.contact.Coordinates;
 import de.mq.merchandise.util.EntityUtil;
 import de.mq.merchandise.util.Equals;
@@ -14,8 +15,10 @@ class CoordinatesImpl implements Coordinates {
 	private static final long serialVersionUID = 1L;
 
 	@Equals
+	@FieldMapping("lng")
 	private final Double longitude;
 	@Equals
+	@FieldMapping("lat")
 	private final Double latitude;
 
 	@SuppressWarnings("unused")

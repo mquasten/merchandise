@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.web.client.RestOperations;
 
 import de.mq.merchandise.contact.CityAddress;
@@ -27,7 +26,7 @@ public class CoordinatesRepositoryTest {
 	final CityAddress cityAddress = Mockito.mock(CityAddress.class);
 	
 	private final RestOperations restOperations = Mockito.mock(RestOperations.class);
-	private final CoordinatesRepositoryImpl coordinatesRepository = new CoordinatesRepositoryImpl(restOperations);
+	private final CoordinatesRepositoryImpl coordinatesRepository = new CoordinatesRepositoryImpl(restOperations, null);
 	
 	@Before
 	public final void setup() {
@@ -38,36 +37,9 @@ public class CoordinatesRepositoryTest {
 	
 	private static final Coordinates COORDINATES = new CoordinatesBuilderImpl().withLatitude(59.5683240).withLongitude(150.8089180).build();
 
-	@Test
-	public void fromMap() {
-		
-		final Map<String,Object> artists = new HashMap<>();
-		@SuppressWarnings("unchecked")
-		final Map<String,?> videos = Mockito.mock(Map.class);
-		artists.put(KEY, videos);
-		Assert.assertEquals(videos, coordinatesRepository.fromMap(Map.class, artists, KEY));
-		
-		
-	}
 	
-	@Test(expected=InvalidDataAccessApiUsageException.class)
-	public void fromMapNoMap() {
 	
-		final Map<String,Object> artists = new HashMap<>();
-		artists.put(KEY, "fever");
-		coordinatesRepository.fromMap(Map.class, artists, KEY, "whatEver");
-		
-	}
 	
-	@Test(expected=InvalidDataAccessApiUsageException.class)
-	public void fromMapWrongKey() {
-		
-		final Map<String,Object> artists = new HashMap<>();
-		@SuppressWarnings("unchecked")
-		final Map<String,?> videos = Mockito.mock(Map.class);
-		artists.put(KEY, videos);
-		coordinatesRepository.fromMap(Map.class, artists, "dontLetmeGetMe");
-	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test

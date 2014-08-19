@@ -1,20 +1,26 @@
 package de.mq.merchandise.contact.support;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 import org.springframework.web.client.RestOperations;
 
+import de.mq.mapping.util.json.MapBasedResponseClassFactory;
+import de.mq.mapping.util.json.support.MapBasedResponse;
+import de.mq.mapping.util.json.support.MapBasedResponse.InfoField;
+import de.mq.mapping.util.json.support.MapBasedResultRow;
 import de.mq.merchandise.contact.CityAddress;
 import de.mq.merchandise.contact.Coordinates;
 
 @Repository
 class CoordinatesRepositoryImpl implements CoordinatesRepository {
+
+	private static final String STREET_ADDRESS_TYPE = "street_address";
+
+	private static final String STATUS_OK = "OK";
 
 	static final String ADDRESS_PARAM_KEY = "address";
 	
@@ -22,10 +28,17 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 	
 	static final String GOOGLE_URL = "http://maps.googleapis.com/maps/api/geocode/json?address={"+  ADDRESS_PARAM_KEY +"}&sensor={" +SENSOR_PARAM_KEY+ "}";
 	private final RestOperations restOperations;
+	
+
+	
+	
+	private final Class<MapBasedResponse> clazz; 
+	
 
 	@Autowired
-	public CoordinatesRepositoryImpl(final RestOperations restOperations) {
+	public CoordinatesRepositoryImpl(final RestOperations restOperations, final MapBasedResponseClassFactory mapBasedResponseClassFactory) {
 		this.restOperations = restOperations;
+		clazz=mapBasedResponseClassFactory.createClass( mapBasedResponseClassFactory.mappingBuilder().withParentMapping("results").withChildMapping( MapBasedResponse.ChildField.Value, "geometry", "location" ).withChildMapping( MapBasedResponse.ChildField.Key, "types").withChildMapping(MapBasedResponse.ChildField.Id, "formatted_address").withFieldMapping("status",  MapBasedResponse.InfoField.Status).build());
 	}
 
 	/*
@@ -34,63 +47,34 @@ class CoordinatesRepositoryImpl implements CoordinatesRepository {
 	 * @see de.mq.merchandise.application.contact.support.CoordinatesRepository#
 	 * forAddress(de.mq.merchandise.domain.contact.CityAddress)
 	 */
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public final Coordinates forAddress(final CityAddress cityAddress) {
-
 		final Map<String, Object> params = new HashMap<>();
 		params.put(ADDRESS_PARAM_KEY, cityAddress.contact());
         params.put(SENSOR_PARAM_KEY  , false );
 	
-		final Map<String, ?> results = restOperations.getForObject(GOOGLE_URL,HashMap.class, params);
-		final String status = fromMap(String.class, results, "status");
+        
+        final MapBasedResponse response = restOperations.getForObject(GOOGLE_URL,clazz, params);
+       
+        final String status = response.field(InfoField.Status, String.class);
+        Assert.isTrue(status.equalsIgnoreCase(STATUS_OK), "Bad Respose Status: " + status);
+        
+      
+        for( final MapBasedResultRow row : response.rows()) {
+        	if ( ! row.collectionKey(String.class).contains(STREET_ADDRESS_TYPE)) {
+        		continue;
+        	}
+        	final String formatted = row.id();
+        	if(! (formatted.toLowerCase().contains(cityAddress.city().toLowerCase()) || formatted.toLowerCase().contains(cityAddress.zipCode().toLowerCase()))) {
+        		continue;
+        	}
+        	return  row.composedValue(CoordinatesImpl.class);
+        	
+        }
+		throw new IllegalArgumentException("Coordinates for address not found: " + cityAddress.contact() );
 		
-		if (! status.equalsIgnoreCase("ok") ) {
-			throw new IllegalStateException("Unable to reverse geocode the  address, status: " + status);
-		}
 		
-		
-		
-		final List<?>  placemarks = fromMap(List.class, results, "results");
-		DataAccessUtils.requiredSingleResult(placemarks);
-		
-		final Map<String, ?> coordinates = fromMap(Map.class, placemarks.get(0), "geometry" , "location" );
-		
-		final String result  = fromMap(String.class, placemarks.get(0), "formatted_address" );
-		
-		if(! (result.toLowerCase().contains(cityAddress.city().toLowerCase()) || result.toLowerCase().contains(cityAddress.zipCode().toLowerCase()))) {
-			throw new IllegalArgumentException("Coordinates doesn't belong to a street with the city and or zipCode");
-		}
-		
-		final Number lat = fromMap(Number.class, coordinates, "lat");
-		final Number lng =  fromMap(Number.class, coordinates, "lng");
-		final List<String> types = fromMap(List.class, placemarks.get(0), "types");
-		
-		if( ! types.contains("street_address")) {
-			throw new IllegalArgumentException("Coordinates doesn't belong to a street address");
-		}
-
-
-		return new CoordinatesBuilderImpl().withLongitude(lng.doubleValue()).withLatitude(lat.doubleValue()).build();
-	}
-
-	@SuppressWarnings("unchecked")
-	<T> T fromMap(Class<T> clazz, final Object map,final String... path) {
-		Object current = map;
-		for (final String key : path) {
-			if (!(current instanceof Map<?, ?>)) {
-				throw new InvalidDataAccessApiUsageException("Node isn't a Map");
-			}
-			if (!((Map<?, ?>) current).containsKey(key)) {
-				throw new InvalidDataAccessApiUsageException("Node doesn't exists: " + key);
-			}
-			
-			current = ((Map<?, ?>) current).get(key);
-
-		}
-	
-		return (T) current;
-
 	}
 
 }
