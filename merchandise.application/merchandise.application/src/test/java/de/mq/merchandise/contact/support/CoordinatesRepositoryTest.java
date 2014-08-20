@@ -1,6 +1,7 @@
 package de.mq.merchandise.contact.support;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,14 +10,18 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.web.client.RestOperations;
 
+import de.mq.mapping.util.json.MapBasedResponseClassFactory;
+import de.mq.mapping.util.json.MapBasedResultBuilder;
+import de.mq.mapping.util.json.support.MapBasedResponse;
+import de.mq.mapping.util.json.support.MappingTestConstants;
 import de.mq.merchandise.contact.CityAddress;
 import de.mq.merchandise.contact.Coordinates;
 
 public class CoordinatesRepositoryTest {
+	
 	
 	private static final String ZIP_CODE = "12345";
 	private static final String CITY = "Magadan";
@@ -26,90 +31,47 @@ public class CoordinatesRepositoryTest {
 	final CityAddress cityAddress = Mockito.mock(CityAddress.class);
 	
 	private final RestOperations restOperations = Mockito.mock(RestOperations.class);
-	private final CoordinatesRepositoryImpl coordinatesRepository = new CoordinatesRepositoryImpl(restOperations, null);
+	private final MapBasedResponseClassFactory mapBasedResponseClassFactory = Mockito.mock(MapBasedResponseClassFactory.class);
+	private CoordinatesRepositoryImpl coordinatesRepository;
+	private final Map<String,Object> params = new HashMap<>();
 	
+	private Class<MapBasedResponse> clazz = MapBasedResponse.class;
+	
+	private MapBasedResultBuilder mappBasedResultBuilder = MappingTestConstants.newMappingBuilder();
 	@Before
 	public final void setup() {
-		Mockito.when(cityAddress.contact()).thenReturn(ADDRESS);
+		params.clear();
+		params.put(CoordinatesRepositoryImpl.SENSOR_PARAM_KEY, false);
+		
+		Mockito.when(mapBasedResponseClassFactory.mappingBuilder()).thenReturn(mappBasedResultBuilder);
+		
+		coordinatesRepository = new CoordinatesRepositoryImpl(restOperations, mapBasedResponseClassFactory);
+		final Collection<?>  mappings = mappBasedResultBuilder.build();
+		Mockito.when(mapBasedResponseClassFactory.createClass(mappings)).thenReturn(clazz);
+		
+		Mockito.when(cityAddress.contact()).thenReturn(FORMATTED_ADDRESS);
 		Mockito.when(cityAddress.city()).thenReturn(CITY);
-		Mockito.when(cityAddress.zipCode()).thenReturn(ZIP_CODE);
+		Mockito.when(cityAddress.city()).thenReturn(ZIP_CODE);
+		params.put(CoordinatesRepositoryImpl.ADDRESS_PARAM_KEY, cityAddress.contact());
+		final MapBasedResponse mapBasedResponse = MappingTestConstants.newEnhancedMapBasedResponse(mappings, createJsonMap( CoordinatesRepositoryImpl.STATUS_OK, COORDINATES, CoordinatesRepositoryImpl.STREET_ADDRESS_TYPE, cityAddress.contact()));
+		
+		Mockito.when(restOperations.getForObject(CoordinatesRepositoryImpl.GOOGLE_URL, clazz, params)).thenReturn(mapBasedResponse);
+		
 	}
 	
 	private static final Coordinates COORDINATES = new CoordinatesBuilderImpl().withLatitude(59.5683240).withLongitude(150.8089180).build();
 
 	
-	
-	
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
-	public final void forAddress() {
-		
-		
-		
-		final ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
-		final ArgumentCaptor<Class> classCaptor = ArgumentCaptor.forClass(Class.class);
-		final ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
-		
-		final Map<String,Object> params = new HashMap<>();
-		params.put("address", ADDRESS);
-		params.put(CoordinatesRepositoryImpl.SENSOR_PARAM_KEY, false);
-
-		final Map<String, Object> jsonResult = createJsonMap("ok", COORDINATES, "street_address" , FORMATTED_ADDRESS);
-		
-		Mockito.when(restOperations.getForObject(urlCaptor.capture(), classCaptor.capture(), mapCaptor.capture())).thenReturn(jsonResult);
-		
-		final Coordinates result = coordinatesRepository.forAddress(cityAddress);
-		Assert.assertEquals(COORDINATES.longitude(), result.longitude());
-		Assert.assertEquals(COORDINATES.latitude(), result.latitude());
-		
-		Assert.assertEquals(CoordinatesRepositoryImpl.GOOGLE_URL, urlCaptor.getValue());
-		Assert.assertEquals(HashMap.class, classCaptor.getValue());
-		
-		Assert.assertEquals(2, mapCaptor.getValue().size());
-		Assert.assertEquals(params, mapCaptor.getValue());
-		
-		
+	public void forAddress() {
+		Assert.assertEquals(COORDINATES, coordinatesRepository.forAddress(cityAddress));
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Test(expected=IllegalStateException.class)
-	public final void forAddressWrongStatus() {
-		
-		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap("error", COORDINATES, "street_address", FORMATTED_ADDRESS ));
-		
-		coordinatesRepository.forAddress(cityAddress);
-	}
 
 	
 	
 	
-	@Test(expected=IllegalArgumentException.class)
-	@SuppressWarnings("unchecked")
-	public final void forAddressWrongDeviation() {
-		
-		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap("ok", COORDINATES, "country", FORMATTED_ADDRESS ));
-		coordinatesRepository.forAddress(cityAddress);
-	}
 	
-	
-	
-	@Test(expected=IllegalArgumentException.class)
-	@SuppressWarnings("unchecked")
-	public final void forAddressWrongCityCodeInResult() {
-	
-		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap("ok", COORDINATES, "country", "Eine Straße,12345 Stalingrad"  ));
-		coordinatesRepository.forAddress(cityAddress);
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	@SuppressWarnings("unchecked")
-	public final void forAddressWrongZipCodeInResult() {
-	
-		Mockito.when(restOperations.getForObject(Mockito.anyString(),Mockito.any(Class.class), Mockito.anyMap())).thenReturn(createJsonMap("ok", COORDINATES, "country", "Eine Straße,99999 Magadan"  ));
-		coordinatesRepository.forAddress(cityAddress);
-	}
-
 	private Map<String, Object> createJsonMap(final String status, final Coordinates coordinates, final String type, final String formatted_address) {
 		final Map<String,Object> jsonResult = new HashMap<>();
 		
