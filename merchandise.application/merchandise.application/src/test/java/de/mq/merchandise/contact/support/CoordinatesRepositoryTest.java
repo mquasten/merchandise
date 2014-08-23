@@ -32,10 +32,12 @@ public class CoordinatesRepositoryTest {
 	
 	private final RestOperations restOperations = Mockito.mock(RestOperations.class);
 	private final MapBasedResponseClassFactory mapBasedResponseClassFactory = Mockito.mock(MapBasedResponseClassFactory.class);
-	private CoordinatesRepositoryImpl coordinatesRepository;
+	private CoordinatesRepository coordinatesRepository;
 	private final Map<String,Object> params = new HashMap<>();
 	
 	private Class<MapBasedResponse> clazz = MapBasedResponse.class;
+	
+	private  Collection<?>  mappings;
 	
 	private MapBasedResultBuilder mappBasedResultBuilder = MappingTestConstants.newMappingBuilder();
 	@Before
@@ -46,7 +48,7 @@ public class CoordinatesRepositoryTest {
 		Mockito.when(mapBasedResponseClassFactory.mappingBuilder()).thenReturn(mappBasedResultBuilder);
 		
 		coordinatesRepository = new CoordinatesRepositoryImpl(restOperations, mapBasedResponseClassFactory);
-		final Collection<?>  mappings = mappBasedResultBuilder.build();
+		mappings = mappBasedResultBuilder.build();
 		Mockito.when(mapBasedResponseClassFactory.createClass(mappings)).thenReturn(clazz);
 		
 		Mockito.when(cityAddress.contact()).thenReturn(FORMATTED_ADDRESS);
@@ -63,12 +65,36 @@ public class CoordinatesRepositoryTest {
 
 	
 	@Test
-	public void forAddress() {
+	public final void forAddress() {
 		Assert.assertEquals(COORDINATES, coordinatesRepository.forAddress(cityAddress));
 	}
 	
-
+	@Test(expected=IllegalArgumentException.class)
+	public final void  forAddressWrongAddressTyp() {
+		final MapBasedResponse mapBasedResponse = MappingTestConstants.newEnhancedMapBasedResponse(mappings, createJsonMap( CoordinatesRepositoryImpl.STATUS_OK, COORDINATES, "political" , cityAddress.contact()));
+		Mockito.when(restOperations.getForObject(CoordinatesRepositoryImpl.GOOGLE_URL, clazz, params)).thenReturn(mapBasedResponse);
+		coordinatesRepository.forAddress(cityAddress);
+	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public final void forAddressCityAndZipCodeNotMatching() {
+		Mockito.when(cityAddress.city()).thenReturn("Stalingrad");
+		Mockito.when(cityAddress.zipCode()).thenReturn("TIGER2");
+		coordinatesRepository.forAddress(cityAddress);
+	}
+	@Test
+	public final void forAddressdZipCodeMatching() {
+		Mockito.when(cityAddress.city()).thenReturn("Stalingrad");
+		Mockito.when(cityAddress.zipCode()).thenReturn(ZIP_CODE);
+		Assert.assertEquals(COORDINATES, coordinatesRepository.forAddress(cityAddress));
+	}
+	
+	@Test
+	public final void forAddressdCityMatching() {
+		Mockito.when(cityAddress.city()).thenReturn(CITY);
+		Mockito.when(cityAddress.zipCode()).thenReturn("TIGER2");
+		Assert.assertEquals(COORDINATES, coordinatesRepository.forAddress(cityAddress));
+	}
 	
 	
 	
