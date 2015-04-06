@@ -7,43 +7,7 @@
     
 	<persistence-unit name="oracle"  transaction-type="RESOURCE_LOCAL" >
 
-	<class>de.mq.merchandise.customer.support.UserRelationImpl</class>
-	<class>de.mq.merchandise.customer.support.CustomerImpl</class>
 	
-	<class>de.mq.merchandise.customer.support.AbstractPerson</class>
-	<class>de.mq.merchandise.customer.support.NaturalPersonImpl</class>
-	<class>de.mq.merchandise.customer.support.LegalPersonImpl</class>
-	
-	<class>de.mq.merchandise.contact.support.AbstractContact</class>
-	<class>de.mq.merchandise.contact.support.EMailContactImpl</class>
-	<class>de.mq.merchandise.contact.support.PhoneContactImpl</class>
-	<class>de.mq.merchandise.contact.support.InstantMessengerContactImpl</class>
-	
-	<class>de.mq.merchandise.contact.support.AbstractCityAddress</class>
-	<class>de.mq.merchandise.contact.support.PostBoxImpl</class>
-	<class>de.mq.merchandise.contact.support.AddressImpl</class>
-	<class>de.mq.merchandise.contact.support.GeoLocationImpl</class>
-	
-	<class>de.mq.merchandise.reference.support.ReferenceImpl</class>
-	
-	<class>de.mq.merchandise.opportunity.support.CommercialSubjectImpl</class>
-	
-	<class>de.mq.merchandise.opportunity.support.OpportunityImpl</class>
-	
-	<class>de.mq.merchandise.opportunity.support.CommercialRelationImpl</class>
-	<class>de.mq.merchandise.opportunity.support.ConditionImpl</class>
-	<class>de.mq.merchandise.opportunity.support.AbstractClassification</class>
-	<class>de.mq.merchandise.opportunity.support.ProductClassificationImpl</class>
-	<class>de.mq.merchandise.opportunity.support.ActivityClassificationImpl</class>
-	<class>de.mq.merchandise.opportunity.support.EntityContextImpl</class>
-	<class>de.mq.merchandise.opportunity.support.OpportunityFullTextSearchIndexImpl</class>
-	<class>de.mq.merchandise.opportunity.support.OpportunityGeoLocationIndexImpl</class>
-	<class>de.mq.merchandise.opportunity.support.RuleInstanceImpl</class>
-	
-	<class>de.mq.merchandise.order.support.ItemSetImpl</class>
-	<class>de.mq.merchandise.order.support.ItemImpl</class>
-	
-	<class>de.mq.merchandise.rule.support.RuleImpl</class>
 	
 		<!--  properties>
 		    <property name="eclipselink.weaving" value="false" />
