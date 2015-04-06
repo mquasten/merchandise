@@ -7,7 +7,7 @@
     
 	<persistence-unit name="oracle"  transaction-type="RESOURCE_LOCAL" >
 
-	
+	<class> de.mq.merchandise.subject.support.SubjectImpl</class>
 	
 		<!--  properties>
 		    <property name="eclipselink.weaving" value="false" />

@@ -15,7 +15,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
 
  
-<context:component-scan base-package="de.mq.merchandise.util.support"></context:component-scan>
+<context:component-scan base-package="de.mq.merchandise.domain"></context:component-scan>
  <util:properties id="config" location="classpath:db.properties" /> 
 
 

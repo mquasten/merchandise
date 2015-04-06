@@ -12,19 +12,19 @@
 
 
 	<properties>
-		<hibernate.version>4.0.1.Final</hibernate.version>
+		<hibernate.version>4.3.6.Final</hibernate.version>
 		<mysql.connector.version>5.1.18</mysql.connector.version>
 		<slf4j.version>1.6.1</slf4j.version>
-		<spring.version>3.1.0.RELEASE</spring.version>
+		<spring.version>4.1.3.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<junit.version>4.8.1</junit.version>
+		<junit.version>4.9</junit.version>
 		<mockito.version>1.8.4</mockito.version>
 		<log4j.version>1.2.16</log4j.version>
 		<cglib.version>2.2.2</cglib.version>
-		<spring-data.version>1.0.2.RELEASE</spring-data.version>
+		<spring-data.version>1.8.0.RELEASE</spring-data.version>
 		<validation-api.version>1.0.0.GA</validation-api.version>
 		<hibernate-validator.version>4.0.2.GA</hibernate-validator.version>
-		<java.version>1.7</java.version>
+		<java.version>1.8</java.version>
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
 		<jacoco.version>0.6.2.201302030002</jacoco.version>
 		<bonecp.version>0.7.1.RELEASE</bonecp.version>
@@ -35,13 +35,13 @@
 		<jsf.version>2.1.16</jsf.version>
 		<el.version>2.2</el.version>
 		<servlet-api.version>3.0.1</servlet-api.version>
-		<primefaces.version>3.4.2</primefaces.version>
-		<maven-jetty-plugin.version>6.1.15</maven-jetty-plugin.version>
-		<aspectj.version>1.6.11</aspectj.version>
-		<mapping.util.version>0.0.1-SNAPSHOT</mapping.util.version>
+		
+		<maven-jetty-plugin.version>7.6.13.v20130916</maven-jetty-plugin.version>
+		
+		
 		<merchandise.version>0.0.1-SNAPSHOT</merchandise.version>
 
-		<commonsio.version>1.3.2</commonsio.version>
+		
 	</properties>
 
 	<profiles>
@@ -49,8 +49,6 @@
 			<id>build</id>
 			<modules>
 				<module>../merchandise.domain</module>
-				<module>../merchandise.application/merchandise.application</module>
-				<module>../merchandise.web</module>
 			</modules>
 		</profile>
 
@@ -201,33 +199,7 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-
-				<version>${jacoco.version}</version>
-				<configuration>
-					<destfile>${basedir}/target/coverage-reports/jacoco-unit.exec</destfile>
-					<datafile>${basedir}/target/coverage-reports/jacoco-unit.exec</datafile>
-				</configuration>
-				<executions>
-					<execution>
-						<id>jacoco-initialize</id>
-
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-site</id>
-						<phase>install</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
+			
 		</plugins>
 
 	</build>

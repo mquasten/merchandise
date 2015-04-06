@@ -1,0 +1,1 @@
+java -cp "C:\Users\Admin\.m2\repository\org\hsqldb\hsqldb\2.2.9\hsqldb-2.2.9.jar"  org.hsqldb.util.DatabaseManager --url jdbc:hsqldb:file:C:\GitHub\merchandise\merchandise.domain/merchandise

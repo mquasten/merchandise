@@ -1,3 +1,3 @@
 -- like a virgin 
-DROP SCHEMA PUBLIC CASCADE
+-- DROP SCHEMA PUBLIC CASCADE
 shutdown
