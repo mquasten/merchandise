@@ -1,6 +1,6 @@
 package de.mq.merchandise.subject.support;
 
-import java.util.Optional;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,13 +8,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import de.mq.merchandise.support.BasicEntity;
+;
+
 @Entity(name="Subject")
 @Table(name="subject")
-public class SubjectImpl {
+public class SubjectImpl implements BasicEntity{
 	
 	@GeneratedValue
 	@Id
-	public  Long id;
+	protected  Long id;
 	
 	
 	@Column(nullable=false, length=30)
@@ -22,6 +25,8 @@ public class SubjectImpl {
 	
 	@Column(length=50)
 	private String description; 
+	
+	
 	
 	public SubjectImpl(final String name) {
 		this(name,null);
@@ -33,12 +38,7 @@ public class SubjectImpl {
 	}
 	
 	
-	public final Optional<Long> id() {
-		if( id == null){
-			return Optional.empty();
-		}
-		return Optional.of(id);
-	}
+	
 	
 	public final String name() {
 		return name;
@@ -47,5 +47,7 @@ public class SubjectImpl {
 	public final String description() {
 		return description;
 	}
+
+	
 
 }
