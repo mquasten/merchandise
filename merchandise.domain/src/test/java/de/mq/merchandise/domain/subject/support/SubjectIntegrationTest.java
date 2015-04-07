@@ -1,4 +1,4 @@
-package de.mq.merchandise.domain.support;
+package de.mq.merchandise.domain.subject.support;
 
 import java.sql.SQLException;
 import java.util.AbstractMap;
@@ -13,7 +13,6 @@ import javax.sql.DataSource;
 import junit.framework.Assert;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +22,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.mq.merchandise.subject.support.SubjectImpl;
+import de.mq.merchandise.domain.subject.support.SubjectImpl;
+import de.mq.merchandise.support.Customer;
+import de.mq.merchandise.support.CustomerImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
@@ -49,23 +50,34 @@ public class SubjectIntegrationTest {
 	    
 	}
 	
-	@AfterClass
-	public static final void finish() {
-		System.out.println("all beauty...");
-		
-	}
+	
 	
 	@Test
 	@Transactional()
 	@Rollback(false)
 	public final void create() {
 		
-		SubjectImpl subject = new SubjectImpl("Dolls for you");
+		final Customer customer = new CustomerImpl("Minogue-Music");
+		
+		entityManager.persist(customer);
+		
+		final Subject subject = new SubjectImpl(customer, "Dolls for you");
 		entityManager.persist(subject);
 		
 		Assert.assertTrue(subject.id().isPresent());
 		waste.add(new AbstractMap.SimpleEntry<>(subject.id().get(),subject.getClass()));
+		waste.add(new AbstractMap.SimpleEntry<>(customer.id().get(),customer.getClass()));
 		entityManager.flush();
+		//entityManager.clear();
+		final Customer result = entityManager.find(CustomerImpl.class, customer.id().get());
+		entityManager.refresh(result);
+		Assert.assertEquals(subject, result.subjects().stream().findFirst().get());
+		Assert.assertTrue(result.subjects().stream().findFirst().isPresent());
+		Assert.assertEquals(subject.id(), result.subjects().stream().findFirst().get().id());
+		
+		Assert.assertEquals(result, subject.customer());
+		Assert.assertTrue(result.id().isPresent());
+		Assert.assertEquals(result.id(), subject.customer().id());
 	}
 
 }

@@ -12,8 +12,18 @@ import javax.persistence.Id;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.util.ReflectionUtils;
 
+/**
+ * Alle Entitaeten implementieren dieses Interface.
+ * Zugriff auf den PrimaerSchluessel 
+ * @author Admin
+ *
+ */
 public interface BasicEntity {
 	
+	/**
+	 * Der Primaerschluessel der Entity
+	 * @return
+	 */
 	default  Optional<Long> id() {
 		final Set<Field> ids = new HashSet<>();
 		ReflectionUtils.doWithFields(getClass(), f -> ids.add(f), f -> f.isAnnotationPresent(Id.class));

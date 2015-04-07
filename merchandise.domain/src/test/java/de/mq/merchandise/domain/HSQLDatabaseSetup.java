@@ -30,7 +30,7 @@ public class HSQLDatabaseSetup implements BeanFactoryPostProcessor, ApplicationL
 			return;
 		}
 		
-		System.out.println("****************************");
+		
 		//process(ds, "docs/lobs.sql");
 		//process(ds, "docs/products.sql"); 
 		//process(ds, "docs/activities.sql"); 
