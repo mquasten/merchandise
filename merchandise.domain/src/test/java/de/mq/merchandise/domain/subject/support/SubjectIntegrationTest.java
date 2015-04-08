@@ -22,7 +22,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.mq.merchandise.domain.subject.support.SubjectImpl;
 import de.mq.merchandise.support.Customer;
 import de.mq.merchandise.support.CustomerImpl;
 
@@ -31,6 +30,8 @@ import de.mq.merchandise.support.CustomerImpl;
 public class SubjectIntegrationTest {
 	
 	
+	private static final String CONDITION_TYPE = "hotScore";
+
 	@PersistenceContext
 	private EntityManager entityManager;
 	
@@ -78,6 +79,45 @@ public class SubjectIntegrationTest {
 		Assert.assertEquals(result, subject.customer());
 		Assert.assertTrue(result.id().isPresent());
 		Assert.assertEquals(result.id(), subject.customer().id());
+	}
+	
+	
+	private Long prepare() {
+		final Customer customer = new CustomerImpl("Minogue-Music");
+		
+		entityManager.persist(customer);
+		
+		final Subject subject = new SubjectImpl(customer, "Dolls for you");
+		entityManager.persist(subject);
+		waste.add(new AbstractMap.SimpleEntry<>(subject.id().get(),subject.getClass()));
+		waste.add(new AbstractMap.SimpleEntry<>(customer.id().get(),customer.getClass()));
+		entityManager.flush();
+		return subject.id().get();
+	}
+	
+	@Transactional
+	@Rollback(false)
+	@Test
+	public final void withConditions() {
+		final Long subjectId = prepare();
+		final Subject  subject = entityManager.find(SubjectImpl.class, subjectId);
+	    entityManager.refresh(subject);
+	    
+	    subject.add(CONDITION_TYPE, ConditionDataType.IntegralNumber);
+	    entityManager.merge(subject);
+	    
+	    entityManager.flush();
+	   
+	    final Subject  result = entityManager.find(SubjectImpl.class, subjectId);
+	    entityManager.refresh(result);
+	    Assert.assertEquals(1, result.conditions().size());
+	    Assert.assertTrue(result.conditions().stream().findFirst().isPresent());
+	    
+	    Assert.assertTrue(result.conditions().stream().findFirst().get().id().isPresent());
+	   
+	    
+	   
+		
 	}
 
 }

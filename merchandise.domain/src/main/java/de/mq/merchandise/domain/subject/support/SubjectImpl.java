@@ -2,8 +2,13 @@ package de.mq.merchandise.domain.subject.support;
 
 
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +16,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -43,9 +50,14 @@ public class SubjectImpl implements Subject{
 	@Column(name="date_created")
 	private Date created = new Date(); 
 	
+	 @OneToMany(mappedBy="subject", targetEntity=ConditionImpl.class, fetch=FetchType.LAZY ,cascade={CascadeType.ALL})
+	 @MapKey(name="conditionType")
+	 private Map<String, Condition> conditions = new HashMap<>();
+	
 	
 	@SuppressWarnings("unused")
 	private SubjectImpl(){
+		
 		
 	}
 	
@@ -89,6 +101,26 @@ public class SubjectImpl implements Subject{
 	public final Customer customer() {
 		Assert.notNull(customer, "Customer is mandatory");
 		return customer;
+	}
+	
+	
+	@Override
+	public final void add(final String conditionType, final ConditionDataType datatype ){
+		if( conditions.containsKey(conditionType) ) {
+			return;
+		}
+		conditions.put(conditionType, new ConditionImpl(this, conditionType, datatype));
+		
+	}
+	
+	@Override
+	public final void remove(final String conditionType) {
+		conditions.remove(conditionType);
+	}
+	
+	@Override
+	public final Collection<Condition> conditions() {
+		return Collections.unmodifiableCollection(conditions.values());
 	}
 
 	/*

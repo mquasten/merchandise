@@ -8,6 +8,7 @@
 	<persistence-unit name="oracle"  transaction-type="RESOURCE_LOCAL" >
 
 	<class> de.mq.merchandise.domain.subject.support.SubjectImpl</class>
+	<class> de.mq.merchandise.domain.subject.support.ConditionImpl</class>
 	
 	<class> de.mq.merchandise.support.CustomerImpl</class>
 	
