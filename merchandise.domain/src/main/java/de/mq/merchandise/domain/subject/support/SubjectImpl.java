@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -52,7 +52,7 @@ public class SubjectImpl implements Subject{
 	
 	 @OneToMany(mappedBy="subject", targetEntity=ConditionImpl.class, fetch=FetchType.LAZY ,cascade={CascadeType.ALL})
 	 @MapKey(name="conditionType")
-	 private Map<String, Condition> conditions = new HashMap<>();
+	 private Map<String, Condition<?>> conditions = new HashMap<>();
 	
 	
 	@SuppressWarnings("unused")
@@ -106,21 +106,40 @@ public class SubjectImpl implements Subject{
 	
 	@Override
 	public final void add(final String conditionType, final ConditionDataType datatype ){
+		Assert.notNull(conditionType , "ConditionType is mandatory");
+		Assert.notNull(datatype , "ConditionDataType is mandatory");
 		if( conditions.containsKey(conditionType) ) {
 			return;
 		}
-		conditions.put(conditionType, new ConditionImpl(this, conditionType, datatype));
+		conditions.put(conditionType, new ConditionImpl<>(this, conditionType, datatype));
 		
 	}
 	
 	@Override
+	public final <T> Condition<T> condition(final String conditionType) {
+		Assert.notNull(conditionType , "ConditionType is mandatory");
+		if (! conditions.containsKey(conditionType) ) {
+			throw new InvalidDataAccessApiUsageException(String.format("No Condition aware for type: %s", conditionType));
+		}
+		@SuppressWarnings("unchecked")
+		final Condition<T> result =  (Condition<T>) conditions.get(conditionType);
+		return result;
+	}
+	
+	@Override
 	public final void remove(final String conditionType) {
+		Assert.notNull(conditionType , "ConditionType is mandatory");
 		conditions.remove(conditionType);
 	}
 	
 	@Override
-	public final Collection<Condition> conditions() {
+	public final Collection<Condition<?>> conditions() {
 		return Collections.unmodifiableCollection(conditions.values());
+	}
+	
+	@Override
+	public final Collection<String> conditionType() {
+		return Collections.unmodifiableCollection(conditions.keySet());
 	}
 
 	/*

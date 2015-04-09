@@ -1,7 +1,9 @@
 package de.mq.merchandise.domain.subject.support;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -16,9 +18,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.Assert;
+
 @Entity(name="Condition")
 @Table(name ="condition")
-class ConditionImpl implements Condition {
+class ConditionImpl<T> implements Condition<T> {
 	
 
 	@GeneratedValue
@@ -36,10 +41,10 @@ class ConditionImpl implements Condition {
 	@Column(length=20, nullable=false)
 	ConditionDataType dataType; 
 	
-	@ElementCollection(fetch=FetchType.LAZY)
+	@ElementCollection(fetch=FetchType.LAZY, targetClass=InputValueImpl.class)
 	@CollectionTable(joinColumns={@JoinColumn(name="condition_id")},name="condition_value" )
 	@Column(name="value", length=50)
-	final Collection<String> values= new ArrayList<>(); 
+	private final List<InputValueImpl> values= new ArrayList<>(); 
 	
 	@SuppressWarnings("unused")
 	private ConditionImpl() {
@@ -51,5 +56,33 @@ class ConditionImpl implements Condition {
 		this.conditionType=conditionType;
 		this.dataType=datatype;
 	}
-
+	
+	@Override
+	public  void add(final T value) {
+		try {
+			Assert.isTrue(dataType.targetClass.isInstance(value), String.format("Value isn't an instance from %s",dataType.targetClass.getName()));
+			
+			
+			values.add(BeanUtils.instantiateClass(InputValueImpl.class.getDeclaredConstructor(dataType.targetClass), value));
+		} catch (final Exception ex) {
+			 throw new IllegalStateException(ex);
+		} 
+	}
+	
+	@Override
+	public final void remove(final T value) {
+		values.remove(value);
+	}
+	
+	@Override
+	public final void clear() {
+		values.clear();
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public final List<T> values() {
+		return (List<T>) Collections.unmodifiableList(values.stream().filter(v -> v.value().isPresent()).map(v -> v.value().get()).collect(Collectors.toList()));
+	}
+	
 }

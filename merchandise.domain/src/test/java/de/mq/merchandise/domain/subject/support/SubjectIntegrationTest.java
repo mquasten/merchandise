@@ -30,7 +30,11 @@ import de.mq.merchandise.support.CustomerImpl;
 public class SubjectIntegrationTest {
 	
 	
-	private static final String CONDITION_TYPE = "hotScore";
+	private static final String PUBLIC_DATE = "public";
+
+	private static final String PRIVATE_DATE = "private";
+
+	private static final String CONDITION_TYPE = "date";
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -103,7 +107,11 @@ public class SubjectIntegrationTest {
 		final Subject  subject = entityManager.find(SubjectImpl.class, subjectId);
 	    entityManager.refresh(subject);
 	    
-	    subject.add(CONDITION_TYPE, ConditionDataType.IntegralNumber);
+	    subject.add(CONDITION_TYPE, ConditionDataType.String);
+	   
+		final Condition<String> condition = subject.condition(CONDITION_TYPE);
+	    condition.add(PRIVATE_DATE);
+	    condition.add(PUBLIC_DATE);
 	    entityManager.merge(subject);
 	    
 	    entityManager.flush();
@@ -115,8 +123,13 @@ public class SubjectIntegrationTest {
 	    
 	    Assert.assertTrue(result.conditions().stream().findFirst().get().id().isPresent());
 	   
-	    
 	   
+		@SuppressWarnings( "unchecked")
+		final List<String> values = (List<String>) result.conditions().stream().findFirst().get().values();
+	 
+		Assert.assertEquals(2, values.size());
+		Assert.assertTrue(values.contains(PRIVATE_DATE));
+		Assert.assertTrue(values.contains(PUBLIC_DATE));
 		
 	}
 
