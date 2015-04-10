@@ -10,7 +10,8 @@
 	<class> de.mq.merchandise.domain.subject.support.SubjectImpl</class>
 	<class> de.mq.merchandise.domain.subject.support.ConditionImpl</class>
 	
-	<class> de.mq.merchandise.support.CustomerImpl</class>
+	<class> de.mq.merchandise.customer.support.CustomerImpl</class>
+	<class> de.mq.merchandise.customer.support.ConditionTypeImpl</class>
 	
 		<!--  properties>
 		    <property name="eclipselink.weaving" value="false" />

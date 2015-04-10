@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,8 +26,10 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import de.mq.merchandise.support.Customer;
-import de.mq.merchandise.support.CustomerImpl;
+import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.customer.support.CustomerImpl;
+import de.mq.merchandise.domain.subject.Condition;
+import de.mq.merchandise.domain.subject.Subject;
 
 @Entity(name="Subject")
 @Table(name="subject")
@@ -151,6 +154,7 @@ public class SubjectImpl implements Subject{
 		if( ! valid(this) ) {
 			return super.hashCode();
 		}
+		
 		return customer.hashCode() + name.hashCode();
 	}
 

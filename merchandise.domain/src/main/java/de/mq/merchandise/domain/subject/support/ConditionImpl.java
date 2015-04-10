@@ -21,6 +21,9 @@ import javax.persistence.Table;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
+import de.mq.merchandise.domain.subject.Condition;
+import de.mq.merchandise.domain.subject.Subject;
+
 @Entity(name="Condition")
 @Table(name ="condition")
 class ConditionImpl<T> implements Condition<T> {

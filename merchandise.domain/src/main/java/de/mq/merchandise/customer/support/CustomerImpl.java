@@ -1,8 +1,12 @@
-package de.mq.merchandise.support;
+package de.mq.merchandise.customer.support;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,7 +21,8 @@ import javax.persistence.Table;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import de.mq.merchandise.domain.subject.support.Subject;
+import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.domain.subject.Subject;
 import de.mq.merchandise.domain.subject.support.SubjectImpl;
 
 @Entity(name="Customer")
@@ -33,6 +38,10 @@ public class CustomerImpl implements Customer{
 	@OneToMany(cascade = {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE} , fetch = FetchType.LAZY, mappedBy = "customer", targetEntity=SubjectImpl.class)
 	@OrderBy("date_created")
 	private List<Subject> subjects = new ArrayList<>();
+	
+	@OneToMany(cascade = {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.PERSIST , CascadeType.MERGE} , fetch = FetchType.LAZY, mappedBy = "customer", targetEntity=ConditionTypeImpl.class)
+	@Column(name="condition_type")
+	private Set<ConditionTypeImpl> conditionTypes = new HashSet<>();
 	
 	
 	@SuppressWarnings("unused")
@@ -56,6 +65,21 @@ public class CustomerImpl implements Customer{
 	
 	public final List<Subject> subjects() {
 		return Collections.unmodifiableList(subjects);
+	}
+	
+	@Override
+	public final Collection<String> conditionTypes() {
+		return Collections.unmodifiableCollection(conditionTypes.stream().map(ct -> ct.name()).collect(Collectors.toSet()));
+	}
+	
+	@Override
+	public final void assignConditionType(final String conditiontype ){
+		conditionTypes.add(new ConditionTypeImpl(this, conditiontype));
+	}
+	
+	@Override
+	public final void removeConditionType(final String conditiontype ){
+		conditionTypes.remove(new ConditionTypeImpl(this, conditiontype));
 	}
 
 	@Override

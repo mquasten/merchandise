@@ -1,7 +1,8 @@
-package de.mq.merchandise.domain.subject.support;
+package de.mq.merchandise.domain.subject;
 
 import java.util.List;
 
+import de.mq.merchandise.domain.subject.support.ConditionDataType;
 import de.mq.merchandise.support.BasicEntity;
 
 /**

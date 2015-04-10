@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
 
 import junit.framework.Assert;
 
@@ -16,20 +15,25 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.mq.merchandise.support.Customer;
-import de.mq.merchandise.support.CustomerImpl;
+import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.customer.support.CustomerImpl;
+import de.mq.merchandise.domain.subject.Condition;
+import de.mq.merchandise.domain.subject.Subject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
 public class SubjectIntegrationTest {
 	
 	
+	private static final String SUBJECT_NAME = "Dolls for you";
+
+	private static final String CUSTOMER_NAME = "Minogue-Music";
+
 	private static final String PUBLIC_DATE = "public";
 
 	private static final String PRIVATE_DATE = "private";
@@ -39,8 +43,7 @@ public class SubjectIntegrationTest {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	@Autowired
-	private DataSource dataSource;
+
 	
 	private final List<Entry<Long,Class<?>>> waste = new ArrayList<>();
 	
@@ -62,11 +65,11 @@ public class SubjectIntegrationTest {
 	@Rollback(false)
 	public final void create() {
 		
-		final Customer customer = new CustomerImpl("Minogue-Music");
+		final Customer customer = new CustomerImpl(CUSTOMER_NAME);
 		
 		entityManager.persist(customer);
 		
-		final Subject subject = new SubjectImpl(customer, "Dolls for you");
+		final Subject subject = new SubjectImpl(customer, SUBJECT_NAME);
 		entityManager.persist(subject);
 		
 		Assert.assertTrue(subject.id().isPresent());
@@ -87,11 +90,11 @@ public class SubjectIntegrationTest {
 	
 	
 	private Long prepare() {
-		final Customer customer = new CustomerImpl("Minogue-Music");
+		final Customer customer = new CustomerImpl(CUSTOMER_NAME);
 		
 		entityManager.persist(customer);
 		
-		final Subject subject = new SubjectImpl(customer, "Dolls for you");
+		final Subject subject = new SubjectImpl(customer, SUBJECT_NAME);
 		entityManager.persist(subject);
 		waste.add(new AbstractMap.SimpleEntry<>(subject.id().get(),subject.getClass()));
 		waste.add(new AbstractMap.SimpleEntry<>(customer.id().get(),customer.getClass()));
