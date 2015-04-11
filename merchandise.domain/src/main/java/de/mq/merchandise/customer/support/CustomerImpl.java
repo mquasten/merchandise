@@ -27,10 +27,12 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectImpl;
 
-@NamedQueries({ @NamedQuery( name="customerById", query="Select c from Customer c where c.id =:id")})
+@NamedQueries({ @NamedQuery( name=CustomerRepository.CUSTOMER_BY_ID_QUERY, query="Select c from Customer c where c.id =:" + CustomerRepository.ID_PARAMETER)})
 @Entity(name="Customer")
 @Table(name="customer")
 public class CustomerImpl implements Customer{
+	
+
 	@GeneratedValue
 	@Id
 	private Long id;
@@ -48,9 +50,7 @@ public class CustomerImpl implements Customer{
 	
 	
 	@SuppressWarnings("unused")
-	private CustomerImpl() {
-		
-	}
+	private CustomerImpl() { /* touched for the very first time*/}
 	
 	public CustomerImpl(final String name){
 		Assert.hasText(name, "Name is mandatory");
@@ -65,26 +65,43 @@ public class CustomerImpl implements Customer{
 		Assert.hasText(name, "Name is mandatory");
 		return name;
 	}
-	
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.customer.Customer#subjects()
+	 */
+	@Override
 	public final List<Subject> subjects() {
 		return Collections.unmodifiableList(subjects);
 	}
-	
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.customer.Customer#conditionTypes()
+	 */
 	@Override
 	public final Collection<String> conditionTypes() {
 		return Collections.unmodifiableCollection(conditionTypes.stream().map(ct -> ct.name()).collect(Collectors.toSet()));
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.customer.Customer#assignConditionType(java.lang.String)
+	 */
 	@Override
 	public final void assignConditionType(final String conditiontype ){
 		conditionTypes.add(new ConditionTypeImpl(this, conditiontype));
 	}
-	
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.customer.Customer#removeConditionType(java.lang.String)
+	 */
 	@Override
 	public final void removeConditionType(final String conditiontype ){
 		conditionTypes.remove(new ConditionTypeImpl(this, conditiontype));
 	}
-
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		if(! StringUtils.hasText(name)){
@@ -94,6 +111,10 @@ public class CustomerImpl implements Customer{
 		return name.hashCode();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(final Object obj) {
 		if(!StringUtils.hasText(name)){

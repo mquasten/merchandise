@@ -29,6 +29,9 @@ class ConditionTypeImpl implements BasicEntity {
 	@JoinColumn(name="customer_id" ,  referencedColumnName="id",updatable=false, nullable=false)
 	private Customer customer; 
 	
+	@SuppressWarnings("unused")
+	private ConditionTypeImpl() {/*touched for the very first time*/}
+	
 	ConditionTypeImpl(final Customer customer, final String name) {
 		this.name=name;
 		this.customer=customer;
