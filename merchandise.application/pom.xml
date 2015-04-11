@@ -1,0 +1,77 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	
+	<artifactId>merchandise.application</artifactId>
+	<packaging>jar</packaging>
+
+	<name>merchandise.application</name>
+	<url>http://maven.apache.org</url>
+	<parent>
+	<groupId>de.mq</groupId>
+	<artifactId>merchandise.parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	
+	</parent>
+	
+
+	<dependencies>
+
+		<dependency>
+			<groupId>de.mq</groupId>
+			<artifactId>merchandise.domain</artifactId>
+			<version>${merchandise.version}</version>
+
+
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.jolbox</groupId>
+			<artifactId>bonecp</artifactId>
+			<version>${bonecp.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>${hsql.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+	</dependencies>
+	
+
+
+
+	<build>
+		<plugins>
+		
+		<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				<forceJavacCompilerUse>true</forceJavacCompilerUse>
+				</configuration>
+			</plugin>
+	
+	
+	</plugins>
+		
+	</build>
+
+
+</project>

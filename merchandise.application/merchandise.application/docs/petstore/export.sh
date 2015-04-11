@@ -1,2 +1,0 @@
-#!/bin/bash
-curl -X GET http://127.0.0.1:5984/petstore/_all_docs?include_docs=true | sed '1,$s/[}{]//g' | sed -e '1,$s/[.]99.[0-9]*1/.99/g' | awk ' BEGIN { print "{ \"docs\": [" ;   likeAVirgin=1 ;} { if( /_design/) next  ; if (!/id/) next;    max=split($0,cols,",")   ;  if(!likeAVirgin) printf(",\n"); printf("%s" ,  "{ ") ;  for(i=6; i < max; i++ ) { printf("%s" ,cols[i]); if(i<max-1)  printf( ", ");   else printf( " }") ;  } ;  likeAVirgin=0 } END {  printf("\n]}") }'
