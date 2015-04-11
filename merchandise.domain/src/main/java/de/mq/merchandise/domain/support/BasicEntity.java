@@ -1,4 +1,4 @@
-package de.mq.merchandise.support;
+package de.mq.merchandise.domain.support;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;

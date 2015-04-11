@@ -1,4 +1,4 @@
-package de.mq.merchandise.domain.customer.support;
+package de.mq.merchandise.customer.support;
 
 import java.sql.SQLException;
 import java.util.AbstractMap;

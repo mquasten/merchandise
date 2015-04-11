@@ -1,9 +1,9 @@
-package de.mq.merchandise.domain.subject;
+package de.mq.merchandise.subject;
 
 import java.util.List;
 
-import de.mq.merchandise.domain.subject.support.ConditionDataType;
-import de.mq.merchandise.support.BasicEntity;
+import de.mq.merchandise.domain.support.BasicEntity;
+import de.mq.merchandise.subject.support.ConditionDataType;
 
 /**
  * Eine Condition definiert, welche Werte ein Subject haben muss, bzw. welche Werte als (User) Input erwartet werden. 

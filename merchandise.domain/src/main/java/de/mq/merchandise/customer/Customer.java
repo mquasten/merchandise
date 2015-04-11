@@ -3,8 +3,8 @@ package de.mq.merchandise.customer;
 import java.util.Collection;
 import java.util.List;
 
-import de.mq.merchandise.domain.subject.Subject;
-import de.mq.merchandise.support.BasicEntity;
+import de.mq.merchandise.domain.support.BasicEntity;
+import de.mq.merchandise.subject.Subject;
 /**
  * Der Kunde.
  * @author Admin

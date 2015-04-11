@@ -1,4 +1,4 @@
-package de.mq.merchandise.domain.subject.support;
+package de.mq.merchandise.subject.support;
 
 
 
@@ -28,8 +28,8 @@ import org.springframework.util.StringUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
-import de.mq.merchandise.domain.subject.Condition;
-import de.mq.merchandise.domain.subject.Subject;
+import de.mq.merchandise.subject.Condition;
+import de.mq.merchandise.subject.Subject;
 
 @Entity(name="Subject")
 @Table(name="subject")

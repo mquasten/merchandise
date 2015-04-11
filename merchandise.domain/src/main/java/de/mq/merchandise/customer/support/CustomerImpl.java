@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -22,9 +24,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.domain.subject.Subject;
-import de.mq.merchandise.domain.subject.support.SubjectImpl;
+import de.mq.merchandise.subject.Subject;
+import de.mq.merchandise.subject.support.SubjectImpl;
 
+@NamedQueries({ @NamedQuery( name="customerById", query="Select c from Customer c where c.id =:id")})
 @Entity(name="Customer")
 @Table(name="customer")
 public class CustomerImpl implements Customer{

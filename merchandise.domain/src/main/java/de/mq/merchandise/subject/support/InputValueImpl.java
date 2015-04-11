@@ -1,4 +1,4 @@
-package de.mq.merchandise.domain.subject.support;
+package de.mq.merchandise.subject.support;
 
 import java.util.Optional;
 

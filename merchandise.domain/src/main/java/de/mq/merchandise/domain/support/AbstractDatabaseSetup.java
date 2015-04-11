@@ -1,4 +1,4 @@
-package de.mq.merchandise.domain;
+package de.mq.merchandise.domain.support;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -16,28 +16,25 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.stereotype.Component;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 
-@Component
-public class HSQLDatabaseSetup implements BeanFactoryPostProcessor, ApplicationListener<ContextClosedEvent> {
+
+public abstract class  AbstractDatabaseSetup implements BeanFactoryPostProcessor, ApplicationListener<ContextClosedEvent> {
 	
 	@Override
 	public void postProcessBeanFactory(final ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		/* start the shit, to create the schema, it must must not be blessed, untouched ... */
 		beanFactory.getBean(EntityManagerFactory.class);
 		final DataSource ds = beanFactory.getBean(DataSource.class);
-		if ( ! isHSQL(ds) ) {
-			return;
-		}
 		
-		
-		//process(ds, "docs/lobs.sql");
-		//process(ds, "docs/products.sql"); 
-		//process(ds, "docs/activities.sql"); 
-		//process(ds, "docs/postgis.sql"); 
-		
+		onInit(ds);
 	}
-	private boolean isHSQL(final DataSource ds) {
+	
+	protected abstract void  onInit(final DataSource dataSource) ; 
+	
+	protected abstract void  onDestroy(final DataSource dataSource) ; 
+	
+	protected boolean isHSQL(final DataSource ds) {
 		try (final Connection con = ds.getConnection()) {
 			
 			if( con.getMetaData().getDriverName().startsWith("HSQL")){
@@ -46,24 +43,23 @@ public class HSQLDatabaseSetup implements BeanFactoryPostProcessor, ApplicationL
 				
 			return false;	
 		} catch (final SQLException ex) {
-			 System.err.println(ex.getMessage());
-			 return false;
+			throw new  InvalidDataAccessResourceUsageException("Error getting Connection: ",  ex);
 		}
 		
 	}
-	private void process(DataSource ds, final String file) {
+	protected void process(DataSource ds, final String file) {
 		try(final Connection con = ds.getConnection()) {
 		   processFile(con,  file);
-		} catch (SQLException e) {
-			System.out.println("Error processing: "+ file);
+		} catch (final SQLException ex) {
+			
+			throw new  InvalidDataAccessResourceUsageException("Error processing: "+ file , ex);
 		}
 	}
 	private void processFile(final Connection connection, final String file) {
 		try {
 			create(connection, file);
-		} catch (IOException | SQLException e) {
-			
-			System.err.println("Error processing "+ file +": "+ e.getMessage());
+		} catch (IOException | SQLException ex) {
+			throw new  InvalidDataAccessResourceUsageException("Error processing: "+ file , ex);
 		}
 	}
 	
@@ -90,10 +86,7 @@ public class HSQLDatabaseSetup implements BeanFactoryPostProcessor, ApplicationL
 	@Override
 	public void onApplicationEvent(final ContextClosedEvent event) {
 		final DataSource ds = event.getApplicationContext().getBean(DataSource.class);
-		if( ! isHSQL(ds) ) {
-			return;
-		}
-		process(ds, "docs/shutdown.sql"); 
+		onDestroy(ds);
 	}
 
 }
