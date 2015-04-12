@@ -17,6 +17,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -33,8 +35,10 @@ import de.mq.merchandise.subject.Subject;
 
 @Entity(name="Subject")
 @Table(name="subject")
+@NamedQueries({@NamedQuery(name = SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, query = "Select  s from Subject s where s.customer.id = :" + SubjectRepository.ID_PARAM_NAME)})
 public class SubjectImpl implements Subject{
 	
+
 	@GeneratedValue
 	@Id
 	protected  Long id;

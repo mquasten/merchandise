@@ -24,7 +24,6 @@ class CustomerRepositoryImpl implements CustomerRepository {
 	@Override
 	public  Customer customerById(final Optional<Long> id) {
 		Assert.isTrue(id.isPresent(), "Id must be present");
-		System.out.println(entityManager);
 		final TypedQuery<Customer> query= entityManager.createNamedQuery(CUSTOMER_BY_ID_QUERY, Customer.class);
 		query.setParameter(ID_PARAMETER, id.get());
 	

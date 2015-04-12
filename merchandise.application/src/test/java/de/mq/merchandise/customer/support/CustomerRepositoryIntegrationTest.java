@@ -6,6 +6,8 @@ import java.util.Optional;
 
 
 
+
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +24,9 @@ import de.mq.merchandise.customer.Customer;
 @ContextConfiguration(locations={"/repositories.xml"})
 public class CustomerRepositoryIntegrationTest {
 	
+	private static final long CUSTOMER_ID = 1L;
+	private static final String KIND = "Kind";
+	private static final String QUALITY = "Quality";
 	private static final long TEST_CUSTOMER_ID = 1L;
 	@Autowired
 	private CustomerRepository customerRepositoryImpl;
@@ -29,9 +34,11 @@ public class CustomerRepositoryIntegrationTest {
 	@Test
 	@Transactional(propagation=Propagation.REQUIRED)
 	public final void readCustomer() {
-		final Customer customer = customerRepositoryImpl.customerById(Optional.of(1L));
+		final Customer customer = customerRepositoryImpl.customerById(Optional.of(CUSTOMER_ID));
 		Assert.assertEquals(TEST_CUSTOMER_ID, (long) customer.id().get());
-		Assert.assertEquals(5, customer.conditionTypes().size());
+		Assert.assertEquals(2, customer.conditionTypes().size());
+		Assert.assertTrue(customer.conditionTypes().contains(QUALITY));
+		Assert.assertTrue(customer.conditionTypes().contains(KIND));
 	}
 
 }
