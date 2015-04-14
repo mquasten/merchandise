@@ -2,6 +2,7 @@ package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
 
+import de.mq.merchandise.Paging;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 
@@ -13,8 +14,8 @@ interface SubjectRepository {
 	
 	void save(final Subject subject);
 
-	Collection<Subject> subjectsForCustomer(final Customer customer);
+	Collection<Subject> subjectsForCustomer(final Customer customer, final Paging paging);
 
 	void remove(Subject subject);
-
+	
 }

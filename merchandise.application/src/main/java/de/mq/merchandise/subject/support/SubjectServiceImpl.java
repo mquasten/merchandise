@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.mq.merchandise.Paging;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 
@@ -23,8 +24,8 @@ class SubjectServiceImpl implements SubjectService {
 	 * @see de.mq.merchandise.subject.support.SubjectService#subjects(de.mq.merchandise.customer.Customer)
 	 */
 	@Override
-	public final Collection<Subject> subjects(final Customer customer) {
-		return subjectRepository.subjectsForCustomer(customer);
+	public final Collection<Subject> subjects(final Customer customer, final Paging paging) {
+		return subjectRepository.subjectsForCustomer(customer, paging);
 	}
 
 	

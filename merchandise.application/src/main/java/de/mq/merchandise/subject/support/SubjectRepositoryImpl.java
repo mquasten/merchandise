@@ -19,6 +19,10 @@ import org.springframework.util.ReflectionUtils;
 
 
 
+
+
+
+import de.mq.merchandise.Paging;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 
@@ -46,13 +50,15 @@ class SubjectRepositoryImpl implements SubjectRepository {
 	 * @see de.mq.merchandise.subject.support.SubjectRepository#subjectsForCustomer(de.mq.merchandise.customer.Customer)
 	 */
 	@Override
-	public Collection<Subject> subjectsForCustomer(final Customer customer){
+	public Collection<Subject> subjectsForCustomer(final Customer customer, final Paging paging){
 		Assert.notNull(customer, "Customer is mandatory");
 		if(! customer.id().isPresent()) {
 			return Collections.unmodifiableCollection(new ArrayList<>()); 
 		}
 		final TypedQuery<Subject> query = entityManager.createNamedQuery(SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, Subject.class);
 		query.setParameter(SubjectRepository.ID_PARAM_NAME, customer.id().get());
+		query.setFirstResult(paging.firstRow().intValue());
+		query.setMaxResults(paging.pageSize().intValue());
 		return Collections.unmodifiableCollection(query.getResultList());
 		
 	}
