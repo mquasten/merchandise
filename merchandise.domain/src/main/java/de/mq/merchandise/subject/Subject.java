@@ -84,6 +84,6 @@ public interface Subject extends BasicEntity {
 	 * 
 	 * @return alle vorhandenen CondtionTypes.
 	 */
-	Collection<String> conditionType();
+	Collection<String> conditionTypes();
 
 }

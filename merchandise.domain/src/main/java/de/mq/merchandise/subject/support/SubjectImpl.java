@@ -88,7 +88,6 @@ public class SubjectImpl implements Subject{
 	 */
 	@Override
 	public final String name() {
-		Assert.hasText(name, "Name is mandatory");
 		return name;
 	}
 	
@@ -106,7 +105,6 @@ public class SubjectImpl implements Subject{
 	 */
 	@Override
 	public final Customer customer() {
-		Assert.notNull(customer, "Customer is mandatory");
 		return customer;
 	}
 	
@@ -145,7 +143,7 @@ public class SubjectImpl implements Subject{
 	}
 	
 	@Override
-	public final Collection<String> conditionType() {
+	public final Collection<String> conditionTypes() {
 		return Collections.unmodifiableCollection(conditions.keySet());
 	}
 
@@ -187,7 +185,7 @@ public class SubjectImpl implements Subject{
 		}
 		final Subject other = (Subject) obj; 
 		
-		return  customer.equals(other.customer()) && name.equals(name);
+		return  customer.equals(other.customer()) && name.equals(other.name());
 	}
 
 	
