@@ -36,5 +36,22 @@ public interface Condition<T>  extends BasicEntity{
 	 * Alle Werten loescchen.
 	 */
 	void clear();
+	
+	/**
+	 * Subject, zu dem die Condition zugeordnet ist.
+	 * @return Subject der Condition
+	 */
+	Subject subject();
+	/**
+	 * Type der Condition
+	 * @return Type der Condition
+	 */
+	String conditionType();
+
+	/**
+	 * DatenTyp der Condition
+	 * @return der DatenTyp der Condition
+	 */
+	ConditionDataType conditionDataType(); 
 
 }
