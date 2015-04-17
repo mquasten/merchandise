@@ -7,6 +7,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.BeanUtils;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.subject.Condition;
@@ -128,6 +129,11 @@ public class ConditionTest {
 		Assert.assertTrue(new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String).equals(new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String)));
 		Assert.assertFalse(new ConditionImpl<>(subject, OTHER_CONDITION_TYPE, ConditionDataType.String).equals(new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String)));
 		Assert.assertFalse(new ConditionImpl<>(Mockito.mock(Subject.class), CONDITION_TYPE, ConditionDataType.String).equals(new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String)));
+	}
+	
+	@Test
+	public final void defaultConstructor() {
+		Assert.assertTrue(BeanUtils.instantiateClass(ConditionImpl.class) instanceof Condition);
 	}
 
 }

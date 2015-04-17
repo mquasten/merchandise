@@ -64,8 +64,8 @@ class InputValueImpl implements InputValue {
 	@Override
 	public int hashCode() {
 		final Optional<?> value = value();
-		if (value.isPresent()) {
-			return 0;
+		if (! value.isPresent()) {
+			return super.hashCode();
 		}
 		return value.get().hashCode();
 	}
