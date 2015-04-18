@@ -1,8 +1,10 @@
-package de.mq.merchandise;
+package de.mq.merchandise.support;
+
+import de.mq.merchandise.Paging;
 
 
 
-public class SimpleResultSetPagingImpl  {
+public class SimpleResultSetPagingImpl  implements Paging {
 
 	private final Number pageSize;
 
