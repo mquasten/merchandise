@@ -23,9 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
-@Ignore
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
+@Ignore
 public class CustomerIntegrationTest {
 	
 	private static final String CUSTOMER_NAME = "Minogue-Music";
