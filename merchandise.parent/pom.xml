@@ -211,6 +211,7 @@
 				<version>0.7.4.201502262128</version>
 
 				<configuration>
+				    	
 					<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
 					<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
 				</configuration>
@@ -219,16 +220,25 @@
 						<id>jacoco-initialize</id>
 						<goals>
 							<goal>prepare-agent</goal>
+						
+							
 						</goals>
+					
 					</execution>
 					<execution>
 						<id>jacoco-site</id>
 						<phase>package</phase>
+						
 						<goals>
 							<goal>report</goal>
+							
 						</goals>
+					   
 					</execution>
+					
 				</executions>
+				
+			
 			</plugin>
 			
 
