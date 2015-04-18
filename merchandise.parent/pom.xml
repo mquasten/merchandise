@@ -211,7 +211,11 @@
 				<version>0.7.4.201502262128</version>
 
 				<configuration>
-				    	
+				    <excludes>
+        			<exclude>**/*DatabaseSetup.*</exclude>
+        			</excludes>
+    
+    				 
 					<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
 					<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
 				</configuration>
