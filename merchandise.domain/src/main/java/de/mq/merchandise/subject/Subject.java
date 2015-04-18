@@ -3,8 +3,8 @@ package de.mq.merchandise.subject;
 import java.util.Collection;
 
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.domain.support.BasicEntity;
 import de.mq.merchandise.subject.support.ConditionDataType;
+import de.mq.merchandise.support.BasicEntity;
 
 /**
  * Eine subject kann ein Artikel (Bestellposition) in einer Bestellung oder eine

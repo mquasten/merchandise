@@ -2,8 +2,8 @@ package de.mq.merchandise.subject;
 
 import java.util.List;
 
-import de.mq.merchandise.domain.support.BasicEntity;
 import de.mq.merchandise.subject.support.ConditionDataType;
+import de.mq.merchandise.support.BasicEntity;
 
 /**
  * Eine Condition definiert, welche Werte ein Subject haben muss, bzw. welche Werte als (User) Input erwartet werden. 
@@ -12,7 +12,7 @@ import de.mq.merchandise.subject.support.ConditionDataType;
  *
  * @param <T> der Typ der Condition, muss corespondieren mit {@link ConditionDataType}
  */
-public interface Condition<T>  extends BasicEntity{
+public interface Condition<T>  extends BasicEntity {
 
 	/**
 	 * Einen Wert hinzufuegen.

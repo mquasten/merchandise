@@ -4,7 +4,7 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Component;
 
-import de.mq.merchandise.domain.support.AbstractDatabaseSetup;
+import de.mq.merchandise.support.AbstractDatabaseSetup;
 
 @Component
 public class DatabaseSetup  extends AbstractDatabaseSetup {

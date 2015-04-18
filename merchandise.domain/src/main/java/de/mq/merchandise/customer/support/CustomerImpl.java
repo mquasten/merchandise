@@ -62,7 +62,6 @@ public class CustomerImpl implements Customer{
 	 */
 	@Override
 	public final String name() {
-		Assert.hasText(name, "Name is mandatory");
 		return name;
 	}
 	/*
@@ -124,6 +123,9 @@ public class CustomerImpl implements Customer{
 			return super.equals(obj);
 		}
 		final Customer other = (Customer) obj;
+		if(!StringUtils.hasText(other.name())){
+			return super.equals(obj);
+		}
 		return name.equals(other.name());
 	}
 	

@@ -1,4 +1,4 @@
-package de.mq.merchandise.domain.support;
+package de.mq.merchandise.support;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

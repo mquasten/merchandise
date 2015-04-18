@@ -13,7 +13,7 @@ import javax.persistence.UniqueConstraint;
 import org.springframework.util.StringUtils;
 
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.domain.support.BasicEntity;
+import de.mq.merchandise.support.BasicEntity;
 @Table(name="condition_type",uniqueConstraints={@UniqueConstraint(columnNames={"name", "customer_id"})})
 @Entity(name="ConditionType")
 class ConditionTypeImpl implements BasicEntity {
