@@ -8,7 +8,9 @@ import java.util.Optional;
 
 
 
+
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import de.mq.merchandise.customer.Customer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/repositories.xml"})
+@Ignore
 public class CustomerRepositoryIntegrationTest {
 	
 	private static final long CUSTOMER_ID = 1L;
