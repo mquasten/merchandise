@@ -341,7 +341,7 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 		initEditor();
 		initSearch();
 		initAddRemoveButtons();
-		Arrays.asList(fieldNames).stream().forEach(x -> System.out.println(x));
+		
 	}
 	
 	
