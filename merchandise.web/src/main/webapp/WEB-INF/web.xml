@@ -1,8 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app  version="2.5">
+	<display-name>Vaadin Web Application</display-name>
+	<context-param>
+		<description>Vaadin production mode</description>
+		<param-name>productionMode</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>WEB-INF/merchandise.xml</param-value>
+ 	 </context-param>
+	<servlet>
+		<servlet-name>Vaadin</servlet-name>
+		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+		<init-param>
+			<description>Vaadin UI to display</description>
+			<param-name>UI</param-name>
+			<param-value>de.mq.merchandise.subject.support.AddressbookUI</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Vaadin</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
 
-
-<web-app>
- <!-- 
-    copied from src/main/resoures/* dependend from profile in pom
-  -->
-
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
 </web-app>

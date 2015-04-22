@@ -1,44 +1,24 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-	http://www.springframework.org/schema/aop 
-    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
-    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
-	http://www.springframework.org/schema/context
-	http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xmlns:repository="http://www.springframework.org/schema/data/repository"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.2.xsd
+		http://www.springframework.org/schema/data/repository http://www.springframework.org/schema/data/repository/spring-repository-1.6.xsd">
+
+
  
 	
-	<!--  import resource="classpath:emf.xml"/-->
+	<import resource="classpath:emf.xml"/>
 	
-	<aop:aspectj-autoproxy />
 	
-	<context:component-scan base-package="de.mq.merchandise, de.mq.mapping.util.proxy" />
 	
-	<bean
-	        class="org.springframework.beans.factory.config.CustomScopeConfigurer">
-	        <property name="scopes">
-	            <map>
-	                <entry key="view">
-	                    <bean class="de.mq.merchandise.model.support.SimpleViewScopeImpl" >
-	                    	<constructor-arg ref="facesContextFactory" />
-	                    </bean>
-	                </entry>
-	                <entry key="conversation">
-	                    <bean class="de.mq.merchandise.model.support.SimpleConversationScopeImpl" >
-	                    	<constructor-arg ref="facesContextFactory" />
-	                    </bean>
-	                </entry>
-	            </map>
-	        </property>
-   </bean>
+	<context:component-scan base-package="de.mq.merchandise" />
+	
+	
    
-   <bean class="de.mq.merchandise.model.support.SimpleConversationImpl" >
-   		<constructor-arg ref="facesContextFactory" />
-   </bean>
+ 
 
 
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">  
@@ -50,46 +30,10 @@
     
  
  
-<bean id="facesContext" class="javax.faces.context.FacesContext"  factory-method="getCurrentInstance" scope="prototype" />  
-<bean id="facesContextFactory" class="de.mq.merchandise.model.support.FacesContextFactoryImpl">
-   <lookup-method name="facesContext" bean="facesContext" />
-</bean> 
 
+    
+        
 
- 
- <!--  bean id="facesContextFactory"  class="de.mq.merchandise.model.support.FacesContextFactoryImpl" /-->
-    
-  <!--  bean class="de.mq.mapping.util.proxy.support.BeanConventionCGLIBProxyFactory" / --> 
-  <!--  bean class="de.mq.mapping.util.proxy.support.SimpleReflectionBeanResolverImpl" /-->
- 
-<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
-    <property name="messageConverters">
-        <list>
-            <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
-                <property name="supportedMediaTypes" value="application/json" />
-            </bean>       
-            
-            <bean class="de.mq.merchandise.opportunity.support.SimpleMediaTypeInputStreamHttpMessageConverterImpl" />
-          		
-         
-        </list>
-    </property>
-    
-    
-   </bean>
-   
-   <bean id="validatorFactory" class="javax.validation.Validation"
-        factory-method="buildDefaultValidatorFactory" />
-
-    <bean id="validator" factory-bean="validatorFactory"
-        factory-method="getValidator" />
-        
-        
-    <bean class="org.springframework.core.type.classreading.CachingMetadataReaderFactory" />
-    
-    <bean  class="org.springframework.core.io.support.PathMatchingResourcePatternResolver" />
-        
-  <mvc:annotation-driven />
         
         
    </beans>
