@@ -1,8 +1,12 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Arrays;
+import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
+import org.vaadin.addons.lazyquerycontainer.Query;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -11,7 +15,10 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
@@ -26,6 +33,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.mq.merchandise.customer.CustomerService;
+import de.mq.merchandise.subject.Subject;
 
 
 /* 
@@ -46,6 +54,43 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 	private CustomerService customerService;
 	
 	
+	
+	
+	
+	final LazyQueryContainer container=new LazyQueryContainer(queryDefinition -> new Query() {
+
+		@Override
+		public Item constructItem() {
+			// TODO Auto-generated method stub
+			Item i = new PropertysetItem();
+			i.addItemProperty("id",new ObjectProperty<>("19680528") );
+			return new BeanItem<Subject>(BeanUtils.instantiateClass(SubjectImpl.class));
+		}
+
+		@Override
+		public boolean deleteAllItems() {
+			throw new UnsupportedOperationException();
+			
+		}
+
+		@Override
+		public List<Item> loadItems(final int startIndex, int count) {
+			// Backend
+			return null;
+		}
+
+		@Override
+		public void saveItems(final List<Item> added, final List<Item> modified, final List<Item> removed) {
+				throw new UnsupportedOperationException();
+			
+		}
+
+		@Override
+		public int size() {
+			// Backend
+			return 0;
+		}} ,null, 50, false);
+
 
 	/* User interface components are stored in session. */
 	private Table contactList = new Table();
