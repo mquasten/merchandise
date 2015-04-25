@@ -25,7 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.mq.merchandise.Paging;
+import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.subject.Subject;
@@ -89,7 +89,7 @@ public class SubjectRepositoryIntegrationTest {
 	public final void read() {
 		Customer customer = Mockito.mock(Customer.class);
 		Mockito.when(customer.id()).thenReturn(Optional.of(CUSTOMER_ID));
-		Paging paging = Mockito.mock(Paging.class);
+		ResultNavigation paging = Mockito.mock(ResultNavigation.class);
 		Mockito.when(paging.firstRow()).thenReturn(Integer.valueOf(0));
 		Mockito.when(paging.pageSize()).thenReturn(Integer.valueOf(25));
 		final Collection<Subject> results = subjectRepository.subjectsForCustomer(customer, paging);

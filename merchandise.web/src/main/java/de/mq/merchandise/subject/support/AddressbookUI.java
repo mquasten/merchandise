@@ -1,21 +1,14 @@
 package de.mq.merchandise.subject.support;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
-import org.vaadin.addons.lazyquerycontainer.Query;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
-import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -28,6 +21,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.mq.merchandise.customer.CustomerService;
+import de.mq.merchandise.util.LazyQueryContainerFactory;
+import de.mq.merchandise.util.TableContainerColumns;
 
 
 /* 
@@ -49,26 +44,39 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 	@Autowired
 	private CustomerService customerService;
 	
+	@Autowired
+	private SubjectService subjectService;
+	
+	@Autowired
+	private LazyQueryContainerFactory lazyQueryContainerFactory;
 	
 	
-	
-	enum SubjectCols {
+	 enum SubjectCols implements TableContainerColumns {
 		
-		Id(false, Long.class, -1L),
-		Name(true, String.class, ""),
-		Description(true, String.class, ""),
-		DateCreated(true, Date.class, null);
+		Id(false, Long.class),
+		Name(true, String.class),
+		Description(true, String.class),
+		DateCreated(true, Date.class);
 		
 		private final boolean visible ;
+		private final Class<?> type;
 		
-		SubjectCols(boolean visible, Class<?> type, Object defaultValue) {
+		SubjectCols(final boolean visible, final Class<?> type) {
 			this.visible=visible;
+			this.type=type;
 		}
-		boolean visible() {
+		@Override
+		public boolean visible() {
 			return visible;
 		}
-		
-		
+		@Override
+		public Class<?> target() {
+			return type;
+		}
+		@Override
+		public boolean sortable() {
+			return true;
+		}
 		
 		
 	}
@@ -177,12 +185,6 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 		
 		searchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
 
-		
-
-
-	
-
-	
 		removeContactButton.addClickListener(new ClickListener() {
 		
 			private static final long serialVersionUID = 1L;
@@ -197,100 +199,31 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 	private void initContactList() {
 	
 		
-		final LazyQueryContainer container = newContainer();
+		
 	
 		
 		
 		
 		
-		
-		contactList.setContainerDataSource(container);
-		
-		contactList.setVisibleColumns(Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible() ).collect(Collectors.toList()).toArray());
-	
+		contactList.setSortContainerPropertyId(SubjectCols.Name);
 		contactList.setSelectable(true);
 		
 		contactList.setBuffered(true);
-		contactList.setSortContainerPropertyId(SubjectCols.Name);
-
-	}
-
-	private LazyQueryContainer newContainer() {
-		
-		final LazyQueryContainer result =  new LazyQueryContainer(queryDefinition -> new Query() {
-		
-				
-				@Override
-				public Item constructItem() {
-				    // Diese Methode ist Sinnlos!!!
-					return null;
-				}
-		
-				@Override
-				public boolean deleteAllItems() {
-					throw new UnsupportedOperationException();
-					
-				}
-		
-				@Override
-				public List<Item> loadItems(final int startIndex, int count) {
-					final Item item1 = new PropertysetItem();
-				
-					System.out.println("loadItems");
-					System.out.println(contactList.getSortContainerPropertyId() + ":"+  contactList.isSortAscending());
-					
-					item1.addItemProperty(SubjectCols.Id, new  ObjectProperty<>(19680528L));
-					item1.addItemProperty(SubjectCols.Name, new  ObjectProperty<>("Pets4You"));
-					item1.addItemProperty(SubjectCols.Description, new  ObjectProperty<>("Pussycat Escort-Service"));
-					
-					item1.addItemProperty(SubjectCols.DateCreated, new  ObjectProperty<>(new Date()));
-					
-					final Item item2 = new PropertysetItem();
-				
-				
-					
-					item2.addItemProperty(SubjectCols.Id, new  ObjectProperty<>(4711));
-					item2.addItemProperty(SubjectCols.Name, new  ObjectProperty<>("Crime Bank"));
-					item2.addItemProperty(SubjectCols.Description, new  ObjectProperty<>("Don Colerone's Banking Service"));
-					
-					item2.addItemProperty(SubjectCols.DateCreated, new  ObjectProperty<>(new Date()));
-					
-					
-					final List<Item>  results = new ArrayList<>();
-					results.add(item1);
-					results.add(item2);
-					return results;
-				}
-		
-				@Override
-				public void saveItems(final List<Item> added, final List<Item> modified, final List<Item> removed) {
-						throw new UnsupportedOperationException();
-					
-				}
-		
-				@Override
-				public int size() {
-					
-					System.out.println("size");
-					// Backend
-					return 2;
-				}} ,SubjectCols.Id, 50, true);
-		
-		     Arrays.asList(SubjectCols.values()).forEach(col -> result.addContainerProperty(col, String.class , "", true,true)); 
-		
-			
-		return result; 
-	}
+		lazyQueryContainerFactory.assign(contactList, SubjectCols.Id, SubjectConverterImpl.class, SubjectControllerImpl.class, customerService.customer(Optional.of(1L)));
 	
+		
+		
+
+	}
+
+
 
 	
 
 	@Override
 	protected void init() {
 	
-		System.out.println("********************");
-		System.out.println(customerService);
-		System.out.println("********************");
+		
 	
 		initLayout();
 		initContactList();

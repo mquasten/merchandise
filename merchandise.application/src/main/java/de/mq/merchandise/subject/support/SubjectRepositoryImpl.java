@@ -22,7 +22,8 @@ import org.springframework.util.ReflectionUtils;
 
 
 
-import de.mq.merchandise.Paging;
+
+import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 
@@ -50,7 +51,7 @@ class SubjectRepositoryImpl implements SubjectRepository {
 	 * @see de.mq.merchandise.subject.support.SubjectRepository#subjectsForCustomer(de.mq.merchandise.customer.Customer)
 	 */
 	@Override
-	public Collection<Subject> subjectsForCustomer(final Customer customer, final Paging paging){
+	public Collection<Subject> subjectsForCustomer(final Customer customer, final ResultNavigation paging){
 		Assert.notNull(customer, "Customer is mandatory");
 		if(! customer.id().isPresent()) {
 			return Collections.unmodifiableCollection(new ArrayList<>()); 

@@ -49,8 +49,8 @@ public class CustomerImpl implements Customer{
 	private Set<ConditionTypeImpl> conditionTypes = new HashSet<>();
 	
 	
-	@SuppressWarnings("unused")
-	private CustomerImpl() { /* touched for the very first time*/}
+	
+	protected CustomerImpl() { /* touched for the very first time*/}
 	
 	public CustomerImpl(final String name){
 		Assert.hasText(name, "Name is mandatory");
@@ -61,7 +61,7 @@ public class CustomerImpl implements Customer{
 	 * @see de.mq.merchandise.support.Customer#name()
 	 */
 	@Override
-	public final String name() {
+	public  final String name() {
 		return name;
 	}
 	/*
@@ -69,7 +69,7 @@ public class CustomerImpl implements Customer{
 	 * @see de.mq.merchandise.customer.Customer#subjects()
 	 */
 	@Override
-	public final List<Subject> subjects() {
+	public  final List<Subject> subjects() {
 		return Collections.unmodifiableList(subjects);
 	}
 	/*
@@ -77,7 +77,7 @@ public class CustomerImpl implements Customer{
 	 * @see de.mq.merchandise.customer.Customer#conditionTypes()
 	 */
 	@Override
-	public final Collection<String> conditionTypes() {
+	public final  Collection<String> conditionTypes() {
 		return Collections.unmodifiableCollection(conditionTypes.stream().map(ct -> ct.name()).collect(Collectors.toSet()));
 	}
 	
@@ -86,7 +86,7 @@ public class CustomerImpl implements Customer{
 	 * @see de.mq.merchandise.customer.Customer#assignConditionType(java.lang.String)
 	 */
 	@Override
-	public final void assignConditionType(final String conditiontype ){
+	public final  void assignConditionType(final String conditiontype ){
 		conditionTypes.add(new ConditionTypeImpl(this, conditiontype));
 	}
 	/*
@@ -94,7 +94,7 @@ public class CustomerImpl implements Customer{
 	 * @see de.mq.merchandise.customer.Customer#removeConditionType(java.lang.String)
 	 */
 	@Override
-	public final void removeConditionType(final String conditiontype ){
+	public final  void removeConditionType(final String conditiontype ){
 		conditionTypes.remove(new ConditionTypeImpl(this, conditiontype));
 	}
 	/*

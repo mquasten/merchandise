@@ -15,9 +15,10 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import de.mq.merchandise.Paging;
+import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
+
 
 public class SubjectRepositoryTest {
 	
@@ -56,7 +57,7 @@ public class SubjectRepositoryTest {
 		final Customer customer = Mockito.mock(Customer.class);
 		Mockito.when(customer.id()).thenReturn(Optional.of(ID));
 		
-		final Paging paging = Mockito.mock(Paging.class) ;
+		final ResultNavigation paging = Mockito.mock(ResultNavigation.class) ;
 		Mockito.when(paging.firstRow()).thenReturn(FIRST_ROW);
 		Mockito.when(paging.pageSize()).thenReturn(PAGE_SIZE);
 		@SuppressWarnings("unchecked")
@@ -80,7 +81,7 @@ public class SubjectRepositoryTest {
 	public final void  subjectsForCustomerNotPersistent() {
 		final Customer customer = Mockito.mock(Customer.class);
 		Mockito.when(customer.id()).thenReturn(Optional.empty());
-		final Paging paging = Mockito.mock(Paging.class) ;
+		final ResultNavigation paging = Mockito.mock(ResultNavigation.class) ;
 		
 		Assert.assertTrue(subjectRepository.subjectsForCustomer(customer, paging).isEmpty());
 		
