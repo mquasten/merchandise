@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import de.mq.merchandise.ResultNavigation;
-import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 
 
@@ -17,11 +16,11 @@ public class SubjectServiceTest {
 	
 	@Test
 	public final void subjects() {
-		final Customer customer = Mockito.mock(Customer.class);
+		final Subject subject = Mockito.mock(Subject.class);
 		final ResultNavigation paging = Mockito.mock(ResultNavigation.class);
-		subjectService.subjects(customer, paging);
+		subjectService.subjects(subject, paging);
 		
-		Mockito.verify(subjectRepository).subjectsForCustomer(customer, paging);
+		Mockito.verify(subjectRepository).subjectsForCustomer(subject, paging);
 	}
 	
 	@Test

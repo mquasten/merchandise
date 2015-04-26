@@ -35,7 +35,7 @@ import de.mq.merchandise.subject.Subject;
 
 @Entity(name="Subject")
 @Table(name="subject")
-@NamedQueries({@NamedQuery(name = SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, query = "Select  s from Subject s where s.customer.id = :" + SubjectRepository.ID_PARAM_NAME)})
+@NamedQueries({@NamedQuery(name = SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, query = "Select  s from Subject s where s.customer.id = :" + SubjectRepository.ID_PARAM_NAME + " and COALESCE(s.name,'') like :" + SubjectRepository.NAME_PARAM_NAME +" and COALESCE(s.description,'') like :" + SubjectRepository.DESC_PARAM_NAME )})
 public class SubjectImpl implements Subject{
 	
 
@@ -62,8 +62,8 @@ public class SubjectImpl implements Subject{
 	 private Map<String, Condition<?>> conditions = new HashMap<>();
 	
 	
-	@SuppressWarnings("unused")
-	private SubjectImpl(){
+	
+	protected SubjectImpl(){
 		
 		
 	}

@@ -74,7 +74,10 @@ public class SubjectRepositoryIntegrationTest {
 
 		subjectRepository.save(subject);
 
+		
 		waste.add(new AbstractMap.SimpleEntry<>(subject.id().get(), subject.getClass()));
+	
+		
 
 	}
 
@@ -84,15 +87,21 @@ public class SubjectRepositoryIntegrationTest {
 	}
 
 	@Test
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Rollback(false)
 	public final void read() {
-		Customer customer = Mockito.mock(Customer.class);
+		
+		final Subject subject = Mockito.mock(Subject.class);
+		final Customer customer = Mockito.mock(Customer.class);
 		Mockito.when(customer.id()).thenReturn(Optional.of(CUSTOMER_ID));
+		Mockito.when(subject.customer()).thenReturn(customer);
+		
+		Mockito.when(subject.name()).thenReturn(SUBJECT_NAME);
 		ResultNavigation paging = Mockito.mock(ResultNavigation.class);
 		Mockito.when(paging.firstRow()).thenReturn(Integer.valueOf(0));
 		Mockito.when(paging.pageSize()).thenReturn(Integer.valueOf(25));
-		final Collection<Subject> results = subjectRepository.subjectsForCustomer(customer, paging);
+		final Collection<Subject> results = subjectRepository.subjectsForCustomer(subject, paging);
+		
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals(SUBJECT_NAME, results.stream().findFirst().get().name());
 		Assert.assertEquals(2, results.stream().findFirst().get().conditions().size());
@@ -103,12 +112,32 @@ public class SubjectRepositoryIntegrationTest {
 
 		Assert.assertEquals(2, results.stream().findFirst().get().condition(KIND).values().size());
 		Assert.assertTrue(results.stream().findFirst().get().condition(KIND).values().contains(KIND_PUBLIC));
-		Assert.assertTrue(results.stream().findFirst().get().condition(KIND).values().contains(KIND_PRIVATE));
+		Assert.assertTrue(results.stream().findFirst().get().condition(KIND).values().contains(KIND_PRIVATE)); 
+	}
+	
+	
+	@Test
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Rollback(false)
+	public final void count() {
+		
+		final Subject subject = Mockito.mock(Subject.class);
+		final Customer customer = Mockito.mock(Customer.class);
+		Mockito.when(customer.id()).thenReturn(Optional.of(CUSTOMER_ID));
+		Mockito.when(subject.customer()).thenReturn(customer);
+		
+		Mockito.when(subject.name()).thenReturn(SUBJECT_NAME);
+	
+		
+	   Assert.assertEquals(1, subjectRepository.subjectsForCustomer(subject).intValue());
+		
+		
 	}
 
 	@Test
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Rollback(false)
+	//@Ignore
 	public final void delete() {
 		Assert.assertEquals(1, waste.size());
 		final Subject subject = (Subject) entityManager.find(waste.stream().findFirst().get().getValue(), waste.stream().findFirst().get().getKey());

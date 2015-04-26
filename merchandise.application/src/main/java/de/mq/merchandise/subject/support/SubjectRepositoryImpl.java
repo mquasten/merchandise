@@ -8,23 +8,15 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
-
-
-
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
-
-
-
-
-
-
+import org.springframework.util.StringUtils;
 
 import de.mq.merchandise.ResultNavigation;
-import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 
 @Repository
@@ -38,6 +30,7 @@ class SubjectRepositoryImpl implements SubjectRepository {
 	 * @see de.mq.merchandise.subject.support.SubjectRepository#save(de.mq.merchandise.subject.Subject)
 	 */
 	@Override
+	@Transactional
 	public final void save(final Subject subject) {
 		final Optional<Long> id = entityManager.merge(subject).id();
 		Assert.isTrue(id.isPresent(), " Id must be set, after save");
@@ -51,18 +44,70 @@ class SubjectRepositoryImpl implements SubjectRepository {
 	 * @see de.mq.merchandise.subject.support.SubjectRepository#subjectsForCustomer(de.mq.merchandise.customer.Customer)
 	 */
 	@Override
-	public Collection<Subject> subjectsForCustomer(final Customer customer, final ResultNavigation paging){
-		Assert.notNull(customer, "Customer is mandatory");
-		if(! customer.id().isPresent()) {
+	public Collection<Subject> subjectsForCustomer(final Subject subject, final ResultNavigation paging){
+		Assert.notNull(subject, "Subject is mandatory");
+		Assert.notNull(subject.customer(), "Customer is mandatory");
+		if(! subject.customer().id().isPresent()) {
 			return Collections.unmodifiableCollection(new ArrayList<>()); 
 		}
-		final TypedQuery<Subject> query = entityManager.createNamedQuery(SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, Subject.class);
-		query.setParameter(SubjectRepository.ID_PARAM_NAME, customer.id().get());
+		final TypedQuery<Subject> query = buildSubjectQuery(changeNamedQueryWithOrder(), subject);
 		query.setFirstResult(paging.firstRow().intValue());
 		query.setMaxResults(paging.pageSize().intValue());
+	
 		return Collections.unmodifiableCollection(query.getResultList());
 		
 	}
+	
+	
+	public final Number  subjectsForCustomer(final Subject subject) {
+		Assert.notNull(subject, "Subject is mandatory");
+		Assert.notNull(subject.customer(), "Customer is mandatory");
+		if(! subject.customer().id().isPresent()) {
+			return 0;
+		}
+		final TypedQuery<Number> query = buildSubjectQuery(changeNamedQueryWithCount(), subject);
+		return query.getSingleResult();
+		
+		
+	}
+
+	private <T> TypedQuery<T> buildSubjectQuery(final TypedQuery<T> query, final Subject subject) {
+		
+		query.setParameter(SubjectRepository.ID_PARAM_NAME, subject.customer().id().get());
+		String name = "" ;
+		if( StringUtils.hasText(subject.name() )) {
+			name = subject.name();
+		}
+		name +="%";
+		query.setParameter(SubjectRepository.NAME_PARAM_NAME,  name);
+		String desc = "" ;
+		if( StringUtils.hasText(subject.description() )) {
+			desc = subject.description();
+		}
+		desc +="%";
+		
+		query.setParameter(SubjectRepository.DESC_PARAM_NAME,  desc);
+		
+		
+		return query;
+	}
+
+	private TypedQuery<Subject> changeNamedQueryWithOrder() {
+		final String jpaString = entityManager.createNamedQuery(SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, Subject.class).unwrap(org.hibernate.Query.class)
+			    .getQueryString() + " order by COALESCE(s.name, '')  asc,  s.id";
+	
+		final TypedQuery<Subject> query = entityManager.createQuery(jpaString, Subject.class);
+		return query;
+	}
+	
+	private TypedQuery<Number> changeNamedQueryWithCount() {
+		final String jpaString = entityManager.createNamedQuery(SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, Subject.class).unwrap(org.hibernate.Query.class)
+			    .getQueryString() ;
+		
+		final TypedQuery<Number> query = entityManager.createQuery(jpaString.replaceFirst("[ ]s[ ]", " count(s) "), Number.class);
+		return query;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see de.mq.merchandise.subject.support.SubjectRepository#remove(de.mq.merchandise.subject.Subject)

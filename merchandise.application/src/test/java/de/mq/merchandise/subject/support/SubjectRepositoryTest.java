@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 
 import junit.framework.Assert;
 
+import org.hibernate.Query;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -52,22 +53,32 @@ public class SubjectRepositoryTest {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public final void subjectsForCustomer() {
+		final Subject subject = Mockito.mock(Subject.class);
+		
 		final Customer customer = Mockito.mock(Customer.class);
 		Mockito.when(customer.id()).thenReturn(Optional.of(ID));
-		
+		Mockito.when(subject.customer()).thenReturn(customer);
 		final ResultNavigation paging = Mockito.mock(ResultNavigation.class) ;
 		Mockito.when(paging.firstRow()).thenReturn(FIRST_ROW);
 		Mockito.when(paging.pageSize()).thenReturn(PAGE_SIZE);
-		@SuppressWarnings("unchecked")
+	
 		final TypedQuery<Subject> typedQuery = Mockito.mock(TypedQuery.class);
+		
+		final Query hibernateQuery = Mockito.mock(Query.class);
+		Mockito.when(hibernateQuery.getQueryString()).thenReturn("queryStringFromNamedQuery");
+		Mockito.when(typedQuery.unwrap(Mockito.any())).thenReturn(hibernateQuery);
+		
+		Mockito.when(entityManager.createQuery(Mockito.anyString(),  (Class<Subject>) Mockito.any())).thenReturn(typedQuery);
+		
 		Mockito.when( entityManager.createNamedQuery(SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, Subject.class)).thenReturn(typedQuery);
 		final List<Subject> subjects = new ArrayList<>();
 		subjects.add(subject);
 		Mockito.when(typedQuery.getResultList()).thenReturn(subjects);
 		
-		final Collection<Subject> results =  subjectRepository.subjectsForCustomer(customer, paging);
+		final Collection<Subject> results =  subjectRepository.subjectsForCustomer(subject, paging);
 		
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals(subject, results.stream().findFirst().get());
@@ -79,11 +90,13 @@ public class SubjectRepositoryTest {
 	
 	@Test
 	public final void  subjectsForCustomerNotPersistent() {
+		final Subject subject = Mockito.mock(Subject.class);
 		final Customer customer = Mockito.mock(Customer.class);
 		Mockito.when(customer.id()).thenReturn(Optional.empty());
+		Mockito.when(subject.customer()).thenReturn(customer);
 		final ResultNavigation paging = Mockito.mock(ResultNavigation.class) ;
 		
-		Assert.assertTrue(subjectRepository.subjectsForCustomer(customer, paging).isEmpty());
+		Assert.assertTrue(subjectRepository.subjectsForCustomer(subject, paging).isEmpty());
 		
 		Mockito.verifyZeroInteractions(entityManager);
 	}

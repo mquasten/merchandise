@@ -2,15 +2,11 @@ package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
 
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.ResultNavigation;
-import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 
 @Service
@@ -29,8 +25,8 @@ class SubjectServiceImpl implements SubjectService {
 	 */
 	@Override
 	@Transactional(readOnly=true)
-	public final Collection<Subject> subjects(final Customer customer, final ResultNavigation paging) {
-		return subjectRepository.subjectsForCustomer(customer, paging);
+	public final Collection<Subject> subjects(final Subject subject, final ResultNavigation paging) {
+		return subjectRepository.subjectsForCustomer(subject, paging);
 	}
 
 	

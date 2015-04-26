@@ -1,10 +1,12 @@
 package de.mq.merchandise.subject.support;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ReflectionUtils;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -21,6 +23,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.mq.merchandise.customer.CustomerService;
+import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.TableContainerColumns;
 
@@ -209,7 +212,11 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 		contactList.setSelectable(true);
 		
 		contactList.setBuffered(true);
-		lazyQueryContainerFactory.assign(contactList, SubjectCols.Id, SubjectConverterImpl.class, SubjectControllerImpl.class, customerService.customer(Optional.of(1L)));
+		final Subject subject = new SubjectImpl(customerService.customer(Optional.of(1L)), "XXX");
+		final Field field = ReflectionUtils.findField(subject.getClass(),"name");
+		field.setAccessible(true);
+		ReflectionUtils.setField(field, subject, null);
+		lazyQueryContainerFactory.assign(contactList, SubjectCols.Id, SubjectConverterImpl.class, SubjectControllerImpl.class, subject);
 	
 		
 		

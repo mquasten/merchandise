@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import de.mq.merchandise.ResultNavigation;
-import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.LazyQueryContainerFactory.PagingMethod;
 import de.mq.merchandise.util.LazyQueryContainerFactory.PagingMethods;
@@ -22,8 +21,9 @@ class SubjectControllerImpl {
 	}
 	
 	@PagingMethod(PagingMethods.Count)
-	Number countSubjects(final Customer customer) {
-		return subjectService.subjects(customer, new ResultNavigation() {
+	Number countSubjects(final Subject subject) {
+		
+		return subjectService.subjects(subject, new ResultNavigation() {
 			
 			@Override
 			public Number pageSize() {
@@ -40,8 +40,8 @@ class SubjectControllerImpl {
 	}
 	
 	@PagingMethod(PagingMethods.Read)
-	Collection<Subject> subjects(Customer customer, ResultNavigation paging) {
-		return subjectService.subjects(customer, paging);
+	Collection<Subject> subjects(Subject subjects, ResultNavigation paging) {
+		return subjectService.subjects(subjects, paging);
 	}
 
 }

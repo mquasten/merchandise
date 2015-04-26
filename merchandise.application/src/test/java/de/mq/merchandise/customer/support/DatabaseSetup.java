@@ -18,7 +18,9 @@ public class DatabaseSetup  extends AbstractDatabaseSetup {
 
 	@Override
 	protected void onDestroy(final DataSource dataSource) {
+		
 		process(dataSource, "docs/deleteCustomer.sql");
+		
 		if( ! isHSQL(dataSource)){
 			return ; 
 		}
