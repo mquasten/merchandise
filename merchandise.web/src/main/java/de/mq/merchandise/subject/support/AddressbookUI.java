@@ -56,17 +56,20 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 	
 	 enum SubjectCols implements TableContainerColumns {
 		
-		Id(false, Long.class),
-		Name(true, String.class),
-		Description(true, String.class),
-		DateCreated(true, Date.class);
+		Id(false, Long.class , "id"),
+		Name(true, String.class , "COALESCE(name, '')" ),
+		Description(true, String.class,  "COALESCE(description , '')"),
+		DateCreated(true, Date.class, "date_created");
 		
 		private final boolean visible ;
 		private final Class<?> type;
 		
-		SubjectCols(final boolean visible, final Class<?> type) {
+		private final String orderBy;
+		
+		SubjectCols(final boolean visible, final Class<?> type, final String orderBy) {
 			this.visible=visible;
 			this.type=type;
+			this.orderBy=orderBy;
 		}
 		@Override
 		public boolean visible() {
@@ -79,6 +82,10 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 		@Override
 		public boolean sortable() {
 			return true;
+		}
+		@Override
+		public String orderBy() {
+			return orderBy;
 		}
 		
 		

@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -24,10 +25,13 @@ class SubjectRepositoryImpl implements SubjectRepository {
 
 	@PersistenceContext
 	private EntityManager entityManager;
-	
-	
-	/* (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.SubjectRepository#save(de.mq.merchandise.subject.Subject)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.mq.merchandise.subject.support.SubjectRepository#save(de.mq.merchandise
+	 * .subject.Subject)
 	 */
 	@Override
 	@Transactional
@@ -37,93 +41,114 @@ class SubjectRepositoryImpl implements SubjectRepository {
 		ReflectionUtils.doWithFields(subject.getClass(), field -> {
 			field.setAccessible(true);
 			ReflectionUtils.setField(field, subject, id.get());
-		} , field -> field.isAnnotationPresent(Id.class) );
+		}, field -> field.isAnnotationPresent(Id.class));
 	}
-	
-	/* (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.SubjectRepository#subjectsForCustomer(de.mq.merchandise.customer.Customer)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.mq.merchandise.subject.support.SubjectRepository#subjectsForCustomer
+	 * (de.mq.merchandise.customer.Customer)
 	 */
 	@Override
-	public Collection<Subject> subjectsForCustomer(final Subject subject, final ResultNavigation paging){
+	public Collection<Subject> subjectsForCustomer(final Subject subject, final ResultNavigation paging) {
 		Assert.notNull(subject, "Subject is mandatory");
 		Assert.notNull(subject.customer(), "Customer is mandatory");
-		if(! subject.customer().id().isPresent()) {
-			return Collections.unmodifiableCollection(new ArrayList<>()); 
+		if (!subject.customer().id().isPresent()) {
+			return Collections.unmodifiableCollection(new ArrayList<>());
 		}
-		final TypedQuery<Subject> query = buildSubjectQuery(changeNamedQueryWithOrder(), subject);
+		final TypedQuery<Subject> query = buildSubjectQuery(changeNamedQueryWithOrder(paging.orders()), subject);
 		query.setFirstResult(paging.firstRow().intValue());
 		query.setMaxResults(paging.pageSize().intValue());
-	
+
 		return Collections.unmodifiableCollection(query.getResultList());
-		
+
 	}
-	
-	
-	public final Number  subjectsForCustomer(final Subject subject) {
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.SubjectRepository#subjectsForCustomer(de.mq.merchandise.subject.Subject)
+	 */
+	public final Number subjectsForCustomer(final Subject subject) {
 		Assert.notNull(subject, "Subject is mandatory");
 		Assert.notNull(subject.customer(), "Customer is mandatory");
-		if(! subject.customer().id().isPresent()) {
+		if (!subject.customer().id().isPresent()) {
 			return 0;
 		}
 		final TypedQuery<Number> query = buildSubjectQuery(changeNamedQueryWithCount(), subject);
 		return query.getSingleResult();
-		
-		
+
 	}
 
 	private <T> TypedQuery<T> buildSubjectQuery(final TypedQuery<T> query, final Subject subject) {
-		
+
 		query.setParameter(SubjectRepository.ID_PARAM_NAME, subject.customer().id().get());
-		String name = "" ;
-		if( StringUtils.hasText(subject.name() )) {
+		String name = "";
+		if (StringUtils.hasText(subject.name())) {
 			name = subject.name();
 		}
-		name +="%";
-		query.setParameter(SubjectRepository.NAME_PARAM_NAME,  name);
-		String desc = "" ;
-		if( StringUtils.hasText(subject.description() )) {
+		name += "%";
+		query.setParameter(SubjectRepository.NAME_PARAM_NAME, name);
+		String desc = "";
+		if (StringUtils.hasText(subject.description())) {
 			desc = subject.description();
 		}
-		desc +="%";
-		
-		query.setParameter(SubjectRepository.DESC_PARAM_NAME,  desc);
-		
-		
+		desc += "%";
+
+		query.setParameter(SubjectRepository.DESC_PARAM_NAME, desc);
+
 		return query;
 	}
 
-	private TypedQuery<Subject> changeNamedQueryWithOrder() {
-		final String jpaString = entityManager.createNamedQuery(SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, Subject.class).unwrap(org.hibernate.Query.class)
-			    .getQueryString() + " order by COALESCE(s.name, '')  asc,  s.id";
-	
+	private TypedQuery<Subject> changeNamedQueryWithOrder(Collection<Order> orders) {
+
+		final StringBuilder builder = new StringBuilder();
+
+		orders.forEach(o -> {
+			if (builder.length() > 0) {
+				builder.append(",");
+			}
+			builder.append(String.format("%s %s", o.getProperty(), o.getDirection().name()));
+
+		});
+
+		String jpaString = entityManager.createNamedQuery(SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, Subject.class).unwrap(org.hibernate.Query.class).getQueryString();
+
+		if (!orders.isEmpty()) {
+			jpaString += " order by " + builder.toString();
+		}
+
 		final TypedQuery<Subject> query = entityManager.createQuery(jpaString, Subject.class);
 		return query;
 	}
-	
+
 	private TypedQuery<Number> changeNamedQueryWithCount() {
-		final String jpaString = entityManager.createNamedQuery(SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, Subject.class).unwrap(org.hibernate.Query.class)
-			    .getQueryString() ;
-		
+		final String jpaString = entityManager.createNamedQuery(SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, Subject.class).unwrap(org.hibernate.Query.class).getQueryString();
+
 		final TypedQuery<Number> query = entityManager.createQuery(jpaString.replaceFirst("[ ]s[ ]", " count(s) "), Number.class);
 		return query;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.SubjectRepository#remove(de.mq.merchandise.subject.Subject)
+	 * 
+	 * @see
+	 * de.mq.merchandise.subject.support.SubjectRepository#remove(de.mq.merchandise
+	 * .subject.Subject)
 	 */
 	@Override
 	public final void remove(final Subject subject) {
 		Assert.notNull(subject, "Subject is mandatory");
-		if( ! subject.id().isPresent() ) {
-          return;			
+		if (!subject.id().isPresent()) {
+			return;
 		}
-		
+
 		final Subject toBeDeleted = entityManager.find(subject.getClass(), subject.id().get());
-		if( toBeDeleted == null){
+		if (toBeDeleted == null) {
 			return;
 		}
 		entityManager.remove(toBeDeleted);
 	}
-	
+
 }

@@ -1,8 +1,11 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Controller;
 
 import de.mq.merchandise.ResultNavigation;
@@ -36,6 +39,14 @@ class SubjectControllerImpl {
 				
 				return 0;
 			}
+
+			@Override
+			public List<Order> orders() {
+				
+				return new ArrayList<>();
+			}
+			
+			
 		}).size();
 	}
 	

@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -23,7 +25,6 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
 
 import de.mq.merchandise.ResultNavigation;
-
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.TableContainerColumns;
 
@@ -39,7 +40,7 @@ public  class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryCo
 	}
 	
 	
-	private  QueryFactory  createQueryFactory(final Table parent, final Class<? extends Converter<?,Item>> converterClass, final Map<PagingMethods, Method> methods, final Object ... values ) {
+	private  QueryFactory  createQueryFactory(final Table parent,  final Enum<? extends TableContainerColumns> idPropertyId, final Class<? extends Converter<?,Item>> converterClass, final Map<PagingMethods, Method> methods, final Object ... values ) {
 		return queryDefinition -> new Query() {
 
 			@Override
@@ -68,6 +69,15 @@ public  class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryCo
 					public Number firstRow() {
 						return startIndex;
 					}
+
+					@Override
+					public List<Order> orders() {
+						final List<Order> orders = order(parent);
+						orders.add(new Order(((TableContainerColumns)idPropertyId).orderBy()));
+						return orders;
+					}
+
+					
 				};
 				final Method method = methods.get(PagingMethods.Read);
 				Assert.notNull(method , "ReadMethod for Paging not found");
@@ -85,6 +95,24 @@ public  class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryCo
 				parent.setValue(null);
 				return items;
 			}
+			
+			private List<Order> order(final Table parent) {
+				final List<Order> orders = new ArrayList<>();
+				if(parent.getSortContainerPropertyId() == null){
+					return orders;
+				}
+				Direction dir = Direction.ASC;
+				if (!parent.isSortAscending() ) {
+					dir=Direction.DESC;
+				}
+				final TableContainerColumns  col = (TableContainerColumns)   parent.getSortContainerPropertyId();
+				final Order order = new Order(dir, col.orderBy()); 
+				
+				orders.add(order);
+				return orders;
+			}
+			
+			
 
 			@Override
 			public final void saveItems(final List<Item> add, final List<Item> merge, final List<Item> remove) {
@@ -124,7 +152,7 @@ public  class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryCo
 		final Map<PagingMethods, Method> methods = new HashMap<>();
 		ReflectionUtils.doWithMethods(controller.getClass(), m -> methods.put(m.getAnnotation(PagingMethod.class).value(), m) , m -> m.isAnnotationPresent(PagingMethod.class));
 		
-		final LazyQueryContainer result =  new LazyQueryContainer(createQueryFactory(parent, converterClass, methods, values), idPropertyId, batchSize.intValue(), false);
+		final LazyQueryContainer result =  new LazyQueryContainer(createQueryFactory(parent,idPropertyId, converterClass, methods, values), idPropertyId, batchSize.intValue(), false);
 		Arrays.asList(cols).stream().forEach(col -> result.addContainerProperty(col, col.target(), null, col.sortable(), true));
 		
 		parent.setContainerDataSource(result);

@@ -1,9 +1,15 @@
 package de.mq.merchandise;
 
+import java.util.List;
+
+import org.springframework.data.domain.Sort.Order;
+
 public interface ResultNavigation {
 
-	public abstract Number firstRow();
+	Number firstRow();
 
-	public abstract Number pageSize();
+	Number pageSize();
+	
+	List<Order> orders();
 
 }
