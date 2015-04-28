@@ -29,8 +29,8 @@ public interface LazyQueryContainerFactory {
 	}
 	
 
-	void assign(final Table parent, final Enum<? extends TableContainerColumns> idPropertyId, final Number batchSize, final Class<? extends Converter<?, Item>> converterClass, final Class<?> controllerTarget, final Object... values);
+	void assign(final Table parent, final Enum<? extends TableContainerColumns> idPropertyId, final Number batchSize, final Class<? extends Converter<?, Item>> converterClass, final Class<?> controllerTarget);
 
-	void assign(final Table parent,final Enum<? extends TableContainerColumns> idPropertyId, final Class<? extends Converter<?, Item>> converterClass, final Class<?> controllerTarget, final Object... values);
+	void assign(final Table parent,final Enum<? extends TableContainerColumns> idPropertyId, final Class<? extends Converter<?, Item>> converterClass, final Class<?> controllerTarget);
 
 }
