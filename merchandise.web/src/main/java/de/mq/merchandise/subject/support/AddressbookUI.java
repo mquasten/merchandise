@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -87,8 +84,9 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 	 
 	/* User interface components are stored in session. */
 	private Table contactList = new Table();
-	private TextField searchField = new TextField();
-	private Button addNewContactButton = new Button("New");
+	private TextField searchName = new TextField();
+	private TextField searchDescription = new TextField();
+	//private Button addNewContactButton = new Button("New");
 	private Button removeContactButton = new Button("Remove this contact");
 	private FormLayout editorLayout = new FormLayout();
 	private FieldGroup editorFields = new FieldGroup();
@@ -121,14 +119,49 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 
 		/* Build the component tree */
 		VerticalLayout leftLayout = new VerticalLayout();
+		
+		
+	
+	
+		final HorizontalLayout searchLayout = new HorizontalLayout();
+	
+		searchLayout.setSpacing(true);
+		final FormLayout col1Layout  = new FormLayout();
+		
+		searchLayout.addComponent(col1Layout);
+		col1Layout.addComponent(searchName);
+		
+		final FormLayout col2Layout  = new FormLayout();
+		searchLayout.addComponent(col2Layout);
+		col2Layout.addComponent(searchDescription);
+		
+		searchDescription.setCaption("Beschreibung");
+		
+	
+		final FormLayout col3Layout  = new FormLayout();
+		searchLayout.addComponent(col3Layout);
+	
+		final Button searchButton = new Button("suchen");
+		col3Layout.addComponent(searchButton);
+		
+		
+		
+		
+		leftLayout.addComponent(searchLayout);
+		
+		
+		
+		
+		
+		
 		splitPanel.addComponent(leftLayout);
 		splitPanel.addComponent(editorLayout);
 		leftLayout.addComponent(contactList);
-		final HorizontalLayout bottomLeftLayout = new HorizontalLayout();
+	
 		
-		leftLayout.addComponent(bottomLeftLayout);
-		bottomLeftLayout.addComponent(searchField);
-		bottomLeftLayout.addComponent(addNewContactButton);
+		
+	
+		searchName.setCaption("Name");
 
 		/* Set the contents in the left of the split panel to use all the space */
 		leftLayout.setSizeFull();
@@ -141,13 +174,13 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 		contactList.setSizeFull();
 
 		/*
-		 * In the bottomLeftLayout, searchField takes all the width there is
+		 * In the bottomLeftLayout, searchName takes all the width there is
 		 * after adding addNewContactButton. The height of the layout is defined
 		 * by the tallest component.
 		 */
-		bottomLeftLayout.setWidth("100%");
-		searchField.setWidth("100%");
-		bottomLeftLayout.setExpandRatio(searchField, 1);
+	
+		//searchName.setWidth("100%");
+		//bottomLeftLayout.setExpandRatio(searchName, 1);
 
 		/* Put a little margin around the fields in the right side editor */
 		editorLayout.setMargin(true);
@@ -180,24 +213,7 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 		editorFields.setBuffered(false);
 	}
 
-	private void initSearch() {
-
-		
-		searchField.setInputPrompt("Search contacts");
-
-		
-		searchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
-
-		removeContactButton.addClickListener(new ClickListener() {
-		
-			private static final long serialVersionUID = 1L;
-
-			public void buttonClick(ClickEvent event) {
-				Object contactId = contactList.getValue();
-				contactList.removeItem(contactId);
-			}
-		});
-	}
+	
 
 	private void initContactList() {
 	
@@ -226,7 +242,7 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 		initLayout();
 		initContactList();
 		initEditor();
-		initSearch();
+		
 		
 		
 	}
