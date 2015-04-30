@@ -1,13 +1,22 @@
 package de.mq.merchandise.subject.support;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Date;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ReflectionUtils;
+
+import org.vaadin.addons.lazyquerycontainer.QueryView;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
+import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -15,6 +24,8 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+
+
 
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
@@ -121,8 +132,13 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 		VerticalLayout leftLayout = new VerticalLayout();
 		
 		
+		final FieldGroup fieldGroup = new FieldGroup();
+		final Item item = new PropertysetItem();
+		item.addItemProperty(SubjectCols.Name, new ObjectProperty<>(""));
+		item.addItemProperty(SubjectCols.Description, new ObjectProperty<>(""));
+		fieldGroup.setItemDataSource(item);
 	
-	
+		
 		final HorizontalLayout searchLayout = new HorizontalLayout();
 	
 		searchLayout.setSpacing(true);
@@ -144,6 +160,26 @@ public class AddressbookUI extends AbstractUIBeanInjector {
 		final Button searchButton = new Button("suchen");
 		col3Layout.addComponent(searchButton);
 		
+		fieldGroup.setBuffered(true);
+		fieldGroup.bind(searchName, SubjectCols.Name);
+		fieldGroup.bind(searchDescription, SubjectCols.Description);
+		
+		
+		searchButton.addClickListener(e -> {
+			try {
+				 
+				fieldGroup.commit();
+				
+				final Field field = ReflectionUtils.findField(subject.getClass(), "name");
+				field.setAccessible(true);
+				ReflectionUtils.setField(field, subject, fieldGroup.getItemDataSource().getItemProperty(SubjectCols.Name).getValue());
+				((QueryView) contactList.getContainerDataSource()).refresh();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+		}) ;
 		
 		
 		
