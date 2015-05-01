@@ -6,6 +6,7 @@ public interface TableContainerColumns {
 	Class<?> target();
 	boolean sortable();
 	String orderBy();
+	Object nvl();
 	
 	
 

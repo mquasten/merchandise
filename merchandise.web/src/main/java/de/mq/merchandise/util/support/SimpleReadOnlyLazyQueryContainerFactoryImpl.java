@@ -29,7 +29,7 @@ import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.TableContainerColumns;
 
 @Component
-public  class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerFactory   {
+class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerFactory   {
 	
 	private static final String VALUES_METHOD = "values";
 	private  final BeanResolver beanResolver; 

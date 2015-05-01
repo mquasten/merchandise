@@ -14,19 +14,19 @@ import de.mq.merchandise.util.LazyQueryContainerFactory.PagingMethod;
 import de.mq.merchandise.util.LazyQueryContainerFactory.PagingMethods;
 
 @Controller
-class SubjectControllerImpl {
+class SubjectModelControllerImpl {
 	
 	private final  SubjectService subjectService;
 	
 	@Autowired
-	SubjectControllerImpl(final SubjectService subjectService) {
+	SubjectModelControllerImpl(final SubjectService subjectService) {
 		this.subjectService=subjectService;
 	}
 	
 	@PagingMethod(PagingMethods.Count)
-	Number countSubjects(final Subject subject) {
+	Number countSubjects(final SubjectModel subjectModel) {
 		
-		return subjectService.subjects(subject, new ResultNavigation() {
+		return subjectService.subjects(subjectModel.getSearchCriteria(), new ResultNavigation() {
 			
 			@Override
 			public Number pageSize() {
@@ -51,8 +51,8 @@ class SubjectControllerImpl {
 	}
 	
 	@PagingMethod(PagingMethods.Read)
-	Collection<Subject> subjects(Subject subjects, ResultNavigation paging) {
-		return subjectService.subjects(subjects, paging);
+	Collection<Subject> subjects(final SubjectModel subjectModel, final ResultNavigation paging) {
+		return subjectService.subjects(subjectModel.getSearchCriteria(), paging);
 	}
 
 }

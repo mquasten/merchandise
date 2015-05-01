@@ -29,7 +29,7 @@ public class CreateSubjectsIntegrationTest {
 	public final void create() {
 		final Customer customer = customerService.customer(Optional.of(1L));
 		
-		IntStream.range(1, 10000).forEach(i  -> subjectService.save(new SubjectImpl(customer, "Subject+" + Math.round(Math.random()*1000),"Description+" + Math.round(Math.random()*1000) )));
+		IntStream.range(1, 10000).forEach(i  -> subjectService.save(new SubjectImpl(customer, "Observable+" + Math.round(Math.random()*1000),"Description+" + Math.round(Math.random()*1000) )));
 	}
 
 }

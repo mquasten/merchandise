@@ -8,7 +8,8 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 import de.mq.merchandise.subject.Subject;
-import de.mq.merchandise.subject.support.AddressbookUI.SubjectCols;
+
+
 
 @Component
 class SubjectConverterImpl implements Converter<Subject, Item> {
