@@ -1,4 +1,4 @@
-package de.mq.merchandise.support;
+package de.mq.merchandise.util.support;
 
 import java.util.Map;
 

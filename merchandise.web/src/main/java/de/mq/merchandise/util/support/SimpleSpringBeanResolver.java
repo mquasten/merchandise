@@ -1,4 +1,4 @@
-package de.mq.merchandise.support;
+package de.mq.merchandise.util.support;
 
 import java.util.Map;
 
@@ -11,6 +11,7 @@ public class SimpleSpringBeanResolver implements BeanResolver {
 	
 	@Autowired
 	private ApplicationContext ctx ; 
+	
 	
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.support.BeanResolver#resolve(java.util.Map, java.lang.Class)
@@ -32,6 +33,9 @@ public class SimpleSpringBeanResolver implements BeanResolver {
 	@Override
 	public final <T> T resolve(final Class<? extends T> clazz){
 		return ctx.getBean(clazz);
+		
 	}
+	
+	
 
 }

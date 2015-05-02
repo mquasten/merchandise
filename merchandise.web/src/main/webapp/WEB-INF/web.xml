@@ -16,7 +16,7 @@
 		<init-param>
 			<description>Vaadin UI to display</description>
 			<param-name>UI</param-name>
-			<param-value>de.mq.merchandise.subject.support.SubjectViewImpl</param-value>
+			<param-value>de.mq.merchandise.subject.StartViewImpl</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>

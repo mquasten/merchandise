@@ -1,4 +1,4 @@
-package de.mq.merchandise.subject.support;
+package de.mq.merchandise.util.support;
 
 
 

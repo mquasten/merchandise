@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,15 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 import org.vaadin.addons.lazyquerycontainer.Query;
 import org.vaadin.addons.lazyquerycontainer.QueryFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.Table;
 
 import de.mq.merchandise.ResultNavigation;
-import de.mq.merchandise.support.BeanResolver;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.TableContainerColumns;
 
@@ -40,13 +40,16 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 	}
 	
 	
-	private  QueryFactory  createQueryFactory(final Table parent,  final Enum<? extends TableContainerColumns> idPropertyId, final Class<? extends Converter<?,Item>> converterClass, final Map<PagingMethods, Method> methods, final Object ... values ) {
+	private  QueryFactory  createQueryFactory(final Enum<? extends TableContainerColumns> idPropertyId, final Class<? extends Converter<?,Item>> converterClass, final Map<PagingMethods, Method> methods) {
+		
+		
 		return queryDefinition -> new Query() {
 
 			@Override
 			public Item constructItem() {
-				// TODO Auto-generated method stub
-				return null;
+				
+			 return null;
+				
 			}
 
 			@Override
@@ -70,13 +73,19 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 
 					@Override
 					public List<Order> orders() {
-						final List<Order> orders = order(parent);
+				
+						@SuppressWarnings("unchecked")
+						final Optional<Boolean> sortAsc  =  CollectionUtils.arrayToList(queryDefinition.getSortPropertyAscendingStates()).stream().findFirst();
+						
+						final List<Order> orders = order2(Arrays.asList(queryDefinition.getSortPropertyIds()).stream().findFirst(), sortAsc);
 						orders.add(new Order(((TableContainerColumns)idPropertyId).orderBy()));
 						return orders;
 					}
 
 					
 				};
+				
+				
 				final Method method = methods.get(PagingMethods.Read);
 				Assert.notNull(method , "ReadMethod for Paging not found");
 				method.setAccessible(true);
@@ -88,23 +97,21 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 				@SuppressWarnings("unchecked")
 				final Converter<Object, Item> converter=  (Converter<Object, Item>) beanResolver.resolve(converterClass);
 				results.forEach(result -> items.add( converter.convert(result)) );
-				parent.setValue(null);
 				return items;
 			}
 			
-			private List<Order> order(final Table parent) {
+			
+			private List<Order> order2(final Optional<Object> column, final Optional<Boolean> asc) {
 				final List<Order> orders = new ArrayList<>();
-				if(parent.getSortContainerPropertyId() == null){
+				if((!column.isPresent()) || ( ! asc.isPresent())){
 					return orders;
 				}
 				Direction dir = Direction.ASC;
-				if (!parent.isSortAscending() ) {
+				if (!asc.get() ) {
 					dir=Direction.DESC;
 				}
-				final TableContainerColumns  col = (TableContainerColumns)   parent.getSortContainerPropertyId();
-				final Order order = new Order(dir, col.orderBy()); 
 				
-				orders.add(order);
+				orders.add(new Order(dir, ((TableContainerColumns)  column.get()).orderBy()));
 				return orders;
 			}
 			
@@ -137,7 +144,8 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 	 * @see de.mq.merchandise.util.support.OnlyLazyQueryContainerFactory#create(java.lang.Enum, java.lang.Number, java.lang.Class, java.lang.Class, java.lang.Object)
 	 */
 	@Override
-	public final  void   assign(final Table parent, final Enum<? extends TableContainerColumns> idPropertyId, final Number batchSize, final Class<? extends Converter<?,Item>> converterClass, final Class<?>controllerTarget) {
+	public final  RefreshableContainer   create(final Enum<? extends TableContainerColumns> idPropertyId, final Number batchSize, final Class<? extends Converter<?,Item>> converterClass, final Class<?>controllerTarget) {
+		
 		
 		final Method method = ReflectionUtils.findMethod(idPropertyId.getClass(), VALUES_METHOD);
 		
@@ -148,12 +156,7 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 		final Map<PagingMethods, Method> methods = new HashMap<>();
 		ReflectionUtils.doWithMethods(controller.getClass(), m -> methods.put(m.getAnnotation(PagingMethod.class).value(), m) , m -> m.isAnnotationPresent(PagingMethod.class));
 		
-		final LazyQueryContainer result =  new LazyQueryContainer(createQueryFactory(parent,idPropertyId, converterClass, methods), idPropertyId, batchSize.intValue(), false);
-		Arrays.asList(cols).stream().forEach(col -> result.addContainerProperty(col, col.target(), null, col.sortable(), true));
-		
-		parent.setContainerDataSource(result);
-		parent.setVisibleColumns(Arrays.asList(cols).stream().filter(col -> col.visible() ).collect(Collectors.toList()).toArray());
-		
+		return new MyLazyQueryContainer(createQueryFactory(idPropertyId, converterClass, methods), idPropertyId, batchSize.intValue(), cols);
 		
 	}
 
@@ -163,14 +166,31 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 	 * @see de.mq.merchandise.util.support.LazyQueryContainerFactory#create(java.lang.Enum, java.lang.Class, java.lang.Class, java.lang.Object[])
 	 */
 	@Override
-	public void assign(final Table parent, final Enum<? extends TableContainerColumns> idPropertyId, Class<? extends Converter<?, Item>> converterClass, Class<?> controllerTarget) {
-		 assign(parent, idPropertyId, 50, converterClass, controllerTarget);
+	public final RefreshableContainer create(final Enum<? extends TableContainerColumns> idPropertyId, Class<? extends Converter<?, Item>> converterClass, Class<?> controllerTarget) {
+		return  create(idPropertyId, 50, converterClass, controllerTarget);
 	}
 
 
 
+	/**
+	 * Ueberschreibt LazyQueryContainer, damit man es gebrauchen kann.
+	 * Implentieren gegen interfaces, Grundlagen Programmierung usw.
+	 * @author Admin
+	 *
+	 */
+	class MyLazyQueryContainer  extends LazyQueryContainer implements RefreshableContainer  {
+		
+		MyLazyQueryContainer(QueryFactory queryFactory, Object idPropertyId, int batchSize, final TableContainerColumns[] cols ){
+			super(queryFactory,idPropertyId,batchSize, false );
+			Arrays.asList(cols).stream().forEach(col -> addContainerProperty(col, col.target(), null, col.sortable(), true));
+		}
+	
+		private static final long serialVersionUID = 1L;
 
-
+		
+		
+	}
+	
 	
 }
 

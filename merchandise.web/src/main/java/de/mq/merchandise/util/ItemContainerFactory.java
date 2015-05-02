@@ -1,9 +1,9 @@
 package de.mq.merchandise.util;
 
-import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.Item;
 
 public interface ItemContainerFactory {
 
-	public abstract void assign(FieldGroup parent, Class<? extends Enum<? extends TableContainerColumns>> colsClass);
+	Item create(Class<? extends Enum<? extends TableContainerColumns>> colsClass);
 
 }
