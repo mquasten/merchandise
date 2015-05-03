@@ -6,15 +6,18 @@ import java.util.Arrays;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
@@ -45,17 +48,20 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	private final SubjectModel subjectModel;
 
 	private final UserModel userModel;
+	
+	private final MessageSource messageSource;
 
 	@Autowired
 	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer,
 			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectItem,
-			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel) {
+			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource) {
 
 		this.itemToSubjectConverter = itemToSubjectConverter;
 		this.lazyQueryContainer = lazyQueryContainer;
 		this.subjectItem = subjectItem;
 		this.subjectModel = subjectModel;
 		this.userModel = userModel;
+		this.messageSource=messageSource;
 	}
 
 	private void initLayout() {
@@ -154,6 +160,17 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		subjectModel.register(event -> lazyQueryContainer.refresh(), SubjectModel.EventType.SearchCriteriaChanged);
 
 	    subjectList.setCaption("Produkt-Templates");
+	    
+	    userModel.register(o -> {
+	    	searchDescription.setCaption(messageSource.getMessage("subject_search_description", null, userModel.getLocale()));
+	         searchName.setCaption(messageSource.getMessage("subject_search_name", null, userModel.getLocale() ));
+	         searchButton.setCaption(messageSource.getMessage("subject_search_button", null, userModel.getLocale() ));
+	         searchPanel.setCaption(messageSource.getMessage("subject_search_headline", null, userModel.getLocale()));
+	         subjectList.setCaption(messageSource.getMessage("subject_table_headline", null, userModel.getLocale()));
+	         
+	         Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col ->  subjectList.setColumnHeader(col, messageSource.getMessage("subject_table_" + StringUtils.uncapitalize(col.name()), null, userModel.getLocale())));
+	         
+	    }, UserModel.EventType.LocaleChanged);
 	}
 
 	private void searchCriteria2Model(final FieldGroup fieldGroup) {
@@ -178,6 +195,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 	@Override
 	public void enter(final ViewChangeEvent event) {
+	
 		// TODO Auto-generated method stub
 
 	}

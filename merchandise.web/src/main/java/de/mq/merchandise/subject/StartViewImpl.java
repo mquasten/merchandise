@@ -8,6 +8,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.View;
 
 import de.mq.merchandise.subject.support.SubjectViewImpl;
+import de.mq.merchandise.subject.support.UserModel;
 import de.mq.merchandise.util.support.AbstractUIBeanInjector;
 import de.mq.merchandise.util.support.VaadinOperations;
 import de.mq.merchandise.util.support.ViewNav;
@@ -28,12 +29,15 @@ public class StartViewImpl extends AbstractUIBeanInjector {
 	@Autowired
 	private VaadinOperations vaadinOperations;
 	
+	@Autowired
+	private UserModel  userModel;
+	
 	@Override
 	protected void init() {
 		//setContent(subjectView);
 		
 		viewNav.create(subjectView, views, vaadinOperations);
-		
+		userModel.setLocale(locale());
 		
 	}
 

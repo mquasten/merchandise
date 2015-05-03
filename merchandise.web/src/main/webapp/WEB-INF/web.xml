@@ -19,6 +19,21 @@
 			<param-value>de.mq.merchandise.subject.StartViewImpl</param-value>
 		</init-param>
 	</servlet>
+	
+	 <filter>
+ 		 <filter-name>languageFilter</filter-name>
+  		 <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  		<init-param>
+    		<param-name>targetBeanName</param-name>
+    		<param-value>languageFilter</param-value>
+  		</init-param>
+  		
+	</filter>
+	<filter-mapping>
+  		<filter-name>languageFilter</filter-name>
+  		<url-pattern>/*</url-pattern>
+	 </filter-mapping>
+	
 	<servlet-mapping>
 		<servlet-name>Vaadin</servlet-name>
 		<url-pattern>/*</url-pattern>
