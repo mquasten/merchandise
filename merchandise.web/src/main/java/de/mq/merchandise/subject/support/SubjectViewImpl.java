@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+
 import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
@@ -7,7 +8,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -15,11 +15,14 @@ import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -62,66 +65,95 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		setCompositionRoot(splitPanel);
 
 		final VerticalLayout leftLayout = new VerticalLayout();
-
-		final TextField searchName = new TextField();
+		
+		
+		final TextField searchName = new TextField("Name");
 		final TextField searchDescription = new TextField();
 		final FieldGroup fieldGroup = new FieldGroup();
 
 		// itemContainerFactory.assign(fieldGroup, SubjectCols.class);
 		fieldGroup.setItemDataSource(subjectItem);
 
+		final Panel searchPanel = new Panel();
+		
+		searchPanel.setCaption("Produkt-Template suchen");
+		
+		final GridLayout searchBox = new GridLayout(1,2);
 		final HorizontalLayout searchLayout = new HorizontalLayout();
+		
+		searchBox.addComponent(searchLayout, 0,0);
+		searchPanel.setContent(searchBox);
 
-		searchLayout.setSpacing(true);
+		
+		
+	
 		final FormLayout col1Layout = new FormLayout();
-
+		
+		col1Layout.setMargin(new MarginInfo(true, false, false, true));
+		
 		searchLayout.addComponent(col1Layout);
 		col1Layout.addComponent(searchName);
-
+		
+	
 		final FormLayout col2Layout = new FormLayout();
+		
+		col2Layout.setMargin(new MarginInfo(true, false, false, true));
 		searchLayout.addComponent(col2Layout);
 		col2Layout.addComponent(searchDescription);
-
+		
 		searchDescription.setCaption("Beschreibung");
 
-		final FormLayout col3Layout = new FormLayout();
-		searchLayout.addComponent(col3Layout);
+		
 
+		final HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setMargin(true);
 		final Button searchButton = new Button("suchen");
-		col3Layout.addComponent(searchButton);
+		buttonLayout.addComponent(searchButton);
+		
+		//buttonLayout.setComponentAlignment(searchButton, Alignment.MIDDLE_CENTER);
+		buttonLayout.setWidth("100%");
+		searchBox.addComponent(buttonLayout, 0,1);
+		
+		
+	
+		//searchLayout.addComponent(searchButton);
+		//searchLayout.setComponentAlignment(searchButton, Alignment.BOTTOM_LEFT);
 
+	  
+		
 		fieldGroup.setBuffered(true);
 		fieldGroup.bind(searchName, SubjectCols.Name);
 		fieldGroup.bind(searchDescription, SubjectCols.Description);
 
 		searchButton.addClickListener(e -> searchCriteria2Model(fieldGroup));
 
-		leftLayout.addComponent(searchLayout);
+		leftLayout.addComponent(searchPanel);
 
-		final Table contactList = new Table();
+		final Table subjectList = new Table();
 
 		final FormLayout editorLayout = new FormLayout();
 
 		splitPanel.addComponent(leftLayout);
 		splitPanel.addComponent(editorLayout);
-		leftLayout.addComponent(contactList);
+		leftLayout.addComponent(subjectList);
 
 		leftLayout.setSizeFull();
 
-		leftLayout.setExpandRatio(contactList, 1);
-		contactList.setSizeFull();
+		leftLayout.setExpandRatio(subjectList, 1);
+		subjectList.setSizeFull();
 
 		editorLayout.setMargin(true);
 		editorLayout.setVisible(false);
 
-		contactList.setSelectable(true);
+		subjectList.setSelectable(true);
 
-		contactList.setContainerDataSource(lazyQueryContainer);
-		contactList.setVisibleColumns(Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).toArray());
-		contactList.setSortContainerPropertyId(SubjectCols.Name);
+		subjectList.setContainerDataSource(lazyQueryContainer);
+		subjectList.setVisibleColumns(Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).toArray());
+		subjectList.setSortContainerPropertyId(SubjectCols.Name);
 
 		subjectModel.register(event -> lazyQueryContainer.refresh(), SubjectModel.EventType.SearchCriteriaChanged);
 
+	    subjectList.setCaption("Produkt-Templates");
 	}
 
 	private void searchCriteria2Model(final FieldGroup fieldGroup) {
