@@ -37,7 +37,7 @@ public class StartViewImpl extends AbstractUIBeanInjector {
 		//setContent(subjectView);
 		
 		viewNav.create(subjectView, views, vaadinOperations);
-		userModel.setLocale(locale());
+		
 		
 	}
 

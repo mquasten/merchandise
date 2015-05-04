@@ -167,7 +167,6 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	         searchButton.setCaption(messageSource.getMessage("subject_search_button", null, userModel.getLocale() ));
 	         searchPanel.setCaption(messageSource.getMessage("subject_search_headline", null, userModel.getLocale()));
 	         subjectList.setCaption(messageSource.getMessage("subject_table_headline", null, userModel.getLocale()));
-	         
 	         Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col ->  subjectList.setColumnHeader(col, messageSource.getMessage("subject_table_" + StringUtils.uncapitalize(col.name()), null, userModel.getLocale())));
 	         
 	    }, UserModel.EventType.LocaleChanged);

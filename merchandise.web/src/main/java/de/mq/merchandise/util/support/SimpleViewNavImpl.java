@@ -30,7 +30,8 @@ public class SimpleViewNavImpl implements ViewNav {
 		navigator = vaadinOperations.newNavigator();
 		navigator.addView("", root);
 		for (final View view : views) {
-			
+			// take care, that the view bean will be really created
+			//view.toString();
 			navigator.addView(viewNameFor(view), view);
 		}
 	}

@@ -9,7 +9,7 @@ class UserModelImpl extends ObservableImpl<UserModel.EventType> implements UserM
 	
 	private final Customer customer;
 	
-	private Locale locale = Locale.ENGLISH; 
+	private Locale locale ; 
 
 	UserModelImpl(Customer customer) {
 		this.customer = customer;
@@ -41,7 +41,8 @@ class UserModelImpl extends ObservableImpl<UserModel.EventType> implements UserM
 		if(locale == null){
 			return;
 		}
-		notifyObservers(EventType.LocaleChanged);
 		this.locale=locale;
+		notifyObservers(EventType.LocaleChanged);
+		
 	}
 }
