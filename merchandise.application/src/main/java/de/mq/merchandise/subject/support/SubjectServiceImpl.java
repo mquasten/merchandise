@@ -28,6 +28,12 @@ class SubjectServiceImpl implements SubjectService {
 	public final Collection<Subject> subjects(final Subject subject, final ResultNavigation paging) {
 		return subjectRepository.subjectsForCustomer(subject, paging);
 	}
+	
+	@Override
+	@Transactional(readOnly=true)
+	public final Number subjects(final Subject subject) {
+		return subjectRepository.subjectsForCustomer(subject);
+	}
 
 	
 	/* (non-Javadoc)
