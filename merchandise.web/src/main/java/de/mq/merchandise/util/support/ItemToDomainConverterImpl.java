@@ -27,7 +27,9 @@ public class ItemToDomainConverterImpl<T> implements Converter<Item, T> {
 		final Method method = ReflectionUtils.findMethod(colClass, "values");
 		
 		method.setAccessible(true);
+		
 		cols = (Enum<?>[]) ReflectionUtils.invokeMethod(method, null);
+		
 	}
 
 	@Override

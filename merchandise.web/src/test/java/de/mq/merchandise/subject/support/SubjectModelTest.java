@@ -3,6 +3,7 @@ package de.mq.merchandise.subject.support;
 
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.Assert;
@@ -90,6 +91,12 @@ public class SubjectModelTest<SearchCriteriaChanged> {
 		Mockito.verify(observer, Mockito.times(0)).process(SubjectModel.EventType.SearchCriteriaChanged);
 		
 		
+	}
+	
+	@Test
+	public final void events() {
+		Arrays.asList(SubjectModel.EventType.values()).forEach(col -> Assert.assertEquals(col, SubjectModel.EventType.valueOf(col.name())));	
+		Assert.assertEquals(1, SubjectModel.EventType.values().length);
 	}
 
 }
