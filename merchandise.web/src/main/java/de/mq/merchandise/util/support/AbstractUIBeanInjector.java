@@ -1,9 +1,6 @@
 package de.mq.merchandise.util.support;
 
 
-
-import java.util.Locale;
-
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.vaadin.server.VaadinRequest;
@@ -16,23 +13,14 @@ public abstract class AbstractUIBeanInjector  extends UI {
 	
 	abstract protected void init(); 
 	
-	private Locale locale=Locale.ENGLISH; 
 
 	@Override
 	protected final void init(final VaadinRequest request) {
 		WebApplicationContextUtils.getRequiredWebApplicationContext(((WrappedHttpSession) request.getWrappedSession()).getHttpSession().getServletContext()).getAutowireCapableBeanFactory().autowireBean(this);
-		if( request.getLocale() != null){
-		    locale = request.getLocale();
-		}
-		
 		init();
-		
-		
 	}
 	
-	protected final Locale locale() {
-		return locale;
-	}
+	
 	
 	
 	
