@@ -30,7 +30,13 @@ public class VaadinTemplate implements VaadinOperations {
 	
 	@Override
 	public final void showErrror(final String message) {
-		Notification.show(message);
+		
+		newNotification(message).show(ui.getPage());
+	}
+	
+	
+	Notification newNotification(String caption){
+		return new Notification(caption);
 	}
 
 }
