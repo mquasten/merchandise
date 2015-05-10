@@ -51,6 +51,7 @@ public class ViewNavTest {
 	@Test(expected=IllegalArgumentException.class)
 	public final void navigateToCGLIB() {
 		viewNav.navigateTo(Mockito.mock(View.class).getClass());;
+		
 	}
 
 }

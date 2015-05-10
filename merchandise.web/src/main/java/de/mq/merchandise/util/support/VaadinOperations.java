@@ -5,11 +5,12 @@ import com.vaadin.ui.Window;
 
 public interface VaadinOperations {
 
-	void showErrror(String message);
-
 	Navigator newNavigator();
 
 
 	void addWindow(final Window window);
+
+
+	void showErrror(final String message);
 
 }

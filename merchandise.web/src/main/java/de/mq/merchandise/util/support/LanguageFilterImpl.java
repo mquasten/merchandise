@@ -34,7 +34,7 @@ public class LanguageFilterImpl  extends OncePerRequestFilter {
 		final String languge = request.getParameter(PARAM_LANGUAGE);
 		final UserModel userModel = beanResolver.resolve(UserModel.class);
 	
-		
+	
 		// touched for the very first time
 		beanResolver.resolveAll(View.class);
 		
