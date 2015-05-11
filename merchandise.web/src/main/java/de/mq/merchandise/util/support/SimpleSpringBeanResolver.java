@@ -11,12 +11,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SimpleSpringBeanResolver implements BeanResolver {
+class SimpleSpringBeanResolver implements BeanResolver {
 	
-	@Autowired
+	
 	private ApplicationContext ctx ; 
 	
-	
+	@Autowired
+	SimpleSpringBeanResolver(final ApplicationContext ctx) {
+		this.ctx = ctx;
+	}
+
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.support.BeanResolver#resolve(java.util.Map, java.lang.Class)
 	 */
