@@ -5,7 +5,7 @@ import java.util.Collection;
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.subject.Subject;
 
-interface SubjectService {
+public interface SubjectService {
 
 	Collection<Subject> subjects(Subject subject, final ResultNavigation paging);
 

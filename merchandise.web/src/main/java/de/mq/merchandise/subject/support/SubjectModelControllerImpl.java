@@ -11,7 +11,8 @@ import de.mq.merchandise.util.LazyQueryContainerFactory.PagingMethod;
 import de.mq.merchandise.util.LazyQueryContainerFactory.PagingMethods;
 
 @Controller
-class SubjectModelControllerImpl {
+
+public class SubjectModelControllerImpl {
 	
 	private final  SubjectService subjectService;
 	
@@ -22,6 +23,8 @@ class SubjectModelControllerImpl {
 	
 	@PagingMethod(PagingMethods.Count)
 	Number countSubjects(final SubjectModel subjectModel) {
+		
+		System.out.println(subjectModel);
 		return subjectService.subjects(subjectModel.getSearchCriteria());
 	
 	}

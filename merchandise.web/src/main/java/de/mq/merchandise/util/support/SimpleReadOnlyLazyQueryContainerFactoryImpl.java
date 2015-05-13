@@ -91,11 +91,13 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 				method.setAccessible(true);
 				final Map<Class<?>, Object> beans = new HashMap<>();
 				beans.put(ResultNavigation.class, resultNavigation);
+			
 				@SuppressWarnings("unchecked")
 				final Collection<Object> results = (Collection<Object>) ReflectionUtils.invokeMethod(method, beanResolver.resolve(method.getDeclaringClass()), Arrays.asList(method.getParameterTypes()).stream().map(t -> beanResolver.resolve(beans, t)).collect(Collectors.toList()).toArray());
 				final List<Item> items = new ArrayList<>();
 				@SuppressWarnings("unchecked")
 				final Converter<Object, Item> converter=  (Converter<Object, Item>) beanResolver.resolve(converterClass);
+			
 				results.forEach(result -> items.add( converter.convert(result)) );
 				return items;
 			}
