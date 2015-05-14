@@ -23,8 +23,11 @@ import org.vaadin.addons.lazyquerycontainer.Query;
 import org.vaadin.addons.lazyquerycontainer.QueryFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 
 import de.mq.merchandise.ResultNavigation;
+
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.TableContainerColumns;
 
@@ -47,9 +50,11 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 
 			@Override
 			public Item constructItem() {
-				
-			 return null;
-				
+			
+			 final Item  item =  new PropertysetItem();
+			
+			 item.addItemProperty(idPropertyId,  new ObjectProperty<>( Long.valueOf((long) (Math.random()*1e12) ))) ;
+			 return item;	
 			}
 
 			@Override
@@ -122,7 +127,6 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 			@Override
 			public final void saveItems(final List<Item> add, final List<Item> merge, final List<Item> remove) {
 				throw new UnsupportedOperationException();
-				
 			}
 
 			@Override
@@ -184,7 +188,8 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 		
 		MyLazyQueryContainer(QueryFactory queryFactory, Object idPropertyId, int batchSize, final TableContainerColumns[] cols ){
 			super(queryFactory,idPropertyId,batchSize, false );
-			Arrays.asList(cols).stream().forEach(col -> addContainerProperty(col, col.target(), null, col.sortable(), true));
+			
+			Arrays.asList(cols).stream().forEach(col -> addContainerProperty(col, col.target(), null , false, col.sortable()));
 		}
 	
 		private static final long serialVersionUID = 1L;

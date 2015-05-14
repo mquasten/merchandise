@@ -12,7 +12,7 @@ import de.mq.merchandise.util.LazyQueryContainerFactory.PagingMethods;
 
 @Controller
 
-public class SubjectModelControllerImpl {
+class SubjectModelControllerImpl {
 	
 	private final  SubjectService subjectService;
 	
