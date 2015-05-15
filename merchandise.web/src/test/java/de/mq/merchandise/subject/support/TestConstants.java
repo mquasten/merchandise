@@ -3,8 +3,11 @@ package de.mq.merchandise.subject.support;
 import java.util.ArrayList;
 import java.util.Collection;
 
+
 import org.mockito.Mockito;
+
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.util.CollectionUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
@@ -25,6 +28,8 @@ public class TestConstants {
 	public static  Enum<? extends TableContainerColumns> SUBJECT_COLS_NAME = SubjectCols.Name; 
 	public static  Enum<? extends TableContainerColumns> SUBJECT_COLS_DESC = SubjectCols.Description; 
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static final Class<Enum<? extends TableContainerColumns>> SUBJECT_COLS_CLASS = (Class )SubjectCols.class;
 	
 	
 	
@@ -41,16 +46,24 @@ public class TestConstants {
 	public static final Converter<Subject, Item> subjectConverterMock() {
 		 @SuppressWarnings("unchecked")
 		 final Converter<Subject, Item> converter  = Mockito.mock(Converter.class);
-		 final Item item = new PropertysetItem();
-
-			
-		 item.addItemProperty(SubjectCols.Id,  new ObjectProperty<>(ID));
-		 item.addItemProperty(SubjectCols.Name,  new ObjectProperty<>(SUBJECT_NAME));
-		 item.addItemProperty(SubjectCols.Description,  new ObjectProperty<>(SUBJECT_DESCRIPTION));
-		 Mockito.when(converter.convert(SUBJECT)).thenReturn(item);
+		 Mockito.when(converter.convert(SUBJECT)).thenReturn(itemMock());
 		
 		return converter;
 	}
+
+
+	public  static Item itemMock() {
+		final Item item = new PropertysetItem();			
+		 item.addItemProperty(SubjectCols.Id,  new ObjectProperty<>(ID));
+		 item.addItemProperty(SubjectCols.Name,  new ObjectProperty<>(SUBJECT_NAME));
+		 item.addItemProperty(SubjectCols.Description,  new ObjectProperty<>(SUBJECT_DESCRIPTION));
+		return item;
+	}
 	
+
+	@SuppressWarnings("unchecked")
+	public static final Collection<TableContainerColumns> subjectColumns () {
+		return CollectionUtils.arrayToList(SubjectCols.values());
+	}
 
 }
