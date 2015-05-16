@@ -6,8 +6,8 @@ import com.vaadin.navigator.View;
 
 public interface ViewNav {
 
-	public abstract void create(View root, Collection<View> views, final VaadinOperations vaadinOperations);
+	void create(View root, Collection<View> views, final VaadinOperations vaadinOperations);
 
-	public abstract void navigateTo(Class<? extends View> clazz, final String ... params );
+	void navigateTo(Class<? extends View> clazz, final String ... params );
 
 }

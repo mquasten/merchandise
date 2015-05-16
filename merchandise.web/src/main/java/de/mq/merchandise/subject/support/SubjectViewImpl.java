@@ -37,17 +37,19 @@ import de.mq.merchandise.util.support.RefreshableContainer;
 public class SubjectViewImpl extends CustomComponent implements View {
 
 	private static final long serialVersionUID = 1L;
-
-	private final Converter<Item, Subject> itemToSubjectConverter;
-
-	private final RefreshableContainer lazyQueryContainer;
-
-	private final Item subjectItem;
-
-	private final SubjectModel subjectModel;
-
-	private final UserModel userModel;
 	
+	static final String I18N_SUBJECT_TABLE_HEADLINE = "subject_table_headline";
+	static final String I18N_SUBJECT_SEARCH_HEADLINE = "subject_search_headline";
+	static final String I18N_SUBJECT_SEARCH_BUTTON = "subject_search_button";
+	static final String I18N_SUBJECT_SEARCH_NAME = "subject_search_name";
+	static final String I18N_SUBJECT_SEARCH_DESCRIPTION = "subject_search_description";
+	static final String I18N_SUBJECT_TABLE_PREFIX = "subject_table_";
+	
+	private final Converter<Item, Subject> itemToSubjectConverter;
+	private final RefreshableContainer lazyQueryContainer;
+	private final Item subjectItem;
+	private final SubjectModel subjectModel;
+	private final UserModel userModel;
 	private final MessageSource messageSource;
 	
 	
@@ -74,7 +76,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		final VerticalLayout leftLayout = new VerticalLayout();
 		
 		
-		final TextField searchName = new TextField("Name");
+		final TextField searchName = new TextField();
 		final TextField searchDescription = new TextField();
 		final FieldGroup fieldGroup = new FieldGroup();
 
@@ -83,7 +85,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 		final Panel searchPanel = new Panel();
 		
-		searchPanel.setCaption("Produkt-Template suchen");
+		//searchPanel.setCaption("Produkt-Template suchen");
 		
 		final GridLayout searchBox = new GridLayout(1,2);
 		final HorizontalLayout searchLayout = new HorizontalLayout();
@@ -108,13 +110,13 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		searchLayout.addComponent(col2Layout);
 		col2Layout.addComponent(searchDescription);
 		
-		searchDescription.setCaption("Beschreibung");
+		//searchDescription.setCaption("Beschreibungxx");
 
 		
 
 		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setMargin(true);
-		final Button searchButton = new Button("suchen");
+		final Button searchButton = new Button();
 		buttonLayout.addComponent(searchButton);
 		
 		//buttonLayout.setComponentAlignment(searchButton, Alignment.MIDDLE_CENTER);
@@ -160,15 +162,15 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 		subjectModel.register(event -> lazyQueryContainer.refresh(), SubjectModel.EventType.SearchCriteriaChanged);
 
-	    subjectList.setCaption("Produkt-Templates");
+	    //subjectList.setCaption("Produkt-Templates");
 	    
 	    userModel.register(o -> {
-	    	searchDescription.setCaption(messageSource.getMessage("subject_search_description", null, userModel.getLocale()));
-	         searchName.setCaption(messageSource.getMessage("subject_search_name", null, userModel.getLocale() ));
-	         searchButton.setCaption(messageSource.getMessage("subject_search_button", null, userModel.getLocale() ));
-	         searchPanel.setCaption(messageSource.getMessage("subject_search_headline", null, userModel.getLocale()));
-	         subjectList.setCaption(messageSource.getMessage("subject_table_headline", null, userModel.getLocale()));
-	         Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col ->  subjectList.setColumnHeader(col, messageSource.getMessage("subject_table_" + StringUtils.uncapitalize(col.name()), null, userModel.getLocale())));
+	    	searchDescription.setCaption(messageSource.getMessage(I18N_SUBJECT_SEARCH_DESCRIPTION, null, userModel.getLocale()));
+	         searchName.setCaption(messageSource.getMessage(I18N_SUBJECT_SEARCH_NAME, null, userModel.getLocale() ));
+	         searchButton.setCaption(messageSource.getMessage(I18N_SUBJECT_SEARCH_BUTTON, null, userModel.getLocale() ));
+	         searchPanel.setCaption(messageSource.getMessage(I18N_SUBJECT_SEARCH_HEADLINE, null, userModel.getLocale()));
+	         subjectList.setCaption(messageSource.getMessage(I18N_SUBJECT_TABLE_HEADLINE, null, userModel.getLocale()));
+	         Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col ->  subjectList.setColumnHeader(col, messageSource.getMessage(I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name()), null, userModel.getLocale())));
 	         
 	    }, UserModel.EventType.LocaleChanged);
 	}

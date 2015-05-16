@@ -2,6 +2,7 @@ package de.mq.merchandise.util.support;
 
 
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -21,6 +22,7 @@ import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectModel;
 import de.mq.merchandise.subject.support.TestConstants;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
+import de.mq.merchandise.util.LazyQueryContainerFactory.PagingMethods;
 
 public class LazyQueryContainerFactoryTest {
 	
@@ -124,6 +126,11 @@ public class LazyQueryContainerFactoryTest {
 		container.commit();
 	}
 
+	@Test
+	public final void pagingMethods() {
+		Assert.assertEquals(2, PagingMethods .values().length);
+		Arrays.asList(PagingMethods .values()).forEach(value -> Assert.assertEquals(value, PagingMethods.valueOf(value.name())));
+	}
 	
 
 }
