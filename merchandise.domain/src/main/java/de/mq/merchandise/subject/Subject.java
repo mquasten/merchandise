@@ -1,6 +1,7 @@
 package de.mq.merchandise.subject;
 
 import java.util.Collection;
+import java.util.Date;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.support.ConditionDataType;
@@ -85,5 +86,7 @@ public interface Subject extends BasicEntity {
 	 * @return alle vorhandenen CondtionTypes.
 	 */
 	Collection<String> conditionTypes();
+	
+	Date created();
 
 }

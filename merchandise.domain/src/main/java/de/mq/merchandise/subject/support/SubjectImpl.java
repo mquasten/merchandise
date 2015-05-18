@@ -188,6 +188,12 @@ public class SubjectImpl implements Subject{
 		return  customer.equals(other.customer()) && name.equals(other.name());
 	}
 
+	@Override
+	public Date created() {
+		
+		return this.dateCreated;
+	}
+
 	
 	
 	

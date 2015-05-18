@@ -27,6 +27,9 @@ class SubjectConverterImpl implements Converter<Subject, Item> {
 			item.addItemProperty(SubjectCols.Description, new ObjectProperty<>(subject.description()));
 		}
 
+		if( subject.created() != null){
+			item.addItemProperty(SubjectCols.DateCreated, new ObjectProperty<>(subject.created()));
+		}
 		return item;
 	}
 

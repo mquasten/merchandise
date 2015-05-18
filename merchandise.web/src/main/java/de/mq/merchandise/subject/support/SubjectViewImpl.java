@@ -47,7 +47,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	
 	private final Converter<Item, Subject> itemToSubjectConverter;
 	private final RefreshableContainer lazyQueryContainer;
-	private final Item subjectItem;
+	private final Item subjectSearchItem;
+	private final Item subjectEditItem;
 	private final SubjectModel subjectModel;
 	private final UserModel userModel;
 	private final MessageSource messageSource;
@@ -56,12 +57,13 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 	@Autowired
 	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer,
-			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectItem,
+			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem,@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectEditItem,
 			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource) {
 
 		this.itemToSubjectConverter = itemToSubjectConverter;
 		this.lazyQueryContainer = lazyQueryContainer;
-		this.subjectItem = subjectItem;
+		this.subjectSearchItem = subjectSearchItem;
+		this.subjectEditItem = subjectEditItem;
 		this.subjectModel = subjectModel;
 		this.userModel = userModel;
 		this.messageSource=messageSource;
@@ -81,7 +83,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		final FieldGroup fieldGroup = new FieldGroup();
 
 		// itemContainerFactory.assign(fieldGroup, SubjectCols.class);
-		fieldGroup.setItemDataSource(subjectItem);
+		fieldGroup.setItemDataSource(subjectSearchItem);
 
 		final Panel searchPanel = new Panel();
 		
@@ -140,10 +142,50 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 		final Table subjectList = new Table();
 
-		final FormLayout editorLayout = new FormLayout();
-
+		final VerticalLayout editor = new VerticalLayout();
+		editor.setMargin(true);
+		editor.setSizeUndefined();
+		final HorizontalLayout editorLayout = new HorizontalLayout();
+		editor.addComponent(editorLayout);
+		
+		
+		final FormLayout col1 = new FormLayout();
+		
+		final FormLayout col2 = new FormLayout();
+		
+		FieldGroup editorFields = new FieldGroup();
+		editorFields.setItemDataSource(subjectEditItem);
+		Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()&& !col.equals(SubjectCols.DateCreated)).forEach(col -> {
+			final TextField field = new TextField(col.name());
+			editorFields.bind( field, col);
+			col1.addComponent(field);
+			
+		});
+		
+		editorLayout.addComponent(col1);
+		editorLayout.addComponent(col2);
+		
+		final Button newButton = new Button("neu");
+		final Button saveButton = new Button("bearbeiten");
+		col2.addComponent(newButton);
+		col2.addComponent(saveButton);
+		
+		final HorizontalLayout saveButtonLayout = new HorizontalLayout();
+	
+		
+		editor.addComponent(saveButtonLayout);
+		
+	
+		saveButtonLayout.addComponent(new Button("speichern"));
+		
 		splitPanel.addComponent(leftLayout);
-		splitPanel.addComponent(editorLayout);
+		splitPanel.addComponent(editor);
+		
+		
+		
+		
+		
+		
 		leftLayout.addComponent(subjectList);
 
 		leftLayout.setSizeFull();
@@ -151,8 +193,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		leftLayout.setExpandRatio(subjectList, 1);
 		subjectList.setSizeFull();
 
-		editorLayout.setMargin(true);
-		editorLayout.setVisible(false);
+		
+		editorLayout.setEnabled(false);
 
 		subjectList.setSelectable(true);
 

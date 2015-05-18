@@ -18,6 +18,7 @@ public @interface SubjectModelQualifier {
 	public  enum Type {
 		LazyQueryContainer,
 		SubjectSearchItem,
+		SubjectEditItem,
 		SubjectModel,
 		ItemToSubjectConverter
 	}

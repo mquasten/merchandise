@@ -38,11 +38,12 @@ public class SubjectViewTest {
 	private final Converter<Item, Subject> itemToSubjectConverter = Mockito.mock(Converter.class);
 	private final RefreshableContainer lazyQueryContainer = Mockito.mock(RefreshableContainer.class);
 	private final Item subjectItem = Mockito.mock(Item.class);
+	private final Item subjectEditItem = Mockito.mock(Item.class);
 	private final SubjectModel subjectModel = Mockito.mock(SubjectModel.class);
 	private final UserModel userModel = Mockito.mock(UserModel.class);
 	private final MessageSource messageSource = Mockito.mock(MessageSource.class);
 	
-	private final SubjectViewImpl subjectView= new SubjectViewImpl(itemToSubjectConverter,lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource); 
+	private final SubjectViewImpl subjectView= new SubjectViewImpl(itemToSubjectConverter,lazyQueryContainer, subjectItem, subjectEditItem, subjectModel, userModel, messageSource); 
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private final ArgumentCaptor<Observer<UserModel.EventType>> localChangedObserverCapture = (ArgumentCaptor) ArgumentCaptor.forClass(Observer.class);
@@ -67,13 +68,19 @@ public class SubjectViewTest {
 		Mockito.when(subjectItem.getItemProperty(SubjectCols.Id)).thenReturn(idProperty);
 		Mockito.when(subjectItem.getItemProperty(SubjectCols.Name)).thenReturn(nameProperty);
 		Mockito.when(subjectItem.getItemProperty(SubjectCols.Description)).thenReturn(descriptionProperty);
-		
-		Mockito.when(lazyQueryContainer.getContainerPropertyIds()).thenReturn((Collection)Arrays.asList(SubjectCols.values()));
-		
+
+		final Property<?> namePropertyEdit = Mockito.mock(Property.class);
+		Mockito.when(subjectEditItem.getItemProperty(SubjectCols.Name)).thenReturn(namePropertyEdit);
+
+		final Property<?> descriptionPropertyEdit = Mockito.mock(Property.class);
+		Mockito.when(subjectEditItem.getItemProperty(SubjectCols.Description)).thenReturn(descriptionPropertyEdit);
+
+		Mockito.when(lazyQueryContainer.getContainerPropertyIds()).thenReturn((Collection) Arrays.asList(SubjectCols.values()));
+
 		Mockito.when(userModel.getLocale()).thenReturn(Locale.GERMAN);
-		
+
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_SEARCH_DESCRIPTION, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_SEARCH_DESCRIPTION);
-		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_SEARCH_NAME, null, Locale.GERMAN )).thenReturn(SubjectViewImpl.I18N_SUBJECT_SEARCH_NAME);
+		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_SEARCH_NAME, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_SEARCH_NAME);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_SEARCH_BUTTON, null, Locale.GERMAN )).thenReturn(SubjectViewImpl.I18N_SUBJECT_SEARCH_BUTTON);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_SEARCH_HEADLINE, null,Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_SEARCH_HEADLINE);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_TABLE_HEADLINE, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_TABLE_HEADLINE);
