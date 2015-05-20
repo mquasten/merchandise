@@ -34,6 +34,9 @@ public class ItemToDomainConverterImpl<T> implements Converter<Item, T> {
 
 	@Override
 	public T convert(final Item source) {
+		if( source == null){
+			return null;
+		}
 		final T subject = BeanUtils.instantiateClass(clazz);
 		Arrays.asList(cols).forEach(col -> {
 			final Field field = ReflectionUtils.findField(subject.getClass(), StringUtils.uncapitalize(col.name()));

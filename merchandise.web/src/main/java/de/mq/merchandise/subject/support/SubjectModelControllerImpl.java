@@ -23,8 +23,6 @@ class SubjectModelControllerImpl {
 	
 	@PagingMethod(PagingMethods.Count)
 	Number countSubjects(final SubjectModel subjectModel) {
-		
-		System.out.println(subjectModel);
 		return subjectService.subjects(subjectModel.getSearchCriteria());
 	
 	}

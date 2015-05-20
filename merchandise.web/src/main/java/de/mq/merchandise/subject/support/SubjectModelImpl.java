@@ -1,5 +1,7 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.Optional;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -13,6 +15,8 @@ import de.mq.merchandise.util.support.ObservableImpl;
 class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements SubjectModel {
 	private Subject searchCriteria; 
 	private Customer customer;
+	
+	private Optional<Subject> subject = Optional.empty();
 	
 	SubjectModelImpl() {
 		searchCriteria=BeanUtils.instantiateClass(SubjectImpl.class, Subject.class);
@@ -41,6 +45,16 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 		this.searchCriteria=searchCriteria;
 		notifyObservers(EventType.SearchCriteriaChanged);
 	}
+
+
+	@Override
+	public final void setSelected(final Subject subject) {
+		this.subject=Optional.ofNullable(subject);
+		notifyObservers(EventType.SubjectChanged);
+	}
 	
-	
+	@Override
+	public final Optional<Subject> getSelected() {
+		return subject;
+	}
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -30,6 +31,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.mq.merchandise.subject.Subject;
+import de.mq.merchandise.util.TableContainerColumns;
 import de.mq.merchandise.util.support.RefreshableContainer;
 
 @Component
@@ -153,14 +155,34 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 		final FormLayout col2 = new FormLayout();
 		
-		FieldGroup editorFields = new FieldGroup();
+		final FieldGroup editorFields = new FieldGroup();
+	
 		editorFields.setItemDataSource(subjectEditItem);
 		Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()&& !col.equals(SubjectCols.DateCreated)).forEach(col -> {
 			final TextField field = new TextField(col.name());
+			field.setNullRepresentation("");
 			editorFields.bind( field, col);
 			col1.addComponent(field);
 			
 		});
+		
+		subjectModel.register(e -> { 
+			
+			//editorFields.setItemDataSource(null);
+			
+		
+			final Property<String> itemProperty = getSubjectEditProperty(SubjectCols.Name);
+			itemProperty.setValue(null);
+			if( subjectModel.getSelected().isPresent() ) {
+				itemProperty.setValue(subjectModel.getSelected().get().name());
+			} 
+				
+			
+			
+			editorFields.setItemDataSource(subjectEditItem);
+			
+		}, SubjectModel.EventType.SubjectChanged);
+		
 		
 		editorLayout.addComponent(col1);
 		editorLayout.addComponent(col2);
@@ -201,6 +223,12 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		subjectList.setContainerDataSource(lazyQueryContainer);
 		subjectList.setVisibleColumns(Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).toArray());
 		subjectList.setSortContainerPropertyId(SubjectCols.Name);
+		
+		subjectList.addValueChangeListener(e -> { 
+			subjectModel.setSelected(itemToSubjectConverter.convert(lazyQueryContainer.getItem(e.getProperty().getValue())));
+			
+		});
+		
 
 		subjectModel.register(event -> lazyQueryContainer.refresh(), SubjectModel.EventType.SearchCriteriaChanged);
 
@@ -215,6 +243,11 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	         Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col ->  subjectList.setColumnHeader(col, messageSource.getMessage(I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name()), null, userModel.getLocale())));
 	         
 	    }, UserModel.EventType.LocaleChanged);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Property<String> getSubjectEditProperty(final TableContainerColumns col) {
+		return subjectEditItem.getItemProperty(col);
 	}
 
 	private void searchCriteria2Model(final FieldGroup fieldGroup) {
