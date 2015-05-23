@@ -16,11 +16,11 @@ import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectImpl;
 import de.mq.merchandise.subject.support.TestConstants;
 
-public class ItemToDomainConverterTest {
+public class ItemToDomainMapperTest {
 	
 	
 	
-	private final Converter<Item, Subject> converter = new ItemToDomainConverterImpl<Subject>(SubjectImpl.class, TestConstants.SUBJECT_COLS_CLASS);
+	private final Converter<Item, Subject> converter = new ItemToDomainMapperImpl<Subject>(SubjectImpl.class, TestConstants.SUBJECT_COLS_CLASS);
 
 	@Test
 	public final void convert() {

@@ -11,13 +11,13 @@ import com.vaadin.data.Item;
 
 import de.mq.merchandise.subject.Subject;
 
-public class SubjectConverterTest {
+public class SubjectMapperTest {
 	
 	
 	private static final Long ID = 19680528L;
 	private static final String NAME = "Crime Bank";
 	private static final String DESCRIPTION = "Vito Corleone,s Banking Service";
-	private Converter<Subject, Item> converter = new SubjectConverterImpl();
+	private Converter<Subject, Item> converter = new SubjectMapperImpl();
 	
 	@Test
 	public final void convert() {

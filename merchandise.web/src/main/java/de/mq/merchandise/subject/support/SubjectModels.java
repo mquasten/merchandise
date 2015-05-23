@@ -7,14 +7,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.core.convert.converter.Converter;
 
 import com.vaadin.data.Item;
+
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
-import de.mq.merchandise.util.support.ItemToDomainConverterImpl;
+import de.mq.merchandise.util.Mapper;
+import de.mq.merchandise.util.support.ItemToDomainMapperImpl;
 import de.mq.merchandise.util.support.RefreshableContainer;
 
 @Configuration
@@ -47,15 +48,15 @@ class SubjectModels {
 
 	@Bean
 	@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter)
-	Converter<Item, Subject> itemToSubjectConverter() {
-		return new ItemToDomainConverterImpl<>(SubjectImpl.class, SubjectCols.class);
+	Mapper<Item, Subject> itemToSubjectConverter() {
+		return new ItemToDomainMapperImpl<>(SubjectImpl.class, SubjectCols.class);
 	} 
 	
 	@Bean()
 	@SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer)
 	@Scope(  proxyMode=ScopedProxyMode.TARGET_CLASS ,  value="session")
 	RefreshableContainer  subjectLazyQueryContainer() {
-		return lazyQueryContainerFactory.create(SubjectCols.Id, SubjectConverterImpl.class, SubjectModelControllerImpl.class);
+		return lazyQueryContainerFactory.create(SubjectCols.Id, SubjectMapperImpl.class, SubjectModelControllerImpl.class);
 		
 	}
 	

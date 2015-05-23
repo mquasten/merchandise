@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -31,6 +30,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.mq.merchandise.subject.Subject;
+import de.mq.merchandise.util.Mapper;
 import de.mq.merchandise.util.TableContainerColumns;
 import de.mq.merchandise.util.support.RefreshableContainer;
 
@@ -47,7 +47,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	static final String I18N_SUBJECT_SEARCH_DESCRIPTION = "subject_search_description";
 	static final String I18N_SUBJECT_TABLE_PREFIX = "subject_table_";
 	
-	private final Converter<Item, Subject> itemToSubjectConverter;
+	private final Mapper<Item, Subject> itemToSubjectMapper;
 	private final RefreshableContainer lazyQueryContainer;
 	private final Item subjectSearchItem;
 	private final Item subjectEditItem;
@@ -58,11 +58,11 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	
 
 	@Autowired
-	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer,
+	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Mapper<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer,
 			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem,@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectEditItem,
 			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource) {
 
-		this.itemToSubjectConverter = itemToSubjectConverter;
+		this.itemToSubjectMapper = itemToSubjectConverter;
 		this.lazyQueryContainer = lazyQueryContainer;
 		this.subjectSearchItem = subjectSearchItem;
 		this.subjectEditItem = subjectEditItem;
@@ -181,7 +181,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			
 			editorFields.setItemDataSource(subjectEditItem);
 			
-		}, SubjectModel.EventType.SubjectChanged);
+		}, SubjectModel.EventType.SubjectChanged); 
 		
 		
 		editorLayout.addComponent(col1);
@@ -225,7 +225,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		subjectList.setSortContainerPropertyId(SubjectCols.Name);
 		
 		subjectList.addValueChangeListener(e -> { 
-			subjectModel.setSelected(itemToSubjectConverter.convert(lazyQueryContainer.getItem(e.getProperty().getValue())));
+			subjectModel.setSelected(itemToSubjectMapper.convert(lazyQueryContainer.getItem(e.getProperty().getValue())));
 			
 		});
 		
@@ -254,7 +254,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		try {
 
 			fieldGroup.commit();
-			subjectModel.setSerachCriteria(itemToSubjectConverter.convert(fieldGroup.getItemDataSource()));
+			subjectModel.setSerachCriteria(itemToSubjectMapper.convert(fieldGroup.getItemDataSource()));
 
 		} catch (final Exception ex) {
 			throw new IllegalStateException(ex);
