@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.StringUtils;
 
 import com.vaadin.data.Item;
@@ -28,14 +29,13 @@ import com.vaadin.ui.TextField;
 
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.ComponentTestHelper;
-import de.mq.merchandise.util.Mapper;
 import de.mq.merchandise.util.Observer;
 import de.mq.merchandise.util.support.RefreshableContainer;
 
 public class SubjectViewTest {
 	
 	@SuppressWarnings("unchecked")
-	private final Mapper<Item, Subject> itemToSubjectConverter = Mockito.mock(Mapper.class);
+	private final Converter<Item, Subject> itemToSubjectConverter = Mockito.mock(Converter.class);
 	private final RefreshableContainer lazyQueryContainer = Mockito.mock(RefreshableContainer.class);
 	private final Item subjectItem = Mockito.mock(Item.class);
 	private final Item subjectEditItem = Mockito.mock(Item.class);

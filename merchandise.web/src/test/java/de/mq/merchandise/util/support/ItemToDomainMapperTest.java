@@ -20,7 +20,7 @@ public class ItemToDomainMapperTest {
 	
 	
 	
-	private final Converter<Item, Subject> converter = new ItemToDomainMapperImpl<Subject>(SubjectImpl.class, TestConstants.SUBJECT_COLS_CLASS);
+	private final Converter<Item, Subject> converter = new ItemToDomainConverterImpl<Subject>(SubjectImpl.class, TestConstants.SUBJECT_COLS_CLASS);
 
 	@Test
 	public final void convert() {

@@ -17,7 +17,7 @@ public class SubjectMapperTest {
 	private static final Long ID = 19680528L;
 	private static final String NAME = "Crime Bank";
 	private static final String DESCRIPTION = "Vito Corleone,s Banking Service";
-	private Converter<Subject, Item> converter = new SubjectMapperImpl();
+	private Converter<Subject, Item> converter = new SubjectConverterImpl();
 	
 	@Test
 	public final void convert() {

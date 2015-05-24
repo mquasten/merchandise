@@ -15,7 +15,9 @@
 		<hibernate.version>4.3.6.Final</hibernate.version>
 		<mysql.connector.version>5.1.18</mysql.connector.version>
 		<slf4j.version>1.6.1</slf4j.version>
-		<spring.version>4.1.3.RELEASE</spring.version>
+		<!--  spring.version>4.1.3.RELEASE</spring.version-->
+		<!--  spring.version>4.1.3.RELEASE</spring.version-->
+		<spring.version>4.2.0.BUILD-SNAPSHOT</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.9</junit.version>
 		<mockito.version>1.8.4</mockito.version>
@@ -185,6 +187,18 @@
 		</dependency>
 
 	</dependencies>
+	
+		<repositories>
+
+
+		<repository>
+			<id>spring-snapshots</id>
+			<name>spring-snapshots</name>
+			<url>https://repo.spring.io/snapshot/</url>
+		</repository>
+
+		
+	</repositories>
 
 	<build>
 		<plugins>

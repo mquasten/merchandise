@@ -19,7 +19,7 @@ import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
-import de.mq.merchandise.util.support.ItemToDomainMapperImpl;
+import de.mq.merchandise.util.support.ItemToDomainConverterImpl;
 import de.mq.merchandise.util.support.RefreshableContainer;
 
 public class SubjectModelsTest {
@@ -36,7 +36,7 @@ public class SubjectModelsTest {
 	@Before	
 	public final void setup() {
 		Mockito.when(customerService.customer(Mockito.any(Optional.class))).thenReturn(customer);
-		Mockito.when(lazyQueryContainerFactory.create(SubjectCols.Id,  SubjectMapperImpl.class, SubjectModelControllerImpl.class)).thenReturn(refreshableContainer);
+		Mockito.when(lazyQueryContainerFactory.create(SubjectCols.Id,  SubjectConverterImpl.class, SubjectModelControllerImpl.class)).thenReturn(refreshableContainer);
 		Mockito.when(itemContainerFactory.create(SubjectCols.class)).thenReturn(item);
 		ReflectionTestUtils.setField(subjectModels, "customerService", customerService);
 		ReflectionTestUtils.setField(subjectModels, "lazyQueryContainerFactory", lazyQueryContainerFactory);
@@ -58,7 +58,7 @@ public class SubjectModelsTest {
 	@Test
 	public final void  itemToSubjectConverter() {
 		final Converter<Item, Subject> result = subjectModels.itemToSubjectConverter();
-		Assert.assertTrue(result instanceof ItemToDomainMapperImpl);
+		Assert.assertTrue(result instanceof ItemToDomainConverterImpl);
 		Assert.assertEquals(SubjectImpl.class, ReflectionTestUtils.getField(result, "clazz"));
 		Assert.assertArrayEquals(SubjectCols.values(), (Object[]) ReflectionTestUtils.getField(result, "cols"));
 	}
