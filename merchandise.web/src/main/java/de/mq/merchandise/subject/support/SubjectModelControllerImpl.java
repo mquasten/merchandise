@@ -36,8 +36,8 @@ class SubjectModelControllerImpl {
 	}
 	
 	@SubjectEventQualifier(EventType.SubjectChanged)
-	public  void test() {
-		
+	public  Subject subject(final Long id ) {
+		return subjectService.subject(id);
 	}
 
 }

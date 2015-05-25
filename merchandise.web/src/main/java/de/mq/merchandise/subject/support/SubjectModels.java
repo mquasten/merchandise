@@ -68,13 +68,7 @@ class SubjectModels {
 		
 	}
 	
-	@Bean()
-	@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectEditItem)
-	@Scope(  proxyMode=ScopedProxyMode.TARGET_CLASS ,  value="session")
-	Item subjectEditItemContainer() {
-		return itemContainerFactory.create(SubjectCols.class);
-		
-	}
+	
 	
 
 }

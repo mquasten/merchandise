@@ -28,6 +28,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 
 import de.mq.merchandise.subject.Subject;
+import de.mq.merchandise.subject.support.SubjectModel.EventType;
 import de.mq.merchandise.util.ComponentTestHelper;
 import de.mq.merchandise.util.Observer;
 import de.mq.merchandise.util.support.RefreshableContainer;
@@ -36,6 +37,8 @@ public class SubjectViewTest {
 	
 	@SuppressWarnings("unchecked")
 	private final Converter<Item, Subject> itemToSubjectConverter = Mockito.mock(Converter.class);
+	@SuppressWarnings("unchecked")
+	private final Converter<Subject,Item>subjectToItemConverter = Mockito.mock(Converter.class);
 	private final RefreshableContainer lazyQueryContainer = Mockito.mock(RefreshableContainer.class);
 	private final Item subjectItem = Mockito.mock(Item.class);
 	private final Item subjectEditItem = Mockito.mock(Item.class);
@@ -43,18 +46,14 @@ public class SubjectViewTest {
 	private final UserModel userModel = Mockito.mock(UserModel.class);
 	private final MessageSource messageSource = Mockito.mock(MessageSource.class);
 	
-	private final SubjectViewImpl subjectView= new SubjectViewImpl(itemToSubjectConverter,lazyQueryContainer, subjectItem, subjectEditItem, subjectModel, userModel, messageSource); 
+	private final SubjectViewImpl subjectView= new SubjectViewImpl(itemToSubjectConverter,subjectToItemConverter,lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource); 
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private final ArgumentCaptor<Observer<UserModel.EventType>> localChangedObserverCapture = (ArgumentCaptor) ArgumentCaptor.forClass(Observer.class);
 
 	private final ArgumentCaptor<UserModel.EventType> localChangedTypeCapture = ArgumentCaptor.forClass(UserModel.EventType.class);
 	
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private final ArgumentCaptor<Observer<SubjectModel.EventType>> searchChangedObserverCapture = (ArgumentCaptor) ArgumentCaptor.forClass(Observer.class);
-	
-	private final ArgumentCaptor<SubjectModel.EventType> searchChangedTypeCapture = ArgumentCaptor.forClass(SubjectModel.EventType.class);
+	private final Map<EventType,Observer<EventType>> observers = new HashMap<>();
 	
 	private final Map<String, Component> components = new HashMap<>();
 	
@@ -87,6 +86,11 @@ public class SubjectViewTest {
 		Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col -> Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name()), null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name())));
 		
 	
+		Mockito.doAnswer(i -> {
+			observers.put((EventType)i.getArguments()[1], (Observer<EventType>) i.getArguments()[0] );
+			return null;
+		}).when(subjectModel).register(Mockito.any(Observer.class), Mockito.any(SubjectModel.EventType.class));
+		
 		subjectView.init();
 		
 		
@@ -97,11 +101,13 @@ public class SubjectViewTest {
 		Assert.assertEquals(UserModel.EventType.LocaleChanged, localChangedTypeCapture.getValue());
 		localChangedObserverCapture.getValue().process(localChangedTypeCapture.getValue());
 		
-		Mockito.verify(subjectModel).register(searchChangedObserverCapture.capture(), searchChangedTypeCapture.capture());
+		Assert.assertEquals(2, observers.size());
+		Assert.assertTrue( observers.containsKey(EventType.SearchCriteriaChanged));
+		Assert.assertTrue( observers.containsKey(EventType.SubjectChanged));
+		Mockito.verify(subjectModel).register( observers.get(EventType.SearchCriteriaChanged), EventType.SearchCriteriaChanged);
+		Mockito.verify(subjectModel).register( observers.get(EventType.SubjectChanged), EventType.SubjectChanged);
 		
-		Assert.assertNotNull(searchChangedObserverCapture.getValue());
-		Assert.assertEquals(SubjectModel.EventType.SearchCriteriaChanged, searchChangedTypeCapture.getValue());
-		
+	
 		
 		components.clear();
 		ComponentTestHelper.components(subjectView, components);
@@ -131,7 +137,8 @@ public class SubjectViewTest {
 	
 	@Test
 	public final void refreshSubjectContainer() {
-		searchChangedObserverCapture.getValue().process(searchChangedTypeCapture.getValue());
+		observers.get(EventType.SearchCriteriaChanged).process(EventType.SearchCriteriaChanged);
+		//searchChangedObserverCapture.getValue().process(searchChangedTypeCapture.getValue());
 		Mockito.verify(lazyQueryContainer, Mockito.times(1)).refresh();
 	}
 	

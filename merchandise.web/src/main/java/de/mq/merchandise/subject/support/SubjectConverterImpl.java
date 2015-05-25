@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -11,6 +12,7 @@ import com.vaadin.data.util.PropertysetItem;
 import de.mq.merchandise.subject.Subject;
 
 @Component
+@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter)
 class SubjectConverterImpl implements Converter<Subject, Item> {
 
 	@Override

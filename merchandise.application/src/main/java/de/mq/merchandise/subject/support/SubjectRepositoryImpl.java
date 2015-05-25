@@ -150,5 +150,13 @@ class SubjectRepositoryImpl implements SubjectRepository {
 		}
 		entityManager.remove(toBeDeleted);
 	}
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.SubjectRepository#subject(java.lang.Long)
+	 */
+	@Override
+	public Subject subject(Long id) {
+		return entityManager.find(SubjectImpl.class, id);
+	}
 
 }

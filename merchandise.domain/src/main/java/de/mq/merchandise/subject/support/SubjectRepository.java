@@ -20,4 +20,6 @@ interface SubjectRepository {
 
 	void remove(Subject subject);
 	
+	Subject subject(final Long id);
+	
 }

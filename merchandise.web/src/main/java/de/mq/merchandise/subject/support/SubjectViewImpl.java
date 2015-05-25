@@ -1,6 +1,8 @@
 package de.mq.merchandise.subject.support;
 
 
+
+
 import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -31,7 +33,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.mq.merchandise.subject.Subject;
-import de.mq.merchandise.util.TableContainerColumns;
+
 import de.mq.merchandise.util.support.RefreshableContainer;
 
 @Component
@@ -48,9 +50,12 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	static final String I18N_SUBJECT_TABLE_PREFIX = "subject_table_";
 	
 	private final Converter<Item, Subject> itemToSubjectMapper;
+	
+	private final Converter<Subject, Item> subjectToItemConverter;
+	
 	private final RefreshableContainer lazyQueryContainer;
-	private final Item subjectSearchItem;
-	private final Item subjectEditItem;
+  private final Item subjectSearchItem;
+
 	private final SubjectModel subjectModel;
 	private final UserModel userModel;
 	private final MessageSource messageSource;
@@ -58,14 +63,15 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	
 
 	@Autowired
-	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer,
-			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem,@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectEditItem,
+	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter,@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item>  subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer,
+			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem,
 			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource) {
 
 		this.itemToSubjectMapper = itemToSubjectConverter;
+		this.subjectToItemConverter = subjectToItemConverter;
 		this.lazyQueryContainer = lazyQueryContainer;
 		this.subjectSearchItem = subjectSearchItem;
-		this.subjectEditItem = subjectEditItem;
+	
 		this.subjectModel = subjectModel;
 		this.userModel = userModel;
 		this.messageSource=messageSource;
@@ -84,21 +90,16 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		final TextField searchDescription = new TextField();
 		final FieldGroup fieldGroup = new FieldGroup();
 
-		// itemContainerFactory.assign(fieldGroup, SubjectCols.class);
+		
 		fieldGroup.setItemDataSource(subjectSearchItem);
 
 		final Panel searchPanel = new Panel();
-		
-		//searchPanel.setCaption("Produkt-Template suchen");
 		
 		final GridLayout searchBox = new GridLayout(1,2);
 		final HorizontalLayout searchLayout = new HorizontalLayout();
 		
 		searchBox.addComponent(searchLayout, 0,0);
 		searchPanel.setContent(searchBox);
-
-		
-		
 	
 		final FormLayout col1Layout = new FormLayout();
 		
@@ -114,25 +115,14 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		searchLayout.addComponent(col2Layout);
 		col2Layout.addComponent(searchDescription);
 		
-		//searchDescription.setCaption("Beschreibungxx");
-
-		
 
 		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setMargin(true);
 		final Button searchButton = new Button();
 		buttonLayout.addComponent(searchButton);
 		
-		//buttonLayout.setComponentAlignment(searchButton, Alignment.MIDDLE_CENTER);
 		buttonLayout.setWidth("100%");
 		searchBox.addComponent(buttonLayout, 0,1);
-		
-		
-	
-		//searchLayout.addComponent(searchButton);
-		//searchLayout.setComponentAlignment(searchButton, Alignment.BOTTOM_LEFT);
-
-	  
 		
 		fieldGroup.setBuffered(true);
 		fieldGroup.bind(searchName, SubjectCols.Name);
@@ -157,7 +147,6 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 		final FieldGroup editorFields = new FieldGroup();
 	
-		editorFields.setItemDataSource(subjectEditItem);
 		Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()&& !col.equals(SubjectCols.DateCreated)).forEach(col -> {
 			final TextField field = new TextField(col.name());
 			field.setNullRepresentation("");
@@ -166,20 +155,13 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			
 		});
 		
-		subjectModel.register(e -> { 
+	   subjectModel.register(e -> { 
+			editorFields.setItemDataSource(null);
+			if( subjectModel.getSubject().isPresent()) {
+				editorFields.setItemDataSource(subjectToItemConverter.convert(subjectModel.getSubject().get()));
+			}
 			
-			//editorFields.setItemDataSource(null);
-			
-		
-			final Property<String> itemProperty = getSubjectEditProperty(SubjectCols.Name);
-			itemProperty.setValue(null);
-			
-				
-			
-			
-			editorFields.setItemDataSource(subjectEditItem);
-			
-		}, SubjectModel.EventType.SubjectChanged); 
+		}, SubjectModel.EventType.SubjectChanged);  
 		
 		
 		editorLayout.addComponent(col1);
@@ -230,7 +212,6 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 		subjectModel.register(event -> lazyQueryContainer.refresh(), SubjectModel.EventType.SearchCriteriaChanged);
 
-	    //subjectList.setCaption("Produkt-Templates");
 	    
 	    userModel.register(o -> {
 	    	searchDescription.setCaption(messageSource.getMessage(I18N_SUBJECT_SEARCH_DESCRIPTION, null, userModel.getLocale()));
@@ -243,11 +224,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	    }, UserModel.EventType.LocaleChanged);
 	}
 
-	@SuppressWarnings("unchecked")
-	private Property<String> getSubjectEditProperty(final TableContainerColumns col) {
-		return subjectEditItem.getItemProperty(col);
-	}
-
+	
 	private void searchCriteria2Model(final FieldGroup fieldGroup) {
 		try {
 

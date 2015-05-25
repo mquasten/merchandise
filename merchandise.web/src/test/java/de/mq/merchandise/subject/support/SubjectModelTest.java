@@ -96,7 +96,7 @@ public class SubjectModelTest<SearchCriteriaChanged> {
 	@Test
 	public final void events() {
 		Arrays.asList(SubjectModel.EventType.values()).forEach(col -> Assert.assertEquals(col, SubjectModel.EventType.valueOf(col.name())));	
-		Assert.assertEquals(1, SubjectModel.EventType.values().length);
+		Assert.assertEquals(2, SubjectModel.EventType.values().length);
 	}
 
 }

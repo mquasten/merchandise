@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @FunctionalInterface
-public interface Event<T> {
+public interface Event<T,R> {
 	
 	 T id();
 	 
@@ -13,11 +13,11 @@ public interface Event<T> {
 		return new HashMap<>();
 	}
 	
-	default <R> Optional<R>  result() {
+	default Optional<R>  result() {
 		return Optional.empty();
 	}
 	
-	default<R> void  assign(R result) {
+	default  void  assign(R result) {
 		throw new UnsupportedOperationException("Results not supported for this event");
 	}
 

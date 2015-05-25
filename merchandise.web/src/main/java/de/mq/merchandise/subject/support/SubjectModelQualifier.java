@@ -20,6 +20,7 @@ public @interface SubjectModelQualifier {
 		SubjectSearchItem,
 		SubjectEditItem,
 		SubjectModel,
-		ItemToSubjectConverter
+		ItemToSubjectConverter,
+		SubjectToItemConverter;
 	}
 }
