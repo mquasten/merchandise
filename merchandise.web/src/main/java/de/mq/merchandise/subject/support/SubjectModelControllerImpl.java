@@ -8,14 +8,11 @@ import org.springframework.stereotype.Controller;
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
-import de.mq.merchandise.util.LazyQueryContainerFactory.PagingMethod;
-import de.mq.merchandise.util.LazyQueryContainerFactory.PagingMethods;
 
 @Controller
-
 class SubjectModelControllerImpl {
 	
-	final static  String NAME = PagingMethods.Count.name();
+	
 	private final  SubjectService subjectService;
 	
 	@Autowired
@@ -23,14 +20,16 @@ class SubjectModelControllerImpl {
 		this.subjectService=subjectService;
 	}
 	
-	@PagingMethod(PagingMethods.Count)
+	
+	@SubjectEventQualifier(EventType.CountPaging)
 	Number countSubjects(final SubjectModel subjectModel) {
 		return subjectService.subjects(subjectModel.getSearchCriteria());
 	
 	}
 	
 
-	@PagingMethod(PagingMethods.Read)
+
+	@SubjectEventQualifier(EventType.ListPaging)
 	Collection<Subject> subjects(final SubjectModel subjectModel, final ResultNavigation paging) {
 		return subjectService.subjects(subjectModel.getSearchCriteria(), paging);
 	}

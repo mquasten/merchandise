@@ -9,6 +9,8 @@ import de.mq.merchandise.util.Observable;
 public interface SubjectModel extends Observable<SubjectModel.EventType> {
 	
 	public enum EventType {
+		CountPaging,
+		ListPaging,
 		SearchCriteriaChanged,
 		SubjectChanged;
 	}

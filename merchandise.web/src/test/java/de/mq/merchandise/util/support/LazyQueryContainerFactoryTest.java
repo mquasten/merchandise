@@ -1,14 +1,10 @@
 package de.mq.merchandise.util.support;
 
-
-
-import java.util.Arrays;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
@@ -20,42 +16,28 @@ import com.vaadin.ui.Table;
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectModel;
+import de.mq.merchandise.subject.support.SubjectModel.EventType;
 import de.mq.merchandise.subject.support.TestConstants;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
-import de.mq.merchandise.util.LazyQueryContainerFactory.PagingMethods;
+
 
 public class LazyQueryContainerFactoryTest {
 	
-	private  final Converter<Subject , Item> converter = TestConstants.subjectConverterMock();
-	private final    BeanResolver beanResolver = Mockito.mock(BeanResolver.class);
-	private final LazyQueryContainerFactory    lazyQueryContainerFactory = new SimpleReadOnlyLazyQueryContainerFactoryImpl(beanResolver);
+	@SuppressWarnings("unchecked")
+	private final  Converter<Subject, Item> converter = Mockito.mock(Converter.class);
+	private final    ApplicationEventPublisher applicationEventPublisher = Mockito.mock(ApplicationEventPublisher.class);
+	private final LazyQueryContainerFactory    lazyQueryContainerFactory = new SimpleReadOnlyLazyQueryContainerFactoryImpl(applicationEventPublisher);
 
 	@SuppressWarnings("unused")
 	private final SubjectModel subjectModel = Mockito.mock(SubjectModel.class);
 	
 	private ResultNavigation resultNavigation;
 	
-	private Object controller = TestConstants.subjectControllerMock();
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	
 	@Before
 	public void setup() {
-		Mockito.when(beanResolver.resolve((Class<Object>)controller.getClass().getSuperclass())).thenReturn(controller);
-		Mockito.when(beanResolver.resolve( (Class) converter.getClass())).thenReturn(converter);
-		Mockito.when(beanResolver.resolve(Mockito.anyMap(), (Class) Mockito.any())).thenAnswer(i -> {
-		
-			if( i.getArguments()[1].equals(ResultNavigation.class) ) {
-				resultNavigation = (ResultNavigation) ((Map)i.getArguments()[0]).get(ResultNavigation.class);
-				return resultNavigation;
-			}
-			
-			if( i.getArguments()[1].equals(SubjectModel.class) ) {
-				return Mockito.mock(SubjectModel.class);
-			}
-			Assert.fail("Try to resolve wrong bean: " +  i.getArguments()[1]);
-			return null;
-			
-		});
+	
 		
 	}
 
@@ -63,8 +45,8 @@ public class LazyQueryContainerFactoryTest {
 	@Test
 	public final void create() {
 		
-		@SuppressWarnings("unchecked")
-		final RefreshableContainer container = lazyQueryContainerFactory.create(TestConstants.SUBJECT_COLS_ID,(Class<Converter<Subject, Item>>) converter.getClass(), controller.getClass().getSuperclass());
+		
+		final RefreshableContainer container = lazyQueryContainerFactory.create(TestConstants.SUBJECT_COLS_ID, converter, EventType.CountPaging, EventType.ListPaging);
 		Assert.assertEquals(1, container.getItemIds().size());
 		Assert.assertEquals(TestConstants.ID, container.getItemIds().stream().findFirst().get());
 		final Item item = container.getItem(TestConstants.ID);
@@ -85,8 +67,8 @@ public class LazyQueryContainerFactoryTest {
 	
 	@Test
 	public final void sort() {
-		@SuppressWarnings("unchecked")
-		final RefreshableContainer container = lazyQueryContainerFactory.create(TestConstants.SUBJECT_COLS_ID,(Class<Converter<Subject, Item>>) converter.getClass(), controller.getClass().getSuperclass());
+		
+		final RefreshableContainer container = lazyQueryContainerFactory.create(TestConstants.SUBJECT_COLS_ID, converter, EventType.CountPaging, EventType.ListPaging);
 		final Table table = new Table();
 		table.setContainerDataSource(container);
 		table.setSortContainerPropertyId(TestConstants.SUBJECT_COLS_NAME);
@@ -110,15 +92,15 @@ public class LazyQueryContainerFactoryTest {
 	
 	@Test(expected=UnsupportedOperationException.class)
 	public final void remove() {
-		@SuppressWarnings("unchecked")
-		final LazyQueryContainer container = (LazyQueryContainer) lazyQueryContainerFactory.create(TestConstants.SUBJECT_COLS_ID,(Class<Converter<Subject, Item>>) converter.getClass(), controller.getClass().getSuperclass());
+	
+		final LazyQueryContainer container = (LazyQueryContainer) lazyQueryContainerFactory.create(TestConstants.SUBJECT_COLS_ID, converter, EventType.CountPaging, EventType.ListPaging);
 		container.removeAllItems();
 	}
 	
 	@Test(expected=UnsupportedOperationException.class)
 	public final void add() {
-		@SuppressWarnings("unchecked")
-		final RefreshableContainer container =lazyQueryContainerFactory.create(TestConstants.SUBJECT_COLS_ID,(Class<Converter<Subject, Item>>) converter.getClass(), controller.getClass().getSuperclass());
+		
+		final RefreshableContainer container =lazyQueryContainerFactory.create(TestConstants.SUBJECT_COLS_ID,  converter, EventType.CountPaging, EventType.ListPaging);
 		
 		
 		Assert.assertNotNull(container.addItem());
@@ -126,11 +108,6 @@ public class LazyQueryContainerFactoryTest {
 		container.commit();
 	}
 
-	@Test
-	public final void pagingMethods() {
-		Assert.assertEquals(2, PagingMethods .values().length);
-		Arrays.asList(PagingMethods .values()).forEach(value -> Assert.assertEquals(value, PagingMethods.valueOf(value.name())));
-	}
 	
 
 }

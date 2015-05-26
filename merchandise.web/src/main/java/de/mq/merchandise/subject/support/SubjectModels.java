@@ -13,6 +13,7 @@ import com.vaadin.data.Item;
 
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.subject.Subject;
+import de.mq.merchandise.subject.support.SubjectModel.EventType;
 import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.support.ItemToDomainConverterImpl;
@@ -21,6 +22,9 @@ import de.mq.merchandise.util.support.RefreshableContainer;
 @Configuration
 class SubjectModels {
 	
+	@Autowired
+	@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter)
+	private Converter<Subject, Item> subjectToItemConverter;
 	
 	
 	@Autowired
@@ -56,7 +60,7 @@ class SubjectModels {
 	@SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer)
 	@Scope(  proxyMode=ScopedProxyMode.TARGET_CLASS ,  value="session")
 	RefreshableContainer  subjectLazyQueryContainer() {
-		return lazyQueryContainerFactory.create(SubjectCols.Id, SubjectConverterImpl.class, SubjectModelControllerImpl.class);
+		return lazyQueryContainerFactory.create(SubjectCols.Id, subjectToItemConverter, EventType.CountPaging, EventType.ListPaging);
 		
 	}
 	

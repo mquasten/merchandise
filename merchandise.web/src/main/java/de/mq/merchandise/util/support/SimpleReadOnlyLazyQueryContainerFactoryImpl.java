@@ -4,13 +4,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
@@ -27,7 +29,8 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 import de.mq.merchandise.ResultNavigation;
-
+import de.mq.merchandise.util.Event;
+import de.mq.merchandise.util.EventBuilder;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.TableContainerColumns;
 
@@ -35,15 +38,17 @@ import de.mq.merchandise.util.TableContainerColumns;
 class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerFactory   {
 	
 	private static final String VALUES_METHOD = "values";
-	private  final BeanResolver beanResolver; 
+	
+
+	private 	final ApplicationEventPublisher applicationEventPublisher;
 	
 	@Autowired
-	SimpleReadOnlyLazyQueryContainerFactoryImpl(final    BeanResolver beanResolver) {
-		this.beanResolver=beanResolver;
+	SimpleReadOnlyLazyQueryContainerFactoryImpl(ApplicationEventPublisher applicationEventPublisher) {
+		this.applicationEventPublisher=applicationEventPublisher;
 	}
 	
 	
-	private  QueryFactory  createQueryFactory(final Enum<? extends TableContainerColumns> idPropertyId, final Class<? extends Converter<?,Item>> converterClass, final Map<PagingMethods, Method> methods) {
+	private <T> QueryFactory  createQueryFactory(final Enum<? extends TableContainerColumns> idPropertyId, final Converter<?,Item> converter, final T countEvent, final T pageEvent) {
 		
 		
 		return queryDefinition -> new Query() {
@@ -91,20 +96,23 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 				};
 				
 				
-				final Method method = methods.get(PagingMethods.Read);
-				Assert.notNull(method , "ReadMethod for Paging not found");
-				method.setAccessible(true);
-				final Map<Class<?>, Object> beans = new HashMap<>();
-				beans.put(ResultNavigation.class, resultNavigation);
-			
-				@SuppressWarnings("unchecked")
-				final Collection<Object> results = (Collection<Object>) ReflectionUtils.invokeMethod(method, beanResolver.resolve(method.getDeclaringClass()), Arrays.asList(method.getParameterTypes()).stream().map(t -> beanResolver.resolve(beans, t)).collect(Collectors.toList()).toArray());
+				@SuppressWarnings({ "unchecked", "rawtypes" })
+				final 	Event<T,Collection<Object>> event =  EventBuilder.of(pageEvent, (Class) Collection.class).withParameter(resultNavigation).build();
+				applicationEventPublisher.publishEvent(event);
+				final Collection<Object> results = new ArrayList<>() ;
+				if( event.result().isPresent()){
+					results.addAll(event.result().get());
+				}
 				final List<Item> items = new ArrayList<>();
-				@SuppressWarnings("unchecked")
-				final Converter<Object, Item> converter=  (Converter<Object, Item>) beanResolver.resolve(converterClass);
+				 // (Converter<Object, Item>) beanResolver.resolve(converterClass);
 			
-				results.forEach(result -> items.add( converter.convert(result)) );
+				results.forEach(result -> items.add( convert(converter, result)) );
 				return items;
+			}
+
+			@SuppressWarnings("unchecked")
+			private Item convert(final Converter<?, Item> converter, Object result) {
+				return ((Converter<Object, Item>) converter).convert(result);
 			}
 			
 			
@@ -131,11 +139,11 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 
 			@Override
 			public final int size() {
-				final Method method = methods.get(PagingMethods.Count);
-				Assert.notNull(method , "CountMethod for Paging not found");
-				method.setAccessible(true);
-				return ((Number) ReflectionUtils.invokeMethod(method, beanResolver.resolve(method.getDeclaringClass()), Arrays.asList(method.getParameterTypes()).stream().map(t -> beanResolver.resolve(t)).collect(Collectors.toList()).toArray())).intValue();
-				
+			final 	Event<T,Number> event = EventBuilder.of(countEvent, Number.class).build();
+			applicationEventPublisher.publishEvent(event);
+			Assert.isTrue( event.result().isPresent(), "CountMethod should return a value");
+			return event.result().get().intValue();
+	
 				
 			} }; 
 	}
@@ -150,7 +158,7 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 	 * @see de.mq.merchandise.util.support.OnlyLazyQueryContainerFactory#create(java.lang.Enum, java.lang.Number, java.lang.Class, java.lang.Class, java.lang.Object)
 	 */
 	@Override
-	public final  RefreshableContainer   create(final Enum<? extends TableContainerColumns> idPropertyId, final Number batchSize, final Class<? extends Converter<?,Item>> converterClass, final Class<?>controllerTarget) {
+	public final <T>  RefreshableContainer   create(final Enum<? extends TableContainerColumns> idPropertyId, final Number batchSize, final Converter<?,Item> converter, final T countEvent, final T pageEvent) {
 		
 		
 		final Method method = ReflectionUtils.findMethod(idPropertyId.getClass(), VALUES_METHOD);
@@ -158,11 +166,7 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 		method.setAccessible(true);
 		final TableContainerColumns[] cols = 	 (TableContainerColumns[]) ReflectionUtils.invokeMethod(method, null);
 		
-		final Object controller = beanResolver.resolve(controllerTarget);
-		final Map<PagingMethods, Method> methods = new HashMap<>();
-		ReflectionUtils.doWithMethods(controller.getClass(), m -> methods.put(m.getAnnotation(PagingMethod.class).value(), m) , m -> m.isAnnotationPresent(PagingMethod.class));
-		
-		return new MyLazyQueryContainer(createQueryFactory(idPropertyId, converterClass, methods), idPropertyId, batchSize.intValue(), cols);
+		return new MyLazyQueryContainer(createQueryFactory(idPropertyId, converter, countEvent, pageEvent), idPropertyId, batchSize.intValue(), cols);
 		
 	}
 
@@ -172,8 +176,8 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 	 * @see de.mq.merchandise.util.support.LazyQueryContainerFactory#create(java.lang.Enum, java.lang.Class, java.lang.Class, java.lang.Object[])
 	 */
 	@Override
-	public final RefreshableContainer create(final Enum<? extends TableContainerColumns> idPropertyId, Class<? extends Converter<?, Item>> converterClass, Class<?> controllerTarget) {
-		return  create(idPropertyId, 50, converterClass, controllerTarget);
+	public final <T> RefreshableContainer create(final Enum<? extends TableContainerColumns> idPropertyId, Converter<?, Item> converter, T countEvent,  T pageEvent) {
+		return  create(idPropertyId, 50, converter, countEvent, pageEvent);
 	}
 
 
