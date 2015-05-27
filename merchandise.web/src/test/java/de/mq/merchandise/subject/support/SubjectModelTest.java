@@ -19,7 +19,7 @@ import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.Observer;
 
 
-public class SubjectModelTest<SearchCriteriaChanged> {
+public class SubjectModelTest {
 	
 	private static final String CUSTOMER_FIELD = "customer";
 	private static final String ID_FIELD = "id";
@@ -96,7 +96,7 @@ public class SubjectModelTest<SearchCriteriaChanged> {
 	@Test
 	public final void events() {
 		Arrays.asList(SubjectModel.EventType.values()).forEach(col -> Assert.assertEquals(col, SubjectModel.EventType.valueOf(col.name())));	
-		Assert.assertEquals(2, SubjectModel.EventType.values().length);
+		Assert.assertEquals(4, SubjectModel.EventType.values().length);
 	}
 
 }

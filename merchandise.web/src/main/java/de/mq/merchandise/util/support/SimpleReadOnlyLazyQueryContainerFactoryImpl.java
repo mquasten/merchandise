@@ -99,14 +99,11 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 				@SuppressWarnings({ "unchecked", "rawtypes" })
 				final 	Event<T,Collection<Object>> event =  EventBuilder.of(pageEvent, (Class) Collection.class).withParameter(resultNavigation).build();
 				applicationEventPublisher.publishEvent(event);
-				final Collection<Object> results = new ArrayList<>() ;
-				if( event.result().isPresent()){
-					results.addAll(event.result().get());
-				}
+				
+				Assert.isTrue( event.result().isPresent(), "ListMethod should return a value");
 				final List<Item> items = new ArrayList<>();
-				 // (Converter<Object, Item>) beanResolver.resolve(converterClass);
-			
-				results.forEach(result -> items.add( convert(converter, result)) );
+	
+				event.result().get().forEach(result -> items.add( convert(converter, result)) );
 				return items;
 			}
 

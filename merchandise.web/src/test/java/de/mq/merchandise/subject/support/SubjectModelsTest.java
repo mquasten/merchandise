@@ -46,6 +46,7 @@ public class SubjectModelsTest {
 		ReflectionTestUtils.setField(subjectModels, "customerService", customerService);
 		ReflectionTestUtils.setField(subjectModels, "lazyQueryContainerFactory", lazyQueryContainerFactory);
 		ReflectionTestUtils.setField(subjectModels, "itemContainerFactory", itemContainerFactory);
+		ReflectionTestUtils.setField(subjectModels, "subjectToItemConverter", converter);
 	}
 	
 	@Test
