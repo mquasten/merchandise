@@ -65,6 +65,8 @@ class SimpleEventListenerImpl implements ApplicationContextAware {
 	public void setApplicationContext(final ApplicationContext applicationContext)  {
 		this.applicationContext=applicationContext;
 		final Set<Object> controllers = applicationContext.getBeansWithAnnotation(Controller.class).values().stream().collect(Collectors.toSet());
+		
+	
 		controllers.forEach(obj -> Arrays.asList(obj.getClass().getDeclaredMethods()).stream().forEach(m -> Arrays.asList(m.getAnnotations()).stream().filter(a -> qualifiers.contains(a.annotationType()) && ReflectionUtils.findMethod(a.annotationType(), ANNOTATION_DEFAULT_VALUE_METHOD) != null && ReflectionUtils.invokeMethod(ReflectionUtils.findMethod(a.annotationType(), ANNOTATION_DEFAULT_VALUE_METHOD), a) != null).forEach(a -> {
 			final Object event = ReflectionUtils.invokeMethod(ReflectionUtils.findMethod(a.annotationType(), ANNOTATION_DEFAULT_VALUE_METHOD), a);
 			methods.put(event, m);

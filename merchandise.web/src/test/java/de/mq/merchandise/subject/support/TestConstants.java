@@ -14,6 +14,8 @@ public class TestConstants {
 	public static  final Enum<? extends TableContainerColumns> SUBJECT_COLS_NAME = SubjectCols.Name; 
 	public static  final  Enum<? extends TableContainerColumns> SUBJECT_COLS_DESC = SubjectCols.Description; 
 	
+	public static final Class<SubjectModelControllerImpl> SUBJECT_CONTROLLER_CLASS = SubjectModelControllerImpl.class;
+	
 
 	@SuppressWarnings("unchecked")
 	public static  final Collection<TableContainerColumns> SUBJECT_COLS = CollectionUtils.arrayToList(SubjectCols.values());
