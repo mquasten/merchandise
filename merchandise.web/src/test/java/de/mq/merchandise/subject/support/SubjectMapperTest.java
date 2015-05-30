@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.junit.Assert;
@@ -18,6 +19,7 @@ public class SubjectMapperTest {
 	private static final String NAME = "Crime Bank";
 	private static final String DESCRIPTION = "Vito Corleone,s Banking Service";
 	private Converter<Subject, Item> converter = new SubjectConverterImpl();
+	private Date date = new Date();
 	
 	@Test
 	public final void convert() {
@@ -25,6 +27,7 @@ public class SubjectMapperTest {
 		Mockito.when(subject.id()).thenReturn(Optional.of(ID));
 		Mockito.when(subject.name()).thenReturn(NAME);
 		Mockito.when(subject.description()).thenReturn(DESCRIPTION);
+		Mockito.when(subject.created()).thenReturn(date);
 		final Item item = converter.convert(subject);
 		Assert.assertEquals(ID, item.getItemProperty(SubjectCols.Id).getValue());
 		Assert.assertEquals(NAME, item.getItemProperty(SubjectCols.Name).getValue());
@@ -38,6 +41,7 @@ public class SubjectMapperTest {
 		final Item item = converter.convert(subject);
 		Assert.assertEquals(0, item.getItemPropertyIds().size());
 	}
+	
 	
 	
 	

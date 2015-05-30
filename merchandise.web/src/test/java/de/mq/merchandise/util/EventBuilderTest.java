@@ -13,11 +13,15 @@ import de.mq.merchandise.subject.support.SubjectImpl;
 
 public class EventBuilderTest {
 	
+	private static final long ID = 4711L;
+
 	private static final Long EVENT_ID = 19680528L;
 
+	final Subject subject = BeanUtils.instantiateClass(SubjectImpl.class);
+	
 	@Test
 	public final void createVoid() {
-		final Subject subject = BeanUtils.instantiateClass(SubjectImpl.class);
+		
 		final Event<Long,Void> event = EventBuilder.of(EVENT_ID).withParameter(subject).build();
 		Assert.assertEquals(EVENT_ID,  event.id());
 		final Map<Class<?>, ?> params = event.parameter();
@@ -31,6 +35,21 @@ public class EventBuilderTest {
 		Assert.assertEquals(EVENT_ID.toString(), event.toString());
 		
 		
+	}
+	
+	@Test
+	public final void create(){
+		final Event<Long,Subject> event = EventBuilder.of(EVENT_ID, Subject.class).withParameter(Long.class, ID).build();
+		Assert.assertEquals(EVENT_ID,  event.id());
+		final Map<Class<?>, ?> params = event.parameter();
+		Assert.assertEquals(1, params.size());
+		
+		Assert.assertEquals(ID, params.get(Long.class));
+		
+		Assert.assertFalse(event.result().isPresent());
+		event.assign(subject);
+		Assert.assertTrue(event.result().isPresent());
+		Assert.assertEquals(subject, event.result().get());
 	}
 
 }
