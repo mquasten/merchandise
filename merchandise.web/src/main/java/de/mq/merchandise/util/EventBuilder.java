@@ -80,7 +80,7 @@ public final class  EventBuilder<T,R> {
 			@Override
 			public boolean equals(final Object obj) {
 				if (!(obj instanceof Event)) {
-					return equals(obj);
+					return super.equals(obj);
 				}
 				return type.equals(((Event<?,?>) obj).id());
 			}
