@@ -5,16 +5,12 @@ package de.mq.merchandise.subject.support;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.subject.Subject;
-import de.mq.merchandise.util.Event;
-import de.mq.merchandise.util.EventBuilder;
 import de.mq.merchandise.util.support.ObservableImpl;
 
 
@@ -24,13 +20,15 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 	
 	private Subject subject;
 
+
 	
-	@Autowired
-	ApplicationEventPublisher applicationEventPublisher;
 	
-	SubjectModelImpl() {
+	private final SubjectEventFascade subjectEventFascade;
+	
+	SubjectModelImpl(final SubjectEventFascade subjectEventFascade) {
 		searchCriteria=BeanUtils.instantiateClass(SubjectImpl.class, Subject.class);
 		customer=BeanUtils.instantiateClass(CustomerImpl.class, Customer.class);
+		this.subjectEventFascade=subjectEventFascade;
 	}
 
 
@@ -65,12 +63,9 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 			notifyObservers(EventType.SubjectChanged);
 			return;
 		}
-		
-		// https://spring.io/blog/2015/02/11/better-application-events-in-spring-framework-4-2
-		final Optional<Subject> result = publishEvent(EventBuilder.of(EventType.SubjectChanged, Subject.class).withParameter(subjectId).build());
-		Assert.isTrue(result.isPresent(), "Subject should be returned");
-		subject = result.get();
-		
+				
+		subject= subjectEventFascade.subjectChanged(subjectId);
+		Assert.notNull(subject, "Subject should be returned" );
 		notifyObservers(EventType.SubjectChanged);
 	}
 
@@ -82,10 +77,5 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 		return Optional.ofNullable(subject);
 	}
 	
-	
-	private<R,T> Optional<R> publishEvent(final Event<T, R> event) {
-		applicationEventPublisher.publishEvent( event );
-		return event.result();
-	}
 	
 }

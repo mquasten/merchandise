@@ -14,6 +14,7 @@ import com.vaadin.data.Item;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
+import de.mq.merchandise.util.EventFascadeProxyFactory;
 import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.support.ItemToDomainConverterImpl;
@@ -26,6 +27,9 @@ class SubjectModels {
 	@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter)
 	private Converter<Subject, Item> subjectToItemConverter;
 	
+	@Autowired
+	@EventFascadeProxyFactory.EventFascadeProxyFactoryQualifier(EventFascadeProxyFactory.FactoryType.CGLib)
+	private EventFascadeProxyFactory eventFascadeProxyFactory;
 	
 	@Autowired
 	private LazyQueryContainerFactory lazyQueryContainerFactory;
@@ -40,7 +44,8 @@ class SubjectModels {
 	@Scope( proxyMode=ScopedProxyMode.TARGET_CLASS  ,  value="session")
 	@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel)
 	SubjectModel subjectModel() {
-		return new SubjectModelImpl();
+		final SubjectEventFascade fascade = eventFascadeProxyFactory.createProxy(SubjectEventFascade.class);
+		return new SubjectModelImpl(fascade);
 
 	}
 

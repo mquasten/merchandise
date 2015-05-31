@@ -24,10 +24,12 @@ public class SubjectModelTest {
 	private static final String CUSTOMER_FIELD = "customer";
 	private static final String ID_FIELD = "id";
 	private static final long CUSTOMER_ID = 19680528L;
+	
+	private SubjectEventFascade subjectEventFascade = Mockito.mock(SubjectEventFascade.class);
 
 	@Test
 	public final void create() {
-		final SubjectModel subjectModel = new SubjectModelImpl();
+		final SubjectModel subjectModel = new SubjectModelImpl(subjectEventFascade);
 		Assert.assertTrue(subjectModel.getSearchCriteria() instanceof SubjectImpl);
 		Assert.assertNull(subjectModel.getSearchCriteria().customer() );
 		
@@ -37,7 +39,7 @@ public class SubjectModelTest {
 	@Test
 	public final void setSerachCriteria() {
 		final Customer customer = Mockito.mock(Customer.class);
-		final SubjectModel subjectModel = new SubjectModelImpl();
+		final SubjectModel subjectModel = new SubjectModelImpl(subjectEventFascade);
 		@SuppressWarnings("unchecked")
 		final Observer<SubjectModel.EventType> observer = Mockito.mock(Observer.class);
 		subjectModel.register(observer, SubjectModel.EventType.SearchCriteriaChanged);
@@ -58,7 +60,7 @@ public class SubjectModelTest {
 	public final void setCustomer() {
 		@SuppressWarnings("unchecked")
 		final Observer<SubjectModel.EventType> observer = Mockito.mock(Observer.class);
-		final SubjectModel subjectModel = new SubjectModelImpl();
+		final SubjectModel subjectModel = new SubjectModelImpl(subjectEventFascade);
 		subjectModel.register(observer, SubjectModel.EventType.SearchCriteriaChanged);
 		final Subject subject = BeanUtils.instantiateClass(SubjectImpl.class);
 		ReflectionTestUtils.setField(subjectModel, "searchCriteria", subject);
@@ -76,7 +78,7 @@ public class SubjectModelTest {
 		
 		@SuppressWarnings("unchecked")
 		final Observer<SubjectModel.EventType> observer = Mockito.mock(Observer.class);
-		final SubjectModel subjectModel = new SubjectModelImpl();
+		final SubjectModel subjectModel = new SubjectModelImpl(subjectEventFascade);
 		Customer existingCustomer =	(Customer) ReflectionTestUtils.getField(subjectModel, CUSTOMER_FIELD);
 		Field idField = ReflectionUtils.findField(CustomerImpl.class, ID_FIELD);
 		idField.setAccessible(true);
