@@ -48,7 +48,7 @@ class CGLibEventFascadeProxyFactoryImpl extends AbstractEventFascadeProxyFactory
 		final Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(targetClass); 
 		enhancer.setCallbackFilter(method -> isAnnotated(method) ? 1 : 0 );
-		enhancer.setCallbacks( new Callback[] { (MethodInterceptor) (obj, method, args, proxy) -> ReflectionUtils.invokeMethod(method, obj, args)   , (MethodInterceptor) (obj, method, args, proxy) -> 
+		enhancer.setCallbacks( new Callback[] { (MethodInterceptor) (obj, method, args, proxy) -> ReflectionUtils.invokeMethod(method, proxy, args)   , (MethodInterceptor) (obj, method, args, proxy) -> 
 		invoke(method, args) });
 		return enhancer;
 	}

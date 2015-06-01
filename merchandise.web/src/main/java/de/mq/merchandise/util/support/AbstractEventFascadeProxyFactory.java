@@ -30,11 +30,14 @@ abstract class AbstractEventFascadeProxyFactory implements EventFascadeProxyFact
 
 	Object invoke(final Method method, final Object[] args) {
 		final Object eventId = valueFromAnnotation(method);
+		
+		
 		final EventBuilder<?, ?> builder = EventBuilder.of(eventId, Object.class);
 
 		IntStream.range(0, args.length).forEach(i -> builder.withParameter(method.getParameterTypes()[i], args[i]));
 
 		final Event<?, ?> event = builder.build();
+		
 
 		applicationEventPublisher.publishEvent(event);
 
