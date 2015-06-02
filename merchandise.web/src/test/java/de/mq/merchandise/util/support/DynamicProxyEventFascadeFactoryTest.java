@@ -2,47 +2,41 @@ package de.mq.merchandise.util.support;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Optional;
-
-import net.sf.cglib.proxy.MethodProxy;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.util.ReflectionUtils;
 
+
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.Event;
 import de.mq.merchandise.util.EventFascadeProxyFactory;
 
-public class CGLibEventFascadeProxyFactoryTest {
-
-	static final String CHANGE_SUBJECT = "changeSubject";
+public class DynamicProxyEventFascadeFactoryTest {
 	private static final long ID = 4711L;
+	static final String CHANGE_SUBJECT = "changeSubject";
 	final ApplicationEventPublisher applicationEventPublisher = Mockito.mock(ApplicationEventPublisher.class);
 	final EventAnnotationOperations eventAnnotationOperations = Mockito.mock(EventAnnotationOperations.class);
 	final Subject subject = Mockito.mock(Subject.class);
-
-	final EventFascadeProxyFactory eventFascadeProxyFactory = new CGLibEventFascadeProxyFactoryImpl(applicationEventPublisher, eventAnnotationOperations);
-
+	final EventFascadeProxyFactory eventFascadeProxyFactory = new DynamicProxyEventFascadeFactoryImpl(applicationEventPublisher, eventAnnotationOperations);
+	
 	@Before
 	public void setup() {
-		final Method method = ReflectionUtils.findMethod(TestFascade.class, CHANGE_SUBJECT, Long.class);
-
+		final Method method = ReflectionUtils.findMethod(Fascade.class, CHANGE_SUBJECT, Long.class);
+	
 		final Qualifier annotation = method.getAnnotation(Qualifier.class);
 
 		Mockito.when(eventAnnotationOperations.valueFromAnnotation(method)).thenReturn(annotation.value());
 
 		Mockito.when(eventAnnotationOperations.isAnnotaionPresent(method)).thenReturn(true);
 	}
-
+	
 	@Test
 	public final void createProxy() {
-
 		Mockito.doAnswer(i -> {
 
 			@SuppressWarnings("unchecked")
@@ -55,36 +49,17 @@ public class CGLibEventFascadeProxyFactoryTest {
 			event.assign(subject);
 			return null;
 		}).when(applicationEventPublisher).publishEvent(Mockito.any(Event.class));
-
-		TestFascade proxy = eventFascadeProxyFactory.createProxy(TestFascade.class);
-
-		Assert.assertEquals(subject, proxy.changeSubject(ID));
-
-		Assert.assertTrue(proxy == eventFascadeProxyFactory.createProxy(TestFascade.class));
-
-		Assert.assertTrue(proxy.toString().startsWith(MethodProxy.class.getName()));
-
-	}
-
-	@Test
-	public final void createProxyVoidResult() {
-
-		final TestFascade proxy = eventFascadeProxyFactory.createProxy(TestFascade.class);
-		Assert.assertNull(proxy.changeSubject(ID));
-
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		final ArgumentCaptor<Event<String, Void>> eventCaptor = ArgumentCaptor.forClass((Class) Event.class);
-		Mockito.verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
-
-		Assert.assertEquals(CHANGE_SUBJECT, eventCaptor.getValue().id());
-		Assert.assertEquals(1, eventCaptor.getValue().parameter().size());
-		Assert.assertEquals(Long.class, eventCaptor.getValue().parameter().keySet().stream().findFirst().get());
-		Assert.assertEquals(Optional.of(ID), eventCaptor.getValue().parameter().values().stream().findFirst());
+		
+		final Fascade proxy = eventFascadeProxyFactory.createProxy(Fascade.class);
+		Assert.assertEquals(subject, proxy.changeSubject(4711L));
+		
+		Assert.assertTrue(proxy.toString().startsWith(DynamicProxyEventFascadeFactoryImpl.class.getName()));
+		
 	}
 
 }
 
-abstract class TestFascade {
+interface Fascade {
 	@Qualifier(CGLibEventFascadeProxyFactoryTest.CHANGE_SUBJECT)
-	public abstract Subject changeSubject(Long id);
+	Subject changeSubject(Long id);
 }
