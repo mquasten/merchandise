@@ -37,7 +37,12 @@ public class ItemToDomainMapperTest {
 		Assert.assertEquals(SUBJECT_DESCRIPTION, subject.description());
 		Assert.assertEquals(SUBJECT_NAME, subject.name());
 		Assert.assertEquals(Optional.of(ID), subject.id());
-		Assert.assertTrue(new Date().getTime() - ((Date) ReflectionTestUtils.getField(subject, "dateCreated")).getTime() < 100);
+		Assert.assertTrue(new Date().getTime() - ((Date) ReflectionTestUtils.getField(subject, "dateCreated")).getTime() < 200);
+	}
+	
+	@Test
+	public final void convertNull() {
+		Assert.assertNull(converter.convert(null));
 	}
 
 }

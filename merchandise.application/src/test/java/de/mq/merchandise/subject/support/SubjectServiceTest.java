@@ -15,15 +15,18 @@ import de.mq.merchandise.subject.Subject;
 
 public class SubjectServiceTest {
 	
+	private static final long ID = 19680528L;
+
 	private static final Integer ROW_COUNTER = Integer.valueOf(42);
 
 	private final SubjectRepository subjectRepository = Mockito.mock(SubjectRepository.class);
 	
 	private SubjectService subjectService = new SubjectServiceImpl(subjectRepository);
+	private final Subject subject = Mockito.mock(Subject.class);
 	
 	@Test
 	public final void subjects() {
-		final Subject subject = Mockito.mock(Subject.class);
+		
 		final ResultNavigation paging = Mockito.mock(ResultNavigation.class);
 		final Collection<Subject> results = new ArrayList<>(); 
 		results.add(subject);
@@ -35,7 +38,7 @@ public class SubjectServiceTest {
 	
 	@Test
 	public final void subjectsCount() {
-		final Subject subject = Mockito.mock(Subject.class);
+	
 		Mockito.when(subjectRepository.subjectsForCustomer(subject)).thenReturn(ROW_COUNTER);
 		Assert.assertEquals(ROW_COUNTER, subjectService.subjects(subject));
 		
@@ -43,7 +46,7 @@ public class SubjectServiceTest {
 	
 	@Test
 	public final void save() {
-		final Subject subject = Mockito.mock(Subject.class);
+		
 		subjectService.save(subject);
 		
 		Mockito.verify(subjectRepository).save(subject);
@@ -51,11 +54,18 @@ public class SubjectServiceTest {
 	
 	@Test
 	public final void  remove() {
-		final Subject subject = Mockito.mock(Subject.class);
+		
 		
 		subjectService.remove(subject);
 		
 		Mockito.verify(subjectRepository).remove(subject);
+	}
+	
+	@Test
+	public final void subject() {
+		Mockito.when(subjectRepository.subject(ID)).thenReturn(subject);
+		
+		Assert.assertEquals(subject, subjectService.subject(19680528L));
 	}
 	
 

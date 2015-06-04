@@ -234,6 +234,12 @@ public class SubjectRepositoryTest {
 		
 	}
 	
+	@Test
+	public final void subject() {
+		Mockito.when(entityManager.find( SubjectImpl.class, ID)).thenReturn( (SubjectImpl) subject);
+		
+		Assert.assertEquals(subject, subjectRepository.subject(ID));
+	}
 	
 
 }

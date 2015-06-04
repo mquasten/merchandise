@@ -21,15 +21,23 @@ import de.mq.merchandise.util.Observer;
 
 public class SubjectModelTest {
 	
+	private static final long ID = 19680528L;
+	private static final String SUBJECT_FIELD = "subject";
 	private static final String CUSTOMER_FIELD = "customer";
 	private static final String ID_FIELD = "id";
 	private static final long CUSTOMER_ID = 19680528L;
 	
 	private SubjectEventFascade subjectEventFascade = Mockito.mock(SubjectEventFascade.class);
+	@SuppressWarnings("unchecked")
+	private final Observer<SubjectModel.EventType> observer = Mockito.mock(Observer.class);
+	private final Subject subject = Mockito.mock(Subject.class);
+	
+	
+	final SubjectModel subjectModel = new SubjectModelImpl(subjectEventFascade);
 
 	@Test
 	public final void create() {
-		final SubjectModel subjectModel = new SubjectModelImpl(subjectEventFascade);
+		
 		Assert.assertTrue(subjectModel.getSearchCriteria() instanceof SubjectImpl);
 		Assert.assertNull(subjectModel.getSearchCriteria().customer() );
 		
@@ -39,9 +47,7 @@ public class SubjectModelTest {
 	@Test
 	public final void setSerachCriteria() {
 		final Customer customer = Mockito.mock(Customer.class);
-		final SubjectModel subjectModel = new SubjectModelImpl(subjectEventFascade);
-		@SuppressWarnings("unchecked")
-		final Observer<SubjectModel.EventType> observer = Mockito.mock(Observer.class);
+	
 		subjectModel.register(observer, SubjectModel.EventType.SearchCriteriaChanged);
 		ReflectionTestUtils.setField(subjectModel, CUSTOMER_FIELD, customer);
 		
@@ -58,9 +64,8 @@ public class SubjectModelTest {
 	
 	@Test
 	public final void setCustomer() {
-		@SuppressWarnings("unchecked")
-		final Observer<SubjectModel.EventType> observer = Mockito.mock(Observer.class);
-		final SubjectModel subjectModel = new SubjectModelImpl(subjectEventFascade);
+		
+		
 		subjectModel.register(observer, SubjectModel.EventType.SearchCriteriaChanged);
 		final Subject subject = BeanUtils.instantiateClass(SubjectImpl.class);
 		ReflectionTestUtils.setField(subjectModel, "searchCriteria", subject);
@@ -76,9 +81,7 @@ public class SubjectModelTest {
 	@Test
 	public final void setCustomerNotChanged() {
 		
-		@SuppressWarnings("unchecked")
-		final Observer<SubjectModel.EventType> observer = Mockito.mock(Observer.class);
-		final SubjectModel subjectModel = new SubjectModelImpl(subjectEventFascade);
+		
 		Customer existingCustomer =	(Customer) ReflectionTestUtils.getField(subjectModel, CUSTOMER_FIELD);
 		Field idField = ReflectionUtils.findField(CustomerImpl.class, ID_FIELD);
 		idField.setAccessible(true);
@@ -96,9 +99,38 @@ public class SubjectModelTest {
 	}
 	
 	@Test
+	public final void setSubjectId() {
+		
+		subjectModel.register(observer, SubjectModel.EventType.SubjectChanged);
+		
+		Mockito.when(subjectEventFascade.subjectChanged(ID)).thenReturn(subject);
+		subjectModel.setSubjectId(19680528L);
+		
+		Assert.assertEquals(subject, ReflectionTestUtils.getField(subjectModel, SUBJECT_FIELD));
+		Mockito.verify(observer).process(Mockito.any(SubjectModel.EventType.class));
+	}
+	
+	@Test
+	public final void setSubjectIdNull() {
+	
+		subjectModel.register(observer, SubjectModel.EventType.SubjectChanged);
+		subjectModel.setSubjectId(null);
+		Mockito.verify(observer).process(Mockito.any(SubjectModel.EventType.class));
+		Assert.assertNull(ReflectionTestUtils.getField(subjectModel, SUBJECT_FIELD));
+	}
+	
+	
+	@Test
 	public final void events() {
 		Arrays.asList(SubjectModel.EventType.values()).forEach(col -> Assert.assertEquals(col, SubjectModel.EventType.valueOf(col.name())));	
 		Assert.assertEquals(4, SubjectModel.EventType.values().length);
+	}
+	
+	@Test
+	public final void  getSubject() {
+		Assert.assertEquals(Optional.empty(), subjectModel.getSubject());
+		ReflectionTestUtils.setField(subjectModel, SUBJECT_FIELD, subject);
+		Assert.assertEquals(Optional.of(subject), subjectModel.getSubject());
 	}
 
 }
