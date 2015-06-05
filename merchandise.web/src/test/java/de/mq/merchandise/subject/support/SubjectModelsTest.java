@@ -26,6 +26,11 @@ import de.mq.merchandise.util.support.RefreshableContainer;
 
 public class SubjectModelsTest {
 	
+	private static final String EVENT_FASCADE_PROXY_FACTORY_FIELD = "eventFascadeProxyFactory";
+	private static final String SUBJECT_TO_ITEM_CONVERTER_FIELD = "subjectToItemConverter";
+	private static final String ITEM_CONTAINER_FACTORY_FIELD = "itemContainerFactory";
+	private static final String LAZY_QUERY_CONTAINER_FACTORY_FIELD = "lazyQueryContainerFactory";
+	private static final String CUSTOMER_SERVICE_FIELD = "customerService";
 	private static final String SUBJECT_EVENT_FASCADE_FIELD = "subjectEventFascade";
 	private final SubjectModels subjectModels = new SubjectModels();
 	private final CustomerService customerService = Mockito.mock(CustomerService.class);
@@ -34,7 +39,7 @@ public class SubjectModelsTest {
 	private final RefreshableContainer refreshableContainer = Mockito.mock(RefreshableContainer.class);
 	private final ItemContainerFactory itemContainerFactory = Mockito.mock(ItemContainerFactory.class);
 	private final Item item = Mockito.mock(Item.class);
-	
+
 	
 	@SuppressWarnings("unchecked")
 	private final  Converter<Subject, Item> converter = Mockito.mock(Converter.class);
@@ -42,26 +47,33 @@ public class SubjectModelsTest {
 	private final EventFascadeProxyFactory eventFascadeProxyFactory = Mockito.mock(EventFascadeProxyFactory.class);
 	private final  SubjectEventFascade subjectEventFascade = Mockito.mock(SubjectEventFascade.class);
 	
+	
 	@SuppressWarnings("unchecked")
 	@Before	
 	public final void setup() {
 		Mockito.when(eventFascadeProxyFactory.createProxy(SubjectEventFascade.class)).thenReturn(subjectEventFascade);
 		Mockito.when(customerService.customer(Mockito.any(Optional.class))).thenReturn(customer);
-		Mockito.when(lazyQueryContainerFactory.create(SubjectCols.Id, converter, EventType.CountPaging, EventType.ListPaging)).thenReturn(refreshableContainer);
+		Mockito.when(lazyQueryContainerFactory.create(SubjectCols.Id, converter, subjectEventFascade, EventType.CountPaging, EventType.ListPaging)).thenReturn(refreshableContainer);
 		Mockito.when(itemContainerFactory.create(SubjectCols.class)).thenReturn(item);
-		ReflectionTestUtils.setField(subjectModels, "customerService", customerService);
-		ReflectionTestUtils.setField(subjectModels, "lazyQueryContainerFactory", lazyQueryContainerFactory);
-		ReflectionTestUtils.setField(subjectModels, "itemContainerFactory", itemContainerFactory);
-		ReflectionTestUtils.setField(subjectModels, "subjectToItemConverter", converter);
-		ReflectionTestUtils.setField(subjectModels, "eventFascadeProxyFactory", eventFascadeProxyFactory);
+		ReflectionTestUtils.setField(subjectModels, CUSTOMER_SERVICE_FIELD, customerService);
+		ReflectionTestUtils.setField(subjectModels, LAZY_QUERY_CONTAINER_FACTORY_FIELD, lazyQueryContainerFactory);
+		ReflectionTestUtils.setField(subjectModels, ITEM_CONTAINER_FACTORY_FIELD, itemContainerFactory);
+		ReflectionTestUtils.setField(subjectModels, SUBJECT_TO_ITEM_CONVERTER_FIELD, converter);
+		ReflectionTestUtils.setField(subjectModels, EVENT_FASCADE_PROXY_FACTORY_FIELD, eventFascadeProxyFactory);
+		
+		subjectModels.init();
 	}
+	
+	
+	@Test
+	public final void init() {
+		Assert.assertEquals(subjectEventFascade, ReflectionTestUtils.getField(subjectModels, SUBJECT_EVENT_FASCADE_FIELD));
+	}
+	
 	
 	@Test
 	public final void subjectModel() {
-		
-		
 		Assert.assertTrue(subjectModels.subjectModel() instanceof SubjectModelImpl);
-		
 		Assert.assertEquals(subjectEventFascade, ReflectionTestUtils.getField(subjectModels.subjectModel(), SUBJECT_EVENT_FASCADE_FIELD));
 	}
 	

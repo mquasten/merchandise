@@ -2,6 +2,8 @@ package de.mq.merchandise.subject.support;
 
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,13 +41,20 @@ class SubjectModels {
 
 	@Autowired
 	private CustomerService customerService;
+	
+	private SubjectEventFascade subjectEventFascade = null;
+	
+	@PostConstruct
+	void init() {
+		subjectEventFascade=eventFascadeProxyFactory.createProxy(SubjectEventFascade.class);
+	}
 
 	@Bean
 	@Scope( proxyMode=ScopedProxyMode.TARGET_CLASS  ,  value="session")
 	@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel)
 	SubjectModel subjectModel() {
-		final SubjectEventFascade fascade = eventFascadeProxyFactory.createProxy(SubjectEventFascade.class);
-		return new SubjectModelImpl(fascade);
+		
+		return new SubjectModelImpl(subjectEventFascade);
 
 	}
 
@@ -65,7 +74,7 @@ class SubjectModels {
 	@SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer)
 	@Scope(  proxyMode=ScopedProxyMode.TARGET_CLASS ,  value="session")
 	RefreshableContainer  subjectLazyQueryContainer() {
-		return lazyQueryContainerFactory.create(SubjectCols.Id, subjectToItemConverter, EventType.CountPaging, EventType.ListPaging);
+		return lazyQueryContainerFactory.create(SubjectCols.Id, subjectToItemConverter, subjectEventFascade, EventType.CountPaging, EventType.ListPaging);
 		
 	}
 	

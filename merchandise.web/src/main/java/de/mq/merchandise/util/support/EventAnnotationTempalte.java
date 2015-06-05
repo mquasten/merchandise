@@ -2,11 +2,11 @@ package de.mq.merchandise.util.support;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -35,15 +35,16 @@ class EventAnnotationTempalte implements EventAnnotationOperations {
 		Assert.isTrue(annotation.isPresent(), "Method should be annotated, something is wrong.");
 
 		final Method valueMethod = ReflectionUtils.findMethod(annotation.get().getClass(), valueMethodName);
-		Assert.notNull(valueMethod, valueMethodName + " in Annotation not Found");
+		Assert.notNull(valueMethod, valueMethodName + " for Annotation not found");
 		final Object eventId = ReflectionUtils.invokeMethod(valueMethod, annotation.get());
 		return eventId;
 	}
 
 
 	private  Optional<Annotation> annotation(final Method method) {
-		return   Arrays.asList(method.getAnnotations()).stream().filter(a -> qualifiers.contains(a.annotationType()) && ReflectionUtils.findMethod(a.annotationType(), valueMethodName) != null).findFirst();
-	 
+		return qualifiers.stream().map(q -> (Annotation) AnnotationUtils.findAnnotation(method, q)).filter(a -> a != null).findFirst();
+	
+	
 	}
 	
 	private void add(Class<? extends Annotation> qualifier){

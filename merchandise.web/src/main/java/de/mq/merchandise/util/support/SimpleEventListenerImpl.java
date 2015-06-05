@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,12 +60,13 @@ class SimpleEventListenerImpl implements ApplicationContextAware {
 	@Override
 	public void setApplicationContext(final ApplicationContext applicationContext)  {
 		this.applicationContext=applicationContext;
-		final Set<Object> controllers = applicationContext.getBeansWithAnnotation(Controller.class).values().stream().collect(Collectors.toSet());
-		controllers.forEach(obj -> Arrays.asList(obj.getClass().getDeclaredMethods()).stream().forEach(m -> Arrays.asList(m.getAnnotations()).stream().filter(a -> eventAnnotationOperations.isAnnotaionPresent(m)).forEach(a -> {
-			final Object event =  eventAnnotationOperations.valueFromAnnotation(m);
-			methods.put(event, m);
-			targets.put(event, obj);
-		})));
+		applicationContext.getBeansWithAnnotation(Controller.class).values().stream().collect(Collectors.toSet()).forEach(obj -> Arrays.asList(obj.getClass().getDeclaredMethods()).stream().filter(m -> eventAnnotationOperations.isAnnotaionPresent(m)).forEach(m -> handleEvent(obj, m)));
+	}
+
+	private void handleEvent(Object obj, Method m) {
+		final Object event =  eventAnnotationOperations.valueFromAnnotation(m);
+		methods.put(event, m);
+		targets.put(event, obj);
 	}
 
 }

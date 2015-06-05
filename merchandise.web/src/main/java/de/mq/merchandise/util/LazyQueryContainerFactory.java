@@ -11,8 +11,8 @@ import de.mq.merchandise.util.support.RefreshableContainer;
 public interface LazyQueryContainerFactory {
 
 
-	<T> RefreshableContainer create(final Enum<? extends TableContainerColumns> idPropertyId, final Number batchSize, final Converter<?, Item> converter, final T countEvent, final T pageEvent);
+	<E, T> RefreshableContainer create(final Enum<? extends TableContainerColumns> idPropertyId, final Number batchSize, final Converter<?, Item> converter, T fascade,  E countEvent,  E pageEvent);
 
-	<T> RefreshableContainer  create(final Enum<? extends TableContainerColumns> idPropertyId, final Converter<?, Item> converter, final T countEvent, final T pageEvent);
+	<E,T> RefreshableContainer create(final Enum<? extends TableContainerColumns> idPropertyId, Converter<?, Item> converter, T fascade,  E countEvent,  E pageEvent);
 
 }

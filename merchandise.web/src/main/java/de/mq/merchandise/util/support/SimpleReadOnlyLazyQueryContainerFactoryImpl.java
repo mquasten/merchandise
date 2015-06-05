@@ -7,12 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
@@ -29,8 +24,6 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 import de.mq.merchandise.ResultNavigation;
-import de.mq.merchandise.util.Event;
-import de.mq.merchandise.util.EventBuilder;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.TableContainerColumns;
 
@@ -40,15 +33,15 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 	private static final String VALUES_METHOD = "values";
 	
 
-	private 	final ApplicationEventPublisher applicationEventPublisher;
+	private final EventAnnotationOperations eventAnnotationOperations;
 	
 	@Autowired
-	SimpleReadOnlyLazyQueryContainerFactoryImpl(ApplicationEventPublisher applicationEventPublisher) {
-		this.applicationEventPublisher=applicationEventPublisher;
+	SimpleReadOnlyLazyQueryContainerFactoryImpl(final EventAnnotationOperations eventAnnotationOperations) {
+		this.eventAnnotationOperations=eventAnnotationOperations;
 	}
 	
 	
-	private <T> QueryFactory  createQueryFactory(final Enum<? extends TableContainerColumns> idPropertyId, final Converter<?,Item> converter, final T countEvent, final T pageEvent) {
+	private <T> QueryFactory  createQueryFactory(final Enum<? extends TableContainerColumns> idPropertyId, final Converter<?,Item> converter, final T fascade,  final Method countMethod, final Method pageMethod) {
 		
 		
 		return queryDefinition -> new Query() {
@@ -95,15 +88,12 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 					
 				};
 				
-				
-				@SuppressWarnings({ "unchecked", "rawtypes" })
-				final 	Event<T,Collection<Object>> event =  EventBuilder.of(pageEvent, (Class) Collection.class).withParameter(resultNavigation).build();
-				applicationEventPublisher.publishEvent(event);
-				
-				Assert.isTrue( event.result().isPresent(), "ListMethod should return a value");
+				@SuppressWarnings("unchecked")
+				final Collection<Object> results = (Collection<Object>) ReflectionUtils.invokeMethod(pageMethod, fascade ,resultNavigation );
+				Assert.notNull(results, "ListMethod should return a value");
 				final List<Item> items = new ArrayList<>();
 	
-				event.result().get().forEach(result -> items.add( convert(converter, result)) );
+				results.forEach(result -> items.add( convert(converter, result)) );
 				return items;
 			}
 
@@ -136,11 +126,10 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 
 			@Override
 			public final int size() {
-			final 	Event<T,Number> event = EventBuilder.of(countEvent, Number.class).build();
-			applicationEventPublisher.publishEvent(event);
-			Assert.isTrue( event.result().isPresent(), "CountMethod should return a value");
-			return event.result().get().intValue();
-	
+			
+			final Number result = (Number) ReflectionUtils.invokeMethod(countMethod, fascade);
+			Assert.notNull(result, "CountMethod should return a value");
+			return result.intValue();
 				
 			} }; 
 	}
@@ -151,30 +140,33 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 	
 	
 	
-	/* (non-Javadoc)
-	 * @see de.mq.merchandise.util.support.OnlyLazyQueryContainerFactory#create(java.lang.Enum, java.lang.Number, java.lang.Class, java.lang.Class, java.lang.Object)
-	 */
+/*
+ * (non-Javadoc)
+ * @see de.mq.merchandise.util.LazyQueryContainerFactory#create(java.lang.Enum, java.lang.Number, org.springframework.core.convert.converter.Converter, java.lang.Object, java.lang.Object, java.lang.Object)
+ */
 	@Override
-	public final <T>  RefreshableContainer   create(final Enum<? extends TableContainerColumns> idPropertyId, final Number batchSize, final Converter<?,Item> converter, final T countEvent, final T pageEvent) {
-		
-		
+	public final <E,T>  RefreshableContainer   create(final Enum<? extends TableContainerColumns> idPropertyId, final Number batchSize, final Converter<?,Item> converter, final T fascade, final E countEvent, final E pageEvent) {
 		final Method method = ReflectionUtils.findMethod(idPropertyId.getClass(), VALUES_METHOD);
-		
 		method.setAccessible(true);
-		final TableContainerColumns[] cols = 	 (TableContainerColumns[]) ReflectionUtils.invokeMethod(method, null);
+		return new MyLazyQueryContainer(createQueryFactory(idPropertyId, converter, fascade, method(fascade, countEvent), method(fascade, pageEvent)), idPropertyId, batchSize.intValue(), (TableContainerColumns[]) ReflectionUtils.invokeMethod(method, null));
 		
-		return new MyLazyQueryContainer(createQueryFactory(idPropertyId, converter, countEvent, pageEvent), idPropertyId, batchSize.intValue(), cols);
-		
+	}
+
+
+	private <T, E>Method method(final T fascade, final E eventId) {
+		final Optional<Method> result =  Arrays.asList(ReflectionUtils.getAllDeclaredMethods(fascade.getClass())).stream().filter(m ->  (eventAnnotationOperations.isAnnotaionPresent(m) && eventAnnotationOperations.valueFromAnnotation(m).equals(eventId))).findFirst();
+		Assert.isTrue(result.isPresent(), String.format("Method not found for %s" , eventId));
+		return result.get();
 	}
 
 
 	/*
 	 * (non-Javadoc)
-	 * @see de.mq.merchandise.util.support.LazyQueryContainerFactory#create(java.lang.Enum, java.lang.Class, java.lang.Class, java.lang.Object[])
+	 * @see de.mq.merchandise.util.LazyQueryContainerFactory#create(java.lang.Enum, org.springframework.core.convert.converter.Converter, java.lang.Object, java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public final <T> RefreshableContainer create(final Enum<? extends TableContainerColumns> idPropertyId, Converter<?, Item> converter, T countEvent,  T pageEvent) {
-		return  create(idPropertyId, 50, converter, countEvent, pageEvent);
+	public final <E,T> RefreshableContainer create(final Enum<? extends TableContainerColumns> idPropertyId, Converter<?, Item> converter, T fascade,  E countEvent,  E pageEvent) {
+		return  create(idPropertyId, 50, converter, fascade, countEvent, pageEvent);
 	}
 
 
