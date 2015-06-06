@@ -42,6 +42,7 @@ class SubjectModels {
 	@Autowired
 	private CustomerService customerService;
 	
+	
 	private SubjectEventFascade subjectEventFascade = null;
 	
 	@PostConstruct
@@ -74,6 +75,7 @@ class SubjectModels {
 	@SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer)
 	@Scope(  proxyMode=ScopedProxyMode.TARGET_CLASS ,  value="session")
 	RefreshableContainer  subjectLazyQueryContainer() {
+		
 		return lazyQueryContainerFactory.create(SubjectCols.Id, subjectToItemConverter, subjectEventFascade, EventType.CountPaging, EventType.ListPaging);
 		
 	}

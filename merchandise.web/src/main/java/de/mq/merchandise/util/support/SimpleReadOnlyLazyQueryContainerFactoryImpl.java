@@ -4,7 +4,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +37,12 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 
 	private final EventAnnotationOperations eventAnnotationOperations;
 	
+	private final BeanContainerOperations beanContainerOperations;
+	
 	@Autowired
-	SimpleReadOnlyLazyQueryContainerFactoryImpl(final EventAnnotationOperations eventAnnotationOperations) {
+	SimpleReadOnlyLazyQueryContainerFactoryImpl(final EventAnnotationOperations eventAnnotationOperations, final BeanContainerOperations beanContainerOperations) {
 		this.eventAnnotationOperations=eventAnnotationOperations;
+		this.beanContainerOperations=beanContainerOperations;
 	}
 	
 	
@@ -80,21 +85,26 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 						@SuppressWarnings("unchecked")
 						final Optional<Boolean> sortAsc  =  CollectionUtils.arrayToList(queryDefinition.getSortPropertyAscendingStates()).stream().findFirst();
 						
-						final List<Order> orders = order2(Arrays.asList(queryDefinition.getSortPropertyIds()).stream().findFirst(), sortAsc);
+						final List<Order> orders = order(Arrays.asList(queryDefinition.getSortPropertyIds()).stream().findFirst(), sortAsc);
 						orders.add(new Order(((TableContainerColumns)idPropertyId).orderBy()));
 						return orders;
 					}
 
 					
 				};
-				
 				@SuppressWarnings("unchecked")
-				final Collection<Object> results = (Collection<Object>) ReflectionUtils.invokeMethod(pageMethod, fascade ,resultNavigation );
+				final Collection<Object> results = (Collection<Object>) ReflectionUtils.invokeMethod(pageMethod, fascade ,beanContainerOperations.resolveMandatoryBeansFromDefaultOrContainer(params(resultNavigation), pageMethod.getParameterTypes()) );
 				Assert.notNull(results, "ListMethod should return a value");
 				final List<Item> items = new ArrayList<>();
 	
 				results.forEach(result -> items.add( convert(converter, result)) );
 				return items;
+			}
+
+			private Map<Class<?>, Object> params(final ResultNavigation resultNavigation) {
+				final Map<Class<?>, Object> params = new HashMap<>();
+				params.put(ResultNavigation.class, resultNavigation);
+				return params;
 			}
 
 			@SuppressWarnings("unchecked")
@@ -103,16 +113,14 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 			}
 			
 			
-			private List<Order> order2(final Optional<Object> column, final Optional<Boolean> asc) {
+			private List<Order> order(final Optional<Object> column, final Optional<Boolean> asc) {
 				final List<Order> orders = new ArrayList<>();
-				if((!column.isPresent()) || ( ! asc.isPresent())){
+				if(!column.isPresent()){
 					return orders;
 				}
-				Direction dir = Direction.ASC;
-				if (!asc.get() ) {
-					dir=Direction.DESC;
-				}
 				
+				final Direction dir = asc.orElse(true) ? Direction.ASC: Direction.DESC;
+					
 				orders.add(new Order(dir, ((TableContainerColumns)  column.get()).orderBy()));
 				return orders;
 			}
@@ -126,8 +134,8 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 
 			@Override
 			public final int size() {
-			
-			final Number result = (Number) ReflectionUtils.invokeMethod(countMethod, fascade);
+			final Number result = (Number) ReflectionUtils.invokeMethod(countMethod, fascade, beanContainerOperations.resolveMandatoryBeansFromDefaultOrContainer(new HashMap<>(), countMethod.getParameterTypes()));
+		
 			Assert.notNull(result, "CountMethod should return a value");
 			return result.intValue();
 				
@@ -156,7 +164,10 @@ class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerF
 	private <T, E>Method method(final T fascade, final E eventId) {
 		final Optional<Method> result =  Arrays.asList(ReflectionUtils.getAllDeclaredMethods(fascade.getClass())).stream().filter(m ->  (eventAnnotationOperations.isAnnotaionPresent(m) && eventAnnotationOperations.valueFromAnnotation(m).equals(eventId))).findFirst();
 		Assert.isTrue(result.isPresent(), String.format("Method not found for %s" , eventId));
-		return result.get();
+		
+		final Method method = result.get();
+		method.setAccessible(true);
+		return method;
 	}
 
 

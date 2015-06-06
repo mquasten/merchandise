@@ -2,7 +2,10 @@ package de.mq.merchandise.util.support;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,7 +43,9 @@ public class LazyQueryContainerFactoryTest {
 
 	private final EventAnnotationOperations eventAnnotationOperations = Mockito.mock(EventAnnotationOperations.class);
 	
-	private final LazyQueryContainerFactory lazyQueryContainerFactory = new SimpleReadOnlyLazyQueryContainerFactoryImpl(eventAnnotationOperations);
+	private final BeanContainerOperations beanContainerOperations = Mockito.mock(BeanContainerOperations.class);
+	
+	private final LazyQueryContainerFactory lazyQueryContainerFactory = new SimpleReadOnlyLazyQueryContainerFactoryImpl(eventAnnotationOperations, beanContainerOperations);
 	
 	private final EventFascadeTest eventFascade = Mockito.mock(EventFascadeTest.class) ; 
 
@@ -50,6 +55,7 @@ public class LazyQueryContainerFactoryTest {
 
 	Collection<Subject> subjects = new ArrayList<>();
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() {
 
@@ -75,6 +81,14 @@ public class LazyQueryContainerFactoryTest {
 		Mockito.when(eventFascade.countSubjects()).thenReturn(1L);
 		Mockito.when(eventFascade.subjects(Mockito.any(ResultNavigation.class))).thenReturn(subjects);
 		
+		Mockito.doAnswer(i -> { 
+			final List<Object> results = new ArrayList<>();
+			final Map<?,?>  fuck =  (Map<?,?>) i.getArguments()[0];
+			
+			Arrays.asList((Class[])i.getArguments()[1]).stream().filter(c -> fuck.containsKey(c)).forEach(c -> results.add(fuck.get(c)));
+		
+			return results.toArray(new Object[results.size()]);
+		}).when(beanContainerOperations).resolveMandatoryBeansFromDefaultOrContainer(Mockito.anyMap(), Mockito.any(Class[].class));
 		
 
 	}
