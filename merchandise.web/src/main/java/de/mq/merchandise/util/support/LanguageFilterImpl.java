@@ -21,22 +21,21 @@ import de.mq.merchandise.subject.support.UserModel;
 public class LanguageFilterImpl  extends OncePerRequestFilter {
 
 	static final String PARAM_LANGUAGE = "language";
-	private final BeanResolver beanResolver;
+	private final BeanContainerOperations beanContainerOperations;
 
 	@Autowired
-	public LanguageFilterImpl(final BeanResolver beanResolver) {
+	public LanguageFilterImpl(final BeanContainerOperations beanContainerOperations) {
 
-		this.beanResolver = beanResolver;
+		this.beanContainerOperations = beanContainerOperations;
 	}
 
 	 @Override
 	 protected void doFilterInternal(final HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
 		final String languge = request.getParameter(PARAM_LANGUAGE);
-		final UserModel userModel = beanResolver.resolve(UserModel.class);
+		final UserModel userModel = beanContainerOperations.requiredSingelBean(UserModel.class);
 	
+		beanContainerOperations.beansForFilter(ctx -> ctx.getBeansOfType(View.class).values());
 	
-		// touched for the very first time
-		beanResolver.resolveAll(View.class);
 		
 		if (StringUtils.hasText(languge)) {
 			final Locale locale = StringUtils.parseLocaleString(languge.toLowerCase());

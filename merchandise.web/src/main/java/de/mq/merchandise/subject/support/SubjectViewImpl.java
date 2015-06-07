@@ -238,7 +238,6 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 	@PostConstruct
 	void init() {
-
 		subjectModel.setCustomer(userModel.getCustomer());
 
 		initLayout();
