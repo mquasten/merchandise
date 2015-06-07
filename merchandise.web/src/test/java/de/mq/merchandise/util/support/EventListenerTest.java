@@ -1,9 +1,9 @@
 package de.mq.merchandise.util.support;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -16,40 +16,55 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.Event;
+import de.mq.merchandise.util.support.BeanContainerOperations.BeanFilter;
 
 public class EventListenerTest {
 
 	private static final String EVENT_SUBJECT = "eventforSubject";
 
 	private static final String SAVE_METHOD = "save";
-	private static final String APPLICATION_CONTEXT_FIELD = "applicationContext";
+
 	private static final Long ID = 19680528L;
 
 	private static final String CHANGE_SUBJECT_METHOD = "subject";
 	private static final String TARGETS_FIELDS_NAME = "targets";
 	private static final String METHODS_FIELD_NAME = "methods";
 
-	private final ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
+
+	BeanContainerOperations beanContainerOperations = Mockito.mock(BeanContainerOperations.class);
 
 	private final EventAnnotationOperations eventAnnotationOperations = Mockito.mock(EventAnnotationOperations.class);
 
-	private final SimpleEventListenerImpl eventListener = new SimpleEventListenerImpl(eventAnnotationOperations);
+	private final SimpleEventListenerImpl eventListener = new SimpleEventListenerImpl(eventAnnotationOperations, beanContainerOperations);
 
 	final Subject subject = Mockito.mock(Subject.class);
 	@SuppressWarnings("unchecked")
 	final Event<String, Subject> event = Mockito.mock(Event.class);
+	
 
+	
+	private ApplicationContext ctx = Mockito.mock(ApplicationContext.class);
+	
 	@Test
-	public final void setApplicationContext() throws BeanInstantiationException, NoSuchMethodException, SecurityException {
-		final Map<String, Object> beans = new HashMap<>();
+	public final void init() throws BeanInstantiationException, NoSuchMethodException, SecurityException {
+		final Map<String, Object> controllers = new HashMap<>();
 		final Object controller = new TestController(subject);
-		beans.put(controller.getClass().getSimpleName(), controller);
+		controllers.put(controller.getClass().getSimpleName(), controller);
 		final Method result = controller.getClass().getDeclaredMethod(CHANGE_SUBJECT_METHOD, Long.class);
-		Mockito.when(applicationContext.getBeansWithAnnotation(Controller.class)).thenReturn(beans);
+	
 		Mockito.when(eventAnnotationOperations.isAnnotaionPresent(result)).thenReturn(true);
 		Mockito.when(eventAnnotationOperations.valueFromAnnotation(result)).thenReturn(EVENT_SUBJECT);
-
-		eventListener.setApplicationContext(applicationContext);
+		Mockito.when(ctx.getBeansWithAnnotation(Controller.class)).thenReturn(controllers);
+		
+		Mockito.doAnswer(i -> { 
+			return ((BeanFilter<?>) i.getArguments()[0]).filter(ctx);
+		}).when(beanContainerOperations).beansForFilter((BeanFilter<?>) Mockito.any(BeanContainerOperations.BeanFilter.class));
+		
+	//	Mockito.when(beanContainerOperations.beansForFilter( beanFilterMock())).thenReturn( controllers);
+	
+		eventListener.init();
+		
+		
 
 		final Map<Object, Method> methods = methods();
 		final Map<Object, Object> targets = targets();
@@ -60,8 +75,12 @@ public class EventListenerTest {
 		Assert.assertEquals(EVENT_SUBJECT, targets.keySet().iterator().next());
 		Assert.assertEquals(result, methods.get(EVENT_SUBJECT));
 		Assert.assertEquals(controller, targets.get(EVENT_SUBJECT));
+		
+	
 
 	}
+
+	
 
 	@SuppressWarnings("unchecked")
 	private Map<Object, Object> targets() {
@@ -84,11 +103,26 @@ public class EventListenerTest {
 		params.put(Long.class, ID);
 		Mockito.when(event.parameter()).thenReturn(params);
 
+		
+		@SuppressWarnings("unchecked")
+		ArgumentCaptor<Map<Class<?>,Object>> defaultsCaptor = (ArgumentCaptor<Map<Class<?>, Object>>) ArgumentCaptor.forClass((Class<?>) Map.class) ;
+		@SuppressWarnings("rawtypes")
+		ArgumentCaptor<Class[]> typesCaptor =  ArgumentCaptor.forClass(Class[].class) ;
+		
+		Mockito.when(beanContainerOperations.resolveMandatoryBeansFromDefaultOrContainer(defaultsCaptor.capture(), typesCaptor.capture())).thenReturn(new Object[] {ID});
+		
+	
 		eventListener.processEvent(event);
 
 		ArgumentCaptor<Subject> captor = ArgumentCaptor.forClass(Subject.class);
 		Mockito.verify(event).assign(captor.capture());
 		Assert.assertEquals(subject, captor.getValue());
+		
+		Assert.assertEquals(1, ((Map<?,?>)defaultsCaptor.getValue()).size());
+		Assert.assertEquals(ID, ((Map<?,?>)defaultsCaptor.getValue()).get(Long.class));
+		
+		Assert.assertTrue(Arrays.asList((Class[])typesCaptor.getValue()).stream().findFirst().isPresent());
+		Assert.assertEquals(Long.class, Arrays.asList((Class[])typesCaptor.getValue()).stream().findFirst().get());
 
 	}
 
@@ -100,13 +134,24 @@ public class EventListenerTest {
 		targets().put(EVENT_SUBJECT, controller);
 
 		Mockito.when(event.id()).thenReturn(EVENT_SUBJECT);
-		final ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
-		Mockito.when(applicationContext.getBean(Subject.class)).thenReturn(subject);
-		ReflectionTestUtils.setField(eventListener, APPLICATION_CONTEXT_FIELD, applicationContext);
+		
+		@SuppressWarnings("unchecked")
+		ArgumentCaptor<Map<Class<?>,Object>> defaultsCaptor = (ArgumentCaptor<Map<Class<?>, Object>>) ArgumentCaptor.forClass((Class<?>) Map.class) ;
+		@SuppressWarnings("rawtypes")
+		ArgumentCaptor<Class[]> typesCaptor =  ArgumentCaptor.forClass(Class[].class) ;
+	
+		Mockito.when(beanContainerOperations.resolveMandatoryBeansFromDefaultOrContainer(defaultsCaptor.capture(), typesCaptor.capture())).thenReturn(new Object[] {subject});
+		
 		eventListener.processEvent(event);
 
 		Mockito.verify(event, Mockito.times(0)).assign(Mockito.any());
 		Mockito.verify(subject, Mockito.times(1)).id();
+		
+		Assert.assertEquals(0, ((Map<?,?>)defaultsCaptor.getValue()).size());
+		
+		Assert.assertTrue(Arrays.asList((Class[])typesCaptor.getValue()).stream().findFirst().isPresent());
+		Assert.assertEquals(Subject.class, Arrays.asList((Class[])typesCaptor.getValue()).stream().findFirst().get());
+	
 	}
 
 }

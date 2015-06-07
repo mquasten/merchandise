@@ -9,7 +9,7 @@ public interface BeanContainerOperations {
 	
 	
 	
-	public interface BeanFilter<T> {
+	interface BeanFilter<T> {
 		 Collection<T> filter(final  ApplicationContext ctx);
 	}
 
@@ -18,6 +18,8 @@ public interface BeanContainerOperations {
 	<T> T requiredSingelBean(Class<? extends T> target);
 
 	<T> Collection<T> beansForFilter(final BeanFilter<T> filter);
+
+	
 	
 	
 	

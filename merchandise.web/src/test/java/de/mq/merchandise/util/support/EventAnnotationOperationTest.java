@@ -14,7 +14,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.ReflectionUtils;
 
 public class EventAnnotationOperationTest {
-	private static final String WRONG_ANNOTATION_METHOD_NAME = "wrongAnnotation";
+
 	private static final String METHOD_NAME = "calculateHotScrore";
 	static final String ANNOTATION_VALUE = METHOD_NAME;
 	private EventAnnotationOperations eventAnnotationOperations = new EventAnnotationTempalte();
@@ -45,13 +45,13 @@ public class EventAnnotationOperationTest {
 		Assert.assertTrue(eventAnnotationOperations.isAnnotaionPresent(method));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public final void wrongAnnotation() {
 
 		qualifiers.clear();
 		qualifiers.add(Transient.class);
 
-		final Method method = ReflectionUtils.findMethod(ArtistController.class, WRONG_ANNOTATION_METHOD_NAME);
+		final Method method = ReflectionUtils.findMethod(ArtistController.class, METHOD_NAME, Long.class);
 		eventAnnotationOperations.valueFromAnnotation(method);
 	}
 
@@ -62,6 +62,4 @@ abstract class ArtistController {
 	@Qualifier(EventAnnotationOperationTest.ANNOTATION_VALUE)
 	abstract int calculateHotScrore(Long artistId);
 
-	@Transient()
-	abstract void wrongAnnotation();
 }

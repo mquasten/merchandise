@@ -3,13 +3,12 @@ package de.mq.merchandise.util.support;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -18,18 +17,24 @@ import org.springframework.util.ReflectionUtils;
 import de.mq.merchandise.util.Event;
 
 @Controller()
-class SimpleEventListenerImpl implements ApplicationContextAware {
+class SimpleEventListenerImpl  {
 
 	
 	private final Map<Object, Method> methods = new HashMap<>();
 	private final Map<Object, Object> targets = new HashMap<>();
 	
-	private ApplicationContext applicationContext;
 	private final EventAnnotationOperations eventAnnotationOperations;
 
+	private BeanContainerOperations beanContainerOperations;
 	@Autowired
-	SimpleEventListenerImpl(final EventAnnotationOperations eventAnnotationOperations) {
+	SimpleEventListenerImpl(final EventAnnotationOperations eventAnnotationOperations, final BeanContainerOperations beanContainerOperations) {
 		this.eventAnnotationOperations=eventAnnotationOperations;
+		this.beanContainerOperations=beanContainerOperations;
+		
+	}
+	@PostConstruct
+	void init() {
+		beanContainerOperations.beansForFilter(ctx ->  ctx.getBeansWithAnnotation(Controller.class).values()).stream().collect(Collectors.toSet()).forEach(obj -> Arrays.asList(obj.getClass().getDeclaredMethods()).stream().filter(m -> eventAnnotationOperations.isAnnotaionPresent(m)).forEach(m -> handleEvent(obj, m)));;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -40,9 +45,11 @@ class SimpleEventListenerImpl implements ApplicationContextAware {
 			Assert.notNull(method, String.format("Method not found for event: %s." ,  event.id())  );
 			Assert.notNull(target,  String.format("Target not found for event: %s", event.id()));
 			method.setAccessible(true);
-			final List<Object> arguments = Arrays.asList(method.getParameterTypes()).stream().map(type -> getBean(type, event.parameter())).collect(Collectors.toList());
-			final Object result = ReflectionUtils.invokeMethod(method, target, arguments.toArray(new Object[arguments.size()]));
-	      if( result == null) {
+			
+			
+			final Object result = ReflectionUtils.invokeMethod(method, target, beanContainerOperations.resolveMandatoryBeansFromDefaultOrContainer(event.parameter() , method.getParameterTypes()));
+	      
+			if( result == null) {
 	      	return;
 	      }
 	      event.assign((R) result);
@@ -50,18 +57,7 @@ class SimpleEventListenerImpl implements ApplicationContextAware {
 	   
 	}
 	
-	private Object getBean(Class<?> clazz, Map<Class<?>, Object> beans){
-		if(beans.containsKey(clazz)){
-			return beans.get(clazz);
-		}
-		return applicationContext.getBean(clazz);
-	}
-
-	@Override
-	public void setApplicationContext(final ApplicationContext applicationContext)  {
-		this.applicationContext=applicationContext;
-		applicationContext.getBeansWithAnnotation(Controller.class).values().stream().collect(Collectors.toSet()).forEach(obj -> Arrays.asList(obj.getClass().getDeclaredMethods()).stream().filter(m -> eventAnnotationOperations.isAnnotaionPresent(m)).forEach(m -> handleEvent(obj, m)));
-	}
+	
 
 	private void handleEvent(Object obj, Method m) {
 		final Object event =  eventAnnotationOperations.valueFromAnnotation(m);
