@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.stream.IntStream;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.util.ObjectUtils;
 
 import de.mq.merchandise.util.Event;
 import de.mq.merchandise.util.EventBuilder;
@@ -33,9 +34,9 @@ abstract class AbstractEventFascadeProxyFactory implements EventFascadeProxyFact
 		
 		
 		final EventBuilder<?, ?> builder = EventBuilder.of(eventId, Object.class);
-
+ 
 		 
-		IntStream.range(0, args != null ? args.length: 0).forEach(i -> builder.withParameter(method.getParameterTypes()[i], args[i]));
+		IntStream.range(0,  ObjectUtils.toObjectArray(args).length).forEach(i -> builder.withParameter(method.getParameterTypes()[i], args[i]));
 
 		final Event<?, ?> event = builder.build();
 		
@@ -52,9 +53,6 @@ abstract class AbstractEventFascadeProxyFactory implements EventFascadeProxyFact
 	private Object valueFromAnnotation(final Method method) {
 		return eventAnnotationOperations.valueFromAnnotation(method);
 	}
-
-	
-	
 
 
 }
