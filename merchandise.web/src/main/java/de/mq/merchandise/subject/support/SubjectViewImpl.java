@@ -143,7 +143,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 		final FormLayout col1 = new FormLayout();
 		
-		final FormLayout col2 = new FormLayout();
+		
 		
 		final FieldGroup editorFields = new FieldGroup();
 	
@@ -154,9 +154,10 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			col1.addComponent(field);
 			
 		});
-		
+		Button saveButton = new Button("speichern");
 	   subjectModel.register(e -> { 
 			editorFields.setItemDataSource(null);
+			
 			if( subjectModel.getSubject().isPresent()) {
 				editorFields.setItemDataSource(subjectToItemConverter.convert(subjectModel.getSubject().get()));
 			}
@@ -164,21 +165,24 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		}, SubjectModel.EventType.SubjectChanged);  
 		
 		
-		editorLayout.addComponent(col1);
-		editorLayout.addComponent(col2);
+		editorLayout.addComponent(col1);	
 		
-		final Button newButton = new Button("neu");
-		final Button saveButton = new Button("bearbeiten");
-		col2.addComponent(newButton);
-		col2.addComponent(saveButton);
-		
-		final HorizontalLayout saveButtonLayout = new HorizontalLayout();
 	
-		
+		final HorizontalLayout saveButtonLayout = new HorizontalLayout();
+		saveButtonLayout.setSpacing(true);
 		editor.addComponent(saveButtonLayout);
 		
 	
-		saveButtonLayout.addComponent(new Button("speichern"));
+		
+		saveButtonLayout.addComponent(saveButton);
+		final Button newButton = new Button("neu");
+		saveButtonLayout.addComponent(newButton);
+		
+		
+		newButton.addClickListener(event -> { 
+			subjectList.setValue(null);
+		//	subjectModel.setSubjectId(null);
+		});
 		
 		splitPanel.addComponent(leftLayout);
 		splitPanel.addComponent(editor);
@@ -193,7 +197,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		subjectList.setSizeFull();
 
 		
-		editorLayout.setEnabled(false);
+	
 
 		subjectList.setSelectable(true);
 
@@ -203,7 +207,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 		subjectList.addValueChangeListener(e -> { 
 			
-			
+		
 			subjectModel.setSubjectId((Long) e.getProperty().getValue());
 			
 			

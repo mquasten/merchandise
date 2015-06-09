@@ -59,7 +59,7 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 	@Override
 	public void setSubjectId(final Long subjectId) {
 		if( subjectId==null){
-			subject=null;
+			subject= BeanUtils.instantiateClass(SubjectImpl.class);
 			notifyObservers(EventType.SubjectChanged);
 			return;
 		}

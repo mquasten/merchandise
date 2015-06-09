@@ -116,7 +116,13 @@ public class SubjectModelTest {
 		subjectModel.register(observer, SubjectModel.EventType.SubjectChanged);
 		subjectModel.setSubjectId(null);
 		Mockito.verify(observer).process(Mockito.any(SubjectModel.EventType.class));
-		Assert.assertNull(ReflectionTestUtils.getField(subjectModel, SUBJECT_FIELD));
+		final Subject newSubject = (Subject) ReflectionTestUtils.getField(subjectModel, SUBJECT_FIELD);
+		
+		Assert.assertFalse(newSubject.id().isPresent());
+		Assert.assertNotSame(subject, newSubject);
+		Assert.assertTrue(newSubject instanceof SubjectImpl);
+		
+		
 	}
 	
 	
