@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.vaadin.data.Item;
-
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
@@ -33,12 +33,14 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.mq.merchandise.subject.Subject;
-
 import de.mq.merchandise.util.support.RefreshableContainer;
 
 @Component
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 public class SubjectViewImpl extends CustomComponent implements View {
+
+	private  final ThemeResource editIcon = new ThemeResource("edit-icon.png");
+	private  final ThemeResource newIcon = new ThemeResource("new-icon.png");
 
 	private static final long serialVersionUID = 1L;
 	
@@ -154,16 +156,43 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			col1.addComponent(field);
 			
 		});
-		Button saveButton = new Button("speichern");
+		final Button saveButton = new Button("speichern");
+		final Button newButton = new Button("neu");
+		saveButton.setIcon(newIcon);
 	   subjectModel.register(e -> { 
 			editorFields.setItemDataSource(null);
+			newButton.setEnabled(false);
 			
-			if( subjectModel.getSubject().isPresent()) {
-				editorFields.setItemDataSource(subjectToItemConverter.convert(subjectModel.getSubject().get()));
-			}
+			editorFields.setItemDataSource(subjectToItemConverter.convert(subjectModel.getSubject().get()));
+			if( subjectModel.getSubject().get().id().isPresent()) {
+				saveButton.setIcon(editIcon);
+				newButton.setEnabled(true);
+				return;
+			} 
+			
+			saveButton.setIcon(newIcon);
 			
 		}, SubjectModel.EventType.SubjectChanged);  
 		
+	   
+	   
+	   saveButton.addClickListener(e -> { 
+	   	
+	   	try {
+				editorFields.commit();
+			} catch (Exception e1) {
+				return;
+			}
+	   	final Subject subject = itemToSubjectMapper.convert(editorFields.getItemDataSource());
+	   	System.out.println(subject.name());
+	   	System.out.println(subject.description());
+	   	System.out.println("******");
+	   	subjectModel.save(subject);
+	   	lazyQueryContainer.refresh();
+	   	subjectList.setValue(null);
+	   	
+	   });
+	   
 		
 		editorLayout.addComponent(col1);	
 		
@@ -175,7 +204,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	
 		
 		saveButtonLayout.addComponent(saveButton);
-		final Button newButton = new Button("neu");
+		
 		saveButtonLayout.addComponent(newButton);
 		
 		

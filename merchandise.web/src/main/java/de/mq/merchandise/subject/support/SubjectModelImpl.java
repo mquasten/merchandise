@@ -2,6 +2,7 @@ package de.mq.merchandise.subject.support;
 
 
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -21,8 +22,6 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 	private Subject subject;
 
 
-	
-	
 	private final SubjectEventFascade subjectEventFascade;
 	
 	SubjectModelImpl(final SubjectEventFascade subjectEventFascade) {
@@ -67,6 +66,16 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 		subject= subjectEventFascade.subjectChanged(subjectId);
 		Assert.notNull(subject, "Subject should be returned" );
 		notifyObservers(EventType.SubjectChanged);
+	}
+	
+	
+	@Override
+	public void save(final Subject subject) {
+		final Field field = ReflectionUtils.findField(SubjectImpl.class, "customer");
+		Assert.notNull(field);
+		ReflectionUtils.setField(field, subject, customer);
+		subjectEventFascade.save(this.subject.id().orElse(null), subject);
+		setSubjectId(null);
 	}
 
 

@@ -13,6 +13,10 @@ interface   SubjectEventFascade {
 	abstract Subject subjectChanged(final Long id) ; 
 	
 	
+	@SubjectEventQualifier(EventType.SubjectSaved)
+	abstract void save(final Long subjectId, final Subject subject);
+	
+	
 	@SubjectEventQualifier(EventType.CountPaging)
 	abstract Number countSubjects();
 	

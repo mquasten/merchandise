@@ -12,7 +12,8 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 		CountPaging,
 		ListPaging,
 		SearchCriteriaChanged,
-		SubjectChanged;
+		SubjectChanged,
+		SubjectSaved;
 	}
 
 	Subject getSearchCriteria();
@@ -24,6 +25,8 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 	void setSubjectId(final Long subjectId);
 
 	Optional<Subject> getSubject();
+	
+	void save(final Subject subject);
 	
 
 
