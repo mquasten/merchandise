@@ -88,5 +88,6 @@ public interface Subject extends BasicEntity {
 	Collection<String> conditionTypes();
 	
 	Date created();
+	
 
 }

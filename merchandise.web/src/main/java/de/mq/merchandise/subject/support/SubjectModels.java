@@ -13,9 +13,12 @@ import org.springframework.core.convert.converter.Converter;
 
 import com.vaadin.data.Item;
 
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.subject.Subject;
+import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
+import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.EventFascadeProxyFactory;
 import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
@@ -24,43 +27,46 @@ import de.mq.merchandise.util.support.RefreshableContainer;
 
 @Configuration
 class SubjectModels {
-	
+
 	@Autowired
 	@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter)
 	private Converter<Subject, Item> subjectToItemConverter;
-	
+
 	@Autowired
 	@EventFascadeProxyFactory.EventFascadeProxyFactoryQualifier(EventFascadeProxyFactory.FactoryType.CGLib)
 	private EventFascadeProxyFactory eventFascadeProxyFactory;
-	
+
 	@Autowired
 	private LazyQueryContainerFactory lazyQueryContainerFactory;
-	
+
+	@Autowired
+	@SubjectMapper(SubjectMapperType.Customer2Subject)
+	private Mapper<Customer, Subject> customerIntoSubjectMapper;
+
 	@Autowired
 	private ItemContainerFactory itemContainerFactory;
 
 	@Autowired
 	private CustomerService customerService;
-	
-	
+
 	private SubjectEventFascade subjectEventFascade = null;
-	
+
 	@PostConstruct
 	void init() {
-		subjectEventFascade=eventFascadeProxyFactory.createProxy(SubjectEventFascade.class);
+		subjectEventFascade = eventFascadeProxyFactory.createProxy(SubjectEventFascade.class);
 	}
 
 	@Bean
-	@Scope( proxyMode=ScopedProxyMode.TARGET_CLASS  ,  value="session")
+	@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 	@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel)
 	SubjectModel subjectModel() {
-		
-		return new SubjectModelImpl(subjectEventFascade);
+
+		return new SubjectModelImpl(subjectEventFascade, customerIntoSubjectMapper);
 
 	}
 
 	@Bean
-	@Scope( proxyMode=ScopedProxyMode.TARGET_CLASS  ,  value="session")
+	@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 	UserModel userModel() {
 		return new UserModelImpl(customerService.customer(Optional.of(1L)));
 	}
@@ -69,26 +75,23 @@ class SubjectModels {
 	@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter)
 	Converter<Item, Subject> itemToSubjectConverter() {
 		return new ItemToDomainConverterImpl<>(SubjectImpl.class, SubjectCols.class);
-	} 
-	
+	}
+
 	@Bean()
 	@SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer)
-	@Scope(  proxyMode=ScopedProxyMode.TARGET_CLASS ,  value="session")
-	RefreshableContainer  subjectLazyQueryContainer() {
-		
+	@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
+	RefreshableContainer subjectLazyQueryContainer() {
+
 		return lazyQueryContainerFactory.create(SubjectCols.Id, subjectToItemConverter, subjectEventFascade, EventType.CountPaging, EventType.ListPaging);
-		
+
 	}
-	
+
 	@Bean()
 	@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem)
-	@Scope(  proxyMode=ScopedProxyMode.TARGET_CLASS ,  value="session")
+	@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 	Item subjectItemContainer() {
 		return itemContainerFactory.create(SubjectCols.class);
-		
+
 	}
-	
-	
-	
 
 }

@@ -39,20 +39,7 @@ public class SubjectRepositoryIntegrationTest {
 
 	private static final long CUSTOMER_ID = 1L;
 
-	private static final String KIND_PRIVATE = "private";
-
-	private static final String KIND_PUBLIC = "public";
-
-	private static final String QUALITY_PLATINUM = "platinum";
-
-	private static final String QUALITY_GOLD = "gold";
-
-	private static final String QUALITY_SILVER = "silver";
-
-	private static final String KIND = "Kind";
-
-	private static final String QUALITY = "Quality";
-
+	
 	private List<Entry<Long, Class<?>>> waste = new ArrayList<>();
 
 	@Autowired
@@ -65,12 +52,7 @@ public class SubjectRepositoryIntegrationTest {
 		final Customer customer = entityManager.find(CustomerImpl.class, CUSTOMER_ID);
 		final Subject subject = new SubjectImpl(customer, SUBJECT_NAME);
 		customer.conditionTypes().forEach(ct -> subject.add(ct, ConditionDataType.String));
-		subject.condition(QUALITY).add(QUALITY_SILVER);
-		subject.condition(QUALITY).add(QUALITY_GOLD);
-		subject.condition(QUALITY).add(QUALITY_PLATINUM);
-
-		subject.condition(KIND).add(KIND_PUBLIC);
-		subject.condition(KIND).add(KIND_PRIVATE);
+		
 
 		subjectRepository.save(subject);
 
@@ -105,14 +87,7 @@ public class SubjectRepositoryIntegrationTest {
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals(SUBJECT_NAME, results.stream().findFirst().get().name());
 		Assert.assertEquals(2, results.stream().findFirst().get().conditions().size());
-		Assert.assertEquals(3, results.stream().findFirst().get().condition(QUALITY).values().size());
-		Assert.assertTrue(results.stream().findFirst().get().condition(QUALITY).values().contains(QUALITY_SILVER));
-		Assert.assertTrue(results.stream().findFirst().get().condition(QUALITY).values().contains(QUALITY_GOLD));
-		Assert.assertTrue(results.stream().findFirst().get().condition(QUALITY).values().contains(QUALITY_PLATINUM));
-
-		Assert.assertEquals(2, results.stream().findFirst().get().condition(KIND).values().size());
-		Assert.assertTrue(results.stream().findFirst().get().condition(KIND).values().contains(KIND_PUBLIC));
-		Assert.assertTrue(results.stream().findFirst().get().condition(KIND).values().contains(KIND_PRIVATE)); 
+		
 	}
 	
 	

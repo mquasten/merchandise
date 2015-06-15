@@ -1,8 +1,5 @@
 package de.mq.merchandise.subject.support;
 
-
-
-import java.lang.reflect.Field;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -12,6 +9,8 @@ import org.springframework.util.ReflectionUtils;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.subject.Subject;
+
+import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.support.ObservableImpl;
 
 
@@ -23,11 +22,13 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 
 
 	private final SubjectEventFascade subjectEventFascade;
+	private final Mapper<Customer,Subject> customerIntoSubjectMapper;
 	
-	SubjectModelImpl(final SubjectEventFascade subjectEventFascade) {
+	SubjectModelImpl(final SubjectEventFascade subjectEventFascade, final Mapper<Customer,Subject> customerIntoSubjectMapper) {
 		searchCriteria=BeanUtils.instantiateClass(SubjectImpl.class, Subject.class);
 		customer=BeanUtils.instantiateClass(CustomerImpl.class, Customer.class);
 		this.subjectEventFascade=subjectEventFascade;
+		this.customerIntoSubjectMapper=customerIntoSubjectMapper;
 	}
 
 
@@ -71,9 +72,7 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 	
 	@Override
 	public void save(final Subject subject) {
-		final Field field = ReflectionUtils.findField(SubjectImpl.class, "customer");
-		Assert.notNull(field);
-		ReflectionUtils.setField(field, subject, customer);
+		customerIntoSubjectMapper.mapInto(customer, subject);
 		subjectEventFascade.save(this.subject.id().orElse(null), subject);
 		setSubjectId(null);
 	}

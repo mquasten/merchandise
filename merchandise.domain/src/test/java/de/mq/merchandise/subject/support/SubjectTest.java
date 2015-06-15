@@ -1,6 +1,7 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -142,6 +143,16 @@ public class SubjectTest {
 	@Test
 	public final void defaultConstructor() {
 		Assert.assertTrue(BeanUtils.instantiateClass(SubjectImpl.class) instanceof Subject);
+	}
+	
+	@Test
+	public final void created() {
+		final Subject subject = new SubjectImpl(customer, NAME); 
+		Assert.assertNotNull(subject.created());
+		Date date = new Date();
+		Assert.assertEquals( subject.created().getTime() ,  date.getTime() );
+		
+		
 	}
 
 }

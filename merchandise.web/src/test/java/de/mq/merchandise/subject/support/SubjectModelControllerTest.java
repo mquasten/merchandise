@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.subject.Subject;
+import de.mq.merchandise.support.Mapper;
 
 public class SubjectModelControllerTest {
 	
@@ -24,7 +25,10 @@ public class SubjectModelControllerTest {
 	
 	private final SubjectService subjectService = Mockito.mock(SubjectService.class);
 	
-	private final SubjectModelControllerImpl subjectModelController = new SubjectModelControllerImpl(subjectService);
+	@SuppressWarnings("unchecked")
+	private final Mapper<Subject,Subject> subjectIntoSubjectMapper = Mockito.mock(Mapper.class);
+	
+	private final SubjectModelControllerImpl subjectModelController = new SubjectModelControllerImpl(subjectService, subjectIntoSubjectMapper);
 	
 	private final SubjectModel model = Mockito.mock(SubjectModel.class);
 	

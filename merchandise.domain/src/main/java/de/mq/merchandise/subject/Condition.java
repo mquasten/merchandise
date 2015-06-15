@@ -1,7 +1,5 @@
 package de.mq.merchandise.subject;
 
-import java.util.List;
-
 import de.mq.merchandise.subject.support.ConditionDataType;
 import de.mq.merchandise.support.BasicEntity;
 
@@ -14,28 +12,7 @@ import de.mq.merchandise.support.BasicEntity;
  */
 public interface Condition<T>  extends BasicEntity {
 
-	/**
-	 * Einen Wert hinzufuegen.
-	 * @param value der hinzuzufuegende Wert.
-	 */
-	void add(final T value);
-
-	/**
-	 * Einen Wert loeschen
-	 * @param value der zu loeschende Wert
-	 */
-	void remove(final T value);
-
-	/**
-	 * Liste der Werte (nicht modifizierbar).
-	 * @return Liste der moeglichen Werte.
-	 */
-	List<T> values();
-
-	/**
-	 * Alle Werten loescchen.
-	 */
-	void clear();
+	
 	
 	/**
 	 * Subject, zu dem die Condition zugeordnet ist.

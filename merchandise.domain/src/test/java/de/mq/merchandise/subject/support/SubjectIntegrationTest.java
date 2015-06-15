@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
-import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.ConditionDataType;
 import de.mq.merchandise.subject.support.SubjectImpl;
@@ -38,9 +37,6 @@ public class SubjectIntegrationTest {
 
 	private static final String CUSTOMER_NAME = "Minogue-Music";
 
-	private static final String PUBLIC_DATE = "public";
-
-	private static final String PRIVATE_DATE = "private";
 
 	private static final String CONDITION_TYPE = "date";
 
@@ -116,9 +112,7 @@ public class SubjectIntegrationTest {
 	    
 	    subject.add(CONDITION_TYPE, ConditionDataType.String);
 	   
-		final Condition<String> condition = subject.condition(CONDITION_TYPE);
-	    condition.add(PRIVATE_DATE);
-	    condition.add(PUBLIC_DATE);
+		
 	    entityManager.merge(subject);
 	    
 	    entityManager.flush();
@@ -131,12 +125,7 @@ public class SubjectIntegrationTest {
 	    Assert.assertTrue(result.conditions().stream().findFirst().get().id().isPresent());
 	   
 	   
-		@SuppressWarnings( "unchecked")
-		final List<String> values = (List<String>) result.conditions().stream().findFirst().get().values();
-	 
-		Assert.assertEquals(2, values.size());
-		Assert.assertTrue(values.contains(PRIVATE_DATE));
-		Assert.assertTrue(values.contains(PUBLIC_DATE));
+		
 		
 	}
 

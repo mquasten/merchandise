@@ -1,25 +1,28 @@
 package de.mq.merchandise.subject.support;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.util.Assert;
 
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.subject.Subject;
+import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
+import de.mq.merchandise.support.Mapper;
 
 @Controller
 class SubjectModelControllerImpl {
 	
 	
 	private final  SubjectService subjectService;
+	private final  Mapper<Subject,Subject> subjectIntoSubjectMapper;
 	
 	@Autowired
-	SubjectModelControllerImpl(final SubjectService subjectService) {
+	SubjectModelControllerImpl(final SubjectService subjectService, final @SubjectMapper(SubjectMapperType.Subject2Subject) Mapper<Subject,Subject> subjectIntoSubjectMapper) {
 		this.subjectService=subjectService;
+		this.subjectIntoSubjectMapper=subjectIntoSubjectMapper;
 	}
 	
 	
@@ -43,18 +46,18 @@ class SubjectModelControllerImpl {
 	
 	@SubjectEventQualifier(EventType.SubjectSaved)
 	public  void save(final Long subjectId, final Subject subject ) {
-		
+		Assert.notNull(subject.customer(), "Customer is mandatory");
 		if( subjectId == null){
 			subjectService.save(new SubjectImpl(subject.customer(), subject.name(), subject.description()));
 			return;
 		}
 		
 		 final Subject toBeChanged = subjectService.subject(subjectId);
-		 final Field fieldName = ReflectionUtils.findField(SubjectImpl.class, "name");
-		 ReflectionUtils.setField(fieldName, toBeChanged, subject.name());
-		 
-		 final Field fieldDesc = ReflectionUtils.findField(SubjectImpl.class, "description");
-		 ReflectionUtils.setField(fieldDesc, toBeChanged, subject.description());
+		 Assert.notNull(toBeChanged.customer(), "Customer is mandatory");
+		
+		 Assert.isTrue(toBeChanged.customer().equals(subject.customer()));
+		
+		 subjectIntoSubjectMapper.mapInto(subject, toBeChanged);
 		 
 		 subjectService.save(toBeChanged);
 		
