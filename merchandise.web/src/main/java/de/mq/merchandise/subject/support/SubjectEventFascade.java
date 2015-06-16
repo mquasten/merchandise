@@ -16,6 +16,9 @@ interface   SubjectEventFascade {
 	@SubjectEventQualifier(EventType.SubjectSaved)
 	abstract void save(final Long subjectId, final Subject subject);
 	
+	@SubjectEventQualifier(EventType.SubjectDeleted)
+	abstract void delete(final Subject subject);
+	
 	
 	@SubjectEventQualifier(EventType.CountPaging)
 	abstract Number countSubjects();

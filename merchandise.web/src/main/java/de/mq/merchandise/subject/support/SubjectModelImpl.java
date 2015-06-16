@@ -29,6 +29,7 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 		customer=BeanUtils.instantiateClass(CustomerImpl.class, Customer.class);
 		this.subjectEventFascade=subjectEventFascade;
 		this.customerIntoSubjectMapper=customerIntoSubjectMapper;
+		this.subject= BeanUtils.instantiateClass(SubjectImpl.class);
 	}
 
 
@@ -48,7 +49,7 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 	}
 	@Override
 	public final void setSerachCriteria(final Subject searchCriteria) {
-		Assert.notNull(searchCriteria, "Searchcriteria is mandatory");
+		Assert.notNull(searchCriteria, "SearchCriteria is mandatory");
 		ReflectionUtils.doWithFields(searchCriteria.getClass(), field -> { field.setAccessible(true); ReflectionUtils.setField(field, searchCriteria, customer);}, field -> field.getType().equals(Customer.class));
 		this.searchCriteria=searchCriteria;
 		notifyObservers(EventType.SearchCriteriaChanged);
@@ -83,6 +84,13 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 	@Override
 	public final Optional<Subject> getSubject() {
 		return Optional.ofNullable(subject);
+	}
+
+
+	@Override
+	public void delete(final Subject subject) {
+		subjectEventFascade.delete(subject);
+		setSubjectId(null);
 	}
 	
 	

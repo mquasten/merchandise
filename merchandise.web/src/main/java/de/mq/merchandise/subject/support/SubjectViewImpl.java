@@ -156,17 +156,22 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			col1.addComponent(field);
 			
 		});
+		editorFields.setItemDataSource(subjectToItemConverter.convert(subjectModel.getSubject().get()));
 		final Button saveButton = new Button("speichern");
 		final Button newButton = new Button("neu");
+		final Button deleteButton = new Button("delete");
+		newButton.setEnabled(false);
+		deleteButton.setEnabled(false);
 		saveButton.setIcon(newIcon);
 	   subjectModel.register(e -> { 
 			editorFields.setItemDataSource(null);
 			newButton.setEnabled(false);
-			
+			deleteButton.setEnabled(false);
 			editorFields.setItemDataSource(subjectToItemConverter.convert(subjectModel.getSubject().get()));
 			if( subjectModel.getSubject().get().id().isPresent()) {
 				saveButton.setIcon(editIcon);
 				newButton.setEnabled(true);
+				deleteButton.setEnabled(true);
 				return;
 			} 
 			
@@ -184,9 +189,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 				return;
 			}
 	   	final Subject subject = itemToSubjectMapper.convert(editorFields.getItemDataSource());
-	   	System.out.println(subject.name());
-	   	System.out.println(subject.description());
-	   	System.out.println("******");
+	   	
 	   	subjectModel.save(subject);
 	   	lazyQueryContainer.refresh();
 	   	subjectList.setValue(null);
@@ -194,6 +197,13 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	   });
 	   
 		
+	   deleteButton.addClickListener(e -> {
+	   	final Subject subject = itemToSubjectMapper.convert(editorFields.getItemDataSource());
+	   	subjectModel.delete(subject);
+	   	lazyQueryContainer.refresh();
+	   	subjectList.setValue(null);
+	   });
+	   
 		editorLayout.addComponent(col1);	
 		
 	
@@ -206,6 +216,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		saveButtonLayout.addComponent(saveButton);
 		
 		saveButtonLayout.addComponent(newButton);
+		saveButtonLayout.addComponent(deleteButton);
 		
 		
 		newButton.addClickListener(event -> { 

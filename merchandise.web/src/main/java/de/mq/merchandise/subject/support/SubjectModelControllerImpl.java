@@ -62,5 +62,12 @@ class SubjectModelControllerImpl {
 		 subjectService.save(toBeChanged);
 		
 	}
+	
+	@SubjectEventQualifier(EventType.SubjectDeleted)
+	public  void delete(final Subject subject) {
+		
+		subjectService.remove(subject);
+		
+	}
 
 }

@@ -13,7 +13,8 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 		ListPaging,
 		SearchCriteriaChanged,
 		SubjectChanged,
-		SubjectSaved;
+		SubjectSaved, 
+		SubjectDeleted;
 	}
 
 	Subject getSearchCriteria();
@@ -27,6 +28,8 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 	Optional<Subject> getSubject();
 	
 	void save(final Subject subject);
+
+	void delete(Subject subject);
 	
 
 
