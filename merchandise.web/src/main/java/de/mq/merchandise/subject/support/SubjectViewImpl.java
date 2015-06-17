@@ -3,10 +3,13 @@ package de.mq.merchandise.subject.support;
 
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
@@ -15,6 +18,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
@@ -32,6 +36,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.support.RefreshableContainer;
 
@@ -62,12 +67,13 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	private final UserModel userModel;
 	private final MessageSource messageSource;
 	
+	private final Converter<Collection<Condition>, Container> conditionToContainerConverter;
 	
 
 	@Autowired
 	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter,@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item>  subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer,
 			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem,
-			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource) {
+			@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter) {
 
 		this.itemToSubjectMapper = itemToSubjectConverter;
 		this.subjectToItemConverter = subjectToItemConverter;
@@ -77,6 +83,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		this.subjectModel = subjectModel;
 		this.userModel = userModel;
 		this.messageSource=messageSource;
+		this.conditionToContainerConverter=conditionToContainerConverter;
 	}
 
 	private void initLayout() {
@@ -156,6 +163,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			col1.addComponent(field);
 			
 		});
+		
 		editorFields.setItemDataSource(subjectToItemConverter.convert(subjectModel.getSubject().get()));
 		final Button saveButton = new Button("speichern");
 		final Button newButton = new Button("neu");
@@ -266,6 +274,19 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	         Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col ->  subjectList.setColumnHeader(col, messageSource.getMessage(I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name()), null, userModel.getLocale())));
 	         
 	    }, UserModel.EventType.LocaleChanged);
+	    
+	    
+	    final VerticalLayout conditionTableLayout = new VerticalLayout();
+	    final Table conditionTable = new Table();
+	    conditionTable.setCaption("Konditionen");
+	    conditionTableLayout.addComponent(conditionTable);
+	    editor.addComponent(conditionTableLayout);
+	    conditionTable.setSelectable(true);
+	    
+	    final Collection<Condition> conditions = new ArrayList<>();
+	    conditions.add(new ConditionImpl(BeanUtils.instantiateClass(SubjectImpl.class), "Unit", ConditionDataType.String));
+	    conditionTable.setContainerDataSource(conditionToContainerConverter.convert(conditions));
+	    
 	}
 
 	

@@ -19,7 +19,7 @@ public class ConditionTest {
 
 	@Test
 	public final void create() {
-		final Condition<String> condition = new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String);
+		final Condition condition = new ConditionImpl(subject, CONDITION_TYPE, ConditionDataType.String);
 
 		Assert.assertEquals(subject, condition.subject());
 		Assert.assertEquals(CONDITION_TYPE, condition.conditionType());
@@ -34,7 +34,7 @@ public class ConditionTest {
 
 	@Test
 	public final void hash() {
-		final Condition<?> condition = new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String);
+		final Condition condition = new ConditionImpl(subject, CONDITION_TYPE, ConditionDataType.String);
 		ReflectionTestUtils.setField(condition, "conditionType", null);
 		Assert.assertEquals(System.identityHashCode(condition), condition.hashCode());
 		ReflectionTestUtils.setField(condition, "conditionType", CONDITION_TYPE);
@@ -46,15 +46,15 @@ public class ConditionTest {
 
 	@Test
 	public final void equals() {
-		final Condition<?> condition = new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String);
+		final Condition condition = new ConditionImpl(subject, CONDITION_TYPE, ConditionDataType.String);
 		ReflectionTestUtils.setField(condition, "subject", null);
-		Assert.assertFalse(condition.equals(new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String)));
-		Assert.assertFalse(new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String).equals(condition));
+		Assert.assertFalse(condition.equals(new ConditionImpl(subject, CONDITION_TYPE, ConditionDataType.String)));
+		Assert.assertFalse(new ConditionImpl(subject, CONDITION_TYPE, ConditionDataType.String).equals(condition));
 		Assert.assertTrue(condition.equals(condition));
-		Assert.assertFalse(new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String).equals(CONDITION_TYPE));
-		Assert.assertTrue(new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String).equals(new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String)));
-		Assert.assertFalse(new ConditionImpl<>(subject, OTHER_CONDITION_TYPE, ConditionDataType.String).equals(new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String)));
-		Assert.assertFalse(new ConditionImpl<>(Mockito.mock(Subject.class), CONDITION_TYPE, ConditionDataType.String).equals(new ConditionImpl<>(subject, CONDITION_TYPE, ConditionDataType.String)));
+		Assert.assertFalse(new ConditionImpl(subject, CONDITION_TYPE, ConditionDataType.String).equals(CONDITION_TYPE));
+		Assert.assertTrue(new ConditionImpl(subject, CONDITION_TYPE, ConditionDataType.String).equals(new ConditionImpl(subject, CONDITION_TYPE, ConditionDataType.String)));
+		Assert.assertFalse(new ConditionImpl(subject, OTHER_CONDITION_TYPE, ConditionDataType.String).equals(new ConditionImpl(subject, CONDITION_TYPE, ConditionDataType.String)));
+		Assert.assertFalse(new ConditionImpl(Mockito.mock(Subject.class), CONDITION_TYPE, ConditionDataType.String).equals(new ConditionImpl(subject, CONDITION_TYPE, ConditionDataType.String)));
 	}
 	
 	@Test

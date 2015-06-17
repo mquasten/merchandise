@@ -65,7 +65,7 @@ public interface Subject extends BasicEntity {
 	 * 
 	 * @return alle Conditions des Subjects
 	 */
-	Collection<Condition<?>> conditions();
+	Collection<Condition> conditions();
 
 	/**
 	 * Gibt die Condition passend zum ConditionType zurueck, wenn sie nicht
@@ -76,7 +76,7 @@ public interface Subject extends BasicEntity {
 	 *            soll.
 	 * @return Condition passend zum ConditionTyp.
 	 */
-	<T> Condition<T> condition(final String conditionType);
+	<T> Condition condition(final String conditionType);
 
 	/**
 	 * Collection aller vorhandenen contionTypes (nicht modifizierbar). Ueber

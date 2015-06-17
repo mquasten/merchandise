@@ -32,7 +32,7 @@ public class SubjectTest {
 
 	private final Customer customer = Mockito.mock(Customer.class);
 	
-	private final Condition<?> condition = Mockito.mock(Condition.class); 
+	private final Condition condition = Mockito.mock(Condition.class); 
 	
 	private final String NAME = "Pets4You"; 
 	
@@ -60,7 +60,7 @@ public class SubjectTest {
 		final Subject subject = new SubjectImpl(customer, NAME); 
 		subject.add(CONDITION_TYPE, ConditionDataType.String);
 		Assert.assertEquals(1, subject.conditions().size());
-		final Condition<?> condition = subject.conditions().stream().findFirst().get();
+		final Condition condition = subject.conditions().stream().findFirst().get();
 		Assert.assertEquals(CONDITION_TYPE, ReflectionTestUtils.getField(condition, CONDITION_TYPE_FIELD));
 		Assert.assertEquals(ConditionDataType.String, ReflectionTestUtils.getField(condition, DATA_TYPE_FIELD));
 		
@@ -75,14 +75,14 @@ public class SubjectTest {
 		final Subject subject = new SubjectImpl(customer, NAME); 
 		
 	
-		final Map<String, Condition<?>> conditions = conditions(subject);
+		final Map<String, Condition> conditions = conditions(subject);
 		conditions.put(CONDITION_TYPE, condition);
 		Assert.assertEquals(condition, subject.condition(CONDITION_TYPE));
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<String, Condition<?>> conditions(final Subject subject) {
-		return (Map<String, Condition<?>>) ReflectionTestUtils.getField(subject, CONDITIONS_FIELD);
+	private Map<String, Condition> conditions(final Subject subject) {
+		return (Map<String, Condition>) ReflectionTestUtils.getField(subject, CONDITIONS_FIELD);
 	}
 	
 	@Test(expected=InvalidDataAccessApiUsageException.class)

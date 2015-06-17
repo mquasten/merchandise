@@ -10,7 +10,7 @@ import de.mq.merchandise.support.BasicEntity;
  *
  * @param <T> der Typ der Condition, muss corespondieren mit {@link ConditionDataType}
  */
-public interface Condition<T>  extends BasicEntity {
+public interface Condition  extends BasicEntity {
 
 	
 	

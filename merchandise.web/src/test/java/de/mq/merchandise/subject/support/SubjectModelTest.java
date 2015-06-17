@@ -120,12 +120,12 @@ public class SubjectModelTest {
 	@Test
 	public final void events() {
 		Arrays.asList(SubjectModel.EventType.values()).forEach(col -> Assert.assertEquals(col, SubjectModel.EventType.valueOf(col.name())));
-		Assert.assertEquals(5, SubjectModel.EventType.values().length);
+		Assert.assertEquals(6, SubjectModel.EventType.values().length);
 	}
 
 	@Test
 	public final void getSubject() {
-		Assert.assertEquals(Optional.empty(), subjectModel.getSubject());
+		Assert.assertEquals(Optional.of(ReflectionTestUtils.getField(subjectModel, SUBJECT_FIELD)), subjectModel.getSubject());
 		ReflectionTestUtils.setField(subjectModel, SUBJECT_FIELD, subject);
 		Assert.assertEquals(Optional.of(subject), subjectModel.getSubject());
 

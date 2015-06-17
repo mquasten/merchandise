@@ -85,6 +85,9 @@ class SubjectModels {
 		return lazyQueryContainerFactory.create(SubjectCols.Id, subjectToItemConverter, subjectEventFascade, EventType.CountPaging, EventType.ListPaging);
 
 	}
+	
+	
+	
 
 	@Bean()
 	@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem)

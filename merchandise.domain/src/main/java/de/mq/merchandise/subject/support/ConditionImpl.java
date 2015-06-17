@@ -19,7 +19,7 @@ import de.mq.merchandise.subject.Subject;
 
 @Entity(name = "Condition")
 @Table(name = "condition")
-class ConditionImpl<T> implements Condition<T> {
+class ConditionImpl implements Condition {
 
 	@GeneratedValue
 	@Id
@@ -76,7 +76,7 @@ class ConditionImpl<T> implements Condition<T> {
 		return conditionType.hashCode() + subject.hashCode();
 	}
 
-	private boolean valid(Condition<?> condition) {
+	private boolean valid(Condition condition) {
 		if (!StringUtils.hasText(condition.conditionType())) {
 			return false;
 		}
@@ -98,7 +98,7 @@ class ConditionImpl<T> implements Condition<T> {
 
 		}
 
-		final Condition<?> other = (Condition<?>) obj;
+		final Condition other = (Condition) obj;
 		if (!valid(other)) {
 			return super.equals(obj);
 		}
