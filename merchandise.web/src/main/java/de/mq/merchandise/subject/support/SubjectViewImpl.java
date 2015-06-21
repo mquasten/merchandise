@@ -22,6 +22,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
@@ -32,6 +33,10 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+
+
+
+
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.support.RefreshableContainer;
@@ -40,7 +45,9 @@ import de.mq.merchandise.util.support.RefreshableContainer;
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 public class SubjectViewImpl extends CustomComponent implements View {
 
-	private static final String I18N_CONDITION_TABLE_HEADLINE = "subject_condition_table_headline";
+	private static final String I18N_SUBJECT_FIELD_PREFIX = "subject_";
+	private static final String I18N_SUBJECT_CAPTION = "subject_subject_caption";
+	private static final String I18N_CONDITION_CAPTION = "subject_condition_caption";
 	private final ThemeResource editIcon = new ThemeResource("edit-icon.png");
 	private final ThemeResource newIcon = new ThemeResource("new-icon.png");
 
@@ -56,6 +63,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	static final String I18N_SUBJECT_SAVE_BUTTON = "subject_save_button";
 	static final String I18N_SUBJECT_NEW_BUTTON = "subject_new_button";
 	static final String I18N_SUBJECT_DELETE_BUTTON = "subject_delete_button";
+	
+	static final String I18N_CONDITION_TABLE_HEADLINE = "subject_condition_table_caption";
 
 	private final Converter<Item, Subject> itemToSubjectMapper;
 
@@ -87,6 +96,10 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	private void initLayout() {
 
 		final HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
+		
+		
+		
+		splitPanel.setSplitPosition(64 , Unit.PERCENTAGE);
 
 		setCompositionRoot(splitPanel);
 
@@ -117,7 +130,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 		col2Layout.setMargin(new MarginInfo(true, false, false, true));
 		searchLayout.addComponent(col2Layout);
-		col2Layout.addComponent(searchDescription);
+		col2Layout.addComponent(searchDescription); 
 
 		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setMargin(true);
@@ -137,25 +150,44 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 		final Table subjectList = new Table();
 
+		
+	
+		
+	
+	
 		final VerticalLayout editor = new VerticalLayout();
-		editor.setMargin(true);
 		editor.setSizeUndefined();
+	
+		editor.setMargin(new MarginInfo(true, false,false,true));
+	
+		
 		final HorizontalLayout editorLayout = new HorizontalLayout();
+		editorLayout.setSizeFull();
+	
 		editor.addComponent(editorLayout);
 
+	
 		final FormLayout col1 = new FormLayout();
-
+		
+		col1.setWidth("100%");
 		final FieldGroup editorFields = new FieldGroup();
 
+
 		Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible() && !col.equals(SubjectCols.DateCreated)).forEach(col -> {
-			final TextField field = new TextField(col.name());
+			final TextField field = new TextField();
 			field.setNullRepresentation("");
+			field.setSizeFull();
+		
 			editorFields.bind(field, col);
 			col1.addComponent(field);
 
 		});
 
 		editorFields.setItemDataSource(subjectToItemConverter.convert(subjectModel.getSubject().get()));
+	
+		
+		
+	
 		final Button saveButton = new Button();
 		final Button newButton = new Button();
 		final Button deleteButton = new Button();
@@ -186,6 +218,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		});
 
 		editorLayout.addComponent(col1);
+		editorLayout.setWidth("100%");
 
 		final HorizontalLayout saveButtonLayout = new HorizontalLayout();
 		saveButtonLayout.setSpacing(true);
@@ -203,11 +236,12 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		splitPanel.addComponent(leftLayout);
 		splitPanel.addComponent(editor);
 
+		
 		leftLayout.addComponent(subjectList);
 
 		leftLayout.setSizeFull();
 
-		leftLayout.setExpandRatio(subjectList, 1);
+		//leftLayout.setExpandRatio(subjectList, 1);
 		subjectList.setSizeFull();
 
 		subjectList.setSelectable(true);
@@ -222,14 +256,60 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 		final VerticalLayout conditionTableLayout = new VerticalLayout();
 
-		conditionTableLayout.setMargin(new MarginInfo(true, true, false, false));
+		conditionTableLayout.setMargin(new MarginInfo(true, false, false, false));
 
+		final HorizontalLayout buttonConditionLayout = new HorizontalLayout();
+		
+		buttonConditionLayout.setMargin(new MarginInfo(false, false, true, false));
+		buttonConditionLayout.setSpacing(true);
+		
+		
+		
+		
+		final HorizontalLayout conditionEditorLayout = new HorizontalLayout();
+		conditionEditorLayout.setWidth("100%");
+		final FormLayout conditionCols = new FormLayout();
+		conditionCols.setWidth("100%");
+		conditionEditorLayout.addComponent(conditionCols);
+		conditionTableLayout.addComponent(conditionEditorLayout);
+		
+
+		final FieldGroup conditionFields = new FieldGroup();
+
+
+		Arrays.asList(ConditionCols.values()).stream().filter(col -> col.visible() ).forEach(col -> {
+			
+			final ComboBox field = new ComboBox(col.name());
+		
+			field.setInvalidAllowed(false);
+			conditionFields.bind(field, col);
+			conditionCols.addComponent(field);
+
+		});
+		
+		
+		final Button  saveConditionButton = new Button();
+		saveConditionButton.setIcon(newIcon);
+		final Button  newConditionButton = new Button();
+		final Button  deleteConditionButton = new Button();
+		buttonConditionLayout.addComponent(saveConditionButton);
+		buttonConditionLayout.addComponent(newConditionButton);
+		buttonConditionLayout.addComponent(deleteConditionButton);
+		conditionTableLayout.addComponent(buttonConditionLayout);
+	
+		
+		
 		final Table conditionTable = new Table();
+		
+		conditionTable.setWidth("100%");
+		conditionTable.setPageLength(5);
 
 		conditionTableLayout.addComponent(conditionTable);
 		editor.addComponent(conditionTableLayout);
 		conditionTable.setSelectable(true);
+	
 		conditionTableLayout.setVisible(false);
+		
 
 		subjectModel.register(e -> {
 			editorFields.setItemDataSource(null);
@@ -264,9 +344,25 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			deleteButton.setCaption(messageSource.getMessage(I18N_SUBJECT_DELETE_BUTTON, null, userModel.getLocale()));
 
 			Arrays.asList(ConditionCols.values()).stream().filter(col -> col.visible()).forEach(col -> conditionTable.setColumnHeader(col, messageSource.getMessage(I18N_CONDITION_TABLE_PREFIX + StringUtils.uncapitalize(col.name()), null, userModel.getLocale())));
-			conditionTable.setCaption((messageSource.getMessage(I18N_CONDITION_TABLE_HEADLINE, null, userModel.getLocale())));
+			conditionEditorLayout.setCaption((messageSource.getMessage(I18N_CONDITION_CAPTION, null, userModel.getLocale())));
+			
+			editorLayout.setCaption(messageSource.getMessage(I18N_SUBJECT_CAPTION, null,userModel.getLocale() ));
+			
+			saveConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_SAVE_BUTTON, null, userModel.getLocale()));
+			newConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_NEW_BUTTON, null, userModel.getLocale()));
+			deleteConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_DELETE_BUTTON, null, userModel.getLocale()));
+			
+			conditionTable.setCaption(messageSource.getMessage(I18N_CONDITION_TABLE_HEADLINE, null, userModel.getLocale()));
+			
+		
+			
+			editorFields.getBoundPropertyIds().forEach(property -> editorFields.getField(property).setCaption(messageSource.getMessage( I18N_SUBJECT_FIELD_PREFIX +StringUtils.uncapitalize(((Enum<?>) property).name()), null,userModel.getLocale()  )));
+			//conditionFields.getBoundPropertyIds().forEach(x -> editorFields.getField(x).setCaption(messageSource.getMessage( "subject_condition_" +StringUtils.uncapitalize(((Enum<?>) x).name()), null,userModel.getLocale()  )));
 
 		}, UserModel.EventType.LocaleChanged);
+		
+	
+		
 
 	}
 
