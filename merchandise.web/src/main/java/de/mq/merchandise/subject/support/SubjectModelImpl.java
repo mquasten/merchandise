@@ -8,8 +8,8 @@ import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
-
 import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.support.ObservableImpl;
 
@@ -20,6 +20,7 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 	
 	private Subject subject;
 
+	private Condition condition;
 
 	private final SubjectEventFascade subjectEventFascade;
 	private final Mapper<Customer,Subject> customerIntoSubjectMapper;
@@ -30,6 +31,7 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 		this.subjectEventFascade=subjectEventFascade;
 		this.customerIntoSubjectMapper=customerIntoSubjectMapper;
 		this.subject= BeanUtils.instantiateClass(SubjectImpl.class);
+		this.condition= BeanUtils.instantiateClass(ConditionImpl.class);;
 	}
 
 
@@ -70,6 +72,18 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 		notifyObservers(EventType.SubjectChanged);
 	}
 	
+	@Override
+	public void setConditionId(final Long conditionId) {
+		if( conditionId==null){
+			condition= BeanUtils.instantiateClass(ConditionImpl.class);
+			notifyObservers(EventType.ConditionChanged);
+			return;
+		}
+		condition = subjectEventFascade.conditionChanged(conditionId);
+		Assert.notNull(condition, "Condition should be returned" );
+		notifyObservers(EventType.ConditionChanged);
+	}
+	
 	
 	@Override
 	public void save(final Subject subject) {
@@ -85,13 +99,21 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 	public final Optional<Subject> getSubject() {
 		return Optional.ofNullable(subject);
 	}
-
+	
+	@Override
+	public final Optional<Condition> getCondition() {
+		return Optional.ofNullable(condition);
+	}
+	
 
 	@Override
 	public void delete(final Subject subject) {
 		subjectEventFascade.delete(subject);
 		setSubjectId(null);
 	}
+
+
+	
 	
 	
 }

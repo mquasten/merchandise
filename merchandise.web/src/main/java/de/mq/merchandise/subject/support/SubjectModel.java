@@ -3,6 +3,7 @@ package de.mq.merchandise.subject.support;
 import java.util.Optional;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.Observable;
 
@@ -14,7 +15,8 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 		SearchCriteriaChanged,
 		SubjectChanged,
 		SubjectSaved, 
-		SubjectDeleted;
+		SubjectDeleted,
+		ConditionChanged;
 	}
 
 	Subject getSearchCriteria();
@@ -30,6 +32,10 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 	void save(final Subject subject);
 
 	void delete(Subject subject);
+
+	void setConditionId(Long value);
+
+	Optional<Condition> getCondition();
 	
 
 

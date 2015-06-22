@@ -33,10 +33,6 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-
-
-
-
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.support.RefreshableContainer;
@@ -78,9 +74,11 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	private final MessageSource messageSource;
 
 	private final Converter<Collection<Condition>, Container> conditionToContainerConverter;
+	
+	private final Converter<Condition, Item> conditionToItemConverter;
 
 	@Autowired
-	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter) {
+	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter,  @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter) {
 
 		this.itemToSubjectMapper = itemToSubjectConverter;
 		this.subjectToItemConverter = subjectToItemConverter;
@@ -91,6 +89,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		this.userModel = userModel;
 		this.messageSource = messageSource;
 		this.conditionToContainerConverter = conditionToContainerConverter;
+		this.conditionToItemConverter=conditionToItemConverter;
 	}
 
 	private void initLayout() {
@@ -275,17 +274,29 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 
 		final FieldGroup conditionFields = new FieldGroup();
+	
+		
 
-
+		
+		
 		Arrays.asList(ConditionCols.values()).stream().filter(col -> col.visible() ).forEach(col -> {
 			
 			final ComboBox field = new ComboBox(col.name());
+			
 		
-			field.setInvalidAllowed(false);
+	
 			conditionFields.bind(field, col);
 			conditionCols.addComponent(field);
+			
+			
+			
 
 		});
+		
+	
+		conditionFields.setItemDataSource(conditionToItemConverter.convert(subjectModel.getCondition().get()));
+		
+		
 		
 		
 		final Button  saveConditionButton = new Button();
@@ -310,6 +321,9 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	
 		conditionTableLayout.setVisible(false);
 		
+		
+		conditionTable.addValueChangeListener(e ->  subjectModel.setConditionId(e.getProperty().getValue() != null ?  (Long) conditionTable.getItem(e.getProperty().getValue()).getItemProperty(ConditionCols.Id).getValue() : null));
+		
 
 		subjectModel.register(e -> {
 			editorFields.setItemDataSource(null);
@@ -330,6 +344,33 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			saveButton.setIcon(newIcon);
 
 		}, SubjectModel.EventType.SubjectChanged);
+		
+		
+		subjectModel.register(e -> {
+			conditionFields.setItemDataSource(null);
+		
+			newConditionButton.setEnabled(false);
+			deleteConditionButton.setEnabled(false);
+			
+			ComboBox x = (ComboBox) conditionFields.getField(ConditionCols.ConditionType);
+			if( (subjectModel.getCondition().get().conditionType() != null)){
+				x.getContainerDataSource().addItem(subjectModel.getCondition().get().conditionType());
+			}
+			ComboBox y = (ComboBox) conditionFields.getField(ConditionCols.DataType);
+			if( (subjectModel.getCondition().get().conditionDataType() != null)){
+				y.getContainerDataSource().addItem(subjectModel.getCondition().get().conditionDataType());
+			}
+			
+			conditionFields.setItemDataSource(conditionToItemConverter.convert(subjectModel.getCondition().get()));
+			if( subjectModel.getCondition().get().id().isPresent()){
+				saveConditionButton.setIcon(editIcon);
+				newConditionButton.setEnabled(true);
+				deleteConditionButton.setEnabled(true);
+				return;
+			}
+			saveConditionButton.setIcon(newIcon);
+			
+		}, SubjectModel.EventType.ConditionChanged);
 
 		userModel.register(o -> {
 			searchDescription.setCaption(messageSource.getMessage(I18N_SUBJECT_SEARCH_DESCRIPTION, null, userModel.getLocale()));

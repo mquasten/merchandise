@@ -3,6 +3,7 @@ package de.mq.merchandise.subject.support;
 import java.util.Collection;
 
 import de.mq.merchandise.ResultNavigation;
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
 
@@ -27,5 +28,8 @@ interface   SubjectEventFascade {
 
 	@SubjectEventQualifier(EventType.ListPaging)
 	abstract Collection<Subject> subjects(final ResultNavigation paging);
+
+	@SubjectEventQualifier(EventType.ConditionChanged)
+	abstract Condition conditionChanged(final Long conditionId);
 	
 }

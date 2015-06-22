@@ -1,12 +1,14 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 
 import de.mq.merchandise.ResultNavigation;
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
@@ -42,6 +44,18 @@ class SubjectModelControllerImpl {
 	@SubjectEventQualifier(EventType.SubjectChanged)
 	public  Subject subject(final Long id ) {
 		return subjectService.subject(id);
+	}
+	
+	@SubjectEventQualifier(EventType.ConditionChanged)
+	public  Condition condition(final SubjectModel subjectModel , final Long id ) {
+		Assert.notNull(id, "Id is mandatory");
+		Assert.isTrue((subjectModel.getSubject().isPresent()), "Subject is mandatory");
+		Assert.isTrue((subjectModel.getSubject().get().id().isPresent()), "SubjectId is mandatory");
+		final Subject subject =  subjectService.subject(subjectModel.getSubject().get().id().get());
+		
+		final Optional<Condition> result = subject.conditions().stream().filter(condition -> condition.id().orElse(-1L).equals(id)).findFirst();
+		Assert.isTrue(result.isPresent(), "Condition should be persistent");
+		return result.get();
 	}
 	
 	@SubjectEventQualifier(EventType.SubjectSaved)

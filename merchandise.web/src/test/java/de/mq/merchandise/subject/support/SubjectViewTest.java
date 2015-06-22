@@ -48,9 +48,11 @@ public class SubjectViewTest {
 	private final UserModel userModel = Mockito.mock(UserModel.class);
 	private final MessageSource messageSource = Mockito.mock(MessageSource.class);
 	@SuppressWarnings("unchecked")
+	private final Converter<Condition, Item> conditionToItemConverter = Mockito.mock(Converter.class);
+	@SuppressWarnings("unchecked")
 	private final Converter<Collection<Condition>, Container> conditionToContainerConverter = Mockito.mock(Converter.class);
 
-	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter);
+	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter, conditionToItemConverter);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private final ArgumentCaptor<Observer<UserModel.EventType>> localChangedObserverCapture = (ArgumentCaptor) ArgumentCaptor.forClass(Observer.class);
@@ -64,6 +66,17 @@ public class SubjectViewTest {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Before()
 	public final void setup() {
+		
+		final Item  conditionItem = Mockito.mock(Item.class);
+		Condition condition = Mockito.mock(Condition.class);
+		Mockito.when(subjectModel.getCondition()).thenReturn(Optional.of(condition));
+		Mockito.when(conditionToItemConverter.convert(Mockito.any(Condition.class))).thenReturn(conditionItem);
+		
+		final Property<?> conditionTypeProperty = Mockito.mock(Property.class);
+		final Property<?> dataTypeProperty = Mockito.mock(Property.class);
+		
+		Mockito.when(conditionItem.getItemProperty(ConditionCols.ConditionType)).thenReturn(conditionTypeProperty);
+		Mockito.when(conditionItem.getItemProperty(ConditionCols.DataType)).thenReturn(dataTypeProperty);
 
 		final Subject subject = Mockito.mock(Subject.class);
 		Mockito.when(subjectModel.getSubject()).thenReturn(Optional.of(subject));
@@ -105,7 +118,7 @@ public class SubjectViewTest {
 		Assert.assertEquals(UserModel.EventType.LocaleChanged, localChangedTypeCapture.getValue());
 		localChangedObserverCapture.getValue().process(localChangedTypeCapture.getValue());
 
-		Assert.assertEquals(2, observers.size());
+		Assert.assertEquals(3, observers.size());
 		Assert.assertTrue(observers.containsKey(EventType.SearchCriteriaChanged));
 		Assert.assertTrue(observers.containsKey(EventType.SubjectChanged));
 		Mockito.verify(subjectModel).register(observers.get(EventType.SearchCriteriaChanged), EventType.SearchCriteriaChanged);
@@ -113,6 +126,9 @@ public class SubjectViewTest {
 
 		components.clear();
 		ComponentTestHelper.components(subjectView, components);
+		
+	
+	
 	}
 
 	@Test
