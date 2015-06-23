@@ -302,6 +302,9 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		final Button  saveConditionButton = new Button();
 		saveConditionButton.setIcon(newIcon);
 		final Button  newConditionButton = new Button();
+		
+		
+		
 		final Button  deleteConditionButton = new Button();
 		buttonConditionLayout.addComponent(saveConditionButton);
 		buttonConditionLayout.addComponent(newConditionButton);
@@ -311,6 +314,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 		
 		final Table conditionTable = new Table();
+		
+		newConditionButton.addClickListener(e -> conditionTable.setValue(null));
 		
 		conditionTable.setWidth("100%");
 		conditionTable.setPageLength(5);
@@ -352,15 +357,10 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			newConditionButton.setEnabled(false);
 			deleteConditionButton.setEnabled(false);
 			
-			ComboBox x = (ComboBox) conditionFields.getField(ConditionCols.ConditionType);
-			if( (subjectModel.getCondition().get().conditionType() != null)){
-				x.getContainerDataSource().addItem(subjectModel.getCondition().get().conditionType());
-			}
-			ComboBox y = (ComboBox) conditionFields.getField(ConditionCols.DataType);
-			if( (subjectModel.getCondition().get().conditionDataType() != null)){
-				y.getContainerDataSource().addItem(subjectModel.getCondition().get().conditionDataType());
-			}
-			
+			((ComboBox) conditionFields.getField(ConditionCols.ConditionType)).removeAllItems();
+			((ComboBox) conditionFields.getField(ConditionCols.ConditionType)).addItems(subjectModel.getConditionTypes());
+			((ComboBox) conditionFields.getField(ConditionCols.DataType)).removeAllItems();
+			((ComboBox) conditionFields.getField(ConditionCols.DataType)).addItems(subjectModel.getDataTypes());
 			conditionFields.setItemDataSource(conditionToItemConverter.convert(subjectModel.getCondition().get()));
 			if( subjectModel.getCondition().get().id().isPresent()){
 				saveConditionButton.setIcon(editIcon);

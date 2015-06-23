@@ -20,19 +20,19 @@ class ConditionConverterImpl implements Converter<Condition, Item> {
 		final Item item = new PropertysetItem();
 
 		
-		item.addItemProperty(ConditionCols.Id, new ObjectProperty<>(condition.id().orElse((Long)ConditionCols.Id.nvl())));
+		item.addItemProperty(ConditionCols.Id, new ObjectProperty<>(condition.id().isPresent() ? condition.id().get() : "" ));
 	
 
-		item.addItemProperty(ConditionCols.ConditionType, new ObjectProperty<>(nvl(condition.conditionType(),  ConditionCols.ConditionType.nvl())));
+		item.addItemProperty(ConditionCols.ConditionType, new ObjectProperty<>(nvl(condition.conditionType())));
 
-		item.addItemProperty(ConditionCols.DataType, new ObjectProperty<>(nvl(condition.conditionDataType(), ConditionCols.DataType.nvl())));
+		item.addItemProperty(ConditionCols.DataType, new ObjectProperty<>(nvl(condition.conditionDataType())));
 
 		
 		return item;
 	}
 
-	private Object nvl(final Object value, final Object nvl ) {
-		return value == null ? nvl : value;
+	private Object nvl(final Object value ) {
+		return value == null ? "" : value;
 	}
 
 }
