@@ -23,6 +23,6 @@ public @interface SubjectModelQualifier {
 		ItemToSubjectConverter,
 		SubjectToItemConverter,
 		ConditionToItemConverter,
-		ConditionToContainerConverter;
+		ConditionToContainerConverter, ItemToConditionConverter;
 	}
 }

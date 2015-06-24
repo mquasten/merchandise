@@ -15,6 +15,7 @@ import com.vaadin.data.Item;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
@@ -75,6 +76,12 @@ class SubjectModels {
 	@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter)
 	Converter<Item, Subject> itemToSubjectConverter() {
 		return new ItemToDomainConverterImpl<>(SubjectImpl.class, SubjectCols.class);
+	}
+	
+	@Bean
+	@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToConditionConverter)
+	Converter<Item, Condition> itemToConditionConverter() {
+		return new ItemToDomainConverterImpl<>(ConditionImpl.class, ConditionCols.class);
 	}
 
 	@Bean()

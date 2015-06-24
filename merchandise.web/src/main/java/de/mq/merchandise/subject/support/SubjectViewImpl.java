@@ -74,7 +74,6 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	private final MessageSource messageSource;
 
 	private final Converter<Collection<Condition>, Container> conditionToContainerConverter;
-	
 	private final Converter<Condition, Item> conditionToItemConverter;
 
 	@Autowired
@@ -305,6 +304,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 		
 		
+		
 		final Button  deleteConditionButton = new Button();
 		buttonConditionLayout.addComponent(saveConditionButton);
 		buttonConditionLayout.addComponent(newConditionButton);
@@ -328,6 +328,24 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 		
 		conditionTable.addValueChangeListener(e ->  subjectModel.setConditionId(e.getProperty().getValue() != null ?  (Long) conditionTable.getItem(e.getProperty().getValue()).getItemProperty(ConditionCols.Id).getValue() : null));
+		
+		saveConditionButton.addClickListener(e -> {
+			try {
+				conditionFields.commit();
+			} catch (Exception ex) {
+				return;
+			}
+			
+			System.out.println(">>>>" + conditionFields.getItemDataSource().getItemProperty(ConditionCols.ConditionType));
+		
+
+		//	subjectModel.save(subject);
+		//	lazyQueryContainer.refresh();
+			conditionTable.setValue(null);
+			
+			System.out.println(saveConditionButton);
+			
+		} );
 		
 
 		subjectModel.register(e -> {
