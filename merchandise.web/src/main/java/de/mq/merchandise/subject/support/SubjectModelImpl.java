@@ -111,7 +111,13 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 	}
 
 
-	
+	@Override
+	public void save(final Condition condition) {
+		
+		Assert.isTrue(subject.id().isPresent(), "Subject should be persistent");
+		subjectEventFascade.save(condition, subject.id().get());
+		setConditionId(null);
+	}
 
 	@Override
 	public final Optional<Subject> getSubject() {

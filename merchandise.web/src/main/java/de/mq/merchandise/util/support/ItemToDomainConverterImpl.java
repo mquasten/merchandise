@@ -39,7 +39,11 @@ public class ItemToDomainConverterImpl<T> implements Converter<Item, T> {
 			Assert.notNull(field , "Field not found in Type: " + domain.getClass());
 			field.setAccessible(true);
 			if(item.getItemProperty(col) != null){
-				ReflectionUtils.setField(field, domain, item.getItemProperty(col).getValue());
+				Object value = item.getItemProperty(col).getValue();
+				if((value != null)&& ( value.equals(""))) {
+					value=null;
+				}
+				ReflectionUtils.setField(field, domain, value);
 			}
 			
 		} );

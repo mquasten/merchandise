@@ -75,15 +75,17 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 	private final Converter<Collection<Condition>, Container> conditionToContainerConverter;
 	private final Converter<Condition, Item> conditionToItemConverter;
+	
+	private final Converter<Item,Condition> itemToConditionConverter; 
 
 	@Autowired
-	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter,  @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter) {
+	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter,  @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter, final  @SubjectModelQualifier(SubjectModelQualifier.Type.ItemToConditionConverter) Converter<Item,Condition> itemToConditionConverter) {
 
 		this.itemToSubjectMapper = itemToSubjectConverter;
 		this.subjectToItemConverter = subjectToItemConverter;
 		this.lazyQueryContainer = lazyQueryContainer;
 		this.subjectSearchItem = subjectSearchItem;
-
+		this.itemToConditionConverter = itemToConditionConverter;
 		this.subjectModel = subjectModel;
 		this.userModel = userModel;
 		this.messageSource = messageSource;
@@ -333,17 +335,14 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			try {
 				conditionFields.commit();
 			} catch (Exception ex) {
+				ex.printStackTrace();
 				return;
 			}
-			
-			System.out.println(">>>>" + conditionFields.getItemDataSource().getItemProperty(ConditionCols.ConditionType));
-		
+			subjectModel.save(itemToConditionConverter.convert(conditionFields.getItemDataSource()));
 
-		//	subjectModel.save(subject);
-		//	lazyQueryContainer.refresh();
 			conditionTable.setValue(null);
 			
-			System.out.println(saveConditionButton);
+		
 			
 		} );
 		

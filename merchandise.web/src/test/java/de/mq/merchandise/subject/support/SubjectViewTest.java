@@ -38,6 +38,8 @@ import de.mq.merchandise.util.support.RefreshableContainer;
 public class SubjectViewTest {
 
 	@SuppressWarnings("unchecked")
+	private final Converter<Item, Condition> itemToConditionConverter = Mockito.mock(Converter.class);
+	@SuppressWarnings("unchecked")
 	private final Converter<Item, Subject> itemToSubjectConverter = Mockito.mock(Converter.class);
 	@SuppressWarnings("unchecked")
 	private final Converter<Subject, Item> subjectToItemConverter = Mockito.mock(Converter.class);
@@ -52,7 +54,7 @@ public class SubjectViewTest {
 	@SuppressWarnings("unchecked")
 	private final Converter<Collection<Condition>, Container> conditionToContainerConverter = Mockito.mock(Converter.class);
 
-	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter, conditionToItemConverter);
+	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter, conditionToItemConverter,itemToConditionConverter);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private final ArgumentCaptor<Observer<UserModel.EventType>> localChangedObserverCapture = (ArgumentCaptor) ArgumentCaptor.forClass(Observer.class);

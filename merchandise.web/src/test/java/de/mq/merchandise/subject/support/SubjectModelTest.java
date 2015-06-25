@@ -120,7 +120,7 @@ public class SubjectModelTest {
 	@Test
 	public final void events() {
 		Arrays.asList(SubjectModel.EventType.values()).forEach(col -> Assert.assertEquals(col, SubjectModel.EventType.valueOf(col.name())));
-		Assert.assertEquals(7, SubjectModel.EventType.values().length);
+		Assert.assertEquals(8, SubjectModel.EventType.values().length);
 	}
 
 	@Test

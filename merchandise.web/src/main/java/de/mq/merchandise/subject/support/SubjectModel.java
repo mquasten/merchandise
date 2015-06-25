@@ -17,7 +17,8 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 		SubjectChanged,
 		SubjectSaved, 
 		SubjectDeleted,
-		ConditionChanged;
+		ConditionChanged,
+		ConditionSaved;
 	}
 
 	Subject getSearchCriteria();
@@ -41,6 +42,10 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 	Collection<ConditionDataType> getDataTypes();
 
 	Collection<String> getConditionTypes();
+
+	void save(final Condition subject);
+
+	
 	
 
 

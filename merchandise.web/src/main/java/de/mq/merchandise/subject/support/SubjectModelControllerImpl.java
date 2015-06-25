@@ -77,6 +77,14 @@ class SubjectModelControllerImpl {
 		
 	}
 	
+	@SubjectEventQualifier(EventType.ConditionSaved)
+	
+	public  void save(final Condition condition, final Long subjectId) {
+		System.out.println("*** save ***");
+		System.out.println(condition.conditionType()+ "," + condition.conditionDataType() +"," + condition.id());
+		System.out.println(subjectId);
+	}
+	
 	@SubjectEventQualifier(EventType.SubjectDeleted)
 	public  void delete(final Subject subject) {
 		
