@@ -338,11 +338,13 @@ public class SubjectViewImpl extends CustomComponent implements View {
 				ex.printStackTrace();
 				return;
 			}
+		
 			subjectModel.save(itemToConditionConverter.convert(conditionFields.getItemDataSource()));
 
+			conditionTable.setContainerDataSource(conditionToContainerConverter.convert(subjectModel.getSubject().get().conditions()));
 			conditionTable.setValue(null);
 			
-		
+			
 			
 		} );
 		
@@ -379,6 +381,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			((ComboBox) conditionFields.getField(ConditionCols.DataType)).removeAllItems();
 			((ComboBox) conditionFields.getField(ConditionCols.DataType)).addItems(subjectModel.getDataTypes());
 			conditionFields.setItemDataSource(conditionToItemConverter.convert(subjectModel.getCondition().get()));
+			
+			
 			if( subjectModel.getCondition().get().id().isPresent()){
 				saveConditionButton.setIcon(editIcon);
 				newConditionButton.setEnabled(true);

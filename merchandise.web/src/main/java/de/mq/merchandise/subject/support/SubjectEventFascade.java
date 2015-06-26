@@ -18,7 +18,7 @@ interface   SubjectEventFascade {
 	abstract void save(final Long subjectId, final Subject subject);
 	
 	@SubjectEventQualifier(EventType.ConditionSaved)
-	abstract void save(final Condition subject, final Long subjectId);
+	abstract Subject save(final Condition subject, final Long subjectId);
 	
 	@SubjectEventQualifier(EventType.SubjectDeleted)
 	abstract void delete(final Subject subject);

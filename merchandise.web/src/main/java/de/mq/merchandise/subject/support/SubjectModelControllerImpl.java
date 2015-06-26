@@ -21,10 +21,13 @@ class SubjectModelControllerImpl {
 	private final  SubjectService subjectService;
 	private final  Mapper<Subject,Subject> subjectIntoSubjectMapper;
 	
+	private final  Mapper<Condition,Subject> conditionIntoSubjectMapper;
+	
 	@Autowired
-	SubjectModelControllerImpl(final SubjectService subjectService, final @SubjectMapper(SubjectMapperType.Subject2Subject) Mapper<Subject,Subject> subjectIntoSubjectMapper) {
+	SubjectModelControllerImpl(final SubjectService subjectService, final @SubjectMapper(SubjectMapperType.Subject2Subject) Mapper<Subject,Subject> subjectIntoSubjectMapper, final @SubjectMapper(SubjectMapperType.Condition2Subject) Mapper<Condition,Subject>conditionIntoSubjectMapper) {
 		this.subjectService=subjectService;
 		this.subjectIntoSubjectMapper=subjectIntoSubjectMapper;
+		this.conditionIntoSubjectMapper=conditionIntoSubjectMapper;
 	}
 	
 	
@@ -79,10 +82,12 @@ class SubjectModelControllerImpl {
 	
 	@SubjectEventQualifier(EventType.ConditionSaved)
 	
-	public  void save(final Condition condition, final Long subjectId) {
-		System.out.println("*** save ***");
-		System.out.println(condition.conditionType()+ "," + condition.conditionDataType() +"," + condition.id());
-		System.out.println(subjectId);
+	public  Subject save(final Condition condition, final Long subjectId) {
+		Assert.notNull(subjectId, "Subject should be persistent");
+		final Subject subject =subjectService.subject(subjectId);
+		conditionIntoSubjectMapper.mapInto(condition, subject);
+		subjectService.save(subject);
+		return subject;
 	}
 	
 	@SubjectEventQualifier(EventType.SubjectDeleted)
