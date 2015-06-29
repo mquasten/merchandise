@@ -284,7 +284,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			
 			final ComboBox field = new ComboBox(col.name());
 			
-		
+		field.addItems(subjectModel.getConditionValues().get(col));
 	
 			conditionFields.bind(field, col);
 			conditionCols.addComponent(field);
@@ -329,6 +329,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		conditionTableLayout.setVisible(false);
 		
 		
+		
 		conditionTable.addValueChangeListener(e ->  subjectModel.setConditionId(e.getProperty().getValue() != null ?  (Long) conditionTable.getItem(e.getProperty().getValue()).getItemProperty(ConditionCols.Id).getValue() : null));
 		
 		saveConditionButton.addClickListener(e -> {
@@ -342,6 +343,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			subjectModel.save(itemToConditionConverter.convert(conditionFields.getItemDataSource()));
 
 			conditionTable.setContainerDataSource(conditionToContainerConverter.convert(subjectModel.getSubject().get().conditions()));
+			conditionTable.setVisibleColumns(Arrays.asList(ConditionCols.values()).stream().filter(col -> col.visible()).collect(Collectors.toList()).toArray());
 			conditionTable.setValue(null);
 			
 			
@@ -377,11 +379,11 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			deleteConditionButton.setEnabled(false);
 			
 			((ComboBox) conditionFields.getField(ConditionCols.ConditionType)).removeAllItems();
-			((ComboBox) conditionFields.getField(ConditionCols.ConditionType)).addItems(subjectModel.getConditionTypes());
+			((ComboBox) conditionFields.getField(ConditionCols.ConditionType)).addItems(subjectModel.getConditionValues().get(ConditionCols.ConditionType));
 			((ComboBox) conditionFields.getField(ConditionCols.DataType)).removeAllItems();
-			((ComboBox) conditionFields.getField(ConditionCols.DataType)).addItems(subjectModel.getDataTypes());
+			((ComboBox) conditionFields.getField(ConditionCols.DataType)).addItems(subjectModel.getConditionValues().get(ConditionCols.DataType));
 			conditionFields.setItemDataSource(conditionToItemConverter.convert(subjectModel.getCondition().get()));
-			
+		
 			
 			if( subjectModel.getCondition().get().id().isPresent()){
 				saveConditionButton.setIcon(editIcon);
@@ -442,7 +444,6 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	@PostConstruct
 	void init() {
 		subjectModel.setCustomer(userModel.getCustomer());
-
 		initLayout();
 
 	}

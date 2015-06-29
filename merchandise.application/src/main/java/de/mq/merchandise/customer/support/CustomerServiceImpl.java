@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
@@ -22,7 +23,14 @@ class CustomerServiceImpl implements CustomerService  {
 	 * @see de.mq.merchandise.customer.support.CustomerService#customer(java.util.Optional)
 	 */
 	@Override
-	public final Customer  customer(final Optional<Long> customerId){
-		return customerRepository.customerById(customerId); 
+	@Transactional(readOnly=true)
+	public  Customer  customer(final Optional<Long> customerId){
+		final  Customer result = customerRepository.customerById(customerId); 
+		result.conditionTypes().size();
+		return result;
 	}
+	
+	
+	
+	
 }

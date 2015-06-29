@@ -23,12 +23,14 @@ class SubjectModelControllerImpl {
 	
 	private final  Mapper<Condition,Subject> conditionIntoSubjectMapper;
 	
+	
 	@Autowired
 	SubjectModelControllerImpl(final SubjectService subjectService, final @SubjectMapper(SubjectMapperType.Subject2Subject) Mapper<Subject,Subject> subjectIntoSubjectMapper, final @SubjectMapper(SubjectMapperType.Condition2Subject) Mapper<Condition,Subject>conditionIntoSubjectMapper) {
 		this.subjectService=subjectService;
 		this.subjectIntoSubjectMapper=subjectIntoSubjectMapper;
 		this.conditionIntoSubjectMapper=conditionIntoSubjectMapper;
 	}
+	
 	
 	
 	@SubjectEventQualifier(EventType.CountPaging)
@@ -45,12 +47,12 @@ class SubjectModelControllerImpl {
 	}
 	
 	@SubjectEventQualifier(EventType.SubjectChanged)
-	public  Subject subject(final Long id ) {
+	Subject subject(final Long id ) {
 		return subjectService.subject(id);
 	}
 	
 	@SubjectEventQualifier(EventType.ConditionChanged)
-	public  Condition condition(final SubjectModel subjectModel , final Long id ) {
+	Condition condition(final SubjectModel subjectModel , final Long id ) {
 		Assert.notNull(id, "Id is mandatory");
 		Assert.isTrue((subjectModel.getSubject().isPresent()), "Subject is mandatory");
 		Assert.isTrue((subjectModel.getSubject().get().id().isPresent()), "SubjectId is mandatory");
@@ -62,7 +64,7 @@ class SubjectModelControllerImpl {
 	}
 	
 	@SubjectEventQualifier(EventType.SubjectSaved)
-	public  void save(final Long subjectId, final Subject subject ) {
+	void save(final Long subjectId, final Subject subject ) {
 		Assert.notNull(subject.customer(), "Customer is mandatory");
 		if( subjectId == null){
 			subjectService.save(new SubjectImpl(subject.customer(), subject.name(), subject.description()));
@@ -82,7 +84,7 @@ class SubjectModelControllerImpl {
 	
 	@SubjectEventQualifier(EventType.ConditionSaved)
 	
-	public  Subject save(final Condition condition, final Long subjectId) {
+	Subject save(final Condition condition, final Long subjectId) {
 		Assert.notNull(subjectId, "Subject should be persistent");
 		final Subject subject =subjectService.subject(subjectId);
 		conditionIntoSubjectMapper.mapInto(condition, subject);
@@ -91,10 +93,12 @@ class SubjectModelControllerImpl {
 	}
 	
 	@SubjectEventQualifier(EventType.SubjectDeleted)
-	public  void delete(final Subject subject) {
+	void delete(final Subject subject) {
 		
 		subjectService.remove(subject);
 		
 	}
 
+	
+	
 }

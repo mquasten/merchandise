@@ -1,8 +1,11 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,6 +46,7 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 		this.customerIntoSubjectMapper=customerIntoSubjectMapper;
 		this.subject= BeanUtils.instantiateClass(SubjectImpl.class);
 		this.condition= BeanUtils.instantiateClass(ConditionImpl.class);
+		this.dataTypes.addAll(Arrays.asList(ConditionDataType.values()));
 		
 	}
 
@@ -59,6 +63,8 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 			return ;
 		}
 		this.customer=customer;
+		conditionTypes.clear();
+		conditionTypes.addAll(customer.conditionTypes());
 		setSerachCriteria(searchCriteria);
 	}
 	@Override
@@ -137,17 +143,14 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 		subjectEventFascade.delete(subject);
 		setSubjectId(null);
 	}
-
-	@Override
-	public Collection<ConditionDataType> getDataTypes() {
-		return dataTypes.stream().sorted((x1, x2) -> x1.name().compareToIgnoreCase(x2.name())).collect(Collectors.toList());
-	}
-
-	@Override
-	public Collection<String> getConditionTypes() {
-		return Collections.unmodifiableList(conditionTypes.stream().sorted().collect(Collectors.toList()));
-	}
 	
-	
+	@Override
+	public Map<ConditionCols, Collection<?>> getConditionValues() {
+		final Map<ConditionCols, Collection<?>> results =   new HashMap<>();
+		results.put(ConditionCols.ConditionType, conditionTypes.stream().sorted((c1,c2) -> c1.compareToIgnoreCase(c2)).collect(Collectors.toList()));
+		results.put(ConditionCols.DataType, dataTypes.stream().sorted().collect(Collectors.toList()));
+		return Collections.unmodifiableMap(results);
+		
+	}
 	
 }

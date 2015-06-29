@@ -1,6 +1,7 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 import de.mq.merchandise.customer.Customer;
@@ -39,11 +40,13 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 
 	Optional<Condition> getCondition();
 
-	Collection<ConditionDataType> getDataTypes();
+	/*Collection<ConditionDataType> getDataTypes();
 
-	Collection<String> getConditionTypes();
+	Collection<String> getConditionTypes(); */
 
 	void save(final Condition subject);
+
+	Map<ConditionCols, Collection<?>> getConditionValues();
 
 	
 	
