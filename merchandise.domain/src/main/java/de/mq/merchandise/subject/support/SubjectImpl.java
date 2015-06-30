@@ -57,7 +57,7 @@ public class SubjectImpl implements Subject{
 	@Column(name="date_created")
 	private Date dateCreated = new Date(); 
 	
-	 @OneToMany(mappedBy="subject", targetEntity=ConditionImpl.class, fetch=FetchType.LAZY ,cascade={CascadeType.ALL})
+	 @OneToMany(mappedBy="subject", targetEntity=ConditionImpl.class, fetch=FetchType.LAZY ,cascade={CascadeType.ALL} , orphanRemoval=true)
 	 @MapKey(name="conditionType")
 	 private Map<String, Condition> conditions = new HashMap<>();
 	

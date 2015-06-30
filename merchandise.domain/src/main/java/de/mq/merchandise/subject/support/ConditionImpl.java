@@ -25,7 +25,7 @@ class ConditionImpl implements Condition {
 	@Id
 	protected Long id;
 
-	@ManyToOne(targetEntity = SubjectImpl.class, optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(targetEntity = SubjectImpl.class, optional = false, fetch = FetchType.LAZY )
 	@JoinColumn(name = "subject_id", referencedColumnName = "id", updatable = false, nullable = false)
 	private Subject subject;
 

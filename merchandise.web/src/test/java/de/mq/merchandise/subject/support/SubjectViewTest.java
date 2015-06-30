@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -64,10 +65,17 @@ public class SubjectViewTest {
 	private final Map<EventType, Observer<EventType>> observers = new HashMap<>();
 
 	private final Map<String, Component> components = new HashMap<>();
+	
+	private Map<ConditionCols, Collection<?>>  conditionValues = new HashMap<>();
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Before()
 	public final void setup() {
+		
+		conditionValues.put(ConditionCols.ConditionType, new ArrayList<>());
+		conditionValues.put(ConditionCols.DataType, new ArrayList<>());
+		
+		Mockito.when(subjectModel.getConditionValues()).thenReturn(conditionValues);
 		
 		final Item  conditionItem = Mockito.mock(Item.class);
 		Condition condition = Mockito.mock(Condition.class);

@@ -145,6 +145,13 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 	}
 	
 	@Override
+	public void delete(final Condition condition) {
+		Assert.isTrue(subject.id().isPresent(), "Subject should be persistent");
+		subject=subjectEventFascade.delete(condition, subject.id().get());
+		setConditionId(null);
+	}
+	
+	@Override
 	public Map<ConditionCols, Collection<?>> getConditionValues() {
 		final Map<ConditionCols, Collection<?>> results =   new HashMap<>();
 		results.put(ConditionCols.ConditionType, conditionTypes.stream().sorted((c1,c2) -> c1.compareToIgnoreCase(c2)).collect(Collectors.toList()));

@@ -316,6 +316,13 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 		
 		final Table conditionTable = new Table();
+		deleteConditionButton.addClickListener(e -> {
+			
+			final Condition condition = itemToConditionConverter.convert(conditionFields.getItemDataSource());
+			subjectModel.delete(condition);
+			refreshConditionTable(conditionTable);
+			
+		});
 		
 		newConditionButton.addClickListener(e -> conditionTable.setValue(null));
 		
@@ -342,9 +349,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 			subjectModel.save(itemToConditionConverter.convert(conditionFields.getItemDataSource()));
 
-			conditionTable.setContainerDataSource(conditionToContainerConverter.convert(subjectModel.getSubject().get().conditions()));
-			conditionTable.setVisibleColumns(Arrays.asList(ConditionCols.values()).stream().filter(col -> col.visible()).collect(Collectors.toList()).toArray());
-			conditionTable.setValue(null);
+			refreshConditionTable(conditionTable);
 			
 			
 			
@@ -428,6 +433,12 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	
 		
 
+	}
+
+	private void refreshConditionTable(final Table conditionTable) {
+		conditionTable.setContainerDataSource(conditionToContainerConverter.convert(subjectModel.getSubject().get().conditions()));
+		conditionTable.setVisibleColumns(Arrays.asList(ConditionCols.values()).stream().filter(col -> col.visible()).collect(Collectors.toList()).toArray());
+		conditionTable.setValue(null);
 	}
 
 	private void searchCriteria2Model(final FieldGroup fieldGroup) {

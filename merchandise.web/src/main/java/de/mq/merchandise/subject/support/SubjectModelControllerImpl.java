@@ -98,6 +98,19 @@ class SubjectModelControllerImpl {
 		subjectService.remove(subject);
 		
 	}
+	
+	@SubjectEventQualifier(EventType.ConditionDeleted)
+	Subject delete(final Condition condition, final Long subjectId) {
+		Assert.notNull(subjectId, "Subject should be persistent");
+		Assert.notNull(condition.conditionType(), "ConditionType is mandatory");
+		final Subject subject = subjectService.subject(subjectId);
+		System.out.println(subject.conditionTypes());
+		subject.remove(condition.conditionType());
+		
+		System.out.println(condition.conditionType());
+		subjectService.save(subject);
+		return subject;
+	}
 
 	
 	

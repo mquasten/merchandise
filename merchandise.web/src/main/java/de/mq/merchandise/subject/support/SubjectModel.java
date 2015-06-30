@@ -18,6 +18,7 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 		SubjectChanged,
 		SubjectSaved, 
 		SubjectDeleted,
+		ConditionDeleted,
 		ConditionChanged,
 		ConditionSaved;
 	}
@@ -47,6 +48,8 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 	void save(final Condition subject);
 
 	Map<ConditionCols, Collection<?>> getConditionValues();
+
+	void delete(Condition subject);
 
 	
 	
