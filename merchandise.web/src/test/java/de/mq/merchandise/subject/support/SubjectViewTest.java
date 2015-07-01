@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Validator;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +57,8 @@ public class SubjectViewTest {
 	@SuppressWarnings("unchecked")
 	private final Converter<Collection<Condition>, Container> conditionToContainerConverter = Mockito.mock(Converter.class);
 
-	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter, conditionToItemConverter,itemToConditionConverter);
+	private Validator validator = Mockito.mock(Validator.class);
+	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter, conditionToItemConverter,itemToConditionConverter, validator);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private final ArgumentCaptor<Observer<UserModel.EventType>> localChangedObserverCapture = (ArgumentCaptor) ArgumentCaptor.forClass(Observer.class);

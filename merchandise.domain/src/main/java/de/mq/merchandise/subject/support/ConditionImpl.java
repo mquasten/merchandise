@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -27,13 +30,18 @@ class ConditionImpl implements Condition {
 
 	@ManyToOne(targetEntity = SubjectImpl.class, optional = false, fetch = FetchType.LAZY )
 	@JoinColumn(name = "subject_id", referencedColumnName = "id", updatable = false, nullable = false)
+	@NotNull(message="subject_mandatory")
+	@Valid
 	private Subject subject;
 
 	@Column(length = 20, nullable = false, name = "condition_type")
+	@NotNull(message="conditionType_mandatory")
+   @Size(min=1, max=20 , message="conditionType_size")
 	private String conditionType;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20, nullable = false)
+	@NotNull(message="dataType_mandatory")
 	ConditionDataType dataType;
 
 

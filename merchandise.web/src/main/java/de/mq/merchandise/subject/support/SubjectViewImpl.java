@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -13,6 +14,8 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -77,9 +80,11 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	private final Converter<Condition, Item> conditionToItemConverter;
 	
 	private final Converter<Item,Condition> itemToConditionConverter; 
+	
+	private final Validator validator;
 
 	@Autowired
-	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter,  @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter, final  @SubjectModelQualifier(SubjectModelQualifier.Type.ItemToConditionConverter) Converter<Item,Condition> itemToConditionConverter) {
+	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter,  @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter, final  @SubjectModelQualifier(SubjectModelQualifier.Type.ItemToConditionConverter) Converter<Item,Condition> itemToConditionConverter, final Validator validator) {
 
 		this.itemToSubjectMapper = itemToSubjectConverter;
 		this.subjectToItemConverter = subjectToItemConverter;
@@ -91,6 +96,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		this.messageSource = messageSource;
 		this.conditionToContainerConverter = conditionToContainerConverter;
 		this.conditionToItemConverter=conditionToItemConverter;
+		this.validator=validator;
 	}
 
 	private void initLayout() {
@@ -346,8 +352,12 @@ public class SubjectViewImpl extends CustomComponent implements View {
 				ex.printStackTrace();
 				return;
 			}
-		
-			subjectModel.save(itemToConditionConverter.convert(conditionFields.getItemDataSource()));
+			final Condition condition = itemToConditionConverter.convert(conditionFields.getItemDataSource());
+			System.out.println("******");
+			System.out.println(condition.subject());
+			System.out.println(validator.validate(condition));
+			System.out.println("***!!!!**");
+			subjectModel.save(condition);
 
 			refreshConditionTable(conditionTable);
 			
@@ -388,7 +398,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			((ComboBox) conditionFields.getField(ConditionCols.DataType)).removeAllItems();
 			((ComboBox) conditionFields.getField(ConditionCols.DataType)).addItems(subjectModel.getConditionValues().get(ConditionCols.DataType));
 			conditionFields.setItemDataSource(conditionToItemConverter.convert(subjectModel.getCondition().get()));
-		
+			com.vaadin.ui.Component component = conditionFields.getField(ConditionCols.ConditionType);
+			component.setEnabled(false);
 			
 			if( subjectModel.getCondition().get().id().isPresent()){
 				saveConditionButton.setIcon(editIcon);
@@ -396,6 +407,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 				deleteConditionButton.setEnabled(true);
 				return;
 			}
+			component.setEnabled(true);
 			saveConditionButton.setIcon(newIcon);
 			
 		}, SubjectModel.EventType.ConditionChanged);

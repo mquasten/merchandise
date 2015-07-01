@@ -16,9 +16,6 @@
 	
 	<context:component-scan base-package="de.mq.merchandise" />
 	
-	
-   
- 
 
 
 	

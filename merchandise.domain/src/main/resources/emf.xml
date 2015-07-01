@@ -70,7 +70,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 <bean  class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
 
 
-
+<bean class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
 <tx:annotation-driven transaction-manager="transactionManager"  /> 
 
