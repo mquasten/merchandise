@@ -8,8 +8,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.validation.Validator;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +34,7 @@ import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
 import de.mq.merchandise.util.ComponentTestHelper;
 import de.mq.merchandise.util.Observer;
+import de.mq.merchandise.util.ValidationUtil;
 import de.mq.merchandise.util.support.RefreshableContainer;
 
 public class SubjectViewTest {
@@ -57,8 +56,8 @@ public class SubjectViewTest {
 	@SuppressWarnings("unchecked")
 	private final Converter<Collection<Condition>, Container> conditionToContainerConverter = Mockito.mock(Converter.class);
 
-	private Validator validator = Mockito.mock(Validator.class);
-	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter, conditionToItemConverter,itemToConditionConverter, validator);
+	private ValidationUtil validationUtil = Mockito.mock(ValidationUtil.class);
+	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter, conditionToItemConverter,itemToConditionConverter, validationUtil);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private final ArgumentCaptor<Observer<UserModel.EventType>> localChangedObserverCapture = (ArgumentCaptor) ArgumentCaptor.forClass(Observer.class);

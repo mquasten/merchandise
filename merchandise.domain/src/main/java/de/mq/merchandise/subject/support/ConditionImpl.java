@@ -30,18 +30,18 @@ class ConditionImpl implements Condition {
 
 	@ManyToOne(targetEntity = SubjectImpl.class, optional = false, fetch = FetchType.LAZY )
 	@JoinColumn(name = "subject_id", referencedColumnName = "id", updatable = false, nullable = false)
-	@NotNull(message="subject_mandatory")
+	@NotNull(message="jsr303_mandatory")
 	@Valid
 	private Subject subject;
 
 	@Column(length = 20, nullable = false, name = "condition_type")
-	@NotNull(message="conditionType_mandatory")
-   @Size(min=1, max=20 , message="conditionType_size")
+	@NotNull(message="jsr303_mandatory")
+   @Size(min=1, max=20 , message="jsr303_condition_conditionType_size")
 	private String conditionType;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20, nullable = false)
-	@NotNull(message="dataType_mandatory")
+	@NotNull(message="jsr303_mandatory")
 	ConditionDataType dataType;
 
 
