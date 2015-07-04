@@ -11,5 +11,6 @@ public interface ResultNavigation {
 	Number pageSize();
 	
 	List<Order> orders();
+	
 
 }
