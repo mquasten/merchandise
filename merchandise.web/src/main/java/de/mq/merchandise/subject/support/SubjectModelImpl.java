@@ -160,4 +160,15 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 		
 	}
 	
+	@Override
+	public boolean hasCondition(final Condition condition) {
+		Assert.notNull(condition);
+		Assert.notNull(condition.conditionType(), "ConditionType is required");
+		if( subject == null) {
+			return false;
+		}
+	   
+		return subject.conditionTypes().contains(condition.conditionType());
+	}
+	
 }

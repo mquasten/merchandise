@@ -51,6 +51,8 @@ public interface SubjectModel extends Observable<SubjectModel.EventType> {
 
 	void delete(Condition subject);
 
+	boolean hasCondition(Condition condition);
+
 	
 	
 

@@ -5,9 +5,6 @@ package de.mq.merchandise.subject;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
-
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +14,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.vaadin.navigator.View;
 
-import de.mq.merchandise.subject.StartViewImpl;
 import de.mq.merchandise.subject.support.SubjectViewImpl;
 import de.mq.merchandise.util.support.AbstractUIBeanInjector;
 import de.mq.merchandise.util.support.VaadinOperations;

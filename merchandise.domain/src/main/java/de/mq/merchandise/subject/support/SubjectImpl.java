@@ -23,6 +23,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.util.Assert;
@@ -43,12 +46,18 @@ public class SubjectImpl implements Subject{
 	@Id
 	protected  Long id;
 	
-	
+
+	@NotNull(message="jsr303_mandatory")
+   @Size(min=5, max=30 , message="jsr303_subject_name_size")	
 	@Column(nullable=false, length=30)
 	private String name;
 	
 	@Column(length=50)
+	@Size( max=50 , message="jsr303_subject_desc_size")	
 	private String description; 
+	
+	@NotNull(message="jsr303_mandatory")
+	@Valid
 	@ManyToOne(targetEntity=CustomerImpl.class ,optional=false,fetch=FetchType.LAZY)
 	@JoinColumn(name="customer_id" ,  referencedColumnName="id",updatable=false, nullable=false)
 	private Customer customer; 

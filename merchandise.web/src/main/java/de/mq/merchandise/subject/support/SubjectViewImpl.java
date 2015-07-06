@@ -20,7 +20,9 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.UserError;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
@@ -60,6 +62,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	static final String I18N_SUBJECT_SAVE_BUTTON = "subject_save_button";
 	static final String I18N_SUBJECT_NEW_BUTTON = "subject_new_button";
 	static final String I18N_SUBJECT_DELETE_BUTTON = "subject_delete_button";
+	
+	static final String  I18N_CONDITION_EXISTS="subject_condition_exists";
 	
 	static final String I18N_CONDITION_TABLE_HEADLINE = "subject_condition_table_caption";
 
@@ -207,6 +211,10 @@ public class SubjectViewImpl extends CustomComponent implements View {
 				return;
 			}
 			final Subject subject = itemToSubjectMapper.convert(editorFields.getItemDataSource());
+			
+			if( ! validationUtil.validate(subject, editorFields,  userModel.getLocale())) {
+				return ;
+			}
 
 			subjectModel.save(subject);
 			lazyQueryContainer.refresh();
@@ -357,6 +365,11 @@ public class SubjectViewImpl extends CustomComponent implements View {
 				return;
 			};
 			
+			if(subjectModel.hasCondition(condition)) {
+				((AbstractField<?>) conditionFields.getField(ConditionCols.ConditionType)).setComponentError(new UserError((messageSource.getMessage(I18N_CONDITION_EXISTS, new String[] {condition.conditionType()}, userModel.getLocale()))));
+				return;
+			}
+			
 			subjectModel.save(condition);
 
 			refreshConditionTable(conditionTable);
@@ -367,6 +380,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 
 		subjectModel.register(e -> {
+			validationUtil.reset(editorFields);
+			validationUtil.reset(conditionFields);
 			editorFields.setItemDataSource(null);
 			newButton.setEnabled(false);
 			conditionTableLayout.setVisible(false);
@@ -383,13 +398,15 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			}
 
 			saveButton.setIcon(newIcon);
+			
 
 		}, SubjectModel.EventType.SubjectChanged);
 		
 		
 		subjectModel.register(e -> {
+			validationUtil.reset(conditionFields);
 			conditionFields.setItemDataSource(null);
-		
+			
 			newConditionButton.setEnabled(false);
 			deleteConditionButton.setEnabled(false);
 			
@@ -409,6 +426,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			}
 			component.setEnabled(true);
 			saveConditionButton.setIcon(newIcon);
+			
 			
 		}, SubjectModel.EventType.ConditionChanged);
 

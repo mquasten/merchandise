@@ -8,4 +8,6 @@ public interface ValidationUtil {
 
 	<T> boolean validate(final T source, final FieldGroup fieldGroup, final Locale locale);
 
+	void reset(FieldGroup fieldGroup);
+
 }
