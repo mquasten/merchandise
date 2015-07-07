@@ -113,6 +113,7 @@ class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements
 	@Override
 	public void save(final Subject subject) {
 		customerIntoSubjectMapper.mapInto(customer, subject);
+	
 		subjectEventFascade.save(this.subject.id().orElse(null), subject);
 		setSubjectId(null);
 	}
