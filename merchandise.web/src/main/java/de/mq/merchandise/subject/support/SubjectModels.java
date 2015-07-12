@@ -94,8 +94,6 @@ class SubjectModels {
 	}
 	
 	
-	
-
 	@Bean()
 	@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem)
 	@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")

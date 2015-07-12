@@ -16,6 +16,7 @@ import com.vaadin.data.Item;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
 import de.mq.merchandise.util.EventFascadeProxyFactory;
@@ -99,6 +100,13 @@ public class SubjectModelsTest {
 	@Test
 	public final void subjectItemContainer() {
 		Assert.assertEquals(item, subjectModels.subjectItemContainer());
+	}
+	
+	
+	@Test
+	public final void  itemToConditionConverter() {
+		final Converter<Item, Condition>  result = subjectModels.itemToConditionConverter();
+		Assert.assertTrue(result instanceof ItemToDomainConverterImpl);
 	}
 
 }

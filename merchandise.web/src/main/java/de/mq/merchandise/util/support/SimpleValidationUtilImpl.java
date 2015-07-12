@@ -43,8 +43,9 @@ class SimpleValidationUtilImpl implements ValidationUtil {
 		fieldGroup.getBoundPropertyIds().forEach(id -> ids.put(id.toString().toUpperCase(), id));
 		ids.values().forEach( p -> ((AbstractComponent) fieldGroup.getField(p)).setComponentError(null));
 		final Set<ConstraintViolation<T>>  results =  validator.validate(source);
-		
+	
 		final Set<Entry<Object,String>> errors = results.stream().filter(c -> ids.containsKey(c.getPropertyPath().toString().toUpperCase())).map(c -> new AbstractMap.SimpleEntry<Object,String>(ids.get(c.getPropertyPath().toString().toUpperCase()), c.getMessage())).collect(Collectors.toSet());
+	
 		errors.forEach(e -> ((AbstractComponent) fieldGroup.getField(e.getKey())).setComponentError(new UserError(messageSource.getMessage(e.getValue(), null, locale))));
 	
 	

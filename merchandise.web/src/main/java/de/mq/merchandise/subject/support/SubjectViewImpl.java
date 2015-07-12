@@ -365,7 +365,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 				return;
 			};
 			
-			if(subjectModel.hasCondition(condition)) {
+			if(subjectModel.hasCondition(condition)  &&  ! condition.id().isPresent()) {
 				((AbstractField<?>) conditionFields.getField(ConditionCols.ConditionType)).setComponentError(new UserError((messageSource.getMessage(I18N_CONDITION_EXISTS, new String[] {condition.conditionType()}, userModel.getLocale()))));
 				return;
 			}

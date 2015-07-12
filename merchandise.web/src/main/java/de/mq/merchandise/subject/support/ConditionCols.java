@@ -5,7 +5,7 @@ import org.springframework.util.StringUtils;
 import de.mq.merchandise.util.TableContainerColumns;
 
 enum ConditionCols implements TableContainerColumns {
-	Id(false,Long.class, -1L),
+	Id(false,Long.class, ""),
 	ConditionType(true, String.class, ""),
 	DataType(true, ConditionDataType.class, ConditionDataType.String);
 	
