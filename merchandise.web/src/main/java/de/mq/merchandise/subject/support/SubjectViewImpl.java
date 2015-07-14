@@ -59,13 +59,15 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	static final String I18N_SUBJECT_SEARCH_DESCRIPTION = "subject_search_description";
 	static final String I18N_SUBJECT_TABLE_PREFIX = "subject_table_";
 	static final String I18N_CONDITION_TABLE_PREFIX = "subject_condition_table_";
-	static final String I18N_SUBJECT_SAVE_BUTTON = "subject_save_button";
+	static final String I18N_SUBJECT_SAVE_BUTTON1 = "subject_save_button";
 	static final String I18N_SUBJECT_NEW_BUTTON = "subject_new_button";
 	static final String I18N_SUBJECT_DELETE_BUTTON = "subject_delete_button";
 	
 	static final String  I18N_CONDITION_EXISTS="subject_condition_exists";
 	
 	static final String I18N_CONDITION_TABLE_HEADLINE = "subject_condition_table_caption";
+	static final String I18N_CONDITION_SAVE_BUTTON = "subject_condition_save_button";
+	static final String I18N_SUBJECT_SAVE_BUTTON = "subject_save_button";
 
 	private final Converter<Item, Subject> itemToSubjectMapper;
 
@@ -190,6 +192,9 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			col1.addComponent(field);
 
 		});
+		
+		
+		
 
 		editorFields.setItemDataSource(subjectToItemConverter.convert(subjectModel.getSubject().get()));
 	
@@ -208,6 +213,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			try {
 				editorFields.commit();
 			} catch (Exception e1) {
+				e1.printStackTrace();
 				return;
 			}
 			final Subject subject = itemToSubjectMapper.convert(editorFields.getItemDataSource());
@@ -215,7 +221,6 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			if( ! validationUtil.validate(subject, editorFields,  userModel.getLocale())) {
 				return ;
 			}
-
 			subjectModel.save(subject);
 			lazyQueryContainer.refresh();
 			subjectList.setValue(null);
@@ -447,7 +452,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			
 			editorLayout.setCaption(messageSource.getMessage(I18N_SUBJECT_CAPTION, null,userModel.getLocale() ));
 			
-			saveConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_SAVE_BUTTON, null, userModel.getLocale()));
+			saveConditionButton.setCaption(messageSource.getMessage(I18N_CONDITION_SAVE_BUTTON, null, userModel.getLocale()));
 			newConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_NEW_BUTTON, null, userModel.getLocale()));
 			deleteConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_DELETE_BUTTON, null, userModel.getLocale()));
 			

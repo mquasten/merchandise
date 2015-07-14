@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -115,6 +116,7 @@ public class SubjectViewTest {
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_SEARCH_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_SEARCH_BUTTON);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_SEARCH_HEADLINE, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_SEARCH_HEADLINE);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_TABLE_HEADLINE, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_TABLE_HEADLINE);
+		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_SAVE_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_SAVE_BUTTON);
 		Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col -> Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name()), null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name())));
 
 		Mockito.doAnswer(i -> {
@@ -122,6 +124,9 @@ public class SubjectViewTest {
 			return null;
 		}).when(subjectModel).register(Mockito.any(Observer.class), Mockito.any(SubjectModel.EventType.class));
 
+		Mockito.when(subjectToItemConverter.convert(Mockito.any(Subject.class))).thenReturn(subjectItem);
+	
+		
 		subjectView.init();
 
 		Mockito.verify(userModel).register(localChangedObserverCapture.capture(), localChangedTypeCapture.capture());
@@ -140,6 +145,8 @@ public class SubjectViewTest {
 		ComponentTestHelper.components(subjectView, components);
 		
 	
+		
+		
 	
 	}
 
@@ -197,5 +204,48 @@ public class SubjectViewTest {
 		final ViewChangeEvent event = Mockito.mock(ViewChangeEvent.class);
 		subjectView.enter(event);
 	}
+	
+	@Test
+	public final void saveSubjectButton() {
+		final Subject subject = Mockito.mock(Subject.class);
+		Mockito.when(itemToSubjectConverter.convert(subjectItem)).thenReturn(subject);
+		final Button button = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_SAVE_BUTTON);
+		Assert.assertNotNull(button);
+		Assert.assertTrue(button.getListeners(ClickEvent.class).stream().findFirst().isPresent());
+		
+		final ArgumentCaptor<Subject> subjectCaptor = ArgumentCaptor.forClass(Subject.class);
+		final ArgumentCaptor<FieldGroup> fieldGroupCaptor = ArgumentCaptor.forClass(FieldGroup.class);
+		final ArgumentCaptor<Locale> localeCaptor = ArgumentCaptor.forClass(Locale.class);
+		Mockito.when(validationUtil.validate(subjectCaptor.capture(), fieldGroupCaptor.capture(),  localeCaptor.capture())).thenReturn(true);
+		
+		
+		
+		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(Mockito.mock(ClickEvent.class));
+		
+		Assert.assertEquals(subject, subjectCaptor.getValue());
+		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
+		Assert.assertEquals(subjectItem, fieldGroupCaptor.getValue().getItemDataSource());
+		
+		Mockito.verify(subjectModel).save(subject);
+		Mockito.verify(lazyQueryContainer).refresh();
+		Mockito.verify(validationUtil).validate(subject, fieldGroupCaptor.getValue(), userModel.getLocale());
+	}
+	
+	@Test
+	public final void saveSubjectButtonValidationSucks() {
+		final Subject subject = Mockito.mock(Subject.class);
+		Mockito.when(itemToSubjectConverter.convert(subjectItem)).thenReturn(subject);
+		final Button button = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_SAVE_BUTTON);
+		Assert.assertNotNull(button);
+		Assert.assertTrue(button.getListeners(ClickEvent.class).stream().findFirst().isPresent());
+		
+		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(Mockito.mock(ClickEvent.class));
+		
+		Mockito.verify(validationUtil).validate(Mockito.any(Subject.class), Mockito.any(FieldGroup.class), Mockito.any(Locale.class));
+		Mockito.verify(subjectModel, Mockito.times(0)).save(subject);
+		Mockito.verify(lazyQueryContainer, Mockito.times(0)).refresh();
+		
+	}
+	
 
 }
