@@ -21,6 +21,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -58,7 +59,7 @@ public class SubjectViewTest {
 	private final Converter<Collection<Condition>, Container> conditionToContainerConverter = Mockito.mock(Converter.class);
 
 	private ValidationUtil validationUtil = Mockito.mock(ValidationUtil.class);
-	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter, conditionToItemConverter,itemToConditionConverter, validationUtil);
+	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter, conditionToItemConverter, itemToConditionConverter, validationUtil);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private final ArgumentCaptor<Observer<UserModel.EventType>> localChangedObserverCapture = (ArgumentCaptor) ArgumentCaptor.forClass(Observer.class);
@@ -68,28 +69,30 @@ public class SubjectViewTest {
 	private final Map<EventType, Observer<EventType>> observers = new HashMap<>();
 
 	private final Map<String, Component> components = new HashMap<>();
-	
-	private Map<ConditionCols, Collection<?>>  conditionValues = new HashMap<>();
+
+	private Map<ConditionCols, Collection<?>> conditionValues = new HashMap<>();
+
+	private final Condition condition = Mockito.mock(Condition.class);
+	private final Item conditionItem = Mockito.mock(Item.class);
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Before()
 	public final void setup() {
-		
+
 		conditionValues.put(ConditionCols.ConditionType, new ArrayList<>());
 		conditionValues.put(ConditionCols.DataType, new ArrayList<>());
-		
+
 		Mockito.when(subjectModel.getConditionValues()).thenReturn(conditionValues);
-		
-		final Item  conditionItem = Mockito.mock(Item.class);
-		Condition condition = Mockito.mock(Condition.class);
+
 		Mockito.when(subjectModel.getCondition()).thenReturn(Optional.of(condition));
 		Mockito.when(conditionToItemConverter.convert(Mockito.any(Condition.class))).thenReturn(conditionItem);
-		
+
 		final Property<?> conditionTypeProperty = Mockito.mock(Property.class);
 		final Property<?> dataTypeProperty = Mockito.mock(Property.class);
-		
+
 		Mockito.when(conditionItem.getItemProperty(ConditionCols.ConditionType)).thenReturn(conditionTypeProperty);
 		Mockito.when(conditionItem.getItemProperty(ConditionCols.DataType)).thenReturn(dataTypeProperty);
+		// Mockito.when(conditionItem.getItemProperty(ConditionCols.Id)).thenReturn(conditionIdProperty);
 
 		final Subject subject = Mockito.mock(Subject.class);
 		Mockito.when(subjectModel.getSubject()).thenReturn(Optional.of(subject));
@@ -117,6 +120,9 @@ public class SubjectViewTest {
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_SEARCH_HEADLINE, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_SEARCH_HEADLINE);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_TABLE_HEADLINE, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_TABLE_HEADLINE);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_SAVE_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_SAVE_BUTTON);
+		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_DELETE_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_DELETE_BUTTON);
+		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_CONDITION_DELETE_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_CONDITION_DELETE_BUTTON);
+		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_CONDITION_SAVE_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_CONDITION_SAVE_BUTTON);
 		Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col -> Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name()), null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name())));
 
 		Mockito.doAnswer(i -> {
@@ -125,8 +131,11 @@ public class SubjectViewTest {
 		}).when(subjectModel).register(Mockito.any(Observer.class), Mockito.any(SubjectModel.EventType.class));
 
 		Mockito.when(subjectToItemConverter.convert(Mockito.any(Subject.class))).thenReturn(subjectItem);
-	
-		
+		final Container conditionContainer = Mockito.mock(Container.class);
+		Mockito.when(conditionContainer.getContainerPropertyIds()).thenReturn((Collection) Arrays.asList(ConditionCols.values()));
+		Mockito.when(conditionToContainerConverter.convert(Mockito.anyCollection())).thenReturn(conditionContainer);
+
+		Mockito.when(itemToConditionConverter.convert(conditionItem)).thenReturn(condition);
 		subjectView.init();
 
 		Mockito.verify(userModel).register(localChangedObserverCapture.capture(), localChangedTypeCapture.capture());
@@ -143,11 +152,7 @@ public class SubjectViewTest {
 
 		components.clear();
 		ComponentTestHelper.components(subjectView, components);
-		
-	
-		
-		
-	
+
 	}
 
 	@Test
@@ -204,7 +209,7 @@ public class SubjectViewTest {
 		final ViewChangeEvent event = Mockito.mock(ViewChangeEvent.class);
 		subjectView.enter(event);
 	}
-	
+
 	@Test
 	public final void saveSubjectButton() {
 		final Subject subject = Mockito.mock(Subject.class);
@@ -212,25 +217,23 @@ public class SubjectViewTest {
 		final Button button = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_SAVE_BUTTON);
 		Assert.assertNotNull(button);
 		Assert.assertTrue(button.getListeners(ClickEvent.class).stream().findFirst().isPresent());
-		
+
 		final ArgumentCaptor<Subject> subjectCaptor = ArgumentCaptor.forClass(Subject.class);
 		final ArgumentCaptor<FieldGroup> fieldGroupCaptor = ArgumentCaptor.forClass(FieldGroup.class);
 		final ArgumentCaptor<Locale> localeCaptor = ArgumentCaptor.forClass(Locale.class);
-		Mockito.when(validationUtil.validate(subjectCaptor.capture(), fieldGroupCaptor.capture(),  localeCaptor.capture())).thenReturn(true);
-		
-		
-		
+		Mockito.when(validationUtil.validate(subjectCaptor.capture(), fieldGroupCaptor.capture(), localeCaptor.capture())).thenReturn(true);
+
 		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(Mockito.mock(ClickEvent.class));
-		
+
 		Assert.assertEquals(subject, subjectCaptor.getValue());
 		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
 		Assert.assertEquals(subjectItem, fieldGroupCaptor.getValue().getItemDataSource());
-		
+
 		Mockito.verify(subjectModel).save(subject);
 		Mockito.verify(lazyQueryContainer).refresh();
 		Mockito.verify(validationUtil).validate(subject, fieldGroupCaptor.getValue(), userModel.getLocale());
 	}
-	
+
 	@Test
 	public final void saveSubjectButtonValidationSucks() {
 		final Subject subject = Mockito.mock(Subject.class);
@@ -238,14 +241,83 @@ public class SubjectViewTest {
 		final Button button = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_SAVE_BUTTON);
 		Assert.assertNotNull(button);
 		Assert.assertTrue(button.getListeners(ClickEvent.class).stream().findFirst().isPresent());
-		
+
 		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(Mockito.mock(ClickEvent.class));
-		
+
 		Mockito.verify(validationUtil).validate(Mockito.any(Subject.class), Mockito.any(FieldGroup.class), Mockito.any(Locale.class));
 		Mockito.verify(subjectModel, Mockito.times(0)).save(subject);
 		Mockito.verify(lazyQueryContainer, Mockito.times(0)).refresh();
-		
+
 	}
-	
+
+	@Test
+	public final void commitSubjectField() throws CommitException {
+		final FieldGroup fieldGroup = Mockito.mock(FieldGroup.class);
+		Assert.assertTrue(subjectView.commitFields(fieldGroup));
+		Mockito.doThrow(new CommitException("Don't worry only for test")).when(fieldGroup).commit();
+		Assert.assertFalse(subjectView.commitFields(fieldGroup));
+	}
+
+	@Test
+	public final void deleteSubjectButton() {
+		final Subject subject = Mockito.mock(Subject.class);
+		Mockito.when(itemToSubjectConverter.convert(subjectItem)).thenReturn(subject);
+		final Button button = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_DELETE_BUTTON);
+		Assert.assertNotNull(button);
+
+		Assert.assertTrue(button.getListeners(ClickEvent.class).stream().findFirst().isPresent());
+
+		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(Mockito.mock(ClickEvent.class));
+
+		Mockito.verify(subjectModel).delete(subject);
+		Mockito.verify(lazyQueryContainer).refresh();
+	}
+
+	@Test
+	public final void deleteConditionButton() {
+		final Button button = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_CONDITION_DELETE_BUTTON);
+		Assert.assertNotNull(button);
+
+		Assert.assertTrue(button.getListeners(ClickEvent.class).stream().findFirst().isPresent());
+
+		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(Mockito.mock(ClickEvent.class));
+		Mockito.verify(subjectModel).delete(condition);
+	}
+
+	@Test
+	public final void saveConditionButton() {
+		final ArgumentCaptor<Condition> conditionCaptor = ArgumentCaptor.forClass(Condition.class);
+		final ArgumentCaptor<FieldGroup> fieldGroupCaptor = ArgumentCaptor.forClass(FieldGroup.class);
+		final ArgumentCaptor<Locale> localeCaptor = ArgumentCaptor.forClass(Locale.class);
+
+		Mockito.when(validationUtil.validate(conditionCaptor.capture(), fieldGroupCaptor.capture(), localeCaptor.capture())).thenReturn(true);
+
+		final Button button = (Button) components.get(SubjectViewImpl.I18N_CONDITION_SAVE_BUTTON);
+		Assert.assertNotNull(button);
+
+		Assert.assertTrue(button.getListeners(ClickEvent.class).stream().findFirst().isPresent());
+
+		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(Mockito.mock(ClickEvent.class));
+
+		Assert.assertEquals(condition, conditionCaptor.getValue());
+		Assert.assertEquals(conditionItem, fieldGroupCaptor.getValue().getItemDataSource());
+		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
+
+		Mockito.verify(subjectModel).save(condition);
+	}
+
+	@Test
+	public final void saveConditionButtonValidationSucks() {
+
+		final Button button = (Button) components.get(SubjectViewImpl.I18N_CONDITION_SAVE_BUTTON);
+		Assert.assertNotNull(button);
+
+		Assert.assertTrue(button.getListeners(ClickEvent.class).stream().findFirst().isPresent());
+
+		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(Mockito.mock(ClickEvent.class));
+
+		Mockito.verify(validationUtil).validate(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.verify(subjectModel, Mockito.times(0)).save(condition);
+	}
 
 }

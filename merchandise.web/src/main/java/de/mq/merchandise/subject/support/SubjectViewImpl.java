@@ -68,6 +68,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	static final String I18N_CONDITION_TABLE_HEADLINE = "subject_condition_table_caption";
 	static final String I18N_CONDITION_SAVE_BUTTON = "subject_condition_save_button";
 	static final String I18N_SUBJECT_SAVE_BUTTON = "subject_save_button";
+	 static final String I18N_SUBJECT_CONDITION_DELETE_BUTTON = "subject_condition_delete_button";
 
 	private final Converter<Item, Subject> itemToSubjectMapper;
 
@@ -210,12 +211,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 		saveButton.addClickListener(e -> {
 
-			try {
-				editorFields.commit();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-				return;
-			}
+			commitFields(editorFields);
 			final Subject subject = itemToSubjectMapper.convert(editorFields.getItemDataSource());
 			
 			if( ! validationUtil.validate(subject, editorFields,  userModel.getLocale())) {
@@ -311,7 +307,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 		});
 		
-	
+
 		conditionFields.setItemDataSource(conditionToItemConverter.convert(subjectModel.getCondition().get()));
 		
 		
@@ -334,7 +330,6 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 		final Table conditionTable = new Table();
 		deleteConditionButton.addClickListener(e -> {
-			
 			final Condition condition = itemToConditionConverter.convert(conditionFields.getItemDataSource());
 			subjectModel.delete(condition);
 			refreshConditionTable(conditionTable);
@@ -357,12 +352,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		conditionTable.addValueChangeListener(e ->  subjectModel.setConditionId(e.getProperty().getValue() != null ?  (Long) conditionTable.getItem(e.getProperty().getValue()).getItemProperty(ConditionCols.Id).getValue() : null));
 		
 		saveConditionButton.addClickListener(e -> {
-			try {
-				conditionFields.commit();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				return;
-			}
+			commitFields(conditionFields);
 			final Condition condition = itemToConditionConverter.convert(conditionFields.getItemDataSource());
 			
 			
@@ -454,7 +444,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			
 			saveConditionButton.setCaption(messageSource.getMessage(I18N_CONDITION_SAVE_BUTTON, null, userModel.getLocale()));
 			newConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_NEW_BUTTON, null, userModel.getLocale()));
-			deleteConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_DELETE_BUTTON, null, userModel.getLocale()));
+			deleteConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_CONDITION_DELETE_BUTTON, null, userModel.getLocale()));
 			
 			conditionTable.setCaption(messageSource.getMessage(I18N_CONDITION_TABLE_HEADLINE, null, userModel.getLocale()));
 			
@@ -468,6 +458,15 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	
 		
 
+	}
+
+	boolean commitFields(final FieldGroup fields) {
+		try {
+			fields.commit();
+			return true;
+		} catch (Exception e1) {
+			return false;
+		}
 	}
 
 	private void refreshConditionTable(final Table conditionTable) {
