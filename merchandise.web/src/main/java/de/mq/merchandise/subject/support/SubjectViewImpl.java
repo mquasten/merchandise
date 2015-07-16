@@ -44,6 +44,7 @@ import de.mq.merchandise.util.support.RefreshableContainer;
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 public class SubjectViewImpl extends CustomComponent implements View {
 
+	static final String I18N_CONDITION_FIELD_PREFIX = "subject_condition_";
 	private static final String I18N_SUBJECT_FIELD_PREFIX = "subject_";
 	private static final String I18N_SUBJECT_CAPTION = "subject_subject_caption";
 	private static final String I18N_CONDITION_CAPTION = "subject_condition_caption";
@@ -295,10 +296,10 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		
 		Arrays.asList(ConditionCols.values()).stream().filter(col -> col.visible() ).forEach(col -> {
 			
-			final ComboBox field = new ComboBox(col.name());
+			final ComboBox field = new ComboBox(messageSource.getMessage(I18N_CONDITION_FIELD_PREFIX + StringUtils.uncapitalize(col.name()), null , userModel.getLocale()));
 			
 		field.addItems(subjectModel.getConditionValues().get(col));
-	
+
 			conditionFields.bind(field, col);
 			conditionCols.addComponent(field);
 			
@@ -361,7 +362,10 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			};
 			
 			if(subjectModel.hasCondition(condition)  &&  ! condition.id().isPresent()) {
+				
+				
 				((AbstractField<?>) conditionFields.getField(ConditionCols.ConditionType)).setComponentError(new UserError((messageSource.getMessage(I18N_CONDITION_EXISTS, new String[] {condition.conditionType()}, userModel.getLocale()))));
+				
 				return;
 			}
 			

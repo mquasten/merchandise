@@ -23,6 +23,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -41,6 +42,7 @@ import de.mq.merchandise.util.support.RefreshableContainer;
 
 public class SubjectViewTest {
 
+	private static final String CONDITION_TYPE_FIELD = SubjectViewImpl.I18N_CONDITION_FIELD_PREFIX + StringUtils.uncapitalize(ConditionCols.ConditionType.name());
 	@SuppressWarnings("unchecked")
 	private final Converter<Item, Condition> itemToConditionConverter = Mockito.mock(Converter.class);
 	@SuppressWarnings("unchecked")
@@ -123,6 +125,7 @@ public class SubjectViewTest {
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_DELETE_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_DELETE_BUTTON);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_CONDITION_DELETE_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_CONDITION_DELETE_BUTTON);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_CONDITION_SAVE_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_CONDITION_SAVE_BUTTON);
+		Mockito.when(messageSource.getMessage(CONDITION_TYPE_FIELD, null, Locale.GERMAN)).thenReturn(CONDITION_TYPE_FIELD);
 		Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col -> Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name()), null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name())));
 
 		Mockito.doAnswer(i -> {
@@ -130,6 +133,8 @@ public class SubjectViewTest {
 			return null;
 		}).when(subjectModel).register(Mockito.any(Observer.class), Mockito.any(SubjectModel.EventType.class));
 
+		 
+		
 		Mockito.when(subjectToItemConverter.convert(Mockito.any(Subject.class))).thenReturn(subjectItem);
 		final Container conditionContainer = Mockito.mock(Container.class);
 		Mockito.when(conditionContainer.getContainerPropertyIds()).thenReturn((Collection) Arrays.asList(ConditionCols.values()));
@@ -318,6 +323,36 @@ public class SubjectViewTest {
 
 		Mockito.verify(validationUtil).validate(Mockito.any(), Mockito.any(), Mockito.any());
 		Mockito.verify(subjectModel, Mockito.times(0)).save(condition);
+	}
+	
+	@Test
+	public final void saveConditionButtonValidationConditionValitation() {
+		Mockito.when(validationUtil.validate(Mockito.any(Condition.class), Mockito.any(FieldGroup.class), Mockito.any(Locale.class))).thenReturn(true);
+		String errorMessage = "condition already exists";
+		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_CONDITION_EXISTS, new String[] {condition.conditionType()}, userModel.getLocale())).thenReturn(errorMessage);
+		AbstractComponent box = (AbstractComponent) components.get(CONDITION_TYPE_FIELD);
+		Assert.assertNull(box.getComponentError());
+	
+		Mockito.when(condition.id()).thenReturn(Optional.empty());
+		final Button button = (Button) components.get(SubjectViewImpl.I18N_CONDITION_SAVE_BUTTON);
+		Assert.assertNotNull(button);
+
+		Assert.assertTrue(button.getListeners(ClickEvent.class).stream().findFirst().isPresent());
+
+		Mockito.when(subjectModel.hasCondition(condition)).thenReturn(true);
+		
+		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(Mockito.mock(ClickEvent.class));
+	   
+		Assert.assertEquals(errorMessage, box.getComponentError().toString());
+		
+		Mockito.verify(subjectModel,Mockito.times(0)).save(condition);
+		
+		Mockito.when(condition.id()).thenReturn(Optional.of(19680529L));
+		box.setComponentError(null);
+		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(Mockito.mock(ClickEvent.class));
+		
+		Assert.assertNull(box.getComponentError());
+		Mockito.verify(subjectModel,Mockito.times(1)).save(condition);
 	}
 
 }
