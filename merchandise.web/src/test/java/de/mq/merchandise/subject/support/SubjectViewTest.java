@@ -28,6 +28,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -76,6 +77,8 @@ public class SubjectViewTest {
 
 	private final Condition condition = Mockito.mock(Condition.class);
 	private final Item conditionItem = Mockito.mock(Item.class);
+	
+	final Subject subject = Mockito.mock(Subject.class);
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Before()
@@ -96,7 +99,7 @@ public class SubjectViewTest {
 		Mockito.when(conditionItem.getItemProperty(ConditionCols.DataType)).thenReturn(dataTypeProperty);
 		// Mockito.when(conditionItem.getItemProperty(ConditionCols.Id)).thenReturn(conditionIdProperty);
 
-		final Subject subject = Mockito.mock(Subject.class);
+	
 		Mockito.when(subjectModel.getSubject()).thenReturn(Optional.of(subject));
 
 		final Property<?> idProperty = Mockito.mock(Property.class);
@@ -125,6 +128,11 @@ public class SubjectViewTest {
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_DELETE_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_DELETE_BUTTON);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_CONDITION_DELETE_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_CONDITION_DELETE_BUTTON);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_CONDITION_SAVE_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_CONDITION_SAVE_BUTTON);
+		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_NEW_CONDITION_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_NEW_CONDITION_BUTTON);
+		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_NEW_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_NEW_BUTTON);
+		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_CONDITION_TABLE_HEADLINE, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_CONDITION_TABLE_HEADLINE);
+		
+		
 		Mockito.when(messageSource.getMessage(CONDITION_TYPE_FIELD, null, Locale.GERMAN)).thenReturn(CONDITION_TYPE_FIELD);
 		Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col -> Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name()), null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name())));
 
@@ -353,6 +361,40 @@ public class SubjectViewTest {
 		
 		Assert.assertNull(box.getComponentError());
 		Mockito.verify(subjectModel,Mockito.times(1)).save(condition);
+	}
+	
+	@Test
+	public final void subjectChangedObserver() {
+		Mockito.when(subject.id()).thenReturn(Optional.of(19680528L));
+	
+		
+		final Button newButton = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_NEW_BUTTON);
+		final Button deleteButton = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_DELETE_BUTTON);
+		final Layout conditionTableLayout = (Layout) components.get(SubjectViewImpl.I18N_CONDITION_TABLE_HEADLINE).getParent();
+		final Button saveButton = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_SAVE_BUTTON);
+		
+		Assert.assertFalse(conditionTableLayout.isVisible());
+		Assert.assertFalse(newButton.isEnabled());
+		Assert.assertFalse(deleteButton.isEnabled());
+		Assert.assertEquals(subjectView.newIcon, saveButton.getIcon());
+		
+		observers.get(EventType.SubjectChanged).process(EventType.SubjectChanged);
+		
+	
+		Assert.assertTrue(newButton.isEnabled());
+		Assert.assertTrue(deleteButton.isEnabled());
+		Assert.assertTrue(conditionTableLayout.isVisible());
+		Assert.assertEquals(subjectView.editIcon, saveButton.getIcon());
+		
+		Mockito.when(subject.id()).thenReturn(Optional.empty());
+		
+		observers.get(EventType.SubjectChanged).process(EventType.SubjectChanged);
+		
+		Assert.assertFalse(conditionTableLayout.isVisible());
+		Assert.assertFalse(newButton.isEnabled());
+		Assert.assertFalse(deleteButton.isEnabled());
+		Assert.assertEquals(subjectView.newIcon, saveButton.getIcon());
+		
 	}
 
 }

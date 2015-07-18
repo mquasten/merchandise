@@ -48,8 +48,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	private static final String I18N_SUBJECT_FIELD_PREFIX = "subject_";
 	private static final String I18N_SUBJECT_CAPTION = "subject_subject_caption";
 	private static final String I18N_CONDITION_CAPTION = "subject_condition_caption";
-	private final ThemeResource editIcon = new ThemeResource("edit-icon.png");
-	private final ThemeResource newIcon = new ThemeResource("new-icon.png");
+	final ThemeResource editIcon = new ThemeResource("edit-icon.png");
+	final ThemeResource newIcon = new ThemeResource("new-icon.png");
 
 	private static final long serialVersionUID = 1L;
 
@@ -70,6 +70,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	static final String I18N_CONDITION_SAVE_BUTTON = "subject_condition_save_button";
 	static final String I18N_SUBJECT_SAVE_BUTTON = "subject_save_button";
 	 static final String I18N_SUBJECT_CONDITION_DELETE_BUTTON = "subject_condition_delete_button";
+	static final String I18N_SUBJECT_NEW_CONDITION_BUTTON = "subject_condition_new_button";
 
 	private final Converter<Item, Subject> itemToSubjectMapper;
 
@@ -447,7 +448,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			editorLayout.setCaption(messageSource.getMessage(I18N_SUBJECT_CAPTION, null,userModel.getLocale() ));
 			
 			saveConditionButton.setCaption(messageSource.getMessage(I18N_CONDITION_SAVE_BUTTON, null, userModel.getLocale()));
-			newConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_NEW_BUTTON, null, userModel.getLocale()));
+			newConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_NEW_CONDITION_BUTTON, null, userModel.getLocale()));
 			deleteConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_CONDITION_DELETE_BUTTON, null, userModel.getLocale()));
 			
 			conditionTable.setCaption(messageSource.getMessage(I18N_CONDITION_TABLE_HEADLINE, null, userModel.getLocale()));
