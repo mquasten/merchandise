@@ -63,13 +63,13 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	static final String I18N_SUBJECT_SAVE_BUTTON1 = "subject_save_button";
 	static final String I18N_SUBJECT_NEW_BUTTON = "subject_new_button";
 	static final String I18N_SUBJECT_DELETE_BUTTON = "subject_delete_button";
-	
-	static final String  I18N_CONDITION_EXISTS="subject_condition_exists";
-	
+
+	static final String I18N_CONDITION_EXISTS = "subject_condition_exists";
+
 	static final String I18N_CONDITION_TABLE_HEADLINE = "subject_condition_table_caption";
 	static final String I18N_CONDITION_SAVE_BUTTON = "subject_condition_save_button";
 	static final String I18N_SUBJECT_SAVE_BUTTON = "subject_save_button";
-	 static final String I18N_SUBJECT_CONDITION_DELETE_BUTTON = "subject_condition_delete_button";
+	static final String I18N_SUBJECT_CONDITION_DELETE_BUTTON = "subject_condition_delete_button";
 	static final String I18N_SUBJECT_NEW_CONDITION_BUTTON = "subject_condition_new_button";
 
 	private final Converter<Item, Subject> itemToSubjectMapper;
@@ -85,13 +85,13 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 	private final Converter<Collection<Condition>, Container> conditionToContainerConverter;
 	private final Converter<Condition, Item> conditionToItemConverter;
-	
-	private final Converter<Item,Condition> itemToConditionConverter; 
-	
+
+	private final Converter<Item, Condition> itemToConditionConverter;
+
 	private final ValidationUtil validationUtil;
 
 	@Autowired
-	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter,  @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter, final  @SubjectModelQualifier(SubjectModelQualifier.Type.ItemToConditionConverter) Converter<Item,Condition> itemToConditionConverter, final ValidationUtil validationUtil) {
+	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter, final @SubjectModelQualifier(SubjectModelQualifier.Type.ItemToConditionConverter) Converter<Item, Condition> itemToConditionConverter, final ValidationUtil validationUtil) {
 
 		this.itemToSubjectMapper = itemToSubjectConverter;
 		this.subjectToItemConverter = subjectToItemConverter;
@@ -102,17 +102,15 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		this.userModel = userModel;
 		this.messageSource = messageSource;
 		this.conditionToContainerConverter = conditionToContainerConverter;
-		this.conditionToItemConverter=conditionToItemConverter;
-		this.validationUtil=validationUtil;
+		this.conditionToItemConverter = conditionToItemConverter;
+		this.validationUtil = validationUtil;
 	}
 
 	private void initLayout() {
 
 		final HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
-		
-		
-		
-		splitPanel.setSplitPosition(64 , Unit.PERCENTAGE);
+
+		splitPanel.setSplitPosition(64, Unit.PERCENTAGE);
 
 		setCompositionRoot(splitPanel);
 
@@ -143,7 +141,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 		col2Layout.setMargin(new MarginInfo(true, false, false, true));
 		searchLayout.addComponent(col2Layout);
-		col2Layout.addComponent(searchDescription); 
+		col2Layout.addComponent(searchDescription);
 
 		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setMargin(true);
@@ -163,47 +161,33 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 		final Table subjectList = new Table();
 
-		
-	
-		
-	
-	
 		final VerticalLayout editor = new VerticalLayout();
 		editor.setSizeUndefined();
-	
-		editor.setMargin(new MarginInfo(true, false,false,true));
-	
-		
+
+		editor.setMargin(new MarginInfo(true, false, false, true));
+
 		final HorizontalLayout editorLayout = new HorizontalLayout();
 		editorLayout.setSizeFull();
-	
+
 		editor.addComponent(editorLayout);
 
-	
 		final FormLayout col1 = new FormLayout();
-		
+
 		col1.setWidth("100%");
 		final FieldGroup editorFields = new FieldGroup();
-
 
 		Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible() && !col.equals(SubjectCols.DateCreated)).forEach(col -> {
 			final TextField field = new TextField();
 			field.setNullRepresentation("");
 			field.setSizeFull();
-		
+
 			editorFields.bind(field, col);
 			col1.addComponent(field);
 
 		});
-		
-		
-		
 
 		editorFields.setItemDataSource(subjectToItemConverter.convert(subjectModel.getSubject().get()));
-	
-		
-		
-	
+
 		final Button saveButton = new Button();
 		final Button newButton = new Button();
 		final Button deleteButton = new Button();
@@ -215,9 +199,9 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 			commitFields(editorFields);
 			final Subject subject = itemToSubjectMapper.convert(editorFields.getItemDataSource());
-			
-			if( ! validationUtil.validate(subject, editorFields,  userModel.getLocale())) {
-				return ;
+
+			if (!validationUtil.validate(subject, editorFields, userModel.getLocale())) {
+				return;
 			}
 			subjectModel.save(subject);
 			lazyQueryContainer.refresh();
@@ -251,12 +235,11 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		splitPanel.addComponent(leftLayout);
 		splitPanel.addComponent(editor);
 
-		
 		leftLayout.addComponent(subjectList);
 
 		leftLayout.setSizeFull();
 
-		//leftLayout.setExpandRatio(subjectList, 1);
+		// leftLayout.setExpandRatio(subjectList, 1);
 		subjectList.setSizeFull();
 
 		subjectList.setSelectable(true);
@@ -274,110 +257,86 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		conditionTableLayout.setMargin(new MarginInfo(true, false, false, false));
 
 		final HorizontalLayout buttonConditionLayout = new HorizontalLayout();
-		
+
 		buttonConditionLayout.setMargin(new MarginInfo(false, false, true, false));
 		buttonConditionLayout.setSpacing(true);
-		
-		
-		
-		
+
 		final HorizontalLayout conditionEditorLayout = new HorizontalLayout();
 		conditionEditorLayout.setWidth("100%");
 		final FormLayout conditionCols = new FormLayout();
 		conditionCols.setWidth("100%");
 		conditionEditorLayout.addComponent(conditionCols);
 		conditionTableLayout.addComponent(conditionEditorLayout);
-		
 
 		final FieldGroup conditionFields = new FieldGroup();
-	
-		
 
-		
-		
-		Arrays.asList(ConditionCols.values()).stream().filter(col -> col.visible() ).forEach(col -> {
-			
-			final ComboBox field = new ComboBox(messageSource.getMessage(I18N_CONDITION_FIELD_PREFIX + StringUtils.uncapitalize(col.name()), null , userModel.getLocale()));
-			
-		field.addItems(subjectModel.getConditionValues().get(col));
+		Arrays.asList(ConditionCols.values()).stream().filter(col -> col.visible()).forEach(col -> {
+
+			final ComboBox field = new ComboBox(messageSource.getMessage(I18N_CONDITION_FIELD_PREFIX + StringUtils.uncapitalize(col.name()), null, userModel.getLocale()));
+
+			field.addItems(subjectModel.getConditionValues().get(col));
 
 			conditionFields.bind(field, col);
 			conditionCols.addComponent(field);
-			
-			
-			
 
 		});
-		
 
 		conditionFields.setItemDataSource(conditionToItemConverter.convert(subjectModel.getCondition().get()));
-		
-		
-		
-		
-		final Button  saveConditionButton = new Button();
+
+		final Button saveConditionButton = new Button();
 		saveConditionButton.setIcon(newIcon);
-		final Button  newConditionButton = new Button();
-		
-		
-		
-		
-		final Button  deleteConditionButton = new Button();
+		final Button newConditionButton = new Button();
+		newConditionButton.setEnabled(false);
+
+		final Button deleteConditionButton = new Button();
+		deleteConditionButton.setEnabled(false);
 		buttonConditionLayout.addComponent(saveConditionButton);
 		buttonConditionLayout.addComponent(newConditionButton);
 		buttonConditionLayout.addComponent(deleteConditionButton);
 		conditionTableLayout.addComponent(buttonConditionLayout);
-	
-		
-		
+
 		final Table conditionTable = new Table();
 		deleteConditionButton.addClickListener(e -> {
 			final Condition condition = itemToConditionConverter.convert(conditionFields.getItemDataSource());
 			subjectModel.delete(condition);
 			refreshConditionTable(conditionTable);
-			
+
 		});
-		
+
 		newConditionButton.addClickListener(e -> conditionTable.setValue(null));
-		
+
 		conditionTable.setWidth("100%");
 		conditionTable.setPageLength(5);
 
 		conditionTableLayout.addComponent(conditionTable);
 		editor.addComponent(conditionTableLayout);
 		conditionTable.setSelectable(true);
-	
+
 		conditionTableLayout.setVisible(false);
-		
-		
-		
-		conditionTable.addValueChangeListener(e ->  subjectModel.setConditionId(e.getProperty().getValue() != null ?  (Long) conditionTable.getItem(e.getProperty().getValue()).getItemProperty(ConditionCols.Id).getValue() : null));
-		
+
+		conditionTable.addValueChangeListener(e -> subjectModel.setConditionId(e.getProperty().getValue() != null ? (Long) conditionTable.getItem(e.getProperty().getValue()).getItemProperty(ConditionCols.Id).getValue() : null));
+
 		saveConditionButton.addClickListener(e -> {
 			commitFields(conditionFields);
 			final Condition condition = itemToConditionConverter.convert(conditionFields.getItemDataSource());
-			
-			
-			if ( ! validationUtil.validate(condition, conditionFields, userModel.getLocale()) ){
-				return;
-			};
-			
-			if(subjectModel.hasCondition(condition)  &&  ! condition.id().isPresent()) {
-				
-				
-				((AbstractField<?>) conditionFields.getField(ConditionCols.ConditionType)).setComponentError(new UserError((messageSource.getMessage(I18N_CONDITION_EXISTS, new String[] {condition.conditionType()}, userModel.getLocale()))));
-				
+
+			if (!validationUtil.validate(condition, conditionFields, userModel.getLocale())) {
 				return;
 			}
-			
+			;
+
+			if (subjectModel.hasCondition(condition) && !condition.id().isPresent()) {
+
+				((AbstractField<?>) conditionFields.getField(ConditionCols.ConditionType)).setComponentError(new UserError((messageSource.getMessage(I18N_CONDITION_EXISTS, new String[] { condition.conditionType() }, userModel.getLocale()))));
+
+				return;
+			}
+
 			subjectModel.save(condition);
 
 			refreshConditionTable(conditionTable);
-			
-			
-			
-		} );
-		
+
+		});
 
 		subjectModel.register(e -> {
 			validationUtil.reset(editorFields);
@@ -398,18 +357,15 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			}
 
 			saveButton.setIcon(newIcon);
-			
 
 		}, SubjectModel.EventType.SubjectChanged);
-		
-		
+
 		subjectModel.register(e -> {
 			validationUtil.reset(conditionFields);
 			conditionFields.setItemDataSource(null);
-			
 			newConditionButton.setEnabled(false);
 			deleteConditionButton.setEnabled(false);
-			
+
 			((ComboBox) conditionFields.getField(ConditionCols.ConditionType)).removeAllItems();
 			((ComboBox) conditionFields.getField(ConditionCols.ConditionType)).addItems(subjectModel.getConditionValues().get(ConditionCols.ConditionType));
 			((ComboBox) conditionFields.getField(ConditionCols.DataType)).removeAllItems();
@@ -417,8 +373,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			conditionFields.setItemDataSource(conditionToItemConverter.convert(subjectModel.getCondition().get()));
 			com.vaadin.ui.Component component = conditionFields.getField(ConditionCols.ConditionType);
 			component.setEnabled(false);
-			
-			if( subjectModel.getCondition().get().id().isPresent()){
+
+			if (subjectModel.getCondition().get().id().isPresent()) {
 				saveConditionButton.setIcon(editIcon);
 				newConditionButton.setEnabled(true);
 				deleteConditionButton.setEnabled(true);
@@ -426,8 +382,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 			}
 			component.setEnabled(true);
 			saveConditionButton.setIcon(newIcon);
-			
-			
+
 		}, SubjectModel.EventType.ConditionChanged);
 
 		userModel.register(o -> {
@@ -444,24 +399,22 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 			Arrays.asList(ConditionCols.values()).stream().filter(col -> col.visible()).forEach(col -> conditionTable.setColumnHeader(col, messageSource.getMessage(I18N_CONDITION_TABLE_PREFIX + StringUtils.uncapitalize(col.name()), null, userModel.getLocale())));
 			conditionEditorLayout.setCaption((messageSource.getMessage(I18N_CONDITION_CAPTION, null, userModel.getLocale())));
-			
-			editorLayout.setCaption(messageSource.getMessage(I18N_SUBJECT_CAPTION, null,userModel.getLocale() ));
-			
+
+			editorLayout.setCaption(messageSource.getMessage(I18N_SUBJECT_CAPTION, null, userModel.getLocale()));
+
 			saveConditionButton.setCaption(messageSource.getMessage(I18N_CONDITION_SAVE_BUTTON, null, userModel.getLocale()));
 			newConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_NEW_CONDITION_BUTTON, null, userModel.getLocale()));
 			deleteConditionButton.setCaption(messageSource.getMessage(I18N_SUBJECT_CONDITION_DELETE_BUTTON, null, userModel.getLocale()));
-			
-			conditionTable.setCaption(messageSource.getMessage(I18N_CONDITION_TABLE_HEADLINE, null, userModel.getLocale()));
-			
-		
-			
-			editorFields.getBoundPropertyIds().forEach(property -> editorFields.getField(property).setCaption(messageSource.getMessage( I18N_SUBJECT_FIELD_PREFIX +StringUtils.uncapitalize(((Enum<?>) property).name()), null,userModel.getLocale()  )));
-			//conditionFields.getBoundPropertyIds().forEach(x -> editorFields.getField(x).setCaption(messageSource.getMessage( "subject_condition_" +StringUtils.uncapitalize(((Enum<?>) x).name()), null,userModel.getLocale()  )));
 
-		}, UserModel.EventType.LocaleChanged);
-		
-	
-		
+			conditionTable.setCaption(messageSource.getMessage(I18N_CONDITION_TABLE_HEADLINE, null, userModel.getLocale()));
+
+			editorFields.getBoundPropertyIds().forEach(property -> editorFields.getField(property).setCaption(messageSource.getMessage(I18N_SUBJECT_FIELD_PREFIX + StringUtils.uncapitalize(((Enum<?>) property).name()), null, userModel.getLocale())));
+			// conditionFields.getBoundPropertyIds().forEach(x ->
+			// editorFields.getField(x).setCaption(messageSource.getMessage(
+			// "subject_condition_" +StringUtils.uncapitalize(((Enum<?>)
+			// x).name()), null,userModel.getLocale() )));
+
+			}, UserModel.EventType.LocaleChanged);
 
 	}
 

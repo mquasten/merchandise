@@ -15,19 +15,32 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StringUtils;
+
+
+
+
+
+
+
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.util.IndexedContainer;
+
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Field.ValueChangeEvent;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
@@ -43,7 +56,15 @@ import de.mq.merchandise.util.support.RefreshableContainer;
 
 public class SubjectViewTest {
 
+	private static final long ID = 19680528L;
+
+	private static final String VALUE_FIELD = "value";
+
+	private static final String CONDITION_QUALITY = "Quality";
+
 	private static final String CONDITION_TYPE_FIELD = SubjectViewImpl.I18N_CONDITION_FIELD_PREFIX + StringUtils.uncapitalize(ConditionCols.ConditionType.name());
+	
+	private static final String CONDITION_DATA_TYPE_FIELD = SubjectViewImpl.I18N_CONDITION_FIELD_PREFIX + StringUtils.uncapitalize(ConditionCols.DataType.name());
 	@SuppressWarnings("unchecked")
 	private final Converter<Item, Condition> itemToConditionConverter = Mockito.mock(Converter.class);
 	@SuppressWarnings("unchecked")
@@ -79,6 +100,8 @@ public class SubjectViewTest {
 	private final Item conditionItem = Mockito.mock(Item.class);
 	
 	final Subject subject = Mockito.mock(Subject.class);
+	
+	
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Before()
@@ -132,6 +155,9 @@ public class SubjectViewTest {
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_NEW_BUTTON, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_NEW_BUTTON);
 		Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_CONDITION_TABLE_HEADLINE, null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_CONDITION_TABLE_HEADLINE);
 		
+		Mockito.when(messageSource.getMessage(CONDITION_DATA_TYPE_FIELD, null, Locale.GERMAN)).thenReturn(CONDITION_DATA_TYPE_FIELD);
+		
+		
 		
 		Mockito.when(messageSource.getMessage(CONDITION_TYPE_FIELD, null, Locale.GERMAN)).thenReturn(CONDITION_TYPE_FIELD);
 		Arrays.asList(SubjectCols.values()).stream().filter(col -> col.visible()).forEach(col -> Mockito.when(messageSource.getMessage(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name()), null, Locale.GERMAN)).thenReturn(SubjectViewImpl.I18N_SUBJECT_TABLE_PREFIX + StringUtils.uncapitalize(col.name())));
@@ -142,9 +168,9 @@ public class SubjectViewTest {
 		}).when(subjectModel).register(Mockito.any(Observer.class), Mockito.any(SubjectModel.EventType.class));
 
 		 
-		
-		Mockito.when(subjectToItemConverter.convert(Mockito.any(Subject.class))).thenReturn(subjectItem);
 		final Container conditionContainer = Mockito.mock(Container.class);
+		Mockito.when(subjectToItemConverter.convert(Mockito.any(Subject.class))).thenReturn(subjectItem);
+	
 		Mockito.when(conditionContainer.getContainerPropertyIds()).thenReturn((Collection) Arrays.asList(ConditionCols.values()));
 		Mockito.when(conditionToContainerConverter.convert(Mockito.anyCollection())).thenReturn(conditionContainer);
 
@@ -394,6 +420,139 @@ public class SubjectViewTest {
 		Assert.assertFalse(newButton.isEnabled());
 		Assert.assertFalse(deleteButton.isEnabled());
 		Assert.assertEquals(subjectView.newIcon, saveButton.getIcon());
+		
+	}
+	
+	@Test
+	public final void conditionChangedObserver() {
+		Mockito.when(condition.id()).thenReturn(Optional.of(19680528L));
+		final Map<ConditionCols, Collection<?>> values = new HashMap<>();
+		values.put(ConditionCols.DataType, Arrays.asList(ConditionDataType.values()));
+		values.put(ConditionCols.ConditionType, Arrays.asList(CONDITION_QUALITY));
+		Mockito.when(subjectModel.getConditionValues()).thenReturn(values);
+		
+		
+		
+		final Button newConditionButton = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_NEW_CONDITION_BUTTON);
+		final Button deleteConditionButton = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_CONDITION_DELETE_BUTTON);
+		final Button saveConditionButton = (Button) components.get(SubjectViewImpl.I18N_CONDITION_SAVE_BUTTON);
+		final ComboBox conditionDataTypes = (ComboBox) components.get(CONDITION_DATA_TYPE_FIELD);
+		final ComboBox conditionTypes = (ComboBox) components.get(CONDITION_TYPE_FIELD);
+		
+		Assert.assertTrue(conditionDataTypes.getItemIds().isEmpty());
+		Assert.assertTrue(conditionTypes.getItemIds().isEmpty());
+		
+		Assert.assertFalse(newConditionButton.isEnabled());
+		Assert.assertFalse(deleteConditionButton.isEnabled());
+		Assert.assertEquals(subjectView.newIcon, saveConditionButton.getIcon());
+		Assert.assertTrue(conditionTypes.isEnabled());
+		
+		observers.get(EventType.ConditionChanged).process(EventType.ConditionChanged);
+		
+		Assert.assertEquals(Arrays.asList(ConditionDataType.values()), conditionDataTypes.getItemIds());
+		Assert.assertTrue(conditionTypes.getItemIds().stream().findFirst().isPresent());
+		Assert.assertEquals(CONDITION_QUALITY, conditionTypes.getItemIds().stream().findFirst().get());
+		
+		Assert.assertFalse(conditionTypes.isEnabled());
+		Assert.assertTrue(newConditionButton.isEnabled());
+		Assert.assertTrue(deleteConditionButton.isEnabled());
+		Assert.assertEquals(subjectView.editIcon, saveConditionButton.getIcon());
+		
+		Mockito.when(condition.id()).thenReturn(Optional.empty());
+		observers.get(EventType.ConditionChanged).process(EventType.ConditionChanged);
+		
+		Assert.assertTrue(conditionTypes.isEnabled());
+		Assert.assertFalse(newConditionButton.isEnabled());
+		Assert.assertFalse(deleteConditionButton.isEnabled());
+		Assert.assertEquals(subjectView.newIcon, saveConditionButton.getIcon());
+		
+	}
+	
+	@Test
+	public final void newSubjectClickListener() {
+		final Button button = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_NEW_BUTTON);
+		final Table subjectList = (Table) components.get(SubjectViewImpl.I18N_SUBJECT_TABLE_HEADLINE);
+		ReflectionTestUtils.setField(subjectList, VALUE_FIELD, ID);
+		
+		Assert.assertEquals(ID, subjectList.getValue());
+		Assert.assertTrue(button.getListeners(ClickEvent.class).stream().findFirst().isPresent());
+		
+		final ClickEvent event = Mockito.mock(ClickEvent.class);
+		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(event);
+		
+		Assert.assertNull(subjectList.getValue());
+	}
+	
+	@Test
+	public final void subjectChangedListener() {
+		final Table subjectList = (Table) components.get(SubjectViewImpl.I18N_SUBJECT_TABLE_HEADLINE);
+		Assert.assertTrue(subjectList.getListeners(ValueChangeEvent.class).stream().findFirst().isPresent());
+		final ValueChangeEvent event = Mockito.mock(ValueChangeEvent.class);
+		@SuppressWarnings("unchecked")
+		final Property<Long> property = Mockito.mock(Property.class);
+		Mockito.when(property.getValue()).thenReturn(ID);
+		Mockito.when(event.getProperty()).thenReturn(property);
+		((ValueChangeListener) subjectList.getListeners(ValueChangeEvent.class).stream().findFirst().get()).valueChange(event);
+	   
+		Mockito.verify( subjectModel).setSubjectId(ID);
+	}
+	
+	@Test
+	public final void newConditionButtonClickListener() {
+		final Button button = (Button) components.get(SubjectViewImpl.I18N_SUBJECT_NEW_CONDITION_BUTTON);
+		final Table conditionTable = (Table) components.get(SubjectViewImpl.I18N_CONDITION_TABLE_HEADLINE);
+		
+		ReflectionTestUtils.setField(conditionTable, VALUE_FIELD, ID);
+		
+		Assert.assertEquals(ID, conditionTable.getValue());
+		Assert.assertTrue(button.getListeners(ClickEvent.class).stream().findFirst().isPresent());
+		
+		final ClickEvent event = Mockito.mock(ClickEvent.class);
+		((ClickListener) button.getListeners(ClickEvent.class).stream().findFirst().get()).buttonClick(event);
+		Assert.assertNull(conditionTable.getValue());
+		
+		
+	}
+	
+	@Test
+	public final void conditionChangedListener() {
+		
+		
+		final Table conditionTable = (Table) components.get(SubjectViewImpl.I18N_CONDITION_TABLE_HEADLINE);
+		
+		final IndexedContainer indexedContainer = Mockito.mock(IndexedContainer.class);
+		final Item item = Mockito.mock(Item.class);
+		@SuppressWarnings("unchecked")
+		final Property<Long> idProperty = Mockito.mock(Property.class) ;
+		Mockito.when(idProperty.getValue()).thenReturn(ID);
+		Mockito.when(item.getItemProperty(ConditionCols.Id)).thenReturn(idProperty);
+		Mockito.when(indexedContainer.getItem(4711)).thenReturn(item);
+		conditionTable.setContainerDataSource(indexedContainer);
+		
+		Assert.assertTrue(conditionTable.getListeners(ValueChangeEvent.class).stream().findFirst().isPresent());
+		final ValueChangeEvent event = Mockito.mock(ValueChangeEvent.class);
+		@SuppressWarnings("unchecked")
+		final Property<Integer> property = Mockito.mock(Property.class);
+		Mockito.when(property.getValue()).thenReturn(4711);
+		
+		Mockito.when(event.getProperty()).thenReturn(property);
+		((ValueChangeListener) conditionTable.getListeners(ValueChangeEvent.class).stream().findFirst().get()).valueChange(event);
+	   
+		Mockito.verify(subjectModel).setConditionId(ID);
+	}
+	
+	@Test
+	public final void conditionChangedListenerNull() {
+		final Table conditionTable = (Table) components.get(SubjectViewImpl.I18N_CONDITION_TABLE_HEADLINE);
+		Assert.assertTrue(conditionTable.getListeners(ValueChangeEvent.class).stream().findFirst().isPresent());
+		final ValueChangeEvent event = Mockito.mock(ValueChangeEvent.class);
+		@SuppressWarnings("unchecked")
+		final Property<Integer> property = Mockito.mock(Property.class);
+		Mockito.when(event.getProperty()).thenReturn(property);
+		
+		((ValueChangeListener) conditionTable.getListeners(ValueChangeEvent.class).stream().findFirst().get()).valueChange(event);
+		
+		Mockito.verify(subjectModel).setConditionId(null);
 		
 	}
 
