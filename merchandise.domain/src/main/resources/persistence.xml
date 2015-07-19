@@ -13,6 +13,10 @@
 	<class> de.mq.merchandise.customer.support.CustomerImpl</class>
 	<class> de.mq.merchandise.customer.support.ConditionTypeImpl</class>
 	
+	
+	<class> de.mq.merchandise.subject.support.CommercialSubjectImpl</class>
+	<class> de.mq.merchandise.subject.support.CommercialSubjectItemImpl</class>
+	
 		<!--  properties>
 		    <property name="eclipselink.weaving" value="false" />
 		 
