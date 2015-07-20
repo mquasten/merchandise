@@ -66,7 +66,7 @@ public class CommercialSubjectIntegrationTest {
 		
 		final CommercialSubjet commercialSubjet = new CommercialSubjectImpl("Platinum Escort", customer);
 		
-		commercialSubjet.assign(subject, "escort service");
+		commercialSubjet.assign(subject, "escort service", true);
 		
 		entityManager.persist(commercialSubjet);
 		

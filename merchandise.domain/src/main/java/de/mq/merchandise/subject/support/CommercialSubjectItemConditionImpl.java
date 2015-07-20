@@ -1,0 +1,77 @@
+package de.mq.merchandise.subject.support;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
+
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.Assert;
+
+import de.mq.merchandise.subject.Condition;
+
+@Entity(name="CommercialSubjectItemCondition")
+@Table(name="commercial_subject_item_condition")
+class CommercialSubjectItemConditionImpl {
+	
+	CommercialSubjectItemConditionImpl(final CommercialSubjectItem commercialSubjectItem, final Condition condition) {
+		this.commercialSubjectItem = commercialSubjectItem;
+		this.condition = condition;
+	}
+
+	
+	@NotNull(message="jsr303_mandatory")
+	@ManyToOne(targetEntity = CommercialSubjectItemImpl.class, optional = false, fetch = FetchType.LAZY )
+	@JoinColumn(name = "commercial_subject_item_id", referencedColumnName = "id", updatable = false, nullable = false)
+	@Valid
+	private final CommercialSubjectItem commercialSubjectItem;
+	
+	@NotNull(message="jsr303_mandatory")
+	@ManyToOne(targetEntity = CommercialSubjectItemImpl.class, optional = false, fetch = FetchType.LAZY )
+	@JoinColumn(name = "condition_id", referencedColumnName = "id", updatable = false, nullable = false)
+	@Valid
+	private final Condition condition;
+	@CollectionTable(name="input_values", joinColumns=@JoinColumn(name="commercial_subject_item_Condition_id") )
+	@ElementCollection(targetClass=InputValueImpl.class,fetch=FetchType.LAZY)
+	private Collection<InputValue> inputValues = new ArrayList<>();
+	
+	
+	@SuppressWarnings("unchecked")
+	final <T> Collection<T> values() {
+		return Collections.unmodifiableCollection((Collection<T>) inputValues.stream().filter(iv ->  iv.value().isPresent() ).map(iv ->  iv.value().get()).collect(Collectors.toList()));
+	}
+	
+	
+	 <T> void assign(final T value) {
+		inputValues.add(newInputValue(value)); 
+	}
+
+
+	private <T> InputValue newInputValue(final T value) {
+		Assert.notNull(value);
+		
+		try {
+			return BeanUtils.instantiateClass(InputValueImpl.class.getConstructor(value.getClass()), value);
+		} catch (final Exception ex) {
+			
+			throw new IllegalStateException(ex);
+		}
+	}
+
+	void remove(final Double value) {
+		inputValues.remove(newInputValue(value)); 
+	}
+
+	
+	
+}

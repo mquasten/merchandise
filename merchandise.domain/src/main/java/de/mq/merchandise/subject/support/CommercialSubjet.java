@@ -10,6 +10,6 @@ public interface CommercialSubjet extends  BasicEntity {
 
 	String name();
 	
-	void assign(final Subject subject, final String name);
+	void assign(final Subject subject, final String name, final boolean mandatory);
 
 }

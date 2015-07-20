@@ -55,9 +55,12 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	}
 	
 	
-	
-	public final void assign(final Subject subject, final String name) {
-		items.add(new CommercialSubjectItemImpl(name, this, subject));
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjet#assign(de.mq.merchandise.subject.Subject, java.lang.String, boolean)
+	 */
+	public final void assign(final Subject subject, final String name, final boolean mandatory ) {
+		items.add(new CommercialSubjectItemImpl(name, this, subject, mandatory));
 	};
 	
 	/* (non-Javadoc)

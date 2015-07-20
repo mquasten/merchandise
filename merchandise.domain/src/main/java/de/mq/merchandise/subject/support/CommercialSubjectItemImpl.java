@@ -16,7 +16,7 @@ import de.mq.merchandise.subject.Subject;
 
 @Entity(name="commercial_subject_item")
 @Table(name="commercial_subject_item")
-class CommercialSubjectItemImpl {
+class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	
 	
 	@Id
@@ -34,6 +34,8 @@ class CommercialSubjectItemImpl {
 	@Valid
 	private Subject subject;
 	
+	private boolean mandatory=true;
+	
 	@NotNull(message="jsr303_mandatory")
 	@ManyToOne(targetEntity = CommercialSubjectImpl.class, optional = false, fetch = FetchType.LAZY )
 	@JoinColumn(name = "commercial_subject_id", referencedColumnName = "id", updatable = false, nullable = false)
@@ -41,13 +43,30 @@ class CommercialSubjectItemImpl {
 	private CommercialSubjet commercialSubjet; ; 
 	
 	public CommercialSubjectItemImpl(final String name, final CommercialSubjet commercialSubjet, final Subject subject) {
+		this(name, commercialSubjet,subject, true);
+	}
+	
+	CommercialSubjectItemImpl(final String name, final CommercialSubjet commercialSubjet, final Subject subject, final boolean mandatory) {
 		this.name = name;
 		this.subject = subject;
 		this.commercialSubjet = commercialSubjet;
+		this.mandatory=mandatory;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#name()
+	 */
+	@Override
 	public final String name() {
 		return this.name;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#mandatory()
+	 */
+	@Override
+	public final boolean mandatory() {
+		return this.mandatory;
 	}
 
 	@Override
@@ -82,8 +101,6 @@ class CommercialSubjectItemImpl {
 		if( item.commercialSubjet == null){
 			return false;
 		}
-		
-		
 		return true;
 	}
 
