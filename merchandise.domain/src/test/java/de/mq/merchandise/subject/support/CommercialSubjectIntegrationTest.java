@@ -11,7 +11,6 @@ import javax.persistence.PersistenceContext;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -25,7 +24,7 @@ import de.mq.merchandise.subject.Subject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/emf.xml"})
-@Ignore
+
 public class CommercialSubjectIntegrationTest {
 	
 	@PersistenceContext
@@ -60,8 +59,16 @@ public class CommercialSubjectIntegrationTest {
 		entityManager.persist(customer);
 		
 		
-		final Subject subject = new SubjectImpl(customer, SUBJECT_NAME);
-		entityManager.persist(subject);
+		final Subject newSubject = new SubjectImpl(customer, SUBJECT_NAME);
+		newSubject.add("Quality", ConditionDataType.String);
+		newSubject.add("Unit", ConditionDataType.String);
+		newSubject.add("Quantity", ConditionDataType.IntegralNumber);
+		
+	
+		final Long id = entityManager.merge(newSubject).id().get();
+		Subject subject = entityManager.find(SubjectImpl.class, id);
+	//	entityManager.refresh(subject);
+		
 		
 		
 		final CommercialSubjet commercialSubjet = new CommercialSubjectImpl("Platinum Escort", customer);

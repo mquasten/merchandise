@@ -1,9 +1,13 @@
 package de.mq.merchandise.subject.support;
 
-interface CommercialSubjectItem {
+import de.mq.merchandise.subject.Subject;
 
-	public abstract String name();
+public interface CommercialSubjectItem {
 
-	public abstract boolean mandatory();
+	String name();
+
+	boolean mandatory();
+	
+	Subject subject();
 
 }

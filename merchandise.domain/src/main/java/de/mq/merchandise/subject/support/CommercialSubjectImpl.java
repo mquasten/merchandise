@@ -46,7 +46,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	private Customer customer;
 	
 	@OneToMany(mappedBy="commercialSubjet", targetEntity=CommercialSubjectItemImpl.class, fetch=FetchType.LAZY ,cascade={CascadeType.ALL} , orphanRemoval=true)
-	private Collection<CommercialSubjectItemImpl> items = new HashSet<>();
+	private Collection<CommercialSubjectItem> items = new HashSet<>();
 	
 	
 	CommercialSubjectImpl(final String name, final Customer customer){

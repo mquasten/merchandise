@@ -3,15 +3,18 @@ package de.mq.merchandise.subject.support;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -22,13 +25,15 @@ import de.mq.merchandise.subject.Condition;
 
 @Entity(name="CommercialSubjectItemCondition")
 @Table(name="commercial_subject_item_condition")
+
 class CommercialSubjectItemConditionImpl {
 	
-	CommercialSubjectItemConditionImpl(final CommercialSubjectItem commercialSubjectItem, final Condition condition) {
-		this.commercialSubjectItem = commercialSubjectItem;
-		this.condition = condition;
-	}
 
+	@Id
+	private final String id;
+	
+	
+	
 	
 	@NotNull(message="jsr303_mandatory")
 	@ManyToOne(targetEntity = CommercialSubjectItemImpl.class, optional = false, fetch = FetchType.LAZY )
@@ -37,14 +42,30 @@ class CommercialSubjectItemConditionImpl {
 	private final CommercialSubjectItem commercialSubjectItem;
 	
 	@NotNull(message="jsr303_mandatory")
-	@ManyToOne(targetEntity = CommercialSubjectItemImpl.class, optional = false, fetch = FetchType.LAZY )
+	@ManyToOne(targetEntity = ConditionImpl.class, optional = false, fetch = FetchType.LAZY )
 	@JoinColumn(name = "condition_id", referencedColumnName = "id", updatable = false, nullable = false)
 	@Valid
 	private final Condition condition;
-	@CollectionTable(name="input_values", joinColumns=@JoinColumn(name="commercial_subject_item_Condition_id") )
-	@ElementCollection(targetClass=InputValueImpl.class,fetch=FetchType.LAZY)
-	private Collection<InputValue> inputValues = new ArrayList<>();
 	
+	
+	@CollectionTable(name="input_values", joinColumns=@JoinColumn(name="commercial_subject_item_Condition_id") )
+	@ElementCollection(targetClass=InputValueImpl.class,fetch=FetchType.LAZY) 
+	@Transient
+	private Collection<InputValue> inputValues = new ArrayList<>();  
+	
+	
+	
+	
+	CommercialSubjectItemConditionImpl(final CommercialSubjectItem commercialSubjectItem, final Condition condition) {
+		this.commercialSubjectItem = commercialSubjectItem;
+		this.condition = condition;
+		Assert.isTrue(condition.id().isPresent(), "Condition should be persistent.");
+		Assert.notNull(condition.subject(), "CommercialSubjectItem should have a subject");
+		Assert.isTrue(condition.subject().id().isPresent(), "Subject should be persistent.");
+		
+		System.out.println(">>><" + commercialSubjectItem.subject());
+		this.id= new UUID(condition.subject().id().get(), condition.id().get()).toString();
+	}
 	
 	@SuppressWarnings("unchecked")
 	final <T> Collection<T> values() {

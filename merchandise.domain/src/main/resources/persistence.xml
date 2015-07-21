@@ -16,6 +16,7 @@
 	
 	<class> de.mq.merchandise.subject.support.CommercialSubjectImpl</class>
 	<class> de.mq.merchandise.subject.support.CommercialSubjectItemImpl</class>
+	<class> de.mq.merchandise.subject.support.CommercialSubjectItemConditionImpl</class>
 	
 		<!--  properties>
 		    <property name="eclipselink.weaving" value="false" />
