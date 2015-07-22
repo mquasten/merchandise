@@ -43,8 +43,6 @@ public class CommercialSubjectIntegrationTest {
 	public final void cleanup() throws SQLException {
 		waste.forEach( e -> entityManager.remove(entityManager.find(e.getValue(), e.getKey())));
 		waste.clear();
-
-	    
 	}
 	
 	@Test

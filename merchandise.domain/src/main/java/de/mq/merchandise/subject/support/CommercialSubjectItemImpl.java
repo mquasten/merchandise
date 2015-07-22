@@ -1,7 +1,9 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.util.Assert;
 
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 
 @Entity(name="commercial_subject_item")
@@ -85,6 +88,10 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 		return this.mandatory;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		if( ! valid(this)){
@@ -93,6 +100,10 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 		return subject.hashCode() + commercialSubjet.hashCode() ;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if( ! valid(this)){
@@ -121,10 +132,31 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	}
 
 	
-
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#subject()
+	 */
 	@Override
 	public Subject subject() {
 		return this.subject;
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#conditions()
+	 */
+	@Override
+	public final Collection<Condition>conditions() {
+		return Collections.unmodifiableSet(commercialSubjectItemConditions.stream().map(item -> item.condition()).collect(Collectors.toSet()));
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#assign(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public <T> void  assign(final String conditionType, T value  ){
+		final Optional<CommercialSubjectItemConditionImpl> result = commercialSubjectItemConditions.stream().filter(item -> item.condition().conditionType().equals(conditionType)).findFirst();
+	   Assert.isTrue(result.isPresent(), "CommercialSubjectItemCondition not assigned");
+	   result.get().assign(value);
 	}
 
 }

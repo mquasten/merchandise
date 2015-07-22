@@ -94,5 +94,8 @@ class CommercialSubjectItemConditionImpl {
 	}
 
 	
+	Condition condition(){
+		return condition;
+	}
 	
 }

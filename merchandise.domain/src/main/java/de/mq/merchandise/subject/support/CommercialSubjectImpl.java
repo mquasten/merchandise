@@ -1,7 +1,10 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,10 +20,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+
+
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 
 
@@ -63,6 +70,43 @@ class CommercialSubjectImpl implements CommercialSubjet {
 		items.add(new CommercialSubjectItemImpl(name, this, subject, mandatory));
 	};
 	
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjet#subjects()
+	 */
+	@Override
+	public final Collection<Subject> subjects() {
+		return Collections.unmodifiableSet(items.stream().map(item -> item.subject()).collect(Collectors.toSet()));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjet#conditions(de.mq.merchandise.subject.Subject)
+	 */
+	@Override
+	public final Collection<Condition> conditions(final Subject subject) {
+		 Assert.notNull(subject);
+		 final Optional<CommercialSubjectItem> item = items.stream().filter(s -> s.subject().equals(subject)).findFirst();
+		 Assert.isTrue(item.isPresent(), "Subject is not assigned");
+		 return item.get().conditions();
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjet#assign(de.mq.merchandise.subject.Condition, java.lang.Object)
+	 */
+	@Override
+	public final <T> void assign(final Condition condition, final T value){
+		 Assert.notNull(condition);
+		 Assert.notNull(condition.conditionType());
+		 Assert.notNull(condition.subject());
+		 Assert.notNull(value);
+		 final Optional<CommercialSubjectItem> item = items.stream().filter(s -> s.subject().equals(condition.subject())).findFirst();
+		 Assert.isTrue(item.isPresent(), "Subject is not assigned");
+		 
+		 item.get().assign(condition.conditionType(), value);
+		 
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.mq.merchandise.subject.support.CommercialSubjet#customer()
 	 */
@@ -78,7 +122,10 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	public final String name() {
 		return this.name;
 	}
-	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		if( ! valid(this) ) {
@@ -97,7 +144,10 @@ class CommercialSubjectImpl implements CommercialSubjet {
 		}
 		return true;
 	}
-	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(final Object obj) {
 		if( ! valid(this)){
