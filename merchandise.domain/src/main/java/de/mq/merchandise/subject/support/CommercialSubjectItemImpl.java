@@ -1,8 +1,10 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -57,6 +59,12 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	
 	@OneToMany(mappedBy="commercialSubjectItem", targetEntity=CommercialSubjectItemConditionImpl.class, fetch=FetchType.LAZY ,cascade={CascadeType.ALL} , orphanRemoval=true)
 	private Collection<CommercialSubjectItemConditionImpl> commercialSubjectItemConditions = new HashSet<>();
+	
+	
+	@SuppressWarnings("unused")
+	private CommercialSubjectItemImpl() {
+		
+	}
 	
 	public CommercialSubjectItemImpl(final String name, final CommercialSubjet commercialSubjet, final Subject subject) {
 		this(name, commercialSubjet,subject, true);
@@ -140,13 +148,11 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	public Subject subject() {
 		return this.subject;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#conditions()
-	 */
+	
+	
 	@Override
-	public final Collection<Condition>conditions() {
-		return Collections.unmodifiableSet(commercialSubjectItemConditions.stream().map(item -> item.condition()).collect(Collectors.toSet()));
+	public final <T>  Collection <Entry<Condition, Collection<T>>>conditionValues() {
+		return  Collections.unmodifiableSet(commercialSubjectItemConditions.stream().map(item -> new AbstractMap.SimpleEntry<Condition, Collection<T>>(item.condition(), item.values())).collect(Collectors.toSet()));
 	}
 	/*
 	 * (non-Javadoc)

@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -30,7 +29,7 @@ class CommercialSubjectItemConditionImpl {
 	
 
 	@Id
-	private final String id;
+	private  String id;
 	
 	
 	
@@ -39,21 +38,23 @@ class CommercialSubjectItemConditionImpl {
 	@ManyToOne(targetEntity = CommercialSubjectItemImpl.class, optional = false, fetch = FetchType.LAZY )
 	@JoinColumn(name = "commercial_subject_item_id", referencedColumnName = "id", updatable = false, nullable = false)
 	@Valid
-	private final CommercialSubjectItem commercialSubjectItem;
+	private CommercialSubjectItem commercialSubjectItem;
 	
 	@NotNull(message="jsr303_mandatory")
 	@ManyToOne(targetEntity = ConditionImpl.class, optional = false, fetch = FetchType.LAZY )
 	@JoinColumn(name = "condition_id", referencedColumnName = "id", updatable = false, nullable = false)
 	@Valid
-	private final Condition condition;
+	private  Condition condition;
 	
 	
 	@CollectionTable(name="input_values", joinColumns=@JoinColumn(name="commercial_subject_item_Condition_id") )
 	@ElementCollection(targetClass=InputValueImpl.class,fetch=FetchType.LAZY) 
-	@Transient
 	private Collection<InputValue> inputValues = new ArrayList<>();  
 	
-	
+	@SuppressWarnings("unused")
+	private CommercialSubjectItemConditionImpl() {
+		
+	}
 	
 	
 	CommercialSubjectItemConditionImpl(final CommercialSubjectItem commercialSubjectItem, final Condition condition) {
@@ -62,8 +63,6 @@ class CommercialSubjectItemConditionImpl {
 		Assert.isTrue(condition.id().isPresent(), "Condition should be persistent.");
 		Assert.notNull(condition.subject(), "CommercialSubjectItem should have a subject");
 		Assert.isTrue(condition.subject().id().isPresent(), "Subject should be persistent.");
-		
-		System.out.println(">>><" + commercialSubjectItem.subject());
 		this.id= new UUID(condition.subject().id().get(), condition.id().get()).toString();
 	}
 	
@@ -82,7 +81,7 @@ class CommercialSubjectItemConditionImpl {
 		Assert.notNull(value);
 		
 		try {
-			return BeanUtils.instantiateClass(InputValueImpl.class.getConstructor(value.getClass()), value);
+			return BeanUtils.instantiateClass(InputValueImpl.class.getDeclaredConstructor(value.getClass()), value);
 		} catch (final Exception ex) {
 			
 			throw new IllegalStateException(ex);

@@ -1,6 +1,7 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
+import java.util.Map.Entry;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
@@ -17,8 +18,10 @@ public interface CommercialSubjet extends  BasicEntity {
 
 	Collection<Subject> subjects();
 
-	Collection<Condition> conditions(final Subject subject);
+	<T> Collection<Entry<Condition, Collection<T>>> conditionValues(final Subject subject);
 
 	<T> void assign(Condition condition, T value);
+	
+	
 
 }

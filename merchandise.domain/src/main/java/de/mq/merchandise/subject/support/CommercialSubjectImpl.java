@@ -3,6 +3,7 @@ package de.mq.merchandise.subject.support;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,8 +20,6 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-
 
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -56,6 +55,11 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	private Collection<CommercialSubjectItem> items = new HashSet<>();
 	
 	
+	@SuppressWarnings("unused")
+	private CommercialSubjectImpl() {
+		
+	}
+	
 	CommercialSubjectImpl(final String name, final Customer customer){
 		this.name=name;
 		this.customer=customer;
@@ -84,11 +88,11 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	 * @see de.mq.merchandise.subject.support.CommercialSubjet#conditions(de.mq.merchandise.subject.Subject)
 	 */
 	@Override
-	public final Collection<Condition> conditions(final Subject subject) {
+	public final <T> Collection<Entry<Condition, Collection<T>>> conditionValues(final Subject subject) {
 		 Assert.notNull(subject);
 		 final Optional<CommercialSubjectItem> item = items.stream().filter(s -> s.subject().equals(subject)).findFirst();
 		 Assert.isTrue(item.isPresent(), "Subject is not assigned");
-		 return item.get().conditions();
+		 return item.get().conditionValues();
 	}
 	/*
 	 * (non-Javadoc)
@@ -161,6 +165,8 @@ class CommercialSubjectImpl implements CommercialSubjet {
 		
 		return  customer.equals(other.customer()) && name.equals(other.name());
 	}
+
+	
 
 
 }
