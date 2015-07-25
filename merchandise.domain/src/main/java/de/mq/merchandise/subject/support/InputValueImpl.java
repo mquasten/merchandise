@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-class InputValueImpl implements InputValue {
+class InputValueImpl  {
 	@Column(length = 50, name = "string_value")
 	private String stringValue;
 
@@ -34,12 +34,9 @@ class InputValueImpl implements InputValue {
 		this.stringValue = stringValue;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.InputValue#value()
-	 */
-	@Override
+	
 	@SuppressWarnings("unchecked")
-	public final <T> Optional<T> value() {
+	<T> Optional<T> value() {
 
 		if (doubleValue != null) {
 			return (Optional<T>) Optional.of(doubleValue);
@@ -87,7 +84,7 @@ class InputValueImpl implements InputValue {
 			return false;
 		}
 
-		final Optional<?> other = ((InputValue) obj).value();
+		final Optional<?> other = ((InputValueImpl) obj).value();
 		if (!other.isPresent()) {
 			return false;
 		}

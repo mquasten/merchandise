@@ -29,7 +29,7 @@ import de.mq.merchandise.subject.Subject;
 
 @Entity(name="commercial_subject_item")
 @Table(name="commercial_subject_item")
-class CommercialSubjectItemImpl implements CommercialSubjectItem {
+class CommercialSubjectItemImpl  {
 	
 	
 	@Id
@@ -80,19 +80,13 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 		this.mandatory=mandatory;
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#name()
-	 */
-	@Override
-	public final String name() {
+	
+	String name() {
 		return this.name;
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#mandatory()
-	 */
-	@Override
-	public final boolean mandatory() {
+
+	boolean mandatory() {
 		return this.mandatory;
 	}
 
@@ -140,29 +134,27 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	}
 
 	
-	/*
-	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#subject()
-	 */
-	@Override
-	public Subject subject() {
+	Subject subject() {
 		return this.subject;
 	}
 	
 	
-	@Override
-	public final <T>  Collection <Entry<Condition, Collection<T>>>conditionValues() {
+	<T>  Collection <Entry<Condition, Collection<T>>>conditionValues() {
 		return  Collections.unmodifiableSet(commercialSubjectItemConditions.stream().map(item -> new AbstractMap.SimpleEntry<Condition, Collection<T>>(item.condition(), item.values())).collect(Collectors.toSet()));
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#assign(java.lang.String, java.lang.Object)
-	 */
-	@Override
-	public <T> void  assign(final String conditionType, T value  ){
+	 <T> void  assign(final String conditionType, final T value  ){
+		commercialSubjectItemCondition(conditionType, value).get().assign(value);
+	}
+
+	private <T> Optional<CommercialSubjectItemConditionImpl> commercialSubjectItemCondition(final String conditionType, final T value) {
+		Assert.notNull(conditionType);
+		Assert.notNull(value);
 		final Optional<CommercialSubjectItemConditionImpl> result = commercialSubjectItemConditions.stream().filter(item -> item.condition().conditionType().equals(conditionType)).findFirst();
 	   Assert.isTrue(result.isPresent(), "CommercialSubjectItemCondition not assigned");
-	   result.get().assign(value);
+		return result;
 	}
+	 <T> void  remove(final String conditionType, final T value  ){
+		 commercialSubjectItemCondition(conditionType, value).get().remove(value);
+	 }
 
 }

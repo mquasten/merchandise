@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 
 
+
+
+
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
 import de.mq.merchandise.support.Mapper;

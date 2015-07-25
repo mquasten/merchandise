@@ -21,6 +21,10 @@ public interface CommercialSubjet extends  BasicEntity {
 	<T> Collection<Entry<Condition, Collection<T>>> conditionValues(final Subject subject);
 
 	<T> void assign(Condition condition, T value);
+
+	void remove(Subject subject);
+
+	<T> void remove(Condition condition, T value);
 	
 	
 

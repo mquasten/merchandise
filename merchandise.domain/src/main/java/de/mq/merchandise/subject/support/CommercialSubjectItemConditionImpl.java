@@ -21,11 +21,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
 import de.mq.merchandise.subject.Condition;
+import de.mq.merchandise.support.BasicEntity;
 
 @Entity(name="CommercialSubjectItemCondition")
 @Table(name="commercial_subject_item_condition")
 
-class CommercialSubjectItemConditionImpl {
+class CommercialSubjectItemConditionImpl implements BasicEntity {
 	
 
 	@Id
@@ -38,7 +39,7 @@ class CommercialSubjectItemConditionImpl {
 	@ManyToOne(targetEntity = CommercialSubjectItemImpl.class, optional = false, fetch = FetchType.LAZY )
 	@JoinColumn(name = "commercial_subject_item_id", referencedColumnName = "id", updatable = false, nullable = false)
 	@Valid
-	private CommercialSubjectItem commercialSubjectItem;
+	private CommercialSubjectItemImpl commercialSubjectItem;
 	
 	@NotNull(message="jsr303_mandatory")
 	@ManyToOne(targetEntity = ConditionImpl.class, optional = false, fetch = FetchType.LAZY )
@@ -49,7 +50,7 @@ class CommercialSubjectItemConditionImpl {
 	
 	@CollectionTable(name="input_values", joinColumns=@JoinColumn(name="commercial_subject_item_Condition_id") )
 	@ElementCollection(targetClass=InputValueImpl.class,fetch=FetchType.LAZY) 
-	private Collection<InputValue> inputValues = new ArrayList<>();  
+	private Collection<InputValueImpl> inputValues = new ArrayList<>();  
 	
 	@SuppressWarnings("unused")
 	private CommercialSubjectItemConditionImpl() {
@@ -57,7 +58,7 @@ class CommercialSubjectItemConditionImpl {
 	}
 	
 	
-	CommercialSubjectItemConditionImpl(final CommercialSubjectItem commercialSubjectItem, final Condition condition) {
+	CommercialSubjectItemConditionImpl(final CommercialSubjectItemImpl commercialSubjectItem, final Condition condition) {
 		this.commercialSubjectItem = commercialSubjectItem;
 		this.condition = condition;
 		Assert.isTrue(condition.id().isPresent(), "Condition should be persistent.");
@@ -77,7 +78,7 @@ class CommercialSubjectItemConditionImpl {
 	}
 
 
-	private <T> InputValue newInputValue(final T value) {
+	private <T> InputValueImpl newInputValue(final T value) {
 		Assert.notNull(value);
 		
 		try {
@@ -88,7 +89,7 @@ class CommercialSubjectItemConditionImpl {
 		}
 	}
 
-	void remove(final Double value) {
+	<T> void remove(final T value) {
 		inputValues.remove(newInputValue(value)); 
 	}
 
