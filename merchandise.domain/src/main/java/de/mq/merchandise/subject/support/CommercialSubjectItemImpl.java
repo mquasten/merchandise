@@ -29,7 +29,7 @@ import de.mq.merchandise.subject.Subject;
 
 @Entity(name="commercial_subject_item")
 @Table(name="commercial_subject_item")
-class CommercialSubjectItemImpl  {
+class CommercialSubjectItemImpl implements CommercialSubjectItem  {
 	
 	
 	@Id
@@ -81,12 +81,20 @@ class CommercialSubjectItemImpl  {
 	}
 	
 	
-	String name() {
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#name()
+	 */
+	@Override
+	public final String name() {
 		return this.name;
 	}
 	
 
-	boolean mandatory() {
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#mandatory()
+	 */
+	@Override
+	public final boolean mandatory() {
 		return this.mandatory;
 	}
 
@@ -134,15 +142,28 @@ class CommercialSubjectItemImpl  {
 	}
 
 	
-	Subject subject() {
+	/* (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#subject()
+	 */
+	@Override
+	public final Subject subject() {
 		return this.subject;
 	}
 	
-	
-	<T>  Collection <Entry<Condition, Collection<T>>>conditionValues() {
+	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#conditionValues()
+	 */
+	public final <T>  Collection <Entry<Condition, Collection<T>>>conditionValues() {
 		return  Collections.unmodifiableSet(commercialSubjectItemConditions.stream().map(item -> new AbstractMap.SimpleEntry<Condition, Collection<T>>(item.condition(), item.values())).collect(Collectors.toSet()));
 	}
-	 <T> void  assign(final String conditionType, final T value  ){
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#assign(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public final  <T> void  assign(final String conditionType, final T value  ){
 		commercialSubjectItemCondition(conditionType, value).get().assign(value);
 	}
 
@@ -153,7 +174,13 @@ class CommercialSubjectItemImpl  {
 	   Assert.isTrue(result.isPresent(), "CommercialSubjectItemCondition not assigned");
 		return result;
 	}
-	 <T> void  remove(final String conditionType, final T value  ){
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#remove(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public final <T> void  remove(final String conditionType, final T value  ){
 		 commercialSubjectItemCondition(conditionType, value).get().remove(value);
 	 }
 

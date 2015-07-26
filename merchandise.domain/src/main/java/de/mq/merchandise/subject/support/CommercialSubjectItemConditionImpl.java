@@ -39,7 +39,7 @@ class CommercialSubjectItemConditionImpl implements BasicEntity {
 	@ManyToOne(targetEntity = CommercialSubjectItemImpl.class, optional = false, fetch = FetchType.LAZY )
 	@JoinColumn(name = "commercial_subject_item_id", referencedColumnName = "id", updatable = false, nullable = false)
 	@Valid
-	private CommercialSubjectItemImpl commercialSubjectItem;
+	private CommercialSubjectItem commercialSubjectItem;
 	
 	@NotNull(message="jsr303_mandatory")
 	@ManyToOne(targetEntity = ConditionImpl.class, optional = false, fetch = FetchType.LAZY )
@@ -58,7 +58,7 @@ class CommercialSubjectItemConditionImpl implements BasicEntity {
 	}
 	
 	
-	CommercialSubjectItemConditionImpl(final CommercialSubjectItemImpl commercialSubjectItem, final Condition condition) {
+	CommercialSubjectItemConditionImpl(final CommercialSubjectItem commercialSubjectItem, final Condition condition) {
 		this.commercialSubjectItem = commercialSubjectItem;
 		this.condition = condition;
 		Assert.isTrue(condition.id().isPresent(), "Condition should be persistent.");

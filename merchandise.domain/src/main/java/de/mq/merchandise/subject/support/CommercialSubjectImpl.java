@@ -37,7 +37,7 @@ import de.mq.merchandise.support.Mapper;
 class CommercialSubjectImpl implements CommercialSubjet {
 	
 	@Transient
-	private final Mapper<CommercialSubjectItemImpl,CommercialSubjectItemImpl> mapper = new CommercialSubjectItemIntoCommercialSubjectItemMapperImpl();
+	private final Mapper<CommercialSubjectItem,CommercialSubjectItem> mapper = new CommercialSubjectItemIntoCommercialSubjectItemMapperImpl();
 	
 	@GeneratedValue
 	@Id
@@ -56,7 +56,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	private Customer customer;
 	
 	@OneToMany(mappedBy="commercialSubjet", targetEntity=CommercialSubjectItemImpl.class, fetch=FetchType.LAZY ,cascade={CascadeType.ALL} , orphanRemoval=true)
-	private Collection<CommercialSubjectItemImpl> items = new HashSet<>();
+	private Collection<CommercialSubjectItem> items = new HashSet<>();
 	
 	
 	@SuppressWarnings("unused")
@@ -78,7 +78,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	public final void assign(final Subject subject, final String name, final boolean mandatory ) {
 		Assert.notNull(subject);
 		Assert.notNull(name);
-		final Optional<CommercialSubjectItemImpl> existingItem = items.stream().filter(item -> item.subject().equals(subject)).findFirst();
+		final Optional<CommercialSubjectItem> existingItem = items.stream().filter(item -> item.subject().equals(subject)).findFirst();
 		if( existingItem.isPresent()) {
 			mapper.mapInto(new CommercialSubjectItemImpl(name, this, subject), existingItem.get());
 			return;
@@ -108,12 +108,32 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	
 	/*
 	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjet#commercialSubjectItems()
+	 */
+	@Override
+	public final Collection<CommercialSubjectItem> commercialSubjectItems() {
+		return Collections.unmodifiableCollection(items);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.CommercialSubjet#commercialSubjectItem(de.mq.merchandise.subject.Subject)
+	 */
+	@Override
+	public final Optional<CommercialSubjectItem> commercialSubjectItem(final Subject subject) {
+		Assert.notNull(subject);
+		return items.stream().filter(item -> subject.equals(item.subject())).findFirst();
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
 	 * @see de.mq.merchandise.subject.support.CommercialSubjet#conditions(de.mq.merchandise.subject.Subject)
 	 */
 	@Override
 	public final <T> Collection<Entry<Condition, Collection<T>>> conditionValues(final Subject subject) {
 		 Assert.notNull(subject);
-		 final Optional<CommercialSubjectItemImpl> item = items.stream().filter(s -> s.subject().equals(subject)).findFirst();
+		 final Optional<CommercialSubjectItem> item = items.stream().filter(s -> subject.equals( s.subject())).findFirst();
 		 Assert.isTrue(item.isPresent(), "Subject is not assigned");
 		 return item.get().conditionValues();
 	}
@@ -127,7 +147,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 		 Assert.notNull(condition.conditionType());
 		 Assert.notNull(condition.subject());
 		 Assert.notNull(value);
-		 final Optional<CommercialSubjectItemImpl> item = items.stream().filter(s -> s.subject().equals(condition.subject())).findFirst();
+		 final Optional<CommercialSubjectItem> item = items.stream().filter(s -> condition.subject().equals(s.subject())).findFirst();
 		 Assert.isTrue(item.isPresent(), "Subject is not assigned");
 		 
 		 item.get().assign(condition.conditionType(), value);
@@ -141,7 +161,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	public final <T> void remove(final Condition condition, final T value){
 		 Assert.notNull(condition);
 		 Assert.notNull(condition.subject());
-		 final Optional<CommercialSubjectItemImpl> item = items.stream().filter(s -> s.subject().equals(condition.subject())).findFirst();
+		 final Optional<CommercialSubjectItem> item = items.stream().filter(s -> condition.subject().equals( s.subject())).findFirst();
 		 Assert.isTrue(item.isPresent(), "Subject is not assigned");
 		 item.get().remove(condition.conditionType(), value);
 		 

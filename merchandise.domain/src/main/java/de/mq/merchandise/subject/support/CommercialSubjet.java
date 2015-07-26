@@ -2,6 +2,7 @@ package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
@@ -25,6 +26,10 @@ public interface CommercialSubjet extends  BasicEntity {
 	void remove(Subject subject);
 
 	<T> void remove(Condition condition, T value);
+
+	Collection<CommercialSubjectItem> commercialSubjectItems();
+
+	Optional<CommercialSubjectItem> commercialSubjectItem(Subject subject);
 	
 	
 
