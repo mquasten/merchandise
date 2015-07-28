@@ -53,7 +53,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem  {
 	@ManyToOne(targetEntity = CommercialSubjectImpl.class, optional = false, fetch = FetchType.LAZY )
 	@JoinColumn(name = "commercial_subject_id", referencedColumnName = "id", updatable = false, nullable = false)
 	@Valid
-	private CommercialSubjet commercialSubjet; 
+	private CommercialSubject commercialSubjet; 
 	
 	
 	
@@ -66,11 +66,11 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem  {
 		
 	}
 	
-	public CommercialSubjectItemImpl(final String name, final CommercialSubjet commercialSubjet, final Subject subject) {
+	public CommercialSubjectItemImpl(final String name, final CommercialSubject commercialSubjet, final Subject subject) {
 		this(name, commercialSubjet,subject, true);
 	}
 	
-	CommercialSubjectItemImpl(final String name, final CommercialSubjet commercialSubjet, final Subject subject, final boolean mandatory) {
+	CommercialSubjectItemImpl(final String name, final CommercialSubject commercialSubjet, final Subject subject, final boolean mandatory) {
 		Assert.isTrue(subject.id().isPresent());
 		this.id=new UUID(subject.id().get(), System.nanoTime() + (long) (1e12 * Math.random())).toString();
 		commercialSubjectItemConditions.addAll(subject.conditions().stream().map(c -> new CommercialSubjectItemConditionImpl(this, c)).collect(Collectors.toSet()));

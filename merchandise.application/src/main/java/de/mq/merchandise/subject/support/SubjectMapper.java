@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 public @interface SubjectMapper {
 	
 	public enum SubjectMapperType{
-		Subject2Subject, Customer2Subject, Condition2Subject
+		Subject2Subject, Customer2Subject, Condition2Subject,
+		CommercialSubject2QueryMap
 	}
 
 	

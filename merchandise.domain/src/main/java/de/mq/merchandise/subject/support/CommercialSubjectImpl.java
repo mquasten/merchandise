@@ -15,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -34,7 +36,11 @@ import de.mq.merchandise.support.Mapper;
 
 @Entity(name="CommercialSubject")
 @Table(name="commercial_subject")
-class CommercialSubjectImpl implements CommercialSubjet {
+@NamedQueries({
+	@NamedQuery(name= CommercialSubjectRepository.COMMERCIAL_SUBJECT_BY_CRITERIA, query="Select  distinct cm from CommercialSubject cm left join  cm.items i  left join i.subject s  left join cm.customer c" )
+	
+})
+class CommercialSubjectImpl implements CommercialSubject {
 	
 	@Transient
 	private final Mapper<CommercialSubjectItem,CommercialSubjectItem> mapper = new CommercialSubjectItemIntoCommercialSubjectItemMapperImpl();
@@ -72,7 +78,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjet#assign(de.mq.merchandise.subject.Subject, java.lang.String, boolean)
+	 * @see de.mq.merchandise.subject.support.CommercialSubject#assign(de.mq.merchandise.subject.Subject, java.lang.String, boolean)
 	 */
 	@Override
 	public final void assign(final Subject subject, final String name, final boolean mandatory ) {
@@ -87,7 +93,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	}
 	/*
 	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjet#remove(de.mq.merchandise.subject.Subject)
+	 * @see de.mq.merchandise.subject.support.CommercialSubject#remove(de.mq.merchandise.subject.Subject)
 	 */
 	@Override
 	public final void remove(final Subject subject) {
@@ -99,7 +105,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjet#subjects()
+	 * @see de.mq.merchandise.subject.support.CommercialSubject#subjects()
 	 */
 	@Override
 	public final Collection<Subject> subjects() {
@@ -108,7 +114,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjet#commercialSubjectItems()
+	 * @see de.mq.merchandise.subject.support.CommercialSubject#commercialSubjectItems()
 	 */
 	@Override
 	public final Collection<CommercialSubjectItem> commercialSubjectItems() {
@@ -117,7 +123,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjet#commercialSubjectItem(de.mq.merchandise.subject.Subject)
+	 * @see de.mq.merchandise.subject.support.CommercialSubject#commercialSubjectItem(de.mq.merchandise.subject.Subject)
 	 */
 	@Override
 	public final Optional<CommercialSubjectItem> commercialSubjectItem(final Subject subject) {
@@ -128,7 +134,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjet#conditions(de.mq.merchandise.subject.Subject)
+	 * @see de.mq.merchandise.subject.support.CommercialSubject#conditions(de.mq.merchandise.subject.Subject)
 	 */
 	@Override
 	public final <T> Collection<Entry<Condition, Collection<T>>> conditionValues(final Subject subject) {
@@ -139,7 +145,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	}
 	/*
 	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjet#assign(de.mq.merchandise.subject.Condition, java.lang.Object)
+	 * @see de.mq.merchandise.subject.support.CommercialSubject#assign(de.mq.merchandise.subject.Condition, java.lang.Object)
 	 */
 	@Override
 	public final <T> void assign(final Condition condition, final T value){
@@ -155,7 +161,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	}
 	/*
 	 * (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjet#remove(de.mq.merchandise.subject.Condition, java.lang.Object)
+	 * @see de.mq.merchandise.subject.support.CommercialSubject#remove(de.mq.merchandise.subject.Condition, java.lang.Object)
 	 */
 	@Override
 	public final <T> void remove(final Condition condition, final T value){
@@ -168,7 +174,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjet#customer()
+	 * @see de.mq.merchandise.subject.support.CommercialSubject#customer()
 	 */
 	@Override
 	public final Customer customer() {
@@ -176,7 +182,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.mq.merchandise.subject.support.CommercialSubjet#name()
+	 * @see de.mq.merchandise.subject.support.CommercialSubject#name()
 	 */
 	@Override
 	public final String name() {
@@ -195,7 +201,7 @@ class CommercialSubjectImpl implements CommercialSubjet {
 		return customer.hashCode() + name.hashCode();
 	}
 
-	private boolean  valid(CommercialSubjet subject) {
+	private boolean  valid(CommercialSubject subject) {
 		if( subject.customer() == null){
 			return false;
 		}

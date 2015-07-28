@@ -69,7 +69,7 @@ public class CommercialSubjectIntegrationTest {
 		final Long id = entityManager.merge(newSubject).id().get();
 		final Subject subject = entityManager.find(SubjectImpl.class, id);
 
-		final CommercialSubjet commercialSubjet = new CommercialSubjectImpl("Platinum Escort", customer);
+		final CommercialSubject commercialSubjet = new CommercialSubjectImpl("Platinum Escort", customer);
 
 		commercialSubjet.assign(subject, "escort service", true);
 		commercialSubjet.assign(subject.condition(CONDITION_QUALITY), CONDITION_QUALITY_VALUE);
@@ -84,7 +84,7 @@ public class CommercialSubjectIntegrationTest {
 		waste.add(new AbstractMap.SimpleEntry<>(customer.id().get(), customer.getClass()));
 		entityManager.flush();
 
-		final CommercialSubjet result = entityManager.find(CommercialSubjectImpl.class, commercialSubjet.id().get());
+		final CommercialSubject result = entityManager.find(CommercialSubjectImpl.class, commercialSubjet.id().get());
 		entityManager.refresh(result);
 		result.conditionValues(subject).forEach(e -> {
 			Assert.assertEquals(subject.condition(e.getKey().conditionType()).id().get(), e.getKey().id().get());
@@ -109,7 +109,7 @@ public class CommercialSubjectIntegrationTest {
 		
 		final String ql = "Select  distinct cm from CommercialSubject cm left join  cm.items i  left join i.subject s  left join cm.customer c where s.name like 'Dolls%' and i.name like 'escort%' and c.id = 1 ";
 		
-		TypedQuery<CommercialSubjet> query = entityManager.createQuery(ql, CommercialSubjet.class);
+		TypedQuery<CommercialSubject> query = entityManager.createQuery(ql, CommercialSubject.class);
 		
 		System.out.println(">>>" + query.getResultList());
 

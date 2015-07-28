@@ -9,7 +9,7 @@ import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.support.BasicEntity;
 
-public interface CommercialSubjet extends  BasicEntity {
+public interface CommercialSubject extends  BasicEntity {
 
 	Customer customer();
 
