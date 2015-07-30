@@ -12,7 +12,7 @@ import de.mq.merchandise.support.Mapper;
 
 
 @Component
-@SubjectMapper(SubjectMapperType.Customer2Subject)
+@SubjectMapper(SubjectMapperType.CommercialSubject2QueryMap)
 class CommercialSubjectToQueryMapper implements Mapper<CommercialSubject,Map<String,Object>> {
 
 	static final String CUSTOMER_ID_NAME = "customerId";

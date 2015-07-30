@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+
 
 import junit.framework.Assert;
 
@@ -107,11 +107,7 @@ public class CommercialSubjectIntegrationTest {
 		});
 		
 		
-		final String ql = "Select  distinct cm from CommercialSubject cm left join  cm.items i  left join i.subject s  left join cm.customer c where s.name like 'Dolls%' and i.name like 'escort%' and c.id = 1 ";
-		
-		TypedQuery<CommercialSubject> query = entityManager.createQuery(ql, CommercialSubject.class);
-		
-		System.out.println(">>>" + query.getResultList());
+	
 
 	}
 
