@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.support.Mapper;
 
 public class CommercialSubjectServiceImpl {
@@ -21,10 +22,10 @@ public class CommercialSubjectServiceImpl {
 	}
 
 	@Transactional(readOnly=true)
-	public final Collection<CommercialSubject>commercialSubjects(final CommercialSubject commercialSubject  ) {
+	public final Collection<CommercialSubject>commercialSubjects(final CommercialSubject commercialSubject, final ResultNavigation resultNavigation  ) {
 		final Map<String,Object> queryMap = new HashMap<>();
 		mapper.mapInto(commercialSubject, queryMap);
-		return Collections.unmodifiableCollection(commercialSubjectRepository.forCriteria(queryMap));
+		return Collections.unmodifiableCollection(commercialSubjectRepository.commercialSubjectsForCustomer(queryMap,resultNavigation));
 		
 	}
 

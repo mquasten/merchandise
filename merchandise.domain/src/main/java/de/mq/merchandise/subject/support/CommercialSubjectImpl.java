@@ -37,7 +37,7 @@ import de.mq.merchandise.support.Mapper;
 @Entity(name="CommercialSubject")
 @Table(name="commercial_subject")
 @NamedQueries({
-	@NamedQuery(name= CommercialSubjectRepository.COMMERCIAL_SUBJECT_BY_CRITERIA, query="Select  distinct cm from CommercialSubject cm left join  cm.items i  left join i.subject s  left join cm.customer c where COALESCE(cm.name, '') like :name and COALESCE(i.name, '') like :itemName and COALESCE(s.name, '') like :subjectName and  COALESCE(s.description, '') like :subjectDescription and c.id = customerId" )
+	@NamedQuery(name= CommercialSubjectRepository.COMMERCIAL_SUBJECT_BY_CRITERIA, query="Select  distinct  cm from CommercialSubject cm left join fetch  cm.items i  left join fetch i.subject  s  left join  fetch cm.customer c where COALESCE(cm.name, '') like :"+CommercialSubjectRepository.NAME_PARAM+  " and COALESCE(i.name, '') like :" +CommercialSubjectRepository.ITEM_NAME_PARAM +  " and COALESCE(s.name, '') like :" +CommercialSubjectRepository.SUBJECT_NAME_PARAM+  " and  COALESCE(s.description, '') like :" +CommercialSubjectRepository.SUBJECT_DESCRIPTION_PARAM+ " and c.id = :"  +CommercialSubjectRepository.CUSTOMER_ID_PARAM )
 	
 })
 class CommercialSubjectImpl implements CommercialSubject {

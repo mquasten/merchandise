@@ -3,6 +3,7 @@ package de.mq.merchandise.subject.support;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +16,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.subject.Subject;
@@ -114,11 +119,22 @@ public class CommercialSubjectRepositoryIntegrationTest {
 	@Rollback(false)
 	@Transactional()
 	public final void commercialSubjects() {
+		final ResultNavigation paging = Mockito.mock(ResultNavigation.class);
+		Mockito.when(paging.firstRow()).thenReturn(Integer.valueOf(0));
+		Mockito.when(paging.pageSize()).thenReturn(Integer.valueOf(25));
+		final List<Order> orders = new ArrayList<>();
+		orders.add(new Order(Direction.ASC, "s.name"));
+		orders.add(new Order(Direction.ASC, "id"));
+		
+		Mockito.when(paging.orders()).thenReturn(orders);
 		Customer customer = entityManager.find(CustomerImpl.class, 1L);
 		entityManager.flush();
 		System.out.println(">>>" + mapper);
 		System.out.println("***");
-		System.out.println(commercialSubjectRepository.forCriteria(mapper.mapInto(new CommercialSubjectImpl("Nicole", customer), new HashMap<>())));
+		final Collection<CommercialSubject> results = commercialSubjectRepository.commercialSubjectsForCustomer(mapper.mapInto(new CommercialSubjectImpl("%le", customer), new HashMap<>()), paging);
+	
+	   System.out.println(results.size());
+	   results.forEach(result -> System.out.println(result.name()));
 	}
 
 }

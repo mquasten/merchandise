@@ -79,7 +79,7 @@ public class SubjectRepositoryIntegrationTest {
 		Mockito.when(subject.customer()).thenReturn(customer);
 		
 		Mockito.when(subject.name()).thenReturn(SUBJECT_NAME);
-		ResultNavigation paging = Mockito.mock(ResultNavigation.class);
+		final ResultNavigation paging = Mockito.mock(ResultNavigation.class);
 		Mockito.when(paging.firstRow()).thenReturn(Integer.valueOf(0));
 		Mockito.when(paging.pageSize()).thenReturn(Integer.valueOf(25));
 		final Collection<Subject> results = subjectRepository.subjectsForCustomer(subject, paging);
