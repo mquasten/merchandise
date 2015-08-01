@@ -16,8 +16,7 @@ import de.mq.merchandise.ResultNavigation;
 
 
 @Repository
-class CommercialSubjectRepositoryImpl implements CommercialSubjectRepository {
-	
+ class CommercialSubjectRepositoryImpl implements CommercialSubjectRepository {
 	
 	private final Collection<String> params = Arrays.asList(CUSTOMER_ID_PARAM, SUBJECT_DESCRIPTION_PARAM, SUBJECT_NAME_PARAM, ITEM_NAME_PARAM ,NAME_PARAM);
 	
@@ -26,18 +25,18 @@ class CommercialSubjectRepositoryImpl implements CommercialSubjectRepository {
 	
 	@Override
 	public final Collection<CommercialSubject> commercialSubjectsForCustomer(final Map<String,Object> criteria, final ResultNavigation resultNavigation) {
-		final TypedQuery<CommercialSubject> query  = typedQuery(resultNavigation.orders());
+		final TypedQuery<CommercialSubject> query  = entityManager.createQuery(typedQuery(resultNavigation.orders()), CommercialSubject.class);
 		
 		params.forEach(param -> query.setParameter(param, criteria.get(param)));
 		
-		query.setFirstResult(resultNavigation.firstRow().intValue());
+		query.setFirstResult(resultNavigation.firstRow() .intValue());
 		query.setMaxResults(resultNavigation.pageSize().intValue());
 		return Collections.unmodifiableList(query.getResultList());
 		
 	}
 	
 	
-	private TypedQuery<CommercialSubject> typedQuery(Collection<Order> orders) {
+	private String typedQuery(Collection<Order> orders) {
 
 		final StringBuilder builder = new StringBuilder();
 
@@ -55,8 +54,7 @@ class CommercialSubjectRepositoryImpl implements CommercialSubjectRepository {
 			jpaString += " order by " + builder.toString();
 		}
 
-		final TypedQuery<CommercialSubject> query = entityManager.createQuery(jpaString, CommercialSubject.class);
-		return query;
+		return jpaString;
 	}
 
 
