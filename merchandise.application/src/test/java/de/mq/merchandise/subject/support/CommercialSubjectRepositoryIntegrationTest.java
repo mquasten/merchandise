@@ -16,6 +16,7 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -36,11 +37,13 @@ import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
 import de.mq.merchandise.support.Mapper;
 
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/repositories.xml" })
 public class CommercialSubjectRepositoryIntegrationTest {
 	
 	
+	private static final long CUSTOMER_ID = 1L;
 	private static final String ID_FIELD = "id";
 	private static final String NAME_FIELD = "name";
 	private static final String NAME = "Dolls4You";
@@ -63,13 +66,7 @@ public class CommercialSubjectRepositoryIntegrationTest {
 	
 	@Before
 	public final void setup() {
-		
-
-		
 		create();
-	
-		
-
 	}
 
 	@After
@@ -135,12 +132,12 @@ public class CommercialSubjectRepositoryIntegrationTest {
 		orders.add(new Order(Direction.ASC, ID_FIELD));
 		
 		Mockito.when(paging.orders()).thenReturn(orders);
-		Customer customer = entityManager.find(CustomerImpl.class, 1L);
+		final Customer customer = entityManager.find(CustomerImpl.class, 1L);
 		entityManager.flush();
 	
 		
-		CommercialSubjectImpl commercialSubject = new CommercialSubjectImpl("", customer);
-		Subject subject =  BeanUtils.instantiateClass(SubjectImpl.class);
+		final CommercialSubjectImpl commercialSubject = new CommercialSubjectImpl("", customer);
+		final Subject subject =  BeanUtils.instantiateClass(SubjectImpl.class);
 		ReflectionTestUtils.setField(subject, ID_FIELD, -1L);
 		ReflectionTestUtils.setField(subject, NAME_FIELD, SUBJECT_NAME);
 		commercialSubject.assign(subject, RESULT , true);
@@ -150,6 +147,20 @@ public class CommercialSubjectRepositoryIntegrationTest {
 	   Assert.assertEquals(1, results.size());
 	   Assert.assertTrue(results.stream().findFirst().isPresent());
 	   Assert.assertEquals(RESULT, results.stream().findFirst().get().name());
+	}
+	
+	@Test()
+	@Rollback(false)
+	@Transactional()
+	public final void countCommercialSubjects() {
+		final Customer customer = entityManager.find(CustomerImpl.class, CUSTOMER_ID);
+		CommercialSubjectImpl commercialSubject = new CommercialSubjectImpl("", customer);
+		final Subject subject =  BeanUtils.instantiateClass(SubjectImpl.class);
+		ReflectionTestUtils.setField(subject, ID_FIELD, -1L);
+		ReflectionTestUtils.setField(subject, NAME_FIELD, SUBJECT_NAME);
+		commercialSubject.assign(subject, RESULT , true);
+		
+		Assert.assertEquals(1, commercialSubjectRepository.countCommercialSubjectsForCustomer(mapper.mapInto(commercialSubject, new HashMap<>())).intValue());
 	}
 
 }

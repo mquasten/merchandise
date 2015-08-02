@@ -37,7 +37,7 @@ class SubjectRepositoryImpl implements SubjectRepository {
 	@Transactional
 	public final void save(final Subject subject) {
 		final Optional<Long> id = entityManager.merge(subject).id();
-		Assert.isTrue(id.isPresent(), " Id must be set, after save");
+		Assert.isTrue(id.isPresent(), "Id must be set, after save");
 		ReflectionUtils.doWithFields(subject.getClass(), field -> {
 			field.setAccessible(true);
 			ReflectionUtils.setField(field, subject, id.get());

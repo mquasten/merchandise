@@ -10,10 +10,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 
+
 import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -27,6 +29,7 @@ import de.mq.merchandise.subject.Subject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/emf.xml" })
+@Ignore
 public class CommercialSubjectIntegrationTest {
 
 	private static final String CONDITION_QUANTITY = "Quantity";

@@ -20,4 +20,16 @@ interface CommercialSubjectRepository {
 
 	Collection<CommercialSubject> commercialSubjectsForCustomer(final Map<String,Object> criteria, final ResultNavigation resultNavigation);
 
+
+	Number countCommercialSubjectsForCustomer(final Map<String, Object> queryMap);
+
+
+	void save(final CommercialSubject commercialSubject);
+
+
+	CommercialSubject commercialSubject(Long id);
+
+
+	void remove(final CommercialSubject commercialSubject);
+
 }
