@@ -68,7 +68,7 @@ class CommercialSubjectItemConditionImpl implements BasicEntity {
 	}
 	
 	@SuppressWarnings("unchecked")
-	final <T> Collection<T> values() {
+	final  <T> Collection<T> values() {
 		return Collections.unmodifiableCollection((Collection<T>) inputValues.stream().filter(iv ->  iv.value().isPresent() ).map(iv ->  iv.value().get()).collect(Collectors.toList()));
 	}
 	
