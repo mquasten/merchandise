@@ -10,9 +10,11 @@ interface CommercialSubjectItem {
 
 	String name();
 
-	 boolean mandatory();
+	boolean mandatory();
 
 	Subject subject();
+
+	CommercialSubject commercialSubject();
 
 	<T> Collection<Entry<Condition, Collection<T>>> conditionValues();
 
