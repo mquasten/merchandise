@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -13,7 +14,8 @@ import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.support.Mapper;
 
 @Transactional(readOnly=true)
-public class CommercialSubjectServiceImpl implements CommercialSubjectService {
+@Service
+class CommercialSubjectServiceImpl implements CommercialSubjectService {
 	
 	private final Mapper<CommercialSubject,Map<String,Object>>  mapper;
 	
@@ -36,8 +38,8 @@ public class CommercialSubjectServiceImpl implements CommercialSubjectService {
 
 	private Map<String, Object> queryMap(final CommercialSubject commercialSubject) {
 		final Map<String,Object> queryMap = new HashMap<>();
-		mapper.mapInto(commercialSubject, queryMap);
-		return queryMap;
+		return mapper.mapInto(commercialSubject, queryMap);
+		
 	}
 	
 	/* (non-Javadoc)
