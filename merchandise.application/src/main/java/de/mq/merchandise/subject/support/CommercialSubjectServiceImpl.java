@@ -48,7 +48,9 @@ class CommercialSubjectServiceImpl implements CommercialSubjectService {
 	@Override
 	@Transactional(readOnly=true)
 	public final Number commercialSubjects(final CommercialSubject commercialSubject) {
-		return commercialSubjectRepository.countCommercialSubjectsForCustomer(queryMap(commercialSubject));
+		final Number counter = commercialSubjectRepository.countCommercialSubjectsForCustomer(queryMap(commercialSubject));
+		Assert.notNull(counter);
+		return counter;
 	}
 	
 	/* (non-Javadoc)
