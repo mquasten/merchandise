@@ -72,6 +72,7 @@ class CommercialSubjectRepositoryImpl implements CommercialSubjectRepository {
 	@Override
 	public final Number countCommercialSubjectsForCustomer(Map<String, Object> criteria) {
 		Assert.notNull(criteria, "CriteriaMap is mandatory");
+	
 		final TypedQuery<Number> countQuery = entityManager.createQuery(entityManager.createNamedQuery(COMMERCIAL_SUBJECT_BY_CRITERIA, CommercialSubject.class).unwrap(org.hibernate.Query.class).getQueryString().replaceFirst("distinct[ ]+cs", "count(distinct cs)"), Number.class);
 		params.forEach(param -> countQuery.setParameter(param, criteria.get(param)));
 		return countQuery.getSingleResult();
@@ -89,7 +90,7 @@ class CommercialSubjectRepositoryImpl implements CommercialSubjectRepository {
 
 		ReflectionUtils.doWithFields(commercialSubject.getClass(), field -> {
 			field.setAccessible(true);
-			ReflectionUtils.setField(field, commercialSubject, id);
+			ReflectionUtils.setField(field, commercialSubject, id.get());
 		}, field -> field.isAnnotationPresent(Id.class));
 
 	}
@@ -107,7 +108,7 @@ class CommercialSubjectRepositoryImpl implements CommercialSubjectRepository {
 	 * @see de.mq.merchandise.subject.support.CommercialSubjectRepository#remove(de.mq.merchandise.subject.support.CommercialSubject)
 	 */
 	@Override
-	public final void remove(CommercialSubject commercialSubject) {
+	public final void remove(final CommercialSubject commercialSubject) {
 		Assert.notNull(commercialSubject, "CommercialSubject is mandatory");
 		if( ! commercialSubject.id().isPresent() ) {
 			return;
