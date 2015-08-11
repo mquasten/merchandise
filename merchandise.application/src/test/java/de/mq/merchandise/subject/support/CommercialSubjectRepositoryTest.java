@@ -89,6 +89,25 @@ public class CommercialSubjectRepositoryTest {
 	
 	
 	@Test
+	public final void commercialSubjectsForCustomerWithoutOrders() {
+		Mockito.when(resultNavigation.orders()).thenReturn(new ArrayList<>());
+		org.hibernate.Query query = Mockito.mock(org.hibernate.Query.class);
+		Mockito.when(typedQuery.unwrap(org.hibernate.Query.class)).thenReturn(query);
+		Mockito.when(query.getQueryString()).thenReturn(NAMED_QUERY_TEXT);
+		Mockito.when(entityManager.createNamedQuery(CommercialSubjectRepository.COMMERCIAL_SUBJECT_BY_CRITERIA, CommercialSubject.class)).thenReturn(typedQuery);
+		Mockito.when(entityManager.createQuery(NAMED_QUERY_TEXT,  CommercialSubject.class)).thenReturn(typedQuery);
+	
+		commercialSubjectRepository.commercialSubjectsForCustomer(criteria, resultNavigation);
+		
+		Mockito.verify(entityManager).createQuery(NAMED_QUERY_TEXT, CommercialSubject.class);
+		Mockito.verify(typedQuery).setParameter(NAME_FIELD, NAME_FIELD_VALUE);
+		Mockito.verify(typedQuery).setFirstResult(FIRST_PAGE);
+		Mockito.verify(typedQuery).setMaxResults(PAGE_SIZE);
+		
+	}
+	
+	
+	@Test
 	public final void  countCommercialSubjectsForCustomer() {
 		@SuppressWarnings("unchecked")
 		final TypedQuery<Number> counterQuery = Mockito.mock(TypedQuery.class);

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ class CommercialSubjectServiceImpl implements CommercialSubjectService {
 	
 	private final CommercialSubjectRepository commercialSubjectRepository;
 	
+	@Autowired
 	public CommercialSubjectServiceImpl(final CommercialSubjectRepository commercialSubjectRepository, final Mapper<CommercialSubject, Map<String, Object>> mapper) {
 		this.commercialSubjectRepository=commercialSubjectRepository;
 		this.mapper = mapper;
