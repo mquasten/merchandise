@@ -15,6 +15,8 @@ import de.mq.merchandise.support.Mapper;
 @SubjectMapper(SubjectMapperType.CommercialSubject2QueryMap)
 class CommercialSubjectToQueryMapper implements Mapper<CommercialSubject,Map<String,Object>> {
 
+	static final long NOT_EXISTING_ID = -1L;
+
 	final static String WILDCARD_PATTERN = "%";
 	
 	final static  String SEARCH_PATTERN = "%s%"+WILDCARD_PATTERN;
@@ -27,8 +29,8 @@ class CommercialSubjectToQueryMapper implements Mapper<CommercialSubject,Map<Str
 		target.put(CommercialSubjectRepository.SUBJECT_DESCRIPTION_PARAM, WILDCARD_PATTERN);
 		target.put(CommercialSubjectRepository.SUBJECT_ID_PARAM, WILDCARD_PATTERN);
 		target.put(CommercialSubjectRepository.CUSTOMER_NAME_PARAM, WILDCARD_PATTERN);
-		target.put(CommercialSubjectRepository.SUBJECT_ID_PARAM, "-1");
-		target.put(CommercialSubjectRepository.CUSTOMER_ID_PARAM, "-1");
+		target.put(CommercialSubjectRepository.SUBJECT_ID_PARAM, NOT_EXISTING_ID);
+		target.put(CommercialSubjectRepository.CUSTOMER_ID_PARAM, NOT_EXISTING_ID);
 		
 		if( StringUtils.hasText(source.name())) {
 			target.put(CommercialSubjectRepository.NAME_PARAM, String.format(SEARCH_PATTERN, source.name()));
