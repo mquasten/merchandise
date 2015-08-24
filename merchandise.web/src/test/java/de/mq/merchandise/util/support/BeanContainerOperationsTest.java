@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
+import org.springframework.web.util.UriUtils;
 
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.support.BeanContainerOperations.BeanFilter;
@@ -43,6 +44,7 @@ public class BeanContainerOperationsTest {
 		final Collection<Subject> results = (Collection<Subject>) beanContainerOperations.beansForFilter(beanFilter);
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals(subject, results.stream().findFirst().get());
+		
 	}
 
 	@Test

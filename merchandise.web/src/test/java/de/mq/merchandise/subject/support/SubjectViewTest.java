@@ -81,9 +81,11 @@ public class SubjectViewTest {
 	private final Converter<Condition, Item> conditionToItemConverter = Mockito.mock(Converter.class);
 	@SuppressWarnings("unchecked")
 	private final Converter<Collection<Condition>, Container> conditionToContainerConverter = Mockito.mock(Converter.class);
+	
+	private MainMenuBarView mainMenuBarView = Mockito.mock(MainMenuBarView.class);
 
 	private ValidationUtil validationUtil = Mockito.mock(ValidationUtil.class);
-	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter, conditionToItemConverter, itemToConditionConverter, validationUtil);
+	private final SubjectViewImpl subjectView = new SubjectViewImpl(itemToSubjectConverter, subjectToItemConverter, lazyQueryContainer, subjectItem, subjectModel, userModel, messageSource, conditionToContainerConverter, conditionToItemConverter, itemToConditionConverter, validationUtil, mainMenuBarView);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private final ArgumentCaptor<Observer<UserModel.EventType>> localChangedObserverCapture = (ArgumentCaptor) ArgumentCaptor.forClass(Observer.class);

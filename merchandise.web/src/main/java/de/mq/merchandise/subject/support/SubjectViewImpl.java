@@ -89,9 +89,11 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	private final Converter<Item, Condition> itemToConditionConverter;
 
 	private final ValidationUtil validationUtil;
+	
+	private final MainMenuBarView mainMenuBarView;
 
 	@Autowired
-	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter, final @SubjectModelQualifier(SubjectModelQualifier.Type.ItemToConditionConverter) Converter<Item, Condition> itemToConditionConverter, final ValidationUtil validationUtil) {
+	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter, final @SubjectModelQualifier(SubjectModelQualifier.Type.ItemToConditionConverter) Converter<Item, Condition> itemToConditionConverter, final ValidationUtil validationUtil, final MainMenuBarView mainMenuBarView) {
 
 		this.itemToSubjectMapper = itemToSubjectConverter;
 		this.subjectToItemConverter = subjectToItemConverter;
@@ -104,6 +106,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		this.conditionToContainerConverter = conditionToContainerConverter;
 		this.conditionToItemConverter = conditionToItemConverter;
 		this.validationUtil = validationUtil;
+		this.mainMenuBarView=mainMenuBarView;
 	}
 
 	private void initLayout() {
@@ -115,6 +118,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		setCompositionRoot(splitPanel);
 
 		final VerticalLayout leftLayout = new VerticalLayout();
+		leftLayout.addComponent(mainMenuBarView);
+	
 
 		final TextField searchName = new TextField();
 		final TextField searchDescription = new TextField();
