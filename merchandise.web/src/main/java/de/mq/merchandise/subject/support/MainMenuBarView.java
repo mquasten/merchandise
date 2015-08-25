@@ -15,6 +15,8 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+import de.mq.merchandise.util.support.ViewNav;
+
 
 
 
@@ -31,20 +33,24 @@ public class MainMenuBarView extends CustomComponent {
 
 	
 	private final MessageSource messageSource;
-	final UserModel userModel;
+	private final UserModel userModel;
+	
+	private final ViewNav viewNav;
 
 	
 	@Autowired
-	MainMenuBarView(final UserModel userModel, final MessageSource messageSource) {
+	MainMenuBarView(final UserModel userModel, final MessageSource messageSource, final ViewNav viewNav) {
 		this.userModel=userModel;
 		this.messageSource = messageSource;
+		this.viewNav=viewNav;
 	}
 
 	@PostConstruct
 	void init() {
-	
+
 		setLocale(userModel.getLocale());
 		final MenuBar menubar = new MenuBar();
+	
 		menubar.setStyleName(ValoTheme.BUTTON_BORDERLESS);
 		
 		setCompositionRoot(menubar);
@@ -68,12 +74,12 @@ public class MainMenuBarView extends CustomComponent {
 	
 		userModel.register(event -> {
 
-			menubar.removeItems();
+		 menubar.removeItems();
 			
 			final MenuItem settings = menubar.addItem(getString("menu_product"), null);
 		
-			settings.addItem(getString("menu_product_template"), item -> System.out.println("template"));
-			settings.addItem(getString("menu_product_definition"), item ->  System.out.println("definition"));
+			settings.addItem(getString("menu_product_template"), item -> viewNav.navigateTo(SubjectViewImpl.class));
+			settings.addItem(getString("menu_product_definition"), item -> viewNav.navigateTo(CommercialSubjectViewImpl.class));
 		
 			
 

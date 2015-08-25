@@ -40,6 +40,7 @@ import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.ValidationUtil;
 import de.mq.merchandise.util.support.RefreshableContainer;
 
+
 @Component
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 public class SubjectViewImpl extends CustomComponent implements View {
@@ -91,6 +92,8 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	private final ValidationUtil validationUtil;
 	
 	private final MainMenuBarView mainMenuBarView;
+	
+	
 
 	@Autowired
 	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter, final @SubjectModelQualifier(SubjectModelQualifier.Type.ItemToConditionConverter) Converter<Item, Condition> itemToConditionConverter, final ValidationUtil validationUtil, final MainMenuBarView mainMenuBarView) {
@@ -107,6 +110,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 		this.conditionToItemConverter = conditionToItemConverter;
 		this.validationUtil = validationUtil;
 		this.mainMenuBarView=mainMenuBarView;
+	
 	}
 
 	private void initLayout() {
@@ -451,6 +455,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 	@PostConstruct
 	void init() {
+		System.out.println("gut");
 		subjectModel.setCustomer(userModel.getCustomer());
 		initLayout();
 

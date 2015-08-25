@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.View;
 
+
 import de.mq.merchandise.subject.support.SubjectViewImpl;
 import de.mq.merchandise.util.support.AbstractUIBeanInjector;
 import de.mq.merchandise.util.support.VaadinTemplate;
@@ -21,6 +22,8 @@ public class StartViewImpl extends AbstractUIBeanInjector {
 	@Autowired
 	private SubjectViewImpl subjectView;
 	
+	
+	
 	@Autowired
 	private Collection<View> views ; 
 	@Autowired
@@ -30,6 +33,8 @@ public class StartViewImpl extends AbstractUIBeanInjector {
 	@Override
 	protected void init() {
 		viewNav.create(subjectView, views, new VaadinTemplate(getCurrent()));
+		
+		
 	}
 
 }
