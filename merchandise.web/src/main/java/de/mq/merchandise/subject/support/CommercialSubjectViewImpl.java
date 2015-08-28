@@ -10,13 +10,11 @@ import org.springframework.stereotype.Component;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-import de.mq.merchandise.subject.support.UserModel.EventType;
 import de.mq.merchandise.util.support.ViewNav;
 
 
@@ -33,15 +31,13 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 
 	
 
-	MainMenuBarView mainMenuBarView;
-	final UserModel userModel;
+	private final MainMenuBarView mainMenuBarView;
+
 	
 	
 	@Autowired
-	CommercialSubjectViewImpl( final UserModel userModel, MessageSource messageSource, ViewNav viewNav) {
-		this.mainMenuBarView = new MainMenuBarView(userModel, messageSource, viewNav);
-		mainMenuBarView.init();
-		this.userModel=userModel;
+	CommercialSubjectViewImpl(final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView ) {
+		this.mainMenuBarView = mainMenuBarView;
 	}
 
 	/*
@@ -51,9 +47,7 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 	private void initLayout() {
 
 		
-		System.out.println("fuck");
 		
-
 		final HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
 
 		splitPanel.setSplitPosition(64, Unit.PERCENTAGE);
@@ -61,7 +55,7 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 		setCompositionRoot(splitPanel);
 
 		final VerticalLayout leftLayout = new VerticalLayout();
-		userModel.notifyObservers(EventType.LocaleChanged);
+	
 		leftLayout.addComponent(mainMenuBarView);
 		
 		splitPanel.addComponent(leftLayout);
@@ -80,10 +74,7 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 
 
 	@PostConstruct
-	void init() {
-	System.out.println("***************************************");
-		userModel.notifyObservers(EventType.LocaleChanged);
-	
+	void init() {	
 		initLayout();
 		
 		

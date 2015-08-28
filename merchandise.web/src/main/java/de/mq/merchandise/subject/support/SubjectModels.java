@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -25,6 +26,7 @@ import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.support.ItemToDomainConverterImpl;
 import de.mq.merchandise.util.support.RefreshableContainer;
+import de.mq.merchandise.util.support.ViewNav;
 
 @Configuration
 class SubjectModels {
@@ -49,7 +51,9 @@ class SubjectModels {
 
 	@Autowired
 	private CustomerService customerService;
-
+	
+	@Autowired
+	private  MessageSource messageSource;
 	private SubjectEventFascade subjectEventFascade = null;
 
 	@PostConstruct
@@ -100,6 +104,13 @@ class SubjectModels {
 	Item subjectItemContainer() {
 		return itemContainerFactory.create(SubjectCols.class);
 
+	}
+	
+	@Bean()
+	@SubjectModelQualifier(SubjectModelQualifier.Type.SubjectMenuBar)
+	@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
+	MainMenuBarView mainMenuBarViewSubject(final UserModel userModel, final ViewNav viewNav) {
+		return new MainMenuBarView(userModel, messageSource, viewNav);
 	}
 
 }

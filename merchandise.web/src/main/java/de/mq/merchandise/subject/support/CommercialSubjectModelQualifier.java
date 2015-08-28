@@ -11,20 +11,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
-public @interface SubjectModelQualifier {
+public @interface CommercialSubjectModelQualifier {
 	Type value();
 	
 	
 	public  enum Type {
-		LazyQueryContainer,
-		SubjectSearchItem,
-		SubjectEditItem,
-		SubjectModel,
-		ItemToSubjectConverter,
-		SubjectToItemConverter,
-		ConditionToItemConverter,
-		ConditionToContainerConverter, 
-		ItemToConditionConverter,
-		SubjectMenuBar;
+		MenuBar;
 	}
 }

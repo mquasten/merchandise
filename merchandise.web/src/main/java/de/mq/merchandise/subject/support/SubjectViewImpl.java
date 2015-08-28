@@ -96,7 +96,7 @@ public class SubjectViewImpl extends CustomComponent implements View {
 	
 
 	@Autowired
-	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter, final @SubjectModelQualifier(SubjectModelQualifier.Type.ItemToConditionConverter) Converter<Item, Condition> itemToConditionConverter, final ValidationUtil validationUtil, final MainMenuBarView mainMenuBarView) {
+	public SubjectViewImpl(@SubjectModelQualifier(SubjectModelQualifier.Type.ItemToSubjectConverter) final Converter<Item, Subject> itemToSubjectConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectToItemConverter) final Converter<Subject, Item> subjectToItemConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectSearchItem) final Item subjectSearchItem, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectModel) final SubjectModel subjectModel, final UserModel userModel, final MessageSource messageSource, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter, @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToItemConverter) Converter<Condition, Item> conditionToItemConverter, final @SubjectModelQualifier(SubjectModelQualifier.Type.ItemToConditionConverter) Converter<Item, Condition> itemToConditionConverter, final ValidationUtil validationUtil, @SubjectModelQualifier(SubjectModelQualifier.Type.SubjectMenuBar) final MainMenuBarView mainMenuBarView) {
 
 		this.itemToSubjectMapper = itemToSubjectConverter;
 		this.subjectToItemConverter = subjectToItemConverter;
@@ -455,7 +455,6 @@ public class SubjectViewImpl extends CustomComponent implements View {
 
 	@PostConstruct
 	void init() {
-		System.out.println("gut");
 		subjectModel.setCustomer(userModel.getCustomer());
 		initLayout();
 

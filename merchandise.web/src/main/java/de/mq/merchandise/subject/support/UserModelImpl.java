@@ -42,6 +42,7 @@ class UserModelImpl extends ObservableImpl<UserModel.EventType> implements UserM
 			return;
 		}
 		this.locale=locale;
+	
 		notifyObservers(EventType.LocaleChanged);
 		
 	}
