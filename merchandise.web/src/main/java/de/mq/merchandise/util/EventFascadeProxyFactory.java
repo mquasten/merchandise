@@ -20,6 +20,8 @@ public interface EventFascadeProxyFactory {
 		CGLib,
 		DynamicProxy;
 	}
+
+
 	
 
 	<T> T createProxy(Class<? extends T> targetClass);

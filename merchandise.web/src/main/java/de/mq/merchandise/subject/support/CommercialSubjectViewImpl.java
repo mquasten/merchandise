@@ -1,5 +1,7 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.Arrays;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,10 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
+import de.mq.merchandise.util.support.RefreshableContainer;
 import de.mq.merchandise.util.support.ViewNav;
 
 
@@ -28,7 +31,7 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 	
 
 
-
+	private final RefreshableContainer lazyQueryContainer;
 	
 
 	private final MainMenuBarView mainMenuBarView;
@@ -36,8 +39,9 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 	
 	
 	@Autowired
-	CommercialSubjectViewImpl(final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView ) {
+	CommercialSubjectViewImpl(final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer ) {
 		this.mainMenuBarView = mainMenuBarView;
+		this.lazyQueryContainer=lazyQueryContainer;
 	}
 
 	/*
@@ -61,7 +65,21 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 		splitPanel.addComponent(leftLayout);
 		leftLayout.setSizeFull();
 
-	leftLayout.addComponent(new TextField());;
+
+		final Table subjectList = new Table();
+		
+	// leftLayout.setExpandRatio(subjectList, 1);
+			subjectList.setSizeFull();
+
+			subjectList.setSelectable(true);
+
+			subjectList.setContainerDataSource(lazyQueryContainer);
+			subjectList.setVisibleColumns(Arrays.asList(CommercialSubjectCols.values()).stream().filter(col -> col.visible()).toArray());
+			subjectList.setSortContainerPropertyId(CommercialSubjectCols.Name);
+
+			//subjectList.addValueChangeListener(e -> subjectModel.setSubjectId((Long) e.getProperty().getValue()));
+
+			//subjectModel.register(event -> lazyQueryContainer.refresh(), SubjectModel.EventType.SearchCriteriaChanged);
 		
 		
 		

@@ -4,7 +4,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
+
 import org.springframework.beans.factory.annotation.Qualifier;
+
+
+
+
 
 
 
@@ -16,6 +21,11 @@ public @interface CommercialSubjectModelQualifier {
 	
 	
 	public  enum Type {
+		CommercialSubjectToItemConverter,
+		LazyQueryContainer,
+		CommercialSubjectModel,
 		MenuBar;
+
+		
 	}
 }
