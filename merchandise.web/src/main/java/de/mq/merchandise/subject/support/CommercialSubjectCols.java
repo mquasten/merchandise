@@ -5,8 +5,8 @@ import de.mq.merchandise.util.TableContainerColumns;
 enum CommercialSubjectCols implements TableContainerColumns {
 	
 	
-	Id(false, Long.class , "id", -1L),
-	Name(true, String.class , "COALESCE(name, '')" , "");
+	Id(false, Long.class , "cs.id", -1L),
+	Name(true, String.class ,"cs.name" , "");
 	
 	private final boolean visible ;
 	private final Class<?> type;

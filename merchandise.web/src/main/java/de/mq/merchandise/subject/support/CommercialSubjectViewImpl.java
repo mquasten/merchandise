@@ -68,6 +68,8 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 
 		final Table subjectList = new Table();
 		
+		leftLayout.addComponent(subjectList);
+		
 	// leftLayout.setExpandRatio(subjectList, 1);
 			subjectList.setSizeFull();
 
@@ -76,7 +78,7 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 			subjectList.setContainerDataSource(lazyQueryContainer);
 			subjectList.setVisibleColumns(Arrays.asList(CommercialSubjectCols.values()).stream().filter(col -> col.visible()).toArray());
 			subjectList.setSortContainerPropertyId(CommercialSubjectCols.Name);
-
+		
 			//subjectList.addValueChangeListener(e -> subjectModel.setSubjectId((Long) e.getProperty().getValue()));
 
 			//subjectModel.register(event -> lazyQueryContainer.refresh(), SubjectModel.EventType.SearchCriteriaChanged);
