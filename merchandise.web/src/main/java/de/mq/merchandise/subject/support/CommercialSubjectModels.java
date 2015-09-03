@@ -15,8 +15,11 @@ import com.vaadin.data.Item;
 
 
 
+
+
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
 import de.mq.merchandise.util.EventFascadeProxyFactory;
+import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.support.RefreshableContainer;
 import de.mq.merchandise.util.support.ViewNav;
@@ -39,6 +42,10 @@ class CommercialSubjectModels {
 	@Autowired
 	@EventFascadeProxyFactory.EventFascadeProxyFactoryQualifier(EventFascadeProxyFactory.FactoryType.CGLib)
 	private EventFascadeProxyFactory commercialSubjecteventFascadeProxyFactory;
+	
+	
+	@Autowired
+	private ItemContainerFactory itemContainerFactory;
 
 	@PostConstruct
 	void init() {
@@ -58,11 +65,18 @@ class CommercialSubjectModels {
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer)
 	@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 	RefreshableContainer commercialsubjectLazyQueryContainer() {
-
 		return lazyQueryContainerFactory.create(CommercialSubjectCols.Id, commercialSubjectToItemConverter, commercialSubjectEventFascade, EventType.CountPaging, EventType.ListPaging);
 
 	}
 	
+	
+	@Bean()
+	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem)
+	@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
+	Item commercialSubjectSearchItem() {
+		return itemContainerFactory.create(CommercialSubjectCols.class);
+
+	}
 	
 	@Bean
 	@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")

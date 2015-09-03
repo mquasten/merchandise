@@ -6,7 +6,8 @@ enum CommercialSubjectCols implements TableContainerColumns {
 	
 	
 	Id(false, Long.class , "cs.id", -1L),
-	Name(true, String.class ,"cs.name" , "");
+	Name(true, String.class ,"cs.name" , ""),
+	ItemName(false, String.class ,"i.name" , "");
 	
 	private final boolean visible ;
 	private final Class<?> type;
