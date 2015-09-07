@@ -1,11 +1,22 @@
 package de.mq.merchandise.subject.support;
 
-public interface CommercialSubjectModel {
+import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.util.Observable;
+
+public interface CommercialSubjectModel extends Observable<CommercialSubjectModel.EventType> {
 	
 	enum EventType {
 		CountPaging,
-		ListPaging,
+		ListPaging, SearchCriteriaChanged,
 		
 	}
+
+	void setSearch(CommercialSubject search);
+
+
+
+	void setCustomer(final Customer customer);
+
+	CommercialSubject getSearch();
 
 }

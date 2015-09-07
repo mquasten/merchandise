@@ -1,6 +1,5 @@
 package de.mq.merchandise.subject.support;
 
-
 import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import com.vaadin.data.Item;
@@ -30,29 +30,32 @@ import com.vaadin.ui.VerticalLayout;
 import de.mq.merchandise.util.support.RefreshableContainer;
 import de.mq.merchandise.util.support.ViewNav;
 
-
-
 @Component
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
-public class CommercialSubjectViewImpl  extends CustomComponent implements View {
-	
+public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 	private static final long serialVersionUID = 1L;
-	
-
 
 	private final RefreshableContainer lazyQueryContainer;
-	
+
+	private UserModel userModel;
 
 	private final MainMenuBarView mainMenuBarView;
 
 	private final Item commercialSubjectSearchItem;
-	
+
+	private final CommercialSubjectModel commercialSubjectModel;
+
+	private final Converter<Item, CommercialSubject> itemToCommercialSubjectConverter;
+
 	@Autowired
-	CommercialSubjectViewImpl(final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem ) {
+	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, final UserModel userModel, final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter) {
 		this.mainMenuBarView = mainMenuBarView;
-		this.lazyQueryContainer=lazyQueryContainer;
-		this.commercialSubjectSearchItem=commercialSubjectSearchItem;
+		this.lazyQueryContainer = lazyQueryContainer;
+		this.commercialSubjectSearchItem = commercialSubjectSearchItem;
+		this.itemToCommercialSubjectConverter = itemToCommercialSubjectConverter;
+		this.commercialSubjectModel = commercialSubjectModel;
+		this.userModel = userModel;
 	}
 
 	/*
@@ -61,19 +64,13 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 	 */
 	private void initLayout() {
 
-		
-		
 		final HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
 
 		splitPanel.setSplitPosition(64, Unit.PERCENTAGE);
 
 		setCompositionRoot(splitPanel);
-		
-		
-		
-		
+
 		final Panel searchPanel = new Panel();
-		
 
 		final GridLayout searchBox = new GridLayout(1, 2);
 		final HorizontalLayout searchLayout = new HorizontalLayout();
@@ -91,7 +88,6 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 		col1Layout.setMargin(new MarginInfo(true, false, false, true));
 
 		searchLayout.addComponent(col1Layout);
-		
 
 		final FormLayout col2Layout = new FormLayout();
 		TextField itemNameField = new TextField("ItemName");
@@ -99,86 +95,65 @@ public class CommercialSubjectViewImpl  extends CustomComponent implements View 
 
 		col2Layout.setMargin(new MarginInfo(true, false, false, true));
 		searchLayout.addComponent(col2Layout);
-		
+
 		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setMargin(true);
 		final Button searchButton = new Button("search");
-		
+
 		searchButton.addClickListener(e -> searchCriteria2Model(fieldGroup));
-		
+
 		buttonLayout.addComponent(searchButton);
 
 		buttonLayout.setWidth("100%");
 		searchBox.addComponent(buttonLayout, 0, 1);
 		fieldGroup.bind(nameField, CommercialSubjectCols.Name);
 		fieldGroup.bind(itemNameField, CommercialSubjectCols.ItemName);
-		
-		
-		
-		
-		
-		
+
+		commercialSubjectModel.register(event -> lazyQueryContainer.refresh(), CommercialSubjectModel.EventType.SearchCriteriaChanged);
 
 		final VerticalLayout leftLayout = new VerticalLayout();
-	
+
 		leftLayout.addComponent(mainMenuBarView);
-		
+
 		splitPanel.addComponent(leftLayout);
 		leftLayout.setSizeFull();
 
 		leftLayout.addComponent(searchPanel);
 		final Table subjectList = new Table();
-		
+
 		leftLayout.addComponent(subjectList);
-		
-	// leftLayout.setExpandRatio(subjectList, 1);
-			subjectList.setSizeFull();
 
-			subjectList.setSelectable(true);
+		subjectList.setSizeFull();
 
-			subjectList.setContainerDataSource(lazyQueryContainer);
-			subjectList.setVisibleColumns(Arrays.asList(CommercialSubjectCols.values()).stream().filter(col -> col.visible()).toArray());
-			subjectList.setSortContainerPropertyId(CommercialSubjectCols.Name);
-		
-			//subjectList.addValueChangeListener(e -> subjectModel.setSubjectId((Long) e.getProperty().getValue()));
+		subjectList.setSelectable(true);
 
-			//subjectModel.register(event -> lazyQueryContainer.refresh(), SubjectModel.EventType.SearchCriteriaChanged);
-		
-		
-		
+		subjectList.setContainerDataSource(lazyQueryContainer);
+		subjectList.setVisibleColumns(Arrays.asList(CommercialSubjectCols.values()).stream().filter(col -> col.visible()).toArray());
+		subjectList.setSortContainerPropertyId(CommercialSubjectCols.Name);
+
 	}
-
-	
-
 
 	private void searchCriteria2Model(final FieldGroup fieldGroup) {
 		try {
 
 			fieldGroup.commit();
-			System.out.println(">>>" + commercialSubjectSearchItem.getItemProperty(CommercialSubjectCols.Name).getValue());
-			System.out.println(">>>" + commercialSubjectSearchItem.getItemProperty(CommercialSubjectCols.ItemName).getValue());
-			//subjectModel.setSerachCriteria(itemToSubjectMapper.convert(fieldGroup.getItemDataSource()));
-
+			commercialSubjectModel.setSearch(itemToCommercialSubjectConverter.convert(commercialSubjectSearchItem));
 		} catch (final Exception ex) {
 			throw new IllegalStateException(ex);
 		}
 	}
-	
-
 
 	@PostConstruct
-	void init() {	
+	void init() {
+		commercialSubjectModel.setCustomer(userModel.getCustomer());
 		initLayout();
-		
-		
+
 	}
 
 	@Override
 	public void enter(ViewChangeEvent event) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
-	
 
 }

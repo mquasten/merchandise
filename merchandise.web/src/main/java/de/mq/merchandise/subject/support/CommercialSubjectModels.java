@@ -2,6 +2,7 @@ package de.mq.merchandise.subject.support;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.convert.converter.Converter;
 
 import com.vaadin.data.Item;
+
 
 
 
@@ -83,7 +85,7 @@ class CommercialSubjectModels {
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectModel)
 	CommercialSubjectModel commercialSubjectModel() {
 
-		return new CommercialSubjectModel() {} ;
+		return new CommercialSubjectModelImpl( BeanUtils.instantiateClass(CommercialSubjectImpl.class));
 
 	}
 
