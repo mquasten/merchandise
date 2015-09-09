@@ -1,5 +1,7 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.Optional;
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.util.Observable;
 
@@ -7,7 +9,7 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 	
 	enum EventType {
 		CountPaging,
-		ListPaging, SearchCriteriaChanged,
+		ListPaging, SearchCriteriaChanged, CommericalSubjectChanged,
 		
 	}
 
@@ -18,5 +20,13 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 	void setCustomer(final Customer customer);
 
 	CommercialSubject getSearch();
+
+
+
+	void setCommercialSubjectId(Long value);
+
+
+
+	Optional<CommercialSubject> getCommercialSubject();
 
 }

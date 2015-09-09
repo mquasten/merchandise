@@ -15,6 +15,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
@@ -27,6 +28,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import de.mq.merchandise.util.ValidationUtil;
 import de.mq.merchandise.util.support.RefreshableContainer;
 import de.mq.merchandise.util.support.ViewNav;
 
@@ -48,14 +50,23 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 	private final Converter<Item, CommercialSubject> itemToCommercialSubjectConverter;
 
+	private final ValidationUtil validationUtil;
+
+	private final Converter<CommercialSubject, Item> commercialSubjectToItemConverter;
+
+	final ThemeResource editIcon = new ThemeResource("edit-icon.png");
+	final ThemeResource newIcon = new ThemeResource("new-icon.png");
+
 	@Autowired
-	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, final UserModel userModel, final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter) {
+	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, final UserModel userModel, final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter, final ValidationUtil validationUtil, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;
 		this.commercialSubjectSearchItem = commercialSubjectSearchItem;
 		this.itemToCommercialSubjectConverter = itemToCommercialSubjectConverter;
 		this.commercialSubjectModel = commercialSubjectModel;
 		this.userModel = userModel;
+		this.validationUtil = validationUtil;
+		this.commercialSubjectToItemConverter = commercialSubjectToItemConverter;
 	}
 
 	/*
@@ -130,6 +141,75 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		subjectList.setContainerDataSource(lazyQueryContainer);
 		subjectList.setVisibleColumns(Arrays.asList(CommercialSubjectCols.values()).stream().filter(col -> col.visible()).toArray());
 		subjectList.setSortContainerPropertyId(CommercialSubjectCols.Name);
+		subjectList.addValueChangeListener(e -> commercialSubjectModel.setCommercialSubjectId((Long) e.getProperty().getValue()));
+
+		final VerticalLayout editor = new VerticalLayout();
+		editor.setSizeUndefined();
+
+		editor.setMargin(new MarginInfo(true, false, false, true));
+
+		final HorizontalLayout editorLayout = new HorizontalLayout();
+		editorLayout.setSizeFull();
+
+		editor.addComponent(editorLayout);
+
+		final FormLayout col1 = new FormLayout();
+
+		col1.setWidth("100%");
+		final FieldGroup editorFields = new FieldGroup();
+
+		final TextField field = new TextField("xxxx");
+		field.setNullRepresentation("");
+		field.setSizeFull();
+
+		editorFields.bind(field, CommercialSubjectCols.Name);
+		col1.addComponent(field);
+
+		editorFields.setItemDataSource(commercialSubjectToItemConverter.convert(commercialSubjectModel.getCommercialSubject().get()));
+
+		final Button saveButton = new Button();
+		final Button newButton = new Button();
+		final Button deleteButton = new Button();
+		newButton.setEnabled(false);
+		deleteButton.setEnabled(false);
+		saveButton.setIcon(newIcon);
+
+		editorLayout.addComponent(col1);
+		editorLayout.setWidth("100%");
+
+		final HorizontalLayout saveButtonLayout = new HorizontalLayout();
+		saveButtonLayout.setSpacing(true);
+		editor.addComponent(saveButtonLayout);
+
+		saveButtonLayout.addComponent(saveButton);
+
+		saveButtonLayout.addComponent(newButton);
+		saveButtonLayout.addComponent(deleteButton);
+
+		newButton.addClickListener(event -> subjectList.setValue(null));
+
+		splitPanel.addComponent(editor);
+
+		commercialSubjectModel.register(e -> {
+			validationUtil.reset(editorFields);
+
+			editorFields.setItemDataSource(null);
+			newButton.setEnabled(false);
+
+			deleteButton.setEnabled(false);
+			editorFields.setItemDataSource(commercialSubjectToItemConverter.convert(commercialSubjectModel.getCommercialSubject().get()));
+
+			if (commercialSubjectModel.getCommercialSubject().get().id().isPresent()) {
+				saveButton.setIcon(editIcon);
+				newButton.setEnabled(true);
+				deleteButton.setEnabled(true);
+
+				return;
+			}
+
+			saveButton.setIcon(newIcon);
+
+		}, CommercialSubjectModel.EventType.CommericalSubjectChanged);
 
 	}
 

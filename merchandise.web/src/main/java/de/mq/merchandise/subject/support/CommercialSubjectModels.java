@@ -19,6 +19,7 @@ import com.vaadin.data.Item;
 
 
 
+
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
 import de.mq.merchandise.util.EventFascadeProxyFactory;
 import de.mq.merchandise.util.ItemContainerFactory;
@@ -85,8 +86,13 @@ class CommercialSubjectModels {
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectModel)
 	CommercialSubjectModel commercialSubjectModel() {
 
-		return new CommercialSubjectModelImpl( BeanUtils.instantiateClass(CommercialSubjectImpl.class));
+		return new CommercialSubjectModelImpl( newCommercialSubject(), newCommercialSubject(), commercialSubjectEventFascade);
 
+	}
+
+
+	private CommercialSubject newCommercialSubject() {
+		return BeanUtils.instantiateClass(CommercialSubjectImpl.class);
 	}
 
 }

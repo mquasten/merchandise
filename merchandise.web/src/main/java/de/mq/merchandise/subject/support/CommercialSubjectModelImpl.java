@@ -1,10 +1,11 @@
 package de.mq.merchandise.subject.support;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
-
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.util.support.ObservableImpl;
@@ -14,9 +15,15 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	private  CommercialSubject search;
 	
 	private Customer customer;
+
+	private CommercialSubject commercialSubject;
 	
-	CommercialSubjectModelImpl(final CommercialSubject search) {
+	private final CommercialSubjectEventFascade commercialSubjectEventFascade;
+	
+	CommercialSubjectModelImpl(final CommercialSubject search, final CommercialSubject commercialSubject, final CommercialSubjectEventFascade commercialSubjectEventFascade) {
 		this.search = search;
+		this.commercialSubjectEventFascade=commercialSubjectEventFascade;
+		this.commercialSubject= commercialSubject;
 	}
 
 
@@ -44,6 +51,27 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		this.customer=customer;
 		setSearch(search);
 		
+	}
+
+
+	@Override
+	public void setCommercialSubjectId(final Long commercialSubjectId) {
+		if( commercialSubjectId==null){
+			commercialSubject= BeanUtils.instantiateClass(CommercialSubjectImpl.class);
+			notifyObservers(EventType.CommericalSubjectChanged);
+			return;
+		}
+				
+		commercialSubject= commercialSubjectEventFascade.commercialSubjectChanged(commercialSubjectId);
+		Assert.notNull(commercialSubject, "CommercialSubject should be returned" );
+		notifyObservers(EventType.CommericalSubjectChanged);
+		
+	}
+	
+	
+	@Override
+	public final Optional<CommercialSubject> getCommercialSubject() {
+		return Optional.ofNullable(commercialSubject);
 	}
 
 }

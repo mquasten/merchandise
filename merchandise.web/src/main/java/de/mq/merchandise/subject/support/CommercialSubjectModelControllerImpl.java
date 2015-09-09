@@ -30,6 +30,10 @@ class CommercialSubjectModelControllerImpl {
 	}
 
 
+	@CommercialSubjectEventQualifier(EventType.CommericalSubjectChanged)
+	CommercialSubject subject(final Long id) {
+		return commercialSubjectService.commercialSubject(id);
+	}
 
 
 	
