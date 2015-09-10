@@ -24,6 +24,10 @@ interface   CommercialSubjectEventFascade {
 	@CommercialSubjectEventQualifier(EventType.CommericalSubjectChanged)
 	abstract CommercialSubject commercialSubjectChanged(Long commercialSubjectId);
 
+
+	@CommercialSubjectEventQualifier(EventType.CommercialSubjectSaved)
+	abstract void save(final Long orElse, final CommercialSubject commercialSubject);
+
 	
 	
 }

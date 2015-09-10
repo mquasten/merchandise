@@ -25,7 +25,7 @@ public @interface CommercialSubjectModelQualifier {
 		LazyQueryContainer,
 		CommercialSubjectModel,
 		ItemToCommercialSubjectConverter,
-		MenuBar, CommercialSubjectSearchItem;
+		MenuBar, CommercialSubjectSearchItem, ItemToCommercialSubjectConverterFlat;
 
 		
 	}

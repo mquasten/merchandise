@@ -27,6 +27,11 @@ public class ItemToDomainConverterImpl<T> implements Converter<Item, T> {
 		cols = (Enum<?>[]) ReflectionUtils.invokeMethod(method, null);
 		
 	}
+	
+	public ItemToDomainConverterImpl(Class<? extends T> clazz, final  Enum<?>[] cols) {
+		this.clazz=clazz;
+		this.cols=cols;
+	}
 
 	@Override
 	public T convert(final Item item) {

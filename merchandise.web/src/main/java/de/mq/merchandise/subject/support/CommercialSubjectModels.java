@@ -13,17 +13,14 @@ import org.springframework.core.convert.converter.Converter;
 
 import com.vaadin.data.Item;
 
-
-
-
-
-
-
-
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
+import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
+import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.EventFascadeProxyFactory;
 import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
+import de.mq.merchandise.util.support.ItemToDomainConverterImpl;
 import de.mq.merchandise.util.support.RefreshableContainer;
 import de.mq.merchandise.util.support.ViewNav;
 
@@ -49,6 +46,10 @@ class CommercialSubjectModels {
 	
 	@Autowired
 	private ItemContainerFactory itemContainerFactory;
+	
+	@Autowired
+	@SubjectMapper(SubjectMapperType.Customer2Subject)
+	private Mapper<Customer, CommercialSubject> customerIntoSubjectMapper;
 
 	@PostConstruct
 	void init() {
@@ -86,13 +87,20 @@ class CommercialSubjectModels {
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectModel)
 	CommercialSubjectModel commercialSubjectModel() {
 
-		return new CommercialSubjectModelImpl( newCommercialSubject(), newCommercialSubject(), commercialSubjectEventFascade);
+		return new CommercialSubjectModelImpl( newCommercialSubject(), newCommercialSubject(), commercialSubjectEventFascade, customerIntoSubjectMapper);
 
 	}
 
 
 	private CommercialSubject newCommercialSubject() {
 		return BeanUtils.instantiateClass(CommercialSubjectImpl.class);
+	}
+	
+	
+	@Bean
+	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverterFlat)
+	Converter<Item, CommercialSubject> itemToCommercialSubjectConverterFlat() {
+		return new ItemToDomainConverterImpl<>(CommercialSubjectImpl.class, new Enum[] {CommercialSubjectCols.Name, CommercialSubjectCols.Id});
 	}
 
 }

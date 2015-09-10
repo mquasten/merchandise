@@ -9,7 +9,10 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 	
 	enum EventType {
 		CountPaging,
-		ListPaging, SearchCriteriaChanged, CommericalSubjectChanged,
+		ListPaging, 
+		SearchCriteriaChanged, 
+		CommericalSubjectChanged, 
+		CommercialSubjectSaved;
 		
 	}
 
@@ -28,5 +31,9 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 	Optional<CommercialSubject> getCommercialSubject();
+
+
+
+	void save(final CommercialSubject commercialSubject);
 
 }

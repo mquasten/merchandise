@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
@@ -36,7 +37,12 @@ class CommercialSubjectModelControllerImpl {
 	}
 
 
-	
+	@CommercialSubjectEventQualifier(EventType.CommercialSubjectSaved)
+	void save(final Long commercialSubjectId, final CommercialSubject commercialSubject) {
+		Assert.notNull(commercialSubject.customer(), "Customer is mandatory");
+		
+		System.out.println("Save...");
+	}
 
 
 	

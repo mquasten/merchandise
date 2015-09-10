@@ -1,13 +1,12 @@
 package de.mq.merchandise.subject.support;
 
-import java.lang.reflect.Field;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.support.ObservableImpl;
 
 class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.EventType>  implements CommercialSubjectModel   {
@@ -20,21 +19,20 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	
 	private final CommercialSubjectEventFascade commercialSubjectEventFascade;
 	
-	CommercialSubjectModelImpl(final CommercialSubject search, final CommercialSubject commercialSubject, final CommercialSubjectEventFascade commercialSubjectEventFascade) {
+	private final  Mapper<Customer,CommercialSubject> customerMapper; 
+	
+	CommercialSubjectModelImpl(final CommercialSubject search, final CommercialSubject commercialSubject, final CommercialSubjectEventFascade commercialSubjectEventFascade,  final  Mapper<Customer, CommercialSubject> customerIntoSubjectMapper) {
 		this.search = search;
 		this.commercialSubjectEventFascade=commercialSubjectEventFascade;
 		this.commercialSubject= commercialSubject;
+		this.customerMapper=customerIntoSubjectMapper;
 	}
 
 
 	@Override
 	public final void setSearch(final CommercialSubject search) {
 		this.search=search;
-		final Field field = ReflectionUtils.findField(this.search.getClass(), "customer");
-		Assert.notNull(field);
-		field.setAccessible(true);
-		
-		ReflectionUtils.setField(field, this.search, customer);
+		customerMapper.mapInto(customer, this.search);
 		notifyObservers(EventType.SearchCriteriaChanged);
 	}
 	
@@ -44,6 +42,15 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		
 		return this.search;
 	}
+	
+	@Override
+	public void save(final CommercialSubject commercialSubject) {
+		customerMapper.mapInto(customer, commercialSubject);
+	   commercialSubjectEventFascade.save(this.commercialSubject.id().orElse(null), commercialSubject);
+		
+		setCommercialSubjectId(null);
+	}
+
 
 
 	@Override

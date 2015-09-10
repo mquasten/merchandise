@@ -36,6 +36,22 @@ import de.mq.merchandise.util.support.ViewNav;
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
+	private static final String I18N_COMMERCIAL_SUBJECT_DELETE = "commercial_subject_delete";
+
+	private static final String I18N_COMMERCIAL_SUBJECT_NEW = "commercial_subject_new";
+
+	private static final String I18N_COMMERCIAL_SUBJECT_SAVE = "commercial_subject_save";
+
+	private static final String I18N_COMMERCIAL_SUBJECT_TABLE_NAME = "commercial_subject_table_name";
+
+	private static final String I18N_COMMERCIAL_SUBJECT_SEARCH = "commercial_subject_search";
+
+	private static final String I18N_COMMERCIAL_SUBJECT_SEARCH_ITEM_NAME = "commercial_subject_search_item_name";
+
+	private static final String I18_COMMERCIAL_SUBJECT_SEARCH_NAME = "commercial_subject_search_name";
+
+	private static final String I18N_COMMERCIAL_SUBJECT_NAME = "commercial_subject_name";
+
 	private static final long serialVersionUID = 1L;
 
 	private final RefreshableContainer lazyQueryContainer;
@@ -53,12 +69,16 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	private final ValidationUtil validationUtil;
 
 	private final Converter<CommercialSubject, Item> commercialSubjectToItemConverter;
+	
+	private final Converter<Item, CommercialSubject> commercialSubjectToItemConverterFlat;
+	
+	private final MessageSource messageSource; 
 
 	final ThemeResource editIcon = new ThemeResource("edit-icon.png");
 	final ThemeResource newIcon = new ThemeResource("new-icon.png");
 
 	@Autowired
-	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, final UserModel userModel, final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter, final ValidationUtil validationUtil, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter) {
+	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, final UserModel userModel, final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter, final ValidationUtil validationUtil, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverterFlat)final Converter<Item, CommercialSubject> commercialSubjectToItemConverterFlat) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;
 		this.commercialSubjectSearchItem = commercialSubjectSearchItem;
@@ -66,7 +86,9 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		this.commercialSubjectModel = commercialSubjectModel;
 		this.userModel = userModel;
 		this.validationUtil = validationUtil;
+		this.messageSource=messageSource;
 		this.commercialSubjectToItemConverter = commercialSubjectToItemConverter;
+		this.commercialSubjectToItemConverterFlat=commercialSubjectToItemConverterFlat;
 	}
 
 	/*
@@ -93,32 +115,32 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		fieldGroup.setItemDataSource(commercialSubjectSearchItem);
 		fieldGroup.setBuffered(true);
 		final FormLayout col1Layout = new FormLayout();
-		TextField nameField = new TextField("Name");
-		col1Layout.addComponent(nameField);
+		final TextField searchNameField = new TextField();
+		col1Layout.addComponent(searchNameField);
 
 		col1Layout.setMargin(new MarginInfo(true, false, false, true));
 
 		searchLayout.addComponent(col1Layout);
 
 		final FormLayout col2Layout = new FormLayout();
-		TextField itemNameField = new TextField("ItemName");
-		col2Layout.addComponent(itemNameField);
+		final TextField searchItemNameField = new TextField();
+		col2Layout.addComponent(searchItemNameField);
 
 		col2Layout.setMargin(new MarginInfo(true, false, false, true));
 		searchLayout.addComponent(col2Layout);
 
 		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setMargin(true);
-		final Button searchButton = new Button("search");
+		final Button searchButton = new Button();
 
-		searchButton.addClickListener(e -> searchCriteria2Model(fieldGroup));
+		searchButton.addClickListener(e -> commitSearch(fieldGroup));
 
 		buttonLayout.addComponent(searchButton);
 
 		buttonLayout.setWidth("100%");
 		searchBox.addComponent(buttonLayout, 0, 1);
-		fieldGroup.bind(nameField, CommercialSubjectCols.Name);
-		fieldGroup.bind(itemNameField, CommercialSubjectCols.ItemName);
+		fieldGroup.bind(searchNameField, CommercialSubjectCols.Name);
+		fieldGroup.bind(searchItemNameField, CommercialSubjectCols.ItemName);
 
 		commercialSubjectModel.register(event -> lazyQueryContainer.refresh(), CommercialSubjectModel.EventType.SearchCriteriaChanged);
 
@@ -158,16 +180,32 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		col1.setWidth("100%");
 		final FieldGroup editorFields = new FieldGroup();
 
-		final TextField field = new TextField("xxxx");
-		field.setNullRepresentation("");
-		field.setSizeFull();
+		final TextField editorNameField = new TextField();
+		editorNameField.setNullRepresentation("");
+		editorNameField.setSizeFull();
 
-		editorFields.bind(field, CommercialSubjectCols.Name);
-		col1.addComponent(field);
+		editorFields.bind(editorNameField, CommercialSubjectCols.Name);
+		col1.addComponent(editorNameField);
 
 		editorFields.setItemDataSource(commercialSubjectToItemConverter.convert(commercialSubjectModel.getCommercialSubject().get()));
 
 		final Button saveButton = new Button();
+		
+		
+		saveButton.addClickListener(e -> {
+
+			commit(editorFields);
+			final CommercialSubject commercialSubject = commercialSubjectToItemConverterFlat.convert(editorFields.getItemDataSource());
+
+			if (!validationUtil.validate(commercialSubject, editorFields, userModel.getLocale())) {
+				return;
+			}
+			commercialSubjectModel.save(commercialSubject);
+			lazyQueryContainer.refresh();
+			subjectList.setValue(null);
+
+		});
+		
 		final Button newButton = new Button();
 		final Button deleteButton = new Button();
 		newButton.setEnabled(false);
@@ -210,14 +248,34 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			saveButton.setIcon(newIcon);
 
 		}, CommercialSubjectModel.EventType.CommericalSubjectChanged);
+		
+		
+		userModel.register(e-> {
+			editorNameField.setCaption(message(I18N_COMMERCIAL_SUBJECT_NAME));
+			searchNameField.setCaption(message(I18_COMMERCIAL_SUBJECT_SEARCH_NAME));
+			searchItemNameField.setCaption(message(I18N_COMMERCIAL_SUBJECT_SEARCH_ITEM_NAME));
+			searchButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_SEARCH));
+			subjectList.setColumnHeader(CommercialSubjectCols.Name, message(I18N_COMMERCIAL_SUBJECT_TABLE_NAME));
+			saveButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_SAVE));
+			newButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_NEW));
+			deleteButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_DELETE));
+		}, UserModel.EventType.LocaleChanged);
 
 	}
 
-	private void searchCriteria2Model(final FieldGroup fieldGroup) {
+	private void commitSearch(final FieldGroup fieldGroup) {
+		commit(fieldGroup); 
+		commercialSubjectModel.setSearch(itemToCommercialSubjectConverter.convert(commercialSubjectSearchItem));
+	}
+	private String message(final String key ) {
+	 return messageSource.getMessage(key, null, userModel.getLocale());
+	}
+
+	private void commit(final FieldGroup fieldGroup) {
 		try {
 
 			fieldGroup.commit();
-			commercialSubjectModel.setSearch(itemToCommercialSubjectConverter.convert(commercialSubjectSearchItem));
+			
 		} catch (final Exception ex) {
 			throw new IllegalStateException(ex);
 		}
