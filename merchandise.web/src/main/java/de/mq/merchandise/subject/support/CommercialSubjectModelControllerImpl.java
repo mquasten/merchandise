@@ -1,10 +1,12 @@
 package de.mq.merchandise.subject.support;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
@@ -41,10 +43,29 @@ class CommercialSubjectModelControllerImpl {
 	void save(final Long commercialSubjectId, final CommercialSubject commercialSubject) {
 		Assert.notNull(commercialSubject.customer(), "Customer is mandatory");
 		
-		System.out.println("Save...");
+		if (commercialSubjectId == null) {
+			commercialSubjectService.save(new CommercialSubjectImpl( commercialSubject.name(), commercialSubject.customer()));
+			return;
+		}
+
+		final CommercialSubject toBeChanged = commercialSubjectService.commercialSubject(commercialSubjectId);
+		Assert.notNull(toBeChanged.customer(), "Customer is mandatory");
+
+		Assert.isTrue(toBeChanged.customer().equals(commercialSubject.customer()));
+
+		
+		final Field field = ReflectionUtils.findField(toBeChanged.getClass(), "name");
+		field.setAccessible(true);
+		ReflectionUtils.setField(field, toBeChanged, commercialSubject.name());
+		
+
+		commercialSubjectService.save(toBeChanged);
 	}
 
 
-	
+	@CommercialSubjectEventQualifier(EventType.CommercialSubjectDeleted)
+	void delete(final CommercialSubject commercialSubject) {
+		commercialSubjectService.remove(commercialSubject);
+	}
 
 }

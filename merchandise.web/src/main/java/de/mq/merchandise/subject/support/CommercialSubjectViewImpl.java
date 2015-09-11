@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -212,6 +214,24 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		deleteButton.setEnabled(false);
 		saveButton.setIcon(newIcon);
 
+		deleteButton.addClickListener(e -> {
+			
+			final String name = (String) editorFields.getItemDataSource().getItemProperty(CommercialSubjectCols.Name).getValue();
+			final Long id = (Long) editorFields.getItemDataSource().getItemProperty(CommercialSubjectCols.Id).getValue();
+			
+			//:TODO Mapper
+			final CommercialSubject commercialSubject = new CommercialSubjectImpl(name, null);
+			final Field  idField = ReflectionUtils.findField(commercialSubject.getClass(), "id");
+			idField.setAccessible(true);
+			ReflectionUtils.setField(idField, commercialSubject, id);
+		//	final CommercialSubject commercialSubject = itemToCommercialSubjectConverter.convert(editorFields.getItemDataSource());
+			commercialSubjectModel.delete(commercialSubject);
+			lazyQueryContainer.refresh();
+			subjectList.setValue(null);
+			
+		});
+		
+		
 		editorLayout.addComponent(col1);
 		editorLayout.setWidth("100%");
 

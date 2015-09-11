@@ -80,5 +80,11 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	public final Optional<CommercialSubject> getCommercialSubject() {
 		return Optional.ofNullable(commercialSubject);
 	}
+	
+	@Override
+	public void delete(final CommercialSubject commercialSubject) {
+		commercialSubjectEventFascade.delete(commercialSubject);
+		setCommercialSubjectId(null);
+	}
 
 }

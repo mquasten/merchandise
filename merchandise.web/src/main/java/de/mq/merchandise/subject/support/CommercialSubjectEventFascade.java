@@ -28,6 +28,10 @@ interface   CommercialSubjectEventFascade {
 	@CommercialSubjectEventQualifier(EventType.CommercialSubjectSaved)
 	abstract void save(final Long orElse, final CommercialSubject commercialSubject);
 
+
+	@CommercialSubjectEventQualifier(EventType.CommercialSubjectDeleted)
+	abstract void delete(final CommercialSubject commercialSubject);
+
 	
 	
 }
