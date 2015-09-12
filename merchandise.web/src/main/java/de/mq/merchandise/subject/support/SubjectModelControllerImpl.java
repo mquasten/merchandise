@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
-import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
+import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
 import de.mq.merchandise.support.Mapper;
 
@@ -23,7 +23,7 @@ class SubjectModelControllerImpl {
 	private final Mapper<Condition, Subject> conditionIntoSubjectMapper;
 
 	@Autowired
-	SubjectModelControllerImpl(final SubjectService subjectService, final @SubjectMapper(SubjectMapperType.Subject2Subject) Mapper<Subject, Subject> subjectIntoSubjectMapper, final @SubjectMapper(SubjectMapperType.Condition2Subject) Mapper<Condition, Subject> conditionIntoSubjectMapper) {
+	SubjectModelControllerImpl(final SubjectService subjectService, final @MapperQualifier(MapperType.Subject2Subject) Mapper<Subject, Subject> subjectIntoSubjectMapper, final @MapperQualifier(MapperType.Condition2Subject) Mapper<Condition, Subject> conditionIntoSubjectMapper) {
 		this.subjectService = subjectService;
 		this.subjectIntoSubjectMapper = subjectIntoSubjectMapper;
 		this.conditionIntoSubjectMapper = conditionIntoSubjectMapper;

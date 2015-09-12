@@ -34,7 +34,7 @@ import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.subject.Subject;
-import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
+import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.support.Mapper;
 
 @Ignore
@@ -61,7 +61,7 @@ public class CommercialSubjectRepositoryIntegrationTest {
 	private CommercialSubjectRepository commercialSubjectRepository;
 	
 	@Autowired
-	@SubjectMapper(SubjectMapperType.CommercialSubject2QueryMap)
+	@MapperQualifier(MapperType.CommercialSubject2QueryMap)
 	private Mapper<CommercialSubject,Map<String,Object>> mapper; 
 	
 	@Before

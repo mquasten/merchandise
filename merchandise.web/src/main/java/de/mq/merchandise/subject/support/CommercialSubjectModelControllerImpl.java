@@ -1,24 +1,28 @@
 package de.mq.merchandise.subject.support;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
+import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
+import de.mq.merchandise.support.Mapper;
 
 @Controller
 class CommercialSubjectModelControllerImpl {
 
 	private final CommercialSubjectService commercialSubjectService;
 	
+	
+	private final Mapper<CommercialSubject,CommercialSubject>  commercialSubject2CommercialSubjectMapper;
+	
 	@Autowired
-	CommercialSubjectModelControllerImpl(CommercialSubjectService commercialSubjectService) {
+	CommercialSubjectModelControllerImpl(CommercialSubjectService commercialSubjectService, @MapperQualifier(MapperType.CommercialSubject2CommercialSubject) final Mapper<CommercialSubject,CommercialSubject>  commercialSubject2CommercialSubjectMapper) {
 		this.commercialSubjectService = commercialSubjectService;
+		this.commercialSubject2CommercialSubjectMapper=commercialSubject2CommercialSubjectMapper;
 		
 	}
 
@@ -54,10 +58,7 @@ class CommercialSubjectModelControllerImpl {
 		Assert.isTrue(toBeChanged.customer().equals(commercialSubject.customer()));
 
 		
-		final Field field = ReflectionUtils.findField(toBeChanged.getClass(), "name");
-		field.setAccessible(true);
-		ReflectionUtils.setField(field, toBeChanged, commercialSubject.name());
-		
+		commercialSubject2CommercialSubjectMapper.mapInto(commercialSubject, toBeChanged);
 
 		commercialSubjectService.save(toBeChanged);
 	}

@@ -15,7 +15,7 @@ import com.vaadin.data.Item;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
-import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
+import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.EventFascadeProxyFactory;
 import de.mq.merchandise.util.ItemContainerFactory;
@@ -48,7 +48,7 @@ class CommercialSubjectModels {
 	private ItemContainerFactory itemContainerFactory;
 	
 	@Autowired
-	@SubjectMapper(SubjectMapperType.Customer2Subject)
+	@MapperQualifier(MapperType.Customer2Subject)
 	private Mapper<Customer, CommercialSubject> customerIntoSubjectMapper;
 
 	@PostConstruct

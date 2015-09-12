@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import de.mq.merchandise.subject.Subject;
-import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
+import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.support.Mapper;
 
 
 
 @Component
-@SubjectMapper(SubjectMapperType.CommercialSubject2QueryMap)
+@MapperQualifier(MapperType.CommercialSubject2QueryMap)
 class CommercialSubjectToQueryMapper implements Mapper<CommercialSubject,Map<String,Object>> {
 
 	static final long NOT_EXISTING_ID = -1L;

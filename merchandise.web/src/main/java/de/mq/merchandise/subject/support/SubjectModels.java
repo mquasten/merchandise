@@ -18,7 +18,7 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
-import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
+import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
 import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.EventFascadeProxyFactory;
@@ -43,7 +43,7 @@ class SubjectModels {
 	private LazyQueryContainerFactory lazyQueryContainerFactory;
 
 	@Autowired
-	@SubjectMapper(SubjectMapperType.Customer2Subject)
+	@MapperQualifier(MapperType.Customer2Subject)
 	private Mapper<Customer, Subject> customerIntoSubjectMapper;
 
 	@Autowired

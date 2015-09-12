@@ -7,16 +7,18 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
-public @interface SubjectMapper {
+public @interface MapperQualifier {
 	
-	public enum SubjectMapperType{
+	public enum MapperType{
 		Subject2Subject, Customer2Subject, Condition2Subject,
+		
+		CommercialSubject2CommercialSubject,
 		CommercialSubject2QueryMap
 	}
 
 	
 	
-	SubjectMapperType value() default SubjectMapperType.Subject2Subject ;
+	MapperType value() default MapperType.Subject2Subject ;
 }
 
 

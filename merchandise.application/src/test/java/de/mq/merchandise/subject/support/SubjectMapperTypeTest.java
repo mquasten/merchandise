@@ -6,13 +6,13 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
+import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 
 public class SubjectMapperTypeTest {
 	
 	@Test
 	public final void values(){
-		Arrays.asList(SubjectMapperType.values()).forEach(col -> Assert.assertEquals(col, SubjectMapperType.valueOf(col.name())));
+		Arrays.asList(MapperType.values()).forEach(col -> Assert.assertEquals(col, MapperType.valueOf(col.name())));
 	}
 
 }

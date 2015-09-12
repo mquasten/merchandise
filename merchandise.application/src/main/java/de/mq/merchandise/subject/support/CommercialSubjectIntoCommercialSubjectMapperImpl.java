@@ -5,28 +5,21 @@ package de.mq.merchandise.subject.support;
 import org.springframework.stereotype.Component;
 
 
-
-
-
-
-import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.support.ReflectionBasedFieldMapperImpl;
 
 @Component
-@MapperQualifier(MapperType.Subject2Subject)
-class SubjectIntoSubjectMapperImpl extends ReflectionBasedFieldMapperImpl implements Mapper<Subject,Subject> {
+@MapperQualifier(MapperType.CommercialSubject2CommercialSubject)
+class CommercialSubjectIntoCommercialSubjectMapperImpl extends ReflectionBasedFieldMapperImpl implements Mapper<CommercialSubject,CommercialSubject> {
 
 	
-	static final String DESCRIPTION_FIELD = "description";
+	
 	static final String NAME_FIELD = "name";
 
 	@Override
-	public Subject mapInto(final Subject source, final Subject target) {
+	public CommercialSubject mapInto(final CommercialSubject source, final CommercialSubject target) {
 		assign(NAME_FIELD, target, source.name());
-		assign(DESCRIPTION_FIELD, target, source.description());
-	
 		return target;
 	}
 

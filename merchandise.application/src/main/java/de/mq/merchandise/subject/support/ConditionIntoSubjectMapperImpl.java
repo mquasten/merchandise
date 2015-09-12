@@ -4,12 +4,12 @@ import org.springframework.stereotype.Component;
 
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
-import de.mq.merchandise.subject.support.SubjectMapper.SubjectMapperType;
+import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.support.ReflectionBasedFieldMapperImpl;
 
 @Component
-@SubjectMapper(SubjectMapperType.Condition2Subject)
+@MapperQualifier(MapperType.Condition2Subject)
 class ConditionIntoSubjectMapperImpl extends ReflectionBasedFieldMapperImpl implements Mapper<Condition, Subject>{
 
 	private static final String DATA_TYPE_FIELD = "dataType";
