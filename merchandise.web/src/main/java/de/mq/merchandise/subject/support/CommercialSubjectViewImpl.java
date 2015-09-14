@@ -18,6 +18,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
@@ -234,6 +235,84 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		newButton.addClickListener(event -> subjectList.setValue(null));
 
+		
+		
+		
+		
+		
+		final VerticalLayout itemTableLayout = new VerticalLayout();
+
+		itemTableLayout.setVisible(false);
+		itemTableLayout.setMargin(new MarginInfo(true, false, false, false));
+
+		final HorizontalLayout buttonItemLayout = new HorizontalLayout();
+
+		buttonItemLayout.setMargin(new MarginInfo(false, false, true, false));
+		buttonItemLayout.setSpacing(true);
+
+		final HorizontalLayout itemEditorLayout = new HorizontalLayout();
+		itemEditorLayout.setWidth("100%");
+		final FormLayout itemCols = new FormLayout();
+		itemCols.setWidth("100%");
+		itemEditorLayout.addComponent(itemCols);
+		itemTableLayout.addComponent(itemEditorLayout);
+
+		final FieldGroup itemFields = new FieldGroup();
+
+		Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible()).forEach(col -> {
+
+			final ComboBox field = new ComboBox(col.name());
+
+	
+
+			itemFields.bind(field, col);
+			itemCols.addComponent(field);
+
+		});
+
+	
+
+		final Button saveItemButton = new Button("speichern");
+		saveItemButton.setIcon(newIcon);
+		final Button newItemButton = new Button("neu");
+		newItemButton.setEnabled(false);
+
+		final Button deleteItemButton = new Button("löschen");
+		deleteItemButton.setEnabled(false);
+		buttonItemLayout.addComponent(saveItemButton);
+		buttonItemLayout.addComponent(newItemButton);
+		buttonItemLayout.addComponent(deleteItemButton);
+		itemTableLayout.addComponent(buttonItemLayout);
+
+		final Table itemTable = new Table();
+		itemTable.setCaption("Positionen");
+	
+
+		itemTable.setWidth("100%");
+		itemTable.setPageLength(5);
+
+		itemTableLayout.addComponent(itemTable);
+		editor.addComponent(itemTableLayout);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		splitPanel.addComponent(editor);
 
 		commercialSubjectModel.register(e -> {
@@ -244,12 +323,13 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 			deleteButton.setEnabled(false);
 			editorFields.setItemDataSource(commercialSubjectToItemConverter.convert(commercialSubjectModel.getCommercialSubject().get()));
-
+			itemTableLayout.setVisible(false);
 			if (commercialSubjectModel.getCommercialSubject().get().id().isPresent()) {
+				itemTableLayout.setVisible(true);
 				saveButton.setIcon(editIcon);
 				newButton.setEnabled(true);
 				deleteButton.setEnabled(true);
-
+				
 				return;
 			}
 
