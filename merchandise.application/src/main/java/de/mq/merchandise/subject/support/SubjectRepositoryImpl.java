@@ -3,6 +3,7 @@ package de.mq.merchandise.subject.support;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -18,6 +19,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import de.mq.merchandise.ResultNavigation;
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 
 @Repository
@@ -157,6 +159,22 @@ class SubjectRepositoryImpl implements SubjectRepository {
 	@Override
 	public Subject subject(Long id) {
 		return entityManager.find(SubjectImpl.class, id);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.SubjectRepository#subjectMapForCustomer(de.mq.merchandise.customer.Customer)
+	 */
+	
+	@Override
+	public final Collection<Entry<Long, String>> subjectMapForCustomer(final Customer customer) {
+		Assert.notNull(customer);
+		Assert.isTrue(customer.id().isPresent());
+		
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		final TypedQuery<Entry<Long,String>> query =  entityManager.createNamedQuery(SUBJECTS_MAP_FOR_CUSTOMER_QUERY,(Class<Entry<Long,String>>) (Class) Entry.class);
+		query.setParameter(SubjectRepository.ID_PARAM_NAME, customer.id().get());
+		return Collections.unmodifiableCollection( query.getResultList());
 	}
 
 }

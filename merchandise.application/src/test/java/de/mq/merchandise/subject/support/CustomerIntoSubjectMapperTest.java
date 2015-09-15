@@ -12,7 +12,7 @@ import de.mq.merchandise.support.Mapper;
 
 public class CustomerIntoSubjectMapperTest {
 	
-	 final Mapper<Customer,Subject> mapper = new CustomerIntoSubjectMapperImpl();
+	 final Mapper<Customer,Subject> mapper = new CustomerIntoSubjectMapperImpl<>();
 	 
 	 @Test
 	 public final void mapInto() {

@@ -37,9 +37,10 @@ import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.support.Mapper;
 
-@Ignore
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/repositories.xml" })
+@Ignore
 public class CommercialSubjectRepositoryIntegrationTest {
 	
 	
@@ -162,5 +163,7 @@ public class CommercialSubjectRepositoryIntegrationTest {
 		
 		Assert.assertEquals(1, commercialSubjectRepository.countCommercialSubjectsForCustomer(mapper.mapInto(commercialSubject, new HashMap<>())).intValue());
 	}
+	
+	
 
 }

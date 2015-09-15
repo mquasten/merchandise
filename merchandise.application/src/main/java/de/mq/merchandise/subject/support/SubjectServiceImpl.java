@@ -1,6 +1,7 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import de.mq.merchandise.ResultNavigation;
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 
 @Service
@@ -65,5 +67,15 @@ class SubjectServiceImpl implements SubjectService {
 		final Subject subject = subjectRepository.subject(id);
 		Assert.notNull(subject , "Subject not found");
 		return subject;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.subject.support.SubjectService#subjectEntries(de.mq.merchandise.customer.Customer)
+	 */
+	@Override
+	@Transactional(readOnly=true)
+	public final Collection<Entry<Long,String>> subjectEntries(final Customer customer) {
+		return subjectRepository.subjectMapForCustomer(customer);
 	}
 }

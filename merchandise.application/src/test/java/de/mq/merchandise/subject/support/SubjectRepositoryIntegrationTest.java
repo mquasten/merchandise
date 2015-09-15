@@ -122,5 +122,15 @@ public class SubjectRepositoryIntegrationTest {
 		Assert.assertNull(entityManager.find(waste.stream().findFirst().get().getValue(), waste.stream().findFirst().get().getKey()));
 		waste.remove(0);
 	}
+	@Test
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Rollback(false)
+	public final void subjects() {
+		final Customer customer = Mockito.mock(Customer.class);
+		Mockito.when(customer.id()).thenReturn(Optional.of(CUSTOMER_ID));
+		final Collection<Entry<Long,String>> results = subjectRepository.subjectMapForCustomer(customer);
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(SUBJECT_NAME, results.stream().findFirst().get().getValue());
+	}
 
 }
