@@ -11,8 +11,10 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
@@ -20,6 +22,7 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -261,7 +264,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible()).forEach(col -> {
 
-			final ComboBox field = new ComboBox(col.name());
+			final Field<?> field = col.newField();
 
 	
 
@@ -271,7 +274,18 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		});
 
 	
+		final ComboBox box = (ComboBox) itemFields.getField(CommercialSubjectItemCols.Subject);
+		
+		Container container=new IndexedContainer();
 
+		 container.addContainerProperty(SubjectCols.Name, String.class,"");
+		 
+		Item item = container.addItem(19680528L);
+		item.getItemProperty(SubjectCols.Name).setValue("Petstore");
+		
+		box.setContainerDataSource(container);
+		box.setItemCaptionPropertyId(SubjectCols.Name);
+		
 		final Button saveItemButton = new Button("speichern");
 		saveItemButton.setIcon(newIcon);
 		final Button newItemButton = new Button("neu");
