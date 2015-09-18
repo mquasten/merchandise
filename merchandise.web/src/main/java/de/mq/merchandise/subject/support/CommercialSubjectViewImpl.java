@@ -275,16 +275,22 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 	
 		final ComboBox box = (ComboBox) itemFields.getField(CommercialSubjectItemCols.Subject);
+		box.setItemCaptionPropertyId(SubjectCols.Name);
+		final Container container=new IndexedContainer();
 		
-		Container container=new IndexedContainer();
-
-		 container.addContainerProperty(SubjectCols.Name, String.class,"");
-		 
-		Item item = container.addItem(19680528L);
-		item.getItemProperty(SubjectCols.Name).setValue("Petstore");
+		container.addContainerProperty(SubjectCols.Name, String.class,"");
+		
+		commercialSubjectModel.getSubjects().forEach(e -> {
+			
+			final Item item = container.addItem(e.getKey());
+			item.getItemProperty(SubjectCols.Name).setValue(e.getValue());
+			
+			
+			
+		});
 		
 		box.setContainerDataSource(container);
-		box.setItemCaptionPropertyId(SubjectCols.Name);
+		
 		
 		final Button saveItemButton = new Button("speichern");
 		saveItemButton.setIcon(newIcon);

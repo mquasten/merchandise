@@ -1,12 +1,14 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 
 import de.mq.merchandise.ResultNavigation;
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
 import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.support.Mapper;
@@ -16,12 +18,15 @@ class CommercialSubjectModelControllerImpl {
 
 	private final CommercialSubjectService commercialSubjectService;
 	
+	private final SubjectService subjectService;
+	
 	
 	private final Mapper<CommercialSubject,CommercialSubject>  commercialSubject2CommercialSubjectMapper;
 	
 	@Autowired
-	CommercialSubjectModelControllerImpl(CommercialSubjectService commercialSubjectService, @MapperQualifier(MapperType.CommercialSubject2CommercialSubject) final Mapper<CommercialSubject,CommercialSubject>  commercialSubject2CommercialSubjectMapper) {
+	CommercialSubjectModelControllerImpl(CommercialSubjectService commercialSubjectService,final SubjectService subjectService, @MapperQualifier(MapperType.CommercialSubject2CommercialSubject) final Mapper<CommercialSubject,CommercialSubject>  commercialSubject2CommercialSubjectMapper) {
 		this.commercialSubjectService = commercialSubjectService;
+		this.subjectService=subjectService;
 		this.commercialSubject2CommercialSubjectMapper=commercialSubject2CommercialSubjectMapper;
 		
 	}
@@ -67,6 +72,13 @@ class CommercialSubjectModelControllerImpl {
 	@CommercialSubjectEventQualifier(EventType.CommercialSubjectDeleted)
 	void delete(final CommercialSubject commercialSubject) {
 		commercialSubjectService.remove(commercialSubject);
+	}
+	
+	@CommercialSubjectEventQualifier(EventType.ListSubjects)
+	public Collection<Entry<Long,String>> subjects(final Customer customer) {
+		Assert.notNull(customer, "customer is mandatory");
+		Assert.isTrue(customer.id().isPresent(), "Customer should be persistent");
+		return subjectService.subjectEntries(customer);
 	}
 
 }

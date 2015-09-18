@@ -1,5 +1,7 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.Collection;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import de.mq.merchandise.customer.Customer;
@@ -13,7 +15,7 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 		SearchCriteriaChanged, 
 		CommericalSubjectChanged, 
 		CommercialSubjectSaved, 
-		CommercialSubjectDeleted;
+		CommercialSubjectDeleted, ListSubjects;
 		
 	}
 
@@ -40,5 +42,9 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 	void delete(final CommercialSubject commercialSubject);
+
+
+
+	Collection<Entry<Long, String>> getSubjects();
 
 }

@@ -3,7 +3,6 @@ package de.mq.merchandise.subject.support;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
-import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;

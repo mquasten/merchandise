@@ -1,5 +1,7 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.Collection;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -85,6 +87,13 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	public void delete(final CommercialSubject commercialSubject) {
 		commercialSubjectEventFascade.delete(commercialSubject);
 		setCommercialSubjectId(null);
+	}
+	
+	@Override
+	public Collection<Entry<Long,String>> getSubjects() {
+		
+		return commercialSubjectEventFascade.subjects(customer);
+		
 	}
 
 }

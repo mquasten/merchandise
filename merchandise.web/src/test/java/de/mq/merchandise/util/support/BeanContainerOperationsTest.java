@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.util.UriUtils;
+
 
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.support.BeanContainerOperations.BeanFilter;
