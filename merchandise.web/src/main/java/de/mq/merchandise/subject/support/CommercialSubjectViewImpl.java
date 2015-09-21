@@ -1,6 +1,8 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Component;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
@@ -76,13 +77,15 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	
 	private final Converter<Item, CommercialSubject> commercialSubjectToItemConverterFlat;
 	
+	 Converter<Collection<Entry<Long,String>>, Container> entriesToConatainerConverter;
+	
 	private final MessageSource messageSource; 
 
 	final ThemeResource editIcon = new ThemeResource("edit-icon.png");
 	final ThemeResource newIcon = new ThemeResource("new-icon.png");
 
 	@Autowired
-	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, final UserModel userModel, final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter, final ValidationUtil validationUtil, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverterFlat)final Converter<Item, CommercialSubject> commercialSubjectToItemConverterFlat) {
+	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, final UserModel userModel, final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter, final ValidationUtil validationUtil, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverterFlat)final Converter<Item, CommercialSubject> commercialSubjectToItemConverterFlat, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.EntriesToConatainerConverter) Converter<Collection<Entry<Long,String>>, Container> entriesToConatainerConverter) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;
 		this.commercialSubjectSearchItem = commercialSubjectSearchItem;
@@ -93,6 +96,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		this.messageSource=messageSource;
 		this.commercialSubjectToItemConverter = commercialSubjectToItemConverter;
 		this.commercialSubjectToItemConverterFlat=commercialSubjectToItemConverterFlat;
+		this.entriesToConatainerConverter=entriesToConatainerConverter;
 	}
 
 	/*
@@ -276,20 +280,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	
 		final ComboBox box = (ComboBox) itemFields.getField(CommercialSubjectItemCols.Subject);
 		box.setItemCaptionPropertyId(SubjectCols.Name);
-		final Container container=new IndexedContainer();
-		
-		container.addContainerProperty(SubjectCols.Name, String.class,"");
-		
-		commercialSubjectModel.getSubjects().forEach(e -> {
-			
-			final Item item = container.addItem(e.getKey());
-			item.getItemProperty(SubjectCols.Name).setValue(e.getValue());
-			
-			
-			
-		});
-		
-		box.setContainerDataSource(container);
+	
+		box.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
 		
 		
 		final Button saveItemButton = new Button("speichern");

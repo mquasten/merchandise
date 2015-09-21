@@ -5,8 +5,10 @@ import java.util.Map.Entry;
 
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
+import de.mq.merchandise.support.BasicEntity;
 
-interface CommercialSubjectItem {
+interface CommercialSubjectItem  extends BasicEntity {
+	
 
 	String name();
 

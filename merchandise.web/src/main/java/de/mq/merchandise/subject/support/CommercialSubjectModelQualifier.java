@@ -22,6 +22,7 @@ public @interface CommercialSubjectModelQualifier {
 	
 	public  enum Type {
 		CommercialSubjectToItemConverter,
+		EntriesToConatainerConverter,
 		LazyQueryContainer,
 		CommercialSubjectModel,
 		ItemToCommercialSubjectConverter,

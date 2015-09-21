@@ -204,4 +204,6 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 		return commercialSubjet;
 	}
 
+
+
 }
