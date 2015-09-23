@@ -102,5 +102,11 @@ class CommercialSubjectModels {
 	Converter<Item, CommercialSubject> itemToCommercialSubjectConverterFlat() {
 		return new ItemToDomainConverterImpl<>(CommercialSubjectImpl.class, new Enum[] {CommercialSubjectCols.Name, CommercialSubjectCols.Id});
 	}
+	
+	@Bean
+	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectItemConverter)
+	Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter() {
+		return new ItemToDomainConverterImpl<>(CommercialSubjectItemImpl.class, CommercialSubjectItemCols.class);
+	}
 
 }

@@ -19,6 +19,8 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 
 	private CommercialSubject commercialSubject;
 	
+	private CommercialSubjectItem commercialSubjectItem = BeanUtils.instantiateClass(CommercialSubjectItemImpl.class) ; 
+	
 	private final CommercialSubjectEventFascade commercialSubjectEventFascade;
 	
 	private final  Mapper<Customer,CommercialSubject> customerMapper; 
@@ -84,16 +86,21 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	}
 	
 	@Override
-	public void delete(final CommercialSubject commercialSubject) {
+	public final void delete(final CommercialSubject commercialSubject) {
 		commercialSubjectEventFascade.delete(commercialSubject);
 		setCommercialSubjectId(null);
 	}
 	
 	@Override
-	public Collection<Entry<Long,String>> getSubjects() {
+	public final Collection<Entry<Long,String>> getSubjects() {
 		
 		return commercialSubjectEventFascade.subjects(customer);
 		
+	}
+	
+	@Override
+	public final Optional<CommercialSubjectItem> getCommercialSubjectItem() {
+		return Optional.ofNullable(commercialSubjectItem);
 	}
 
 }

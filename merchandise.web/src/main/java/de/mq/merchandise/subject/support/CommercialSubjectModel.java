@@ -33,7 +33,7 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 
-	Optional<CommercialSubject> getCommercialSubject();
+	
 
 
 
@@ -46,5 +46,13 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 	Collection<Entry<Long, String>> getSubjects();
+
+
+
+	Optional<CommercialSubjectItem> getCommercialSubjectItem();
+
+
+
+	Optional<CommercialSubject> getCommercialSubject();
 
 }
