@@ -1,7 +1,7 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
-import java.util.Map.Entry;
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,7 +75,7 @@ class SubjectServiceImpl implements SubjectService {
 	 */
 	@Override
 	@Transactional(readOnly=true)
-	public final Collection<Entry<Long,String>> subjectEntries(final Customer customer) {
-		return subjectRepository.subjectMapForCustomer(customer);
+	public final Collection<Subject> subjects(final Customer customer) {
+		return Collections.unmodifiableCollection(subjectRepository.subjectsForCustomer(customer));
 	}
 }

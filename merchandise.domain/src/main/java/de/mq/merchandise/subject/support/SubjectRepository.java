@@ -1,7 +1,6 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
-import java.util.Map.Entry;
 
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.customer.Customer;
@@ -25,6 +24,6 @@ interface SubjectRepository {
 	
 	Subject subject(final Long id);
 	
-	Collection<Entry<Long,String>> subjectMapForCustomer(final Customer customer);
+	Collection<Subject> subjectsForCustomer(final Customer customer);
 	
 }

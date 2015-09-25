@@ -1,13 +1,13 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
-import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.support.ObservableImpl;
 
@@ -92,7 +92,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	}
 	
 	@Override
-	public final Collection<Entry<Long,String>> getSubjects() {
+	public final Collection<Subject> getSubjects() {
 		
 		return commercialSubjectEventFascade.subjects(customer);
 		

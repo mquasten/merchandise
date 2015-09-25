@@ -28,6 +28,7 @@ public class CommercialSubjectItemConverterImpl implements Converter<CommercialS
 		if (commercialSubjectItem.subject() != null) {
 			item.addItemProperty(CommercialSubjectItemCols.Subject, new ObjectProperty<>(commercialSubjectItem.subject().id().get()));
 		} else {
+			
 			item.addItemProperty(CommercialSubjectItemCols.Subject, new ObjectProperty<>(CommercialSubjectItemCols.Subject.nvl()));
 		}
 		return item;

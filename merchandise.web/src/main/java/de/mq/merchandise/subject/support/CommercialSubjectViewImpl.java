@@ -2,7 +2,6 @@ package de.mq.merchandise.subject.support;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 
@@ -33,6 +32,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.ValidationUtil;
 import de.mq.merchandise.util.support.RefreshableContainer;
 import de.mq.merchandise.util.support.ViewNav;
@@ -77,7 +77,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	
 	private final Converter<Item, CommercialSubject> commercialSubjectToItemConverterFlat;
 	
-	private  final Converter<Collection<Entry<Long,String>>, Container> entriesToConatainerConverter;
+	private  final Converter<Collection<Subject>, Container> entriesToConatainerConverter;
 	 
 	 private  final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter;
 	 private final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter; 
@@ -88,7 +88,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	final ThemeResource newIcon = new ThemeResource("new-icon.png");
 
 	@Autowired
-	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, final UserModel userModel, final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter, final ValidationUtil validationUtil, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverterFlat)final Converter<Item, CommercialSubject> commercialSubjectToItemConverterFlat, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.EntriesToConatainerConverter) Converter<Collection<Entry<Long,String>>, Container> entriesToConatainerConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter) final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter, final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter ) {
+	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, final UserModel userModel, final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter, final ValidationUtil validationUtil, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverterFlat)final Converter<Item, CommercialSubject> commercialSubjectToItemConverterFlat, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.EntriesToConatainerConverter) Converter<Collection<Subject>, Container> entriesToConatainerConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter) final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter, final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter ) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;
 		this.commercialSubjectSearchItem = commercialSubjectSearchItem;
@@ -285,7 +285,11 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		
 		final ComboBox box = (ComboBox) itemFields.getField(CommercialSubjectItemCols.Subject);
 		box.setItemCaptionPropertyId(SubjectCols.Name);
-	
+
+		
+
+		
+		
 		box.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
 		
 		
@@ -293,10 +297,14 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		
 		
 		saveItemButton.addClickListener(event -> {
+			//System.out.println(">>>>" + itemFields.getItemDataSource().getItemProperty(CommercialSubjectItemCols.Subject).getValue());
+			
 			commit(itemFields);
 			CommercialSubjectItem item = itemToCommercialSubjectItemConverter.convert(itemFields.getItemDataSource());
 			
-			System.out.println(item.name());
+			System.out.println("subjectId=" +item.subject().id());
+			System.out.println("subjectName=" +item.name());
+			System.out.println("mandatory=" +item.mandatory());
 			
 			
 		});

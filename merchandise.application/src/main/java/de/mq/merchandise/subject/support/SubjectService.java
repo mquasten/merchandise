@@ -1,7 +1,6 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
-import java.util.Map.Entry;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +21,7 @@ public interface SubjectService {
 	@Transactional
 	void remove(Subject subject);
 	@Transactional
-	Collection<Entry<Long, String>> subjectEntries(final Customer customer);
+	Collection<Subject> subjects(final Customer customer);
 
 	
 

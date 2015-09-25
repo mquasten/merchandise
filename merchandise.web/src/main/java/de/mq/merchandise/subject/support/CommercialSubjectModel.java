@@ -1,10 +1,10 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
-import java.util.Map.Entry;
 import java.util.Optional;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.Observable;
 
 public interface CommercialSubjectModel extends Observable<CommercialSubjectModel.EventType> {
@@ -45,7 +45,7 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 
-	Collection<Entry<Long, String>> getSubjects();
+	Collection<Subject> getSubjects();
 
 
 

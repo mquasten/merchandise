@@ -128,9 +128,9 @@ public class SubjectRepositoryIntegrationTest {
 	public final void subjects() {
 		final Customer customer = Mockito.mock(Customer.class);
 		Mockito.when(customer.id()).thenReturn(Optional.of(CUSTOMER_ID));
-		final Collection<Entry<Long,String>> results = subjectRepository.subjectMapForCustomer(customer);
+		final Collection<Subject> results = subjectRepository.subjectsForCustomer(customer);
 		Assert.assertEquals(1, results.size());
-		Assert.assertEquals(SUBJECT_NAME, results.stream().findFirst().get().getValue());
+		Assert.assertEquals(SUBJECT_NAME, results.stream().findFirst().get().name());
 	}
 
 }

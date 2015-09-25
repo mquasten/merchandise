@@ -1,5 +1,7 @@
 package de.mq.merchandise.subject.support;
 
+import java.lang.reflect.Field;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.BeanUtils;
@@ -10,10 +12,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.util.ReflectionUtils;
 
 import com.vaadin.data.Item;
 
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
 import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.support.Mapper;
@@ -106,7 +110,20 @@ class CommercialSubjectModels {
 	@Bean
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectItemConverter)
 	Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter() {
-		return new ItemToDomainConverterImpl<>(CommercialSubjectItemImpl.class, CommercialSubjectItemCols.class);
+		return new ItemToDomainConverterImpl<CommercialSubjectItem>(CommercialSubjectItemImpl.class, CommercialSubjectItemCols.class) {
+
+			@Override
+			public CommercialSubjectItem convert(final Item item) {
+				final Long id = (Long) item.getItemProperty(CommercialSubjectItemCols.Subject).getValue();
+				final Subject subject = BeanUtils.instantiateClass(SubjectImpl.class);
+				final Field field = ReflectionUtils.findField(SubjectImpl.class, "id");
+				field.setAccessible(true);
+				ReflectionUtils.setField(field, subject, id);
+				item.getItemProperty(CommercialSubjectItemCols.Subject).setValue(subject);
+				return super.convert(item);
+			}
+			
+		};
 	}
 
 }

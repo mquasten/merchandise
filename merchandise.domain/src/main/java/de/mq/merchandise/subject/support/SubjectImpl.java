@@ -40,7 +40,7 @@ import de.mq.merchandise.subject.Subject;
 @Table(name="subject")
 @NamedQueries({
 	@NamedQuery(name = SubjectRepository.SUBJECTS_FOR_CUSTOMER_QUERY, query = "Select  s from Subject s where s.customer.id = :" + SubjectRepository.ID_PARAM_NAME + " and COALESCE(s.name,'') like :" + SubjectRepository.NAME_PARAM_NAME +" and COALESCE(s.description,'') like :" + SubjectRepository.DESC_PARAM_NAME ),
-   @NamedQuery(name=SubjectRepository.SUBJECTS_MAP_FOR_CUSTOMER_QUERY ,  query="SELECT new java.util.AbstractMap$SimpleImmutableEntry(s.id, s.name) from Subject s  where  s.customer.id = :" + SubjectRepository.ID_PARAM_NAME + " order by s.name" )	
+   @NamedQuery(name=SubjectRepository.SUBJECTS_MAP_FOR_CUSTOMER_QUERY ,  query="SELECT s from Subject s  where  s.customer.id = :" + SubjectRepository.ID_PARAM_NAME + " order by s.name" )	
 })
 public class SubjectImpl implements Subject{
 	
