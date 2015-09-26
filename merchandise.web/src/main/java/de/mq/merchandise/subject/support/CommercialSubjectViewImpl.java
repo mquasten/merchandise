@@ -75,7 +75,6 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 	private final Converter<CommercialSubject, Item> commercialSubjectToItemConverter;
 	
-	private final Converter<Item, CommercialSubject> commercialSubjectToItemConverterFlat;
 	
 	private  final Converter<Collection<Subject>, Container> entriesToConatainerConverter;
 	 
@@ -88,7 +87,19 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	final ThemeResource newIcon = new ThemeResource("new-icon.png");
 
 	@Autowired
-	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, final UserModel userModel, final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter, final ValidationUtil validationUtil, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverterFlat)final Converter<Item, CommercialSubject> commercialSubjectToItemConverterFlat, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.EntriesToConatainerConverter) Converter<Collection<Subject>, Container> entriesToConatainerConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter) final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter, final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter ) {
+	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, 
+			final UserModel userModel, 
+			final MessageSource messageSource, 
+			ViewNav viewNav, 
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView,
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, 
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, 
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter, 
+			final ValidationUtil validationUtil, 
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter, 
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.EntriesToConatainerConverter) Converter<Collection<Subject>, Container> entriesToConatainerConverter, 
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter) final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter, 
+			final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter ) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;
 		this.commercialSubjectSearchItem = commercialSubjectSearchItem;
@@ -98,7 +109,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		this.validationUtil = validationUtil;
 		this.messageSource=messageSource;
 		this.commercialSubjectToItemConverter = commercialSubjectToItemConverter;
-		this.commercialSubjectToItemConverterFlat=commercialSubjectToItemConverterFlat;
+		
 		this.entriesToConatainerConverter=entriesToConatainerConverter;
 		this.commercialSubjectItemConverter=commercialSubjectItemConverter;
 		this.itemToCommercialSubjectItemConverter=itemToCommercialSubjectItemConverter;
@@ -208,7 +219,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		saveButton.addClickListener(e -> {
 
 			commit(editorFields);
-			final CommercialSubject commercialSubject = commercialSubjectToItemConverterFlat.convert(editorFields.getItemDataSource());
+			final CommercialSubject commercialSubject = itemToCommercialSubjectConverter.convert(editorFields.getItemDataSource());
+		
 
 			if (!validationUtil.validate(commercialSubject, editorFields, userModel.getLocale())) {
 				return;

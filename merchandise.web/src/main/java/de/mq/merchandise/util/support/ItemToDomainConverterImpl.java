@@ -3,6 +3,10 @@ package de.mq.merchandise.util.support;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.Id;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
@@ -12,47 +16,65 @@ import org.springframework.util.StringUtils;
 
 import com.vaadin.data.Item;
 
-
-
 public class ItemToDomainConverterImpl<T> implements Converter<Item, T> {
-	
-	private final Class<? extends T> clazz; 
-	private final  Enum<?>[] cols;
+
+	private final Class<? extends T> clazz;
+	private final Enum<?>[] cols;
+
+	private final Map<Enum<?>, Class<?>> childs = new HashMap<>();
+
 	public ItemToDomainConverterImpl(Class<? extends T> clazz, Class<? extends Enum<?>> colClass) {
-		this.clazz=clazz;
+		this.clazz = clazz;
 		final Method method = ReflectionUtils.findMethod(colClass, "values");
-		
+
 		method.setAccessible(true);
-		
+
 		cols = (Enum<?>[]) ReflectionUtils.invokeMethod(method, null);
-		
+
 	}
-	
-	public ItemToDomainConverterImpl(Class<? extends T> clazz, final  Enum<?>[] cols) {
-		this.clazz=clazz;
-		this.cols=cols;
+
+	public ItemToDomainConverterImpl(Class<? extends T> clazz, final Enum<?>[] cols) {
+		this.clazz = clazz;
+		this.cols = cols;
+	}
+
+	public final ItemToDomainConverterImpl<T> withChild(final Enum<?> col, final Class<?> clazz) {
+		childs.put(col, clazz);
+		return this;
 	}
 
 	@Override
 	public T convert(final Item item) {
-		if( item == null){
+		if (item == null) {
 			return null;
 		}
 		final T domain = BeanUtils.instantiateClass(clazz);
 		Arrays.asList(cols).forEach(col -> {
-			final Field field = ReflectionUtils.findField(domain.getClass(), StringUtils.uncapitalize(col.name()));
-			Assert.notNull(field , "Field not found in Type: " + domain.getClass());
-			field.setAccessible(true);
-			if(item.getItemProperty(col) != null){
-				Object value = item.getItemProperty(col).getValue();
-				if((value != null)&& ( value.equals(""))) {
-					value=null;
-				}
-				ReflectionUtils.setField(field, domain, value);
-			}
-			
-		} );
+			handleItem(item, domain, col);
+
+		});
 		return domain;
+	}
+
+	private void handleItem(final Item item, final T domain, Enum<?> col) {
+		final Field field = ReflectionUtils.findField(domain.getClass(), StringUtils.uncapitalize(col.name()));
+		Assert.notNull(field, "Field not found in Type: " + domain.getClass());
+		field.setAccessible(true);
+		if (item.getItemProperty(col) == null) {
+			return;
+		}
+
+
+
+		if (childs.containsKey(col)) {
+			final Object entity = BeanUtils.instantiateClass(childs.get(col));
+			ReflectionUtils.doWithFields(entity.getClass(), f -> { f.setAccessible(true); f.set(entity,item.getItemProperty(col).getValue());}, f -> f.isAnnotationPresent(Id.class));
+			ReflectionUtils.setField(field, domain, entity);
+			return;
+		}
+
+		ReflectionUtils.setField(field, domain, item.getItemProperty(col).getValue());
+
 	}
 
 }
