@@ -13,6 +13,7 @@ public class TestConstants {
 	public static  final Enum<? extends TableContainerColumns>  SUBJECT_COLS_ID = SubjectCols.Id; 
 	public static  final Enum<? extends TableContainerColumns> SUBJECT_COLS_NAME = SubjectCols.Name; 
 	public static  final  Enum<? extends TableContainerColumns> SUBJECT_COLS_DESC = SubjectCols.Description; 
+	public static  final  Enum<? extends TableContainerColumns> SUBJECT_COLS_DATE = SubjectCols.DateCreated; 
 	
 	public static final Class<SubjectModelControllerImpl> SUBJECT_CONTROLLER_CLASS = SubjectModelControllerImpl.class;
 	
