@@ -61,8 +61,7 @@ public class DomainToItemConverterImpl<T> implements Converter<T, Item> {
 			
 			ReflectionUtils.doWithFields(domain.getClass(), field -> {
 				field.setAccessible(true);
-				final Object value= field.get(domain);
-				handleValue(item, col, value);
+				handleValue(item, col, field.get(domain));
 				
 			}, field -> field.getName().endsWith(StringUtils.uncapitalize(col.name())));
 			
@@ -74,20 +73,18 @@ public class DomainToItemConverterImpl<T> implements Converter<T, Item> {
 	@SuppressWarnings("unchecked")
 	private void handleValue(final Item item, Enum<? extends TableContainerColumns> col, final Object value) {
 		
-		
-		if( ! childs.contains(col)) {
-			handleSimpleValue(item, col, value);
-			return;
-		}
 		if( value == null){
-			item.getItemProperty(col).setValue(((TableContainerColumns)col).nvl());
 			return;
 		}
+		if( ! childs.contains(col)) {
+			 item.getItemProperty(col).setValue( value);	
+			return;
+		}
+		
 		ReflectionUtils.doWithFields(value.getClass(), field -> {
 			field.setAccessible(true);
 			final Object id = field.get(value);
 			if( id == null) {
-				item.getItemProperty(col).setValue(((TableContainerColumns)col).nvl());
 				return;
 			}
 			item.getItemProperty(col).setValue(id);
@@ -96,13 +93,6 @@ public class DomainToItemConverterImpl<T> implements Converter<T, Item> {
 	}
 
 	
-	@SuppressWarnings("unchecked")
-	private void handleSimpleValue(final Item item, Enum<? extends TableContainerColumns> col, final Object value) {
-		if( value == null) {
-			return;
-		}
-		 item.getItemProperty(col).setValue( value);	
-		 return;
-	}
+	
 
 }

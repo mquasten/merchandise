@@ -20,6 +20,7 @@ import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.EventFascadeProxyFactory;
 import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
+import de.mq.merchandise.util.support.DomainToItemConverterImpl;
 import de.mq.merchandise.util.support.ItemToDomainConverterImpl;
 import de.mq.merchandise.util.support.RefreshableContainer;
 import de.mq.merchandise.util.support.ViewNav;
@@ -103,6 +104,18 @@ class CommercialSubjectModels {
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectItemConverter)
 	Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter() {
 		return new ItemToDomainConverterImpl<CommercialSubjectItem>(CommercialSubjectItemImpl.class, CommercialSubjectItemCols.class).withChild(CommercialSubjectItemCols.Subject, SubjectImpl.class);
+	}
+	
+	@Bean
+	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter)
+	 Converter<CommercialSubject, Item>   commercialSubjectConverter()  {
+		return new DomainToItemConverterImpl<>(CommercialSubjectCols.class);
+	}
+	
+	@Bean
+	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter)
+	 Converter<CommercialSubjectItem, Item>  commercialSubjectItemConverter()  {
+		return new DomainToItemConverterImpl<>(CommercialSubjectItemCols.class);
 	}
 
 }
