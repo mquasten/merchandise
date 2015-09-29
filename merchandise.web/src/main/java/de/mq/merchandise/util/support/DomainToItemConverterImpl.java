@@ -4,9 +4,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-
-import javax.persistence.Id;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.ReflectionUtils;
@@ -24,17 +21,7 @@ public class DomainToItemConverterImpl<T> implements Converter<T, Item> {
 	
 
 	private final Collection<Enum<? extends TableContainerColumns>> cols = new ArrayList<>();
-	
-	
-	
-	private final Collection<Enum<? extends TableContainerColumns>> childs = new HashSet<>(); ; 
 
-	
-	public DomainToItemConverterImpl<T> withChild(Enum<? extends TableContainerColumns> col) {
-		childs.add(col);
-		return this;
-		
-	}
 
 	@SuppressWarnings("unchecked")
 	public DomainToItemConverterImpl(Class<? extends Enum<? extends TableContainerColumns>> colClass) {
@@ -73,36 +60,13 @@ public class DomainToItemConverterImpl<T> implements Converter<T, Item> {
 
 	@SuppressWarnings("unchecked")
 	private void handleValue(final Item item, Enum<? extends TableContainerColumns> col, final Object value) {
-		
-		
-		if( ! childs.contains(col)) {
-			handleSimpleValue(item, col, value);
-			return;
-		}
-		if( value == null){
-			item.getItemProperty(col).setValue(((TableContainerColumns)col).nvl());
-			return;
-		}
-		ReflectionUtils.doWithFields(value.getClass(), field -> {
-			field.setAccessible(true);
-			final Object id = field.get(value);
-			if( id == null) {
-				item.getItemProperty(col).setValue(((TableContainerColumns)col).nvl());
-				return;
-			}
-			item.getItemProperty(col).setValue(id);
-			
-		}, field -> field.isAnnotationPresent(Id.class));
-	}
-
-	
-	@SuppressWarnings("unchecked")
-	private void handleSimpleValue(final Item item, Enum<? extends TableContainerColumns> col, final Object value) {
 		if( value == null) {
 			return;
 		}
-		 item.getItemProperty(col).setValue( value);	
-		 return;
+		
+		
+		
+		 item.getItemProperty(col).setValue( value);
 	}
 
 }
