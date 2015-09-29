@@ -15,16 +15,29 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 
 
+
+
+
+
+
+
+
+
+
 import com.vaadin.data.Item;
 
+import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectImpl;
 import de.mq.merchandise.subject.support.TestConstants;
+import de.mq.merchandise.util.TableContainerColumns;
 
 
 public class DomainToItemConverterTest {
 	
 	
+	private static final String CUSTOMER_FIELD = "customer";
 	private static final String EMPTY_STRING = "";
 	private static final String ID_FIELD = "id";
 	private static final String DESCRIPTION_FIELD = "description";
@@ -78,6 +91,86 @@ public class DomainToItemConverterTest {
 		Assert.assertEquals(SUBJECT_NAME, item.getItemProperty(TestConstants.SUBJECT_COLS_NAME).getValue());
 		
 		Assert.assertEquals(1, item.getItemPropertyIds().size());
+	}
+	
+	
+	@Test
+	public final void toWebChild() {
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		final Converter<Subject, Item> converter = new  DomainToItemConverterImpl(SubjectTestCols.class).withChild(SubjectTestCols.Customer);
+		final Subject subject = BeanUtils.instantiateClass(SubjectImpl.class);
+		final Customer customer = BeanUtils.instantiateClass(CustomerImpl.class);
+		ReflectionTestUtils.setField(customer, "id", ID);
+		ReflectionTestUtils.setField(subject, NAME_FIELD, SUBJECT_NAME);
+		ReflectionTestUtils.setField(subject, CUSTOMER_FIELD, customer);
+		
+		final Item item = converter.convert(subject);
+		
+		Assert.assertEquals(SUBJECT_NAME, item.getItemProperty(SubjectTestCols.Name).getValue());
+		
+		Assert.assertEquals(ID, item.getItemProperty(SubjectTestCols.Customer).getValue());
+	
+	}
+	
+	@Test
+	public final void toWebChildEntityNull() {
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		final Converter<Subject, Item> converter = new  DomainToItemConverterImpl(SubjectTestCols.class).withChild(SubjectTestCols.Customer);
+		
+		final Item item = converter.convert(BeanUtils.instantiateClass(SubjectImpl.class));
+		
+		Assert.assertEquals(SubjectTestCols.Customer.nvl(), item.getItemProperty(SubjectTestCols.Customer).getValue());
+		
+	}
+	
+	@Test
+	public final void toWebChildIdNull() {
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		final Converter<Subject, Item> converter = new  DomainToItemConverterImpl(SubjectTestCols.class).withChild(SubjectTestCols.Customer);
+		
+		final Subject subject = BeanUtils.instantiateClass(SubjectImpl.class);
+		final Customer customer = BeanUtils.instantiateClass(CustomerImpl.class);
+		
+		ReflectionTestUtils.setField(subject, CUSTOMER_FIELD, customer);
+		
+		final Item item = converter.convert(subject);
+		Assert.assertEquals(SubjectTestCols.Customer.nvl(), item.getItemProperty(SubjectTestCols.Customer).getValue());
+		
+	}
+	
+	enum SubjectTestCols implements TableContainerColumns {
+		Name,
+		Customer;
+
+		@Override
+		public boolean visible() {
+			return false;
+		}
+
+		@Override
+		public Class<?> target() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean sortable() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public String orderBy() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Object nvl() {
+			// TODO Auto-generated method stub
+			return -1L;
+		}
+		
 	}
 
 }
