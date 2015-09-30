@@ -317,6 +317,10 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			System.out.println("subjectId=" +item.subject().id());
 			System.out.println("subjectName=" +item.name());
 			System.out.println("mandatory=" +item.mandatory());
+			if( ! validationUtil.validate(item, itemFields, userModel.getLocale()) ) {
+				return;
+			}
+			commercialSubjectModel.save(item);
 			
 			
 		});

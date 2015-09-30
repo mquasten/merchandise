@@ -13,7 +13,8 @@ public @interface MapperQualifier {
 		Subject2Subject, Customer2Subject, Condition2Subject,
 		
 		CommercialSubject2CommercialSubject,
-		CommercialSubject2QueryMap
+		CommercialSubject2QueryMap,
+		CommercialSubjectItemIntoCommercialSubject
 	}
 
 	

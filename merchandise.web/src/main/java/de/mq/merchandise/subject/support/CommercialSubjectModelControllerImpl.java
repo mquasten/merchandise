@@ -80,5 +80,17 @@ class CommercialSubjectModelControllerImpl {
 		Assert.isTrue(customer.id().isPresent(), "Customer should be persistent");
 		return subjectService.subjects(customer);
 	}
+	
+	@CommercialSubjectEventQualifier(EventType.ItemSaved)
+	CommercialSubject saveItem(final CommercialSubjectItem commercialSubjectItem, final Long id ) {
+		Assert.notNull(id, "Id is mandatory");
+		
+		
+		final CommercialSubject commercialSubject = commercialSubjectService.commercialSubject(id);
+		//conditionIntoSubjectMapper.mapInto(condition, subject);
+		commercialSubjectService.save(commercialSubject);
+		
+		return commercialSubject;
+	}
 
 }

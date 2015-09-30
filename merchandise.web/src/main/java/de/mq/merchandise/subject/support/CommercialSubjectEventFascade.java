@@ -38,6 +38,10 @@ interface   CommercialSubjectEventFascade {
 	@CommercialSubjectEventQualifier(EventType.ListSubjects)
 	abstract  Collection<Subject>  subjects(final Customer customer);
 
+
+	@CommercialSubjectEventQualifier(EventType.ItemSaved)
+	abstract CommercialSubject save(final CommercialSubjectItem commercialSubjectItem, final Long id);
+
 	
 	
 }

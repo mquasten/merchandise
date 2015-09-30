@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
 import de.mq.merchandise.customer.Customer;
+
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.support.ObservableImpl;
@@ -101,6 +102,17 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	@Override
 	public final Optional<CommercialSubjectItem> getCommercialSubjectItem() {
 		return Optional.ofNullable(commercialSubjectItem);
+	}
+	
+	
+	@Override
+	public void save(final CommercialSubjectItem commercialSubjectItem) {
+		
+		Assert.isTrue(commercialSubject.id().isPresent(), "commercialSubject should be persistent");
+	
+		commercialSubject= commercialSubjectEventFascade.save(commercialSubjectItem, commercialSubject.id().get() );
+		
+		//setConditionId(null);
 	}
 
 }
