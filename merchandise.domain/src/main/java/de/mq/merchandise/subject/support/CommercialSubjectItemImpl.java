@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -32,7 +31,7 @@ import de.mq.merchandise.subject.Subject;
 class CommercialSubjectItemImpl implements CommercialSubjectItem {
 
 	@Id
-	private String id;
+	private Long id;
 
 	@NotNull(message = "jsr303_mandatory")
 	@Size(min = 5, max = 30, message = "jsr303_commercial_subject_item_name_size")
@@ -67,7 +66,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 
 	CommercialSubjectItemImpl(final String name, final CommercialSubject commercialSubjet, final Subject subject, final boolean mandatory) {
 		Assert.isTrue(subject.id().isPresent());
-		this.id = new UUID(subject.id().get(), System.nanoTime() + (long) (1e12 * Math.random())).toString();
+		this.id = subject.id().get() +  System.nanoTime() + (long) (1e12 * Math.random());
 		commercialSubjectItemConditions.addAll(subject.conditions().stream().map(c -> new CommercialSubjectItemConditionImpl(this, c)).collect(Collectors.toSet()));
 		this.name = name;
 		this.subject = subject;

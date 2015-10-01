@@ -23,12 +23,14 @@ class CommercialSubjectModelControllerImpl {
 	
 	private final Mapper<CommercialSubject,CommercialSubject>  commercialSubject2CommercialSubjectMapper;
 	
+	private final Mapper<CommercialSubjectItem,CommercialSubject> commercialSubjectItemIntoCommercialSubjectMapper;
+	
 	@Autowired
-	CommercialSubjectModelControllerImpl(CommercialSubjectService commercialSubjectService,final SubjectService subjectService, @MapperQualifier(MapperType.CommercialSubject2CommercialSubject) final Mapper<CommercialSubject,CommercialSubject>  commercialSubject2CommercialSubjectMapper) {
+	CommercialSubjectModelControllerImpl(CommercialSubjectService commercialSubjectService,final SubjectService subjectService, @MapperQualifier(MapperType.CommercialSubject2CommercialSubject) final Mapper<CommercialSubject,CommercialSubject>  commercialSubject2CommercialSubjectMapper, final @MapperQualifier(MapperType.CommercialSubjectItemIntoCommercialSubject) Mapper<CommercialSubjectItem,CommercialSubject> commercialSubjectItemIntoCommercialSubjectMapper) {
 		this.commercialSubjectService = commercialSubjectService;
 		this.subjectService=subjectService;
 		this.commercialSubject2CommercialSubjectMapper=commercialSubject2CommercialSubjectMapper;
-		
+		this.commercialSubjectItemIntoCommercialSubjectMapper=commercialSubjectItemIntoCommercialSubjectMapper;
 	}
 
 	@CommercialSubjectEventQualifier(EventType.CountPaging)
@@ -86,8 +88,9 @@ class CommercialSubjectModelControllerImpl {
 		Assert.notNull(id, "Id is mandatory");
 		
 		
-		final CommercialSubject commercialSubject = commercialSubjectService.commercialSubject(id);
-		//conditionIntoSubjectMapper.mapInto(condition, subject);
+		final CommercialSubject commercialSubject = commercialSubjectItemIntoCommercialSubjectMapper.mapInto(commercialSubjectItem, commercialSubjectService.commercialSubject(id));
+		
+		
 		commercialSubjectService.save(commercialSubject);
 		
 		return commercialSubject;

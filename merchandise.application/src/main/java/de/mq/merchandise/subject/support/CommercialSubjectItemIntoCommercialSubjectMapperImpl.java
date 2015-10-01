@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -13,18 +14,23 @@ import de.mq.merchandise.support.ReflectionBasedFieldMapperImpl;
 class CommercialSubjectItemIntoCommercialSubjectMapperImpl extends ReflectionBasedFieldMapperImpl implements Mapper<CommercialSubjectItem,CommercialSubject>{
 
 	private final SubjectService subjectService; 
-	
+	@Autowired
 	CommercialSubjectItemIntoCommercialSubjectMapperImpl(final SubjectService subjectService) {
 		this.subjectService = subjectService;
 	}
 
 	@Override
 	public CommercialSubject mapInto(final CommercialSubjectItem source, final CommercialSubject target) {
+		
 		Assert.notNull(source, "CommercialSubjectItem is mandatory");
 		Assert.notNull(target, "CommercialSubject is mandatory");
-		Assert.isTrue(source.id().isPresent(), "Subject must be asigned");
-		final Subject subject = subjectService.subject(source.id().get());
-		if( ! source.id().isPresent() ) {
+		Assert.notNull(source.subject(), "Subject must be assigned");
+		Assert.isTrue( source.subject().id().isPresent(), "Subject must be assigned");
+		
+	
+		final Subject subject = subjectService.subject(source.subject().id().get());
+		
+		if( source.id().orElse(-1L) <= 0 ) {
 			target.assign(subject, source.name(), source.mandatory());
 			return target;
 		}
