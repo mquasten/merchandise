@@ -76,8 +76,8 @@ public class SubjectImpl implements Subject{
 	
 	
 	
-	@SuppressWarnings("unused")
-	private SubjectImpl(){
+	
+	 SubjectImpl(){
 		
 		
 	}

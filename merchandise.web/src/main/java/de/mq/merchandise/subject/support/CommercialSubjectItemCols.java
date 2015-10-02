@@ -13,7 +13,7 @@ enum CommercialSubjectItemCols implements TableContainerColumns {
 	Id(false,Long.class, -1L,  TextField.class),
 	Name(true, String.class, "", TextField.class),
 	Mandatory(true, Boolean.class, Boolean.FALSE, ComboBox.class),
-	Subject(true, Long.class, -1L, ComboBox.class);
+	Subject(false, Long.class, -1L, ComboBox.class);
 
 	private final boolean visible ;
 	private final Class<?> type;

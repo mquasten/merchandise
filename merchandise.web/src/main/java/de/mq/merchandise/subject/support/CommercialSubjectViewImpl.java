@@ -2,6 +2,7 @@ package de.mq.merchandise.subject.support;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -80,6 +81,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	 
 	 private  final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter;
 	 private final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter; 
+	 private final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter;
 	
 	private final MessageSource messageSource; 
 
@@ -99,7 +101,9 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter, 
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.EntriesToConatainerConverter) Converter<Collection<Subject>, Container> entriesToConatainerConverter, 
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter) final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter, 
-			final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter ) {
+			final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter,
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToContainerConverter) final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter
+			) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;
 		this.commercialSubjectSearchItem = commercialSubjectSearchItem;
@@ -113,6 +117,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		this.entriesToConatainerConverter=entriesToConatainerConverter;
 		this.commercialSubjectItemConverter=commercialSubjectItemConverter;
 		this.itemToCommercialSubjectItemConverter=itemToCommercialSubjectItemConverter;
+		this.commercialSubjectItemToContainerConverter=commercialSubjectItemToContainerConverter;
 	}
 
 	/*
@@ -283,7 +288,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		final FieldGroup itemFields = new FieldGroup();
 		itemFields.setItemDataSource(commercialSubjectItemConverter.convert(commercialSubjectModel.getCommercialSubjectItem().get()));
-		Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible()).forEach(col -> {
+		Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible()||CommercialSubjectItemCols.Subject == col ).forEach(col -> {
 
 			final Field<?> field = col.newField();
 
@@ -336,6 +341,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		itemTableLayout.addComponent(buttonItemLayout);
 
 		final Table itemTable = new Table();
+		itemTable.setSelectable(true);
 		itemTable.setCaption("Positionen");
 	
 
@@ -344,7 +350,6 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		itemTableLayout.addComponent(itemTable);
 		editor.addComponent(itemTableLayout);
-		
 		
 		
 		
@@ -375,6 +380,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			deleteButton.setEnabled(false);
 			editorFields.setItemDataSource(commercialSubjectToItemConverter.convert(commercialSubjectModel.getCommercialSubject().get()));
 			itemTableLayout.setVisible(false);
+			refresh(itemTable);
 			if (commercialSubjectModel.getCommercialSubject().get().id().isPresent()) {
 				itemTableLayout.setVisible(true);
 				saveButton.setIcon(editIcon);
@@ -386,6 +392,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 			saveButton.setIcon(newIcon);
 
+			
+			
 		}, CommercialSubjectModel.EventType.CommericalSubjectChanged);
 		
 		
@@ -419,6 +427,13 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			throw new IllegalStateException(ex);
 		}
 	}
+	
+	private void refresh(final Table itemTable) {
+		itemTable.setContainerDataSource(commercialSubjectItemToContainerConverter.convert(commercialSubjectModel.getCommercialSubject().get().commercialSubjectItems()));
+		itemTable.setVisibleColumns(Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible()).collect(Collectors.toList()).toArray());
+		itemTable.setValue(null);
+	}
+	
 
 	@PostConstruct
 	void init() {

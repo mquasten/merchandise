@@ -24,7 +24,7 @@ public class ConditionColsTest {
 	public final void id() {
 		Assert.assertFalse(ConditionCols.Id.visible());
 		Assert.assertEquals(Long.class, ConditionCols.Id.target());
-		Assert.assertEquals("", ConditionCols.Id.nvl());
+		Assert.assertEquals(-1L, ConditionCols.Id.nvl());
 	}
 
 	@Test

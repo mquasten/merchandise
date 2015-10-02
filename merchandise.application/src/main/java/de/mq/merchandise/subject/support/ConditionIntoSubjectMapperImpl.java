@@ -17,7 +17,7 @@ class ConditionIntoSubjectMapperImpl extends ReflectionBasedFieldMapperImpl impl
 
 	@Override
 	public Subject mapInto(final Condition condition, final Subject subject) {
-		if( ! condition.id().isPresent() ) {
+		if(  condition.id().orElse(-1L) < 0 ) {
 			subject.add(condition.conditionType(), condition.conditionDataType());
 			return subject;
 		}
