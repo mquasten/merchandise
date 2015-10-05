@@ -1,6 +1,7 @@
 package de.mq.merchandise.subject.support;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -94,6 +95,19 @@ class CommercialSubjectModelControllerImpl {
 		commercialSubjectService.save(commercialSubject);
 		
 		return commercialSubject;
+	}
+	
+	@CommercialSubjectEventQualifier(EventType.CommericalSubjectItemChanged)
+	CommercialSubjectItem commericalSubjectItem(final CommercialSubjectModel model, final Long itemId ) {
+		Assert.isTrue(model.getCommercialSubject().isPresent(), "CommercialSubject is mandatory");
+		Assert.isTrue(model.getCommercialSubject().get().id().isPresent());
+		final CommercialSubject commercialSubject = commercialSubjectService.commercialSubject(model.getCommercialSubject().get().id().get());
+		Assert.notNull(commercialSubject, "CommercialSubject not found");
+		Optional<CommercialSubjectItem> result = commercialSubject.commercialSubjectItems().stream().filter(i -> i.id().get().equals(itemId)).findAny();
+		Assert.isTrue(result.isPresent(), "Item not found");
+		
+		return result.get();
+		
 	}
 
 }

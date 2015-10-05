@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-
-import javax.persistence.Id;
+import java.util.Optional;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.ReflectionUtils;
@@ -16,6 +15,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
+import de.mq.merchandise.support.BasicEntity;
 import de.mq.merchandise.util.TableContainerColumns;
 
 
@@ -81,15 +81,17 @@ public class DomainToItemConverterImpl<T> implements Converter<T, Item> {
 			return;
 		}
 		
-		ReflectionUtils.doWithFields(value.getClass(), field -> {
-			field.setAccessible(true);
-			final Object id = field.get(value);
-			if( id == null) {
+		if (value instanceof BasicEntity) {
+			final Optional<Long>  identifier  = ((BasicEntity)value).id();
+			if( ! identifier.isPresent()) {
 				return;
 			}
-			item.getItemProperty(col).setValue(id);
+			item.getItemProperty(col).setValue(identifier.get());
+			return;
 			
-		}, field -> field.isAnnotationPresent(Id.class));
+		}
+		
+		
 	}
 
 	

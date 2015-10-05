@@ -112,10 +112,11 @@ class CommercialSubjectModels {
 		return new DomainToItemConverterImpl<>(CommercialSubjectCols.class);
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Bean
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter)
 	 Converter<CommercialSubjectItem, Item>  commercialSubjectItemConverter()  {
-		return new DomainToItemConverterImpl<>(CommercialSubjectItemCols.class);
+		return new DomainToItemConverterImpl(CommercialSubjectItemCols.class).withChild(CommercialSubjectItemCols.Subject);
 	}
 
 }

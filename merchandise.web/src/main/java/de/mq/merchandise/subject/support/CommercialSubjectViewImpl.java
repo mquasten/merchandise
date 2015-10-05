@@ -390,11 +390,46 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 				return;
 			}
 
+			
+			
 			saveButton.setIcon(newIcon);
 
 			
 			
 		}, CommercialSubjectModel.EventType.CommericalSubjectChanged);
+		
+		
+		
+		itemTable.addValueChangeListener(e ->{ 
+			
+			commercialSubjectModel.setCommercialSubjectItemId(e.getProperty().getValue() != null ? (Long) itemTable.getItem(e.getProperty().getValue()).getItemProperty(CommercialSubjectItemCols.Id).getValue() : null);
+					
+					
+					
+			
+		}
+		);
+		
+		commercialSubjectModel.register(e -> {
+			validationUtil.reset(itemFields);
+		
+			itemFields.setItemDataSource(null);
+			newItemButton.setEnabled(false);
+			deleteItemButton.setEnabled(false);
+
+			itemFields.setItemDataSource(commercialSubjectItemConverter.convert(commercialSubjectModel.getCommercialSubjectItem().get()));
+			
+
+			if (commercialSubjectModel.getCommercialSubjectItem().get().id().isPresent()) {
+				saveItemButton.setIcon(editIcon);
+				newItemButton.setEnabled(true);
+				deleteItemButton.setEnabled(true);
+				return;
+			}
+			
+			saveItemButton.setIcon(newIcon);
+
+		}, CommercialSubjectModel.EventType.CommericalSubjectItemChanged);
 		
 		
 		userModel.register(e-> {

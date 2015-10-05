@@ -14,6 +14,7 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 		ListPaging, 
 		SearchCriteriaChanged, 
 		CommericalSubjectChanged, 
+		CommericalSubjectItemChanged,
 		CommercialSubjectSaved, 
 		CommercialSubjectDeleted, ListSubjects, ItemSaved;
 		
@@ -58,5 +59,9 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 	void save(final CommercialSubjectItem commercialSubjectItem);
+
+
+
+	void setCommercialSubjectItemId(final Long itemId);
 
 }

@@ -7,7 +7,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
 import de.mq.merchandise.customer.Customer;
-
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.support.ObservableImpl;
@@ -25,6 +24,8 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	private final CommercialSubjectEventFascade commercialSubjectEventFascade;
 	
 	private final  Mapper<Customer,CommercialSubject> customerMapper; 
+	 
+	
 	
 	CommercialSubjectModelImpl(final CommercialSubject search, final CommercialSubject commercialSubject, final CommercialSubjectEventFascade commercialSubjectEventFascade,  final  Mapper<Customer, CommercialSubject> customerIntoSubjectMapper) {
 		this.search = search;
@@ -77,6 +78,23 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		commercialSubject= commercialSubjectEventFascade.commercialSubjectChanged(commercialSubjectId);
 		Assert.notNull(commercialSubject, "CommercialSubject should be returned" );
 		notifyObservers(EventType.CommericalSubjectChanged);
+		
+	}
+	
+	@Override
+	public void setCommercialSubjectItemId(final Long itemId) {
+		if( itemId==null){
+			commercialSubjectItem= BeanUtils.instantiateClass(CommercialSubjectItemImpl.class);
+			notifyObservers(EventType.CommericalSubjectItemChanged);
+			return;
+		}
+		commercialSubjectItem = commercialSubjectEventFascade.commericalSubjectItemChanged(itemId);
+		Assert.notNull(commercialSubjectItem);
+		
+		
+		Assert.notNull(commercialSubjectItem, "Condition should be returned" );
+		notifyObservers(EventType.CommericalSubjectItemChanged);
+	
 		
 	}
 	
