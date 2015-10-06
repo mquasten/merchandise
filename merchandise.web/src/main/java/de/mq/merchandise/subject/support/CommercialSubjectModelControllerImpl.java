@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import de.mq.merchandise.ResultNavigation;
@@ -87,13 +88,8 @@ class CommercialSubjectModelControllerImpl {
 	@CommercialSubjectEventQualifier(EventType.ItemSaved)
 	CommercialSubject saveItem(final CommercialSubjectItem commercialSubjectItem, final Long id ) {
 		Assert.notNull(id, "Id is mandatory");
-		
-		
 		final CommercialSubject commercialSubject = commercialSubjectItemIntoCommercialSubjectMapper.mapInto(commercialSubjectItem, commercialSubjectService.commercialSubject(id));
-		
-		
 		commercialSubjectService.save(commercialSubject);
-		
 		return commercialSubject;
 	}
 	

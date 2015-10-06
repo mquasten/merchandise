@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,6 +31,7 @@ import de.mq.merchandise.subject.support.SubjectImpl;
 @NamedQueries({ @NamedQuery( name=CustomerRepository.CUSTOMER_BY_ID_QUERY, query="Select c from Customer c where c.id =:" + CustomerRepository.ID_PARAMETER)})
 @Entity(name="Customer")
 @Table(name="customer")
+@Cacheable(false)
 public class CustomerImpl implements Customer{
 	
 
@@ -61,7 +63,7 @@ public class CustomerImpl implements Customer{
 	 * @see de.mq.merchandise.support.Customer#name()
 	 */
 	@Override
-	public  final String name() {
+	public    String name() {
 		return name;
 	}
 	/*
@@ -69,7 +71,7 @@ public class CustomerImpl implements Customer{
 	 * @see de.mq.merchandise.customer.Customer#subjects()
 	 */
 	@Override
-	public  final List<Subject> subjects() {
+	public   List<Subject> subjects() {
 		return Collections.unmodifiableList(subjects);
 	}
 	/*
@@ -77,7 +79,7 @@ public class CustomerImpl implements Customer{
 	 * @see de.mq.merchandise.customer.Customer#conditionTypes()
 	 */
 	@Override
-	public final  Collection<String> conditionTypes() {
+	public   Collection<String> conditionTypes() {
 		return Collections.unmodifiableCollection(conditionTypes.stream().map(ct -> ct.name()).collect(Collectors.toSet()));
 	}
 	
@@ -86,7 +88,7 @@ public class CustomerImpl implements Customer{
 	 * @see de.mq.merchandise.customer.Customer#assignConditionType(java.lang.String)
 	 */
 	@Override
-	public final  void assignConditionType(final String conditiontype ){
+	public   void assignConditionType(final String conditiontype ){
 		conditionTypes.add(new ConditionTypeImpl(this, conditiontype));
 	}
 	/*
@@ -94,7 +96,7 @@ public class CustomerImpl implements Customer{
 	 * @see de.mq.merchandise.customer.Customer#removeConditionType(java.lang.String)
 	 */
 	@Override
-	public final  void removeConditionType(final String conditiontype ){
+	public   void removeConditionType(final String conditiontype ){
 		conditionTypes.remove(new ConditionTypeImpl(this, conditiontype));
 	}
 	/*

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,7 +36,7 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
-
+@Cacheable(false)
 @Entity(name="Subject")
 @Table(name="subject")
 @NamedQueries({
@@ -101,7 +102,7 @@ public class SubjectImpl implements Subject{
 	 * @see de.mq.merchandise.domain.subject.support.Subject#name()
 	 */
 	@Override
-	public final String name() {
+	public  String name() {
 		return name;
 	}
 	
@@ -109,7 +110,7 @@ public class SubjectImpl implements Subject{
 	 * @see de.mq.merchandise.domain.subject.support.Subject#description()
 	 */
 	@Override
-	public final String description() {
+	public  String description() {
 		return description;
 	}
 	
@@ -118,13 +119,13 @@ public class SubjectImpl implements Subject{
 	 * @see de.mq.merchandise.domain.subject.support.Subject#customer()
 	 */
 	@Override
-	public final Customer customer() {
+	public  Customer customer() {
 		return customer;
 	}
 	
 	
 	@Override
-	public final void add(final String conditionType, final ConditionDataType datatype ){
+	public  void add(final String conditionType, final ConditionDataType datatype ){
 		Assert.notNull(conditionType , "ConditionType is mandatory");
 		Assert.notNull(datatype , "ConditionDataType is mandatory");
 		if( conditions.containsKey(conditionType) ) {
@@ -135,7 +136,7 @@ public class SubjectImpl implements Subject{
 	}
 	
 	@Override
-	public final  Condition condition(final String conditionType) {
+	public   Condition condition(final String conditionType) {
 		Assert.notNull(conditionType , "ConditionType is mandatory");
 		if (! conditions.containsKey(conditionType) ) {
 			throw new InvalidDataAccessApiUsageException(String.format("No Condition aware for type: %s", conditionType));
@@ -145,18 +146,18 @@ public class SubjectImpl implements Subject{
 	}
 	
 	@Override
-	public final void remove(final String conditionType) {
+	public  void remove(final String conditionType) {
 		Assert.notNull(conditionType , "ConditionType is mandatory");
 		conditions.remove(conditionType);
 	}
 	
 	@Override
-	public final Collection<Condition> conditions() {
+	public  Collection<Condition> conditions() {
 		return Collections.unmodifiableCollection(conditions.values());
 	}
 	
 	@Override
-	public final Collection<String> conditionTypes() {
+	public  Collection<String> conditionTypes() {
 		return Collections.unmodifiableCollection(conditions.keySet());
 	}
 

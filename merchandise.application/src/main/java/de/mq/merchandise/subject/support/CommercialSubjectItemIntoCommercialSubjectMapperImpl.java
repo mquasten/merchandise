@@ -14,6 +14,7 @@ import de.mq.merchandise.support.ReflectionBasedFieldMapperImpl;
 class CommercialSubjectItemIntoCommercialSubjectMapperImpl extends ReflectionBasedFieldMapperImpl implements Mapper<CommercialSubjectItem,CommercialSubject>{
 
 	private final SubjectService subjectService; 
+	
 	@Autowired
 	CommercialSubjectItemIntoCommercialSubjectMapperImpl(final SubjectService subjectService) {
 		this.subjectService = subjectService;
@@ -27,13 +28,16 @@ class CommercialSubjectItemIntoCommercialSubjectMapperImpl extends ReflectionBas
 		Assert.notNull(source.subject(), "Subject must be assigned");
 		Assert.isTrue( source.subject().id().isPresent(), "Subject must be assigned");
 		
-	
+
 		final Subject subject = subjectService.subject(source.subject().id().get());
 		
 		if( source.id().orElse(-1L) <= 0 ) {
 			target.assign(subject, source.name(), source.mandatory());
 			return target;
 		}
+		
+
+		
 		
 		Assert.isTrue(target.commercialSubjectItem(subject).isPresent(), "Item not assigned for subject");
 		final CommercialSubjectItem toBeUpdated = target.commercialSubjectItem(subject).get();
