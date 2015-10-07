@@ -1,5 +1,7 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -37,13 +39,14 @@ class CommercialSubjectItemIntoCommercialSubjectMapperImpl extends ReflectionBas
 		}
 		
 
+		Optional<CommercialSubjectItem> item =  target.commercialSubjectItems().stream().filter(currentItem -> currentItem.id().equals(source.id())).findFirst();
 		
-		
-		Assert.isTrue(target.commercialSubjectItem(subject).isPresent(), "Item not assigned for subject");
-		final CommercialSubjectItem toBeUpdated = target.commercialSubjectItem(subject).get();
+		Assert.isTrue(item.isPresent(), "Item not assigned for subject");
+		final CommercialSubjectItem toBeUpdated = item.get();
 				
 		assign("name", toBeUpdated, source.name());
 		assign("mandatory", toBeUpdated, source.mandatory());
+		assign("subject", toBeUpdated, subject);
 		return target;
 	}
 

@@ -300,33 +300,31 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		
 
 		
-		final ComboBox box = (ComboBox) itemFields.getField(CommercialSubjectItemCols.Subject);
-		box.setItemCaptionPropertyId(SubjectCols.Name);
+		final ComboBox subjectBox = (ComboBox) itemFields.getField(CommercialSubjectItemCols.Subject);
+		subjectBox.setItemCaptionPropertyId(SubjectCols.Name);
 
+		subjectBox.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
 		
-
-		
-		
-		box.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
-		
+		final ComboBox mandatoryBox = (ComboBox) itemFields.getField(CommercialSubjectItemCols.Mandatory);
+		mandatoryBox.addItems(Boolean.TRUE, Boolean.FALSE);
+		mandatoryBox.setItemCaption(Boolean.TRUE, "Ja");
+		mandatoryBox.setItemCaption(Boolean.FALSE, "Nein");
 		
 		final Button saveItemButton = new Button("speichern");
-		
+		final Table itemTable = new Table();
 		
 		saveItemButton.addClickListener(event -> {
-			//System.out.println(">>>>" + itemFields.getItemDataSource().getItemProperty(CommercialSubjectItemCols.Subject).getValue());
 			
 			commit(itemFields);
-			CommercialSubjectItem item = itemToCommercialSubjectItemConverter.convert(itemFields.getItemDataSource());
+			final CommercialSubjectItem item = itemToCommercialSubjectItemConverter.convert(itemFields.getItemDataSource());
 			
-			System.out.println("subjectId=" +item.subject().id());
-			System.out.println("subjectName=" +item.name());
-			System.out.println("mandatory=" +item.mandatory());
+			
 			if( ! validationUtil.validate(item, itemFields, userModel.getLocale()) ) {
 				return;
 			}
 			commercialSubjectModel.save(item);
 			
+			refresh(itemTable);
 			
 		});
 		saveItemButton.setIcon(newIcon);
@@ -340,7 +338,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		buttonItemLayout.addComponent(deleteItemButton);
 		itemTableLayout.addComponent(buttonItemLayout);
 
-		final Table itemTable = new Table();
+		
 		itemTable.setSelectable(true);
 		itemTable.setCaption("Positionen");
 	

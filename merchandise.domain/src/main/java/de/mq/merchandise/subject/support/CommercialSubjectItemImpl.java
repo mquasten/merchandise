@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,6 +29,7 @@ import de.mq.merchandise.subject.Subject;
 
 @Entity(name = "commercial_subject_item")
 @Table(name = "commercial_subject_item")
+@Cacheable(false)
 class CommercialSubjectItemImpl implements CommercialSubjectItem {
 
 	@Id
@@ -40,7 +42,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 
 	@NotNull(message = "jsr303_mandatory")
 	@ManyToOne(targetEntity = SubjectImpl.class, optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "subject_id", referencedColumnName = "id", updatable = false, nullable = false)
+	@JoinColumn(name = "subject_id", referencedColumnName = "id", updatable = true, nullable = false)
 	@Valid
 	private Subject subject;
 
@@ -80,7 +82,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#name()
 	 */
 	@Override
-	public final String name() {
+	public  String name() {
 		return this.name;
 	}
 
@@ -90,7 +92,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#mandatory()
 	 */
 	@Override
-	public final boolean mandatory() {
+	public  boolean mandatory() {
 		return this.mandatory;
 	}
 
@@ -144,7 +146,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	 * @see de.mq.merchandise.subject.support.CommercialSubjectItem#subject()
 	 */
 	@Override
-	public final Subject subject() {
+	public  Subject subject() {
 		return this.subject;
 	}
 
@@ -155,7 +157,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	 * @see
 	 * de.mq.merchandise.subject.support.CommercialSubjectItem#conditionValues()
 	 */
-	public final <T> Collection<Entry<Condition, Collection<T>>> conditionValues() {
+	public  <T> Collection<Entry<Condition, Collection<T>>> conditionValues() {
 		return Collections.unmodifiableSet(commercialSubjectItemConditions.stream().map(item -> new AbstractMap.SimpleEntry<Condition, Collection<T>>(item.condition(), item.values())).collect(Collectors.toSet()));
 	}
 
@@ -167,7 +169,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	 * .String, java.lang.Object)
 	 */
 	@Override
-	public final <T> void assign(final String conditionType, final T value) {
+	public  <T> void assign(final String conditionType, final T value) {
 		commercialSubjectItemCondition(conditionType, value).get().assign(value);
 	}
 
@@ -187,7 +189,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	 * .String, java.lang.Object)
 	 */
 	@Override
-	public final <T> void remove(final String conditionType, final T value) {
+	public  <T> void remove(final String conditionType, final T value) {
 		commercialSubjectItemCondition(conditionType, value).get().remove(value);
 	}
 
