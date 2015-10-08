@@ -60,13 +60,16 @@ public class ItemToDomainConverterImpl<T> implements Converter<Item, T> {
 		final Field field = ReflectionUtils.findField(domain.getClass(), StringUtils.uncapitalize(col.name()));
 		Assert.notNull(field, "Field not found in Type: " + domain.getClass());
 		field.setAccessible(true);
+		
 		if (item.getItemProperty(col) == null) {
+			
 			return;
 		}
 
 
 
 		if (childs.containsKey(col)) {
+		
 			final Object entity = BeanUtils.instantiateClass(childs.get(col));
 			ReflectionUtils.doWithFields(entity.getClass(), f -> { f.setAccessible(true); f.set(entity,item.getItemProperty(col).getValue());}, f -> f.isAnnotationPresent(Id.class));
 			ReflectionUtils.setField(field, domain, entity);

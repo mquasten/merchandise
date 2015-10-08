@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -23,7 +24,6 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -222,10 +222,10 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		
 		
 		saveButton.addClickListener(e -> {
-
-			commit(editorFields);
-			final CommercialSubject commercialSubject = itemToCommercialSubjectConverter.convert(editorFields.getItemDataSource());
 		
+			commit(editorFields);
+			
+			final CommercialSubject commercialSubject = itemToCommercialSubjectConverter.convert(editorFields.getItemDataSource());
 
 			if (!validationUtil.validate(commercialSubject, editorFields, userModel.getLocale())) {
 				return;
@@ -290,7 +290,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		itemFields.setItemDataSource(commercialSubjectItemConverter.convert(commercialSubjectModel.getCommercialSubjectItem().get()));
 		Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible()||CommercialSubjectItemCols.Subject == col ).forEach(col -> {
 
-			final Field<?> field = col.newField();
+			final com.vaadin.ui.Field<?> field = col.newField();
 
 			itemFields.bind(field, col);
 			itemCols.addComponent(field);
@@ -310,6 +310,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		mandatoryBox.setItemCaption(Boolean.TRUE, "Ja");
 		mandatoryBox.setItemCaption(Boolean.FALSE, "Nein");
 		
+		mandatoryBox.setNullSelectionAllowed(false);
+		
 		final Button saveItemButton = new Button("speichern");
 		final Table itemTable = new Table();
 		
@@ -317,6 +319,11 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			
 			commit(itemFields);
 			final CommercialSubjectItem item = itemToCommercialSubjectItemConverter.convert(itemFields.getItemDataSource());
+			
+			if( item.subject().id().orElse(-1L) <=0 ) {
+				ReflectionUtils.doWithFields(item.getClass(), f -> f.set(item, null), f -> f.getType().equals(Subject.class));
+				
+			}
 			
 			
 			if( ! validationUtil.validate(item, itemFields, userModel.getLocale()) ) {

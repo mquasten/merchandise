@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.support.Mapper;
@@ -32,6 +33,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		this.commercialSubjectEventFascade=commercialSubjectEventFascade;
 		this.commercialSubject= commercialSubject;
 		this.customerMapper=customerIntoSubjectMapper;
+	
 	}
 
 
@@ -130,7 +132,8 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	
 		commercialSubject= commercialSubjectEventFascade.save(commercialSubjectItem, commercialSubject.id().get() );
 		
-		//setConditionId(null);
+		setCommercialSubjectItemId(null);
+		
 	}
 
 }
