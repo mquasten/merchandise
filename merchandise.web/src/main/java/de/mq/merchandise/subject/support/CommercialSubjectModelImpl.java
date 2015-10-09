@@ -136,4 +136,13 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		
 	}
 
+
+	@Override
+	public void delete(CommercialSubjectItem commercialSubjectItem) {
+		Assert.isTrue(commercialSubject.id().isPresent(), "CommercialSubject should be persistent");
+		commercialSubject=commercialSubjectEventFascade.delete(commercialSubjectItem, commercialSubject.id().get());
+		setCommercialSubjectItemId(null);
+		
+	}
+
 }

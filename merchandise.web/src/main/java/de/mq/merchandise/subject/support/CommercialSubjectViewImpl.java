@@ -336,6 +336,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		});
 		saveItemButton.setIcon(newIcon);
 		final Button newItemButton = new Button("neu");
+		
+		newItemButton.addClickListener(e -> itemTable.setValue(null));
 		newItemButton.setEnabled(false);
 
 		final Button deleteItemButton = new Button("löschen");
@@ -345,6 +347,12 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		buttonItemLayout.addComponent(deleteItemButton);
 		itemTableLayout.addComponent(buttonItemLayout);
 
+		deleteItemButton.addClickListener(e -> {
+			commercialSubjectModel.delete(itemToCommercialSubjectItemConverter.convert(itemFields.getItemDataSource()));
+			refresh(itemTable);
+		});
+
+		
 		
 		itemTable.setSelectable(true);
 		itemTable.setCaption("Positionen");

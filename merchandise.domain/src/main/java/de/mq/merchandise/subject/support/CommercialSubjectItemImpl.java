@@ -50,7 +50,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 
 	@NotNull(message = "jsr303_mandatory")
 	@ManyToOne(targetEntity = CommercialSubjectImpl.class, optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "commercial_subject_id", referencedColumnName = "id", updatable = false, nullable = false)
+	@JoinColumn(name = "commercial_subject_id", referencedColumnName = "id", updatable = true, nullable = true)
 	@Valid
 	private CommercialSubject commercialSubjet;
 

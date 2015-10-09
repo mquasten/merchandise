@@ -47,6 +47,10 @@ interface   CommercialSubjectEventFascade {
 	@CommercialSubjectEventQualifier(EventType.CommericalSubjectItemChanged)
 	abstract CommercialSubjectItem commericalSubjectItemChanged(final Long itemId);
 
+
+	@CommercialSubjectEventQualifier(EventType.CommericalSubjectItemDeleted)
+	abstract CommercialSubject delete(CommercialSubjectItem commercialSubjectItem, Long long1);
+
 	
 	
 }

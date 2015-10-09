@@ -104,5 +104,20 @@ class CommercialSubjectModelControllerImpl {
 		return result.get();
 		
 	}
+	
+	
+	@CommercialSubjectEventQualifier(EventType.CommericalSubjectItemDeleted)
+	CommercialSubject delete(final CommercialSubjectItem commercialSubjectItem, final Long subjectId) {
+		Assert.notNull(subjectId , "ParentId is mandatory");
+		Assert.notNull(commercialSubjectItem, "Parent is mandatory");
+		Assert.notNull(commercialSubjectItem.subject(), "Subject is mandatory");
+		Assert.isTrue(commercialSubjectItem.subject().id().isPresent(), "Subject should be persistent");
+		final Subject subject = subjectService.subject(commercialSubjectItem.subject().id().get());
+		final CommercialSubject toBeChanged = commercialSubjectService.commercialSubject(subjectId);
+		toBeChanged.remove(subject);
+		commercialSubjectService.save(toBeChanged);
+		return toBeChanged;
+		
+	}
 
 }

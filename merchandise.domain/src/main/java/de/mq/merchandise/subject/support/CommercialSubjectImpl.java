@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +39,7 @@ import de.mq.merchandise.support.Mapper;
 @NamedQueries({ @NamedQuery(name = CommercialSubjectRepository.COMMERCIAL_SUBJECT_BY_CRITERIA, query = "Select  distinct  cs from CommercialSubject cs left join cs.items i  left join  i.subject  s  left join   cs.customer c where COALESCE(cs.name, '') like :" + CommercialSubjectRepository.NAME_PARAM + " and COALESCE(i.name, '') like :" + CommercialSubjectRepository.ITEM_NAME_PARAM + " and COALESCE(s.name, '') like :" + CommercialSubjectRepository.SUBJECT_NAME_PARAM + " and  COALESCE(s.description, '') like :" + CommercialSubjectRepository.SUBJECT_DESCRIPTION_PARAM + " and c.id = :" + CommercialSubjectRepository.CUSTOMER_ID_PARAM)
 
 })
+@Cacheable(false)
 class CommercialSubjectImpl implements CommercialSubject {
 
 	@Transient
@@ -79,7 +81,7 @@ class CommercialSubjectImpl implements CommercialSubject {
 	 * .subject.Subject, java.lang.String, boolean)
 	 */
 	@Override
-	public final void assign(final Subject subject, final String name, final boolean mandatory) {
+	public void assign(final Subject subject, final String name, final boolean mandatory) {
 		Assert.notNull(subject);
 		Assert.notNull(name);
 		final Optional<CommercialSubjectItem> existingItem = items.stream().filter(item -> item.subject().equals(subject)).findFirst();
@@ -98,7 +100,7 @@ class CommercialSubjectImpl implements CommercialSubject {
 	 * .subject.Subject)
 	 */
 	@Override
-	public final void remove(final Subject subject) {
+	public  void remove(final Subject subject) {
 		Assert.notNull(subject);
 		items.stream().filter(item -> item.subject().equals(subject)).findFirst().ifPresent(item -> items.remove(item));
 	}
@@ -109,7 +111,7 @@ class CommercialSubjectImpl implements CommercialSubject {
 	 * @see de.mq.merchandise.subject.support.CommercialSubject#subjects()
 	 */
 	@Override
-	public final Collection<Subject> subjects() {
+	public  Collection<Subject> subjects() {
 		return Collections.unmodifiableSet(items.stream().map(item -> item.subject()).collect(Collectors.toSet()));
 	}
 
@@ -121,7 +123,7 @@ class CommercialSubjectImpl implements CommercialSubject {
 	 * ()
 	 */
 	@Override
-	public final Collection<CommercialSubjectItem> commercialSubjectItems() {
+	public Collection<CommercialSubjectItem> commercialSubjectItems() {
 		return Collections.unmodifiableCollection(items);
 	}
 
@@ -133,7 +135,7 @@ class CommercialSubjectImpl implements CommercialSubject {
 	 * (de.mq.merchandise.subject.Subject)
 	 */
 	@Override
-	public final Optional<CommercialSubjectItem> commercialSubjectItem(final Subject subject) {
+	public  Optional<CommercialSubjectItem> commercialSubjectItem(final Subject subject) {
 		Assert.notNull(subject);
 		return items.stream().filter(item -> subject.equals(item.subject())).findFirst();
 	}
@@ -145,7 +147,7 @@ class CommercialSubjectImpl implements CommercialSubject {
 	 * merchandise.subject.Subject)
 	 */
 	@Override
-	public final <T> Collection<Entry<Condition, Collection<T>>> conditionValues(final Subject subject) {
+	public <T> Collection<Entry<Condition, Collection<T>>> conditionValues(final Subject subject) {
 		Assert.notNull(subject);
 		final Optional<CommercialSubjectItem> item = items.stream().filter(s -> subject.equals(s.subject())).findFirst();
 		Assert.isTrue(item.isPresent(), "Subject is not assigned");
@@ -160,7 +162,7 @@ class CommercialSubjectImpl implements CommercialSubject {
 	 * .subject.Condition, java.lang.Object)
 	 */
 	@Override
-	public final <T> void assign(final Condition condition, final T value) {
+	public  <T> void assign(final Condition condition, final T value) {
 		Assert.notNull(condition);
 		Assert.notNull(condition.conditionType());
 		Assert.notNull(condition.subject());
@@ -180,7 +182,7 @@ class CommercialSubjectImpl implements CommercialSubject {
 	 * .subject.Condition, java.lang.Object)
 	 */
 	@Override
-	public final <T> void remove(final Condition condition, final T value) {
+	public <T> void remove(final Condition condition, final T value) {
 		Assert.notNull(condition);
 		Assert.notNull(condition.subject());
 		final Optional<CommercialSubjectItem> item = items.stream().filter(s -> condition.subject().equals(s.subject())).findFirst();
@@ -195,7 +197,7 @@ class CommercialSubjectImpl implements CommercialSubject {
 	 * @see de.mq.merchandise.subject.support.CommercialSubject#customer()
 	 */
 	@Override
-	public final Customer customer() {
+	public Customer customer() {
 		return this.customer;
 	}
 
@@ -205,7 +207,7 @@ class CommercialSubjectImpl implements CommercialSubject {
 	 * @see de.mq.merchandise.subject.support.CommercialSubject#name()
 	 */
 	@Override
-	public final String name() {
+	public String name() {
 		return this.name;
 	}
 
