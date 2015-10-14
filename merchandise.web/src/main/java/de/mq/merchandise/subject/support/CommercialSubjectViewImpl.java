@@ -42,6 +42,13 @@ import de.mq.merchandise.util.support.ViewNav;
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
+	private static final String I18N_ITEM_TABLE_CAPTION = "commercial_subject_item_table_name";
+	private static final String I18N_DELETE_ITEM_BUTTON = "commercial_subject_delete_item_button";
+	private static final String I18N_NEW_ITEM_BUTTON = "commercial_subject_new_item_button";
+	private static final String I18N_SAVE_ITEM_BUTTON = "commercial_subject_save_item_button";
+	private static final String I18N_MANDATORY_BOX_TRUE = "commercial_subject_mandatoryBox_true";
+	private static final String I18N_MANDATORY_BOX_FALSE = "commercial_subject_mandatoryBox_false";
+
 	private static final String I18N_COMMERCIAL_SUBJECT_DELETE = "commercial_subject_delete";
 
 	private static final String I18N_COMMERCIAL_SUBJECT_NEW = "commercial_subject_new";
@@ -307,12 +314,12 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		
 		final ComboBox mandatoryBox = (ComboBox) itemFields.getField(CommercialSubjectItemCols.Mandatory);
 		mandatoryBox.addItems(Boolean.TRUE, Boolean.FALSE);
-		mandatoryBox.setItemCaption(Boolean.TRUE, "Ja");
-		mandatoryBox.setItemCaption(Boolean.FALSE, "Nein");
+	
+		
 		
 		mandatoryBox.setNullSelectionAllowed(false);
 		
-		final Button saveItemButton = new Button("speichern");
+		final Button saveItemButton = new Button();
 		final Table itemTable = new Table();
 		
 		saveItemButton.addClickListener(event -> {
@@ -335,12 +342,12 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			
 		});
 		saveItemButton.setIcon(newIcon);
-		final Button newItemButton = new Button("neu");
+		final Button newItemButton = new Button();
 		
 		newItemButton.addClickListener(e -> itemTable.setValue(null));
 		newItemButton.setEnabled(false);
 
-		final Button deleteItemButton = new Button("löschen");
+		final Button deleteItemButton = new Button();
 		deleteItemButton.setEnabled(false);
 		buttonItemLayout.addComponent(saveItemButton);
 		buttonItemLayout.addComponent(newItemButton);
@@ -355,7 +362,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		
 		
 		itemTable.setSelectable(true);
-		itemTable.setCaption("Positionen");
+		
 	
 
 		itemTable.setWidth("100%");
@@ -454,6 +461,16 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			saveButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_SAVE));
 			newButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_NEW));
 			deleteButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_DELETE));
+			saveItemButton.setCaption(message(I18N_SAVE_ITEM_BUTTON));
+			mandatoryBox.setItemCaption(Boolean.TRUE, message(I18N_MANDATORY_BOX_TRUE));
+			mandatoryBox.setItemCaption(Boolean.FALSE, message(I18N_MANDATORY_BOX_FALSE));
+			
+			newItemButton.setCaption(message(I18N_NEW_ITEM_BUTTON));
+			
+			deleteItemButton.setCaption(message(I18N_DELETE_ITEM_BUTTON));
+			
+			itemTable.setCaption(message(I18N_ITEM_TABLE_CAPTION));
+			
 		}, UserModel.EventType.LocaleChanged);
 
 	}
