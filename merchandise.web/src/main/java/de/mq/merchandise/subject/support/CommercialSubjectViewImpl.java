@@ -64,6 +64,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	private static final String I18_COMMERCIAL_SUBJECT_SEARCH_NAME = "commercial_subject_search_name";
 
 	private static final String I18N_COMMERCIAL_SUBJECT_NAME = "commercial_subject_name";
+	
+	private static final String I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX  = "commercial_subject_item_";
 
 	private static final long serialVersionUID = 1L;
 
@@ -204,7 +206,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		final VerticalLayout editor = new VerticalLayout();
 		editor.setSizeUndefined();
 
-		editor.setMargin(new MarginInfo(true, false, false, true));
+		editor.setMargin(new MarginInfo(false, false, false, true));
 
 		final HorizontalLayout editorLayout = new HorizontalLayout();
 		editorLayout.setSizeFull();
@@ -279,7 +281,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		final VerticalLayout itemTableLayout = new VerticalLayout();
 
 		itemTableLayout.setVisible(false);
-		itemTableLayout.setMargin(new MarginInfo(true, false, false, false));
+		itemTableLayout.setMargin(new MarginInfo(false, false, false, false));
 
 		final HorizontalLayout buttonItemLayout = new HorizontalLayout();
 
@@ -366,27 +368,61 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	
 
 		itemTable.setWidth("100%");
-		itemTable.setPageLength(5);
+		itemTable.setPageLength(2);
 
 		itemTableLayout.addComponent(itemTable);
 		editor.addComponent(itemTableLayout);
 		
 		
+		final HorizontalLayout buttonValueLayout = new HorizontalLayout();
+
+		buttonValueLayout.setMargin(new MarginInfo(false, false, true, false));
+		buttonValueLayout.setSpacing(true);
+		
+		final VerticalLayout valueTableLayout = new VerticalLayout();
+
+	//	itemTableLayout.setVisible(false);
+		valueTableLayout.setMargin(new MarginInfo(false, false, false, false));
+		
+		final HorizontalLayout valueEditorLayout = new HorizontalLayout();
+		valueEditorLayout.setWidth("100%");
+		final FormLayout valueCols = new FormLayout();
+		valueCols.setWidth("100%");
+		valueEditorLayout.addComponent(valueCols);
+		valueTableLayout.addComponent(valueEditorLayout);
+
+		final FieldGroup valueFields = new FieldGroup();
+		valueFields.setItemDataSource(commercialSubjectItemConverter.convert(commercialSubjectModel.getCommercialSubjectItem().get()));
+		
+		
+		valueCols.addComponent(new TextField("Wert"));
+
 		
 		
 		
+		final Button saveValueButton = new Button("speichern");
+		final Table valueTable = new Table();
+		valueTable.setCaption("Werteauswahl");
+		
+		saveValueButton.setIcon(newIcon);
+		final Button newValueButton = new Button("neu");
+		
+		newValueButton.setEnabled(false);
+
+		buttonValueLayout.addComponent(saveValueButton);
+		buttonValueLayout.addComponent(newValueButton);
+		
+		valueTableLayout.addComponent(buttonValueLayout);
+
+		valueTable.setSelectable(true);
+
+		valueTable.setWidth("100%");
+		valueTable.setPageLength(3);
+
+		valueTableLayout.addComponent(valueTable);
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		editor.addComponent(valueTableLayout);
 		
 		
 		splitPanel.addComponent(editor);
@@ -465,11 +501,18 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			mandatoryBox.setItemCaption(Boolean.TRUE, message(I18N_MANDATORY_BOX_TRUE));
 			mandatoryBox.setItemCaption(Boolean.FALSE, message(I18N_MANDATORY_BOX_FALSE));
 			
+			
 			newItemButton.setCaption(message(I18N_NEW_ITEM_BUTTON));
 			
 			deleteItemButton.setCaption(message(I18N_DELETE_ITEM_BUTTON));
 			
 			itemTable.setCaption(message(I18N_ITEM_TABLE_CAPTION));
+			
+			
+			Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible()||CommercialSubjectItemCols.Subject == col ).forEach(col -> {
+				itemFields.getField(col).setCaption(message(I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX + col.name().toLowerCase()));
+			});
+			
 			
 		}, UserModel.EventType.LocaleChanged);
 
@@ -498,7 +541,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		itemTable.setVisibleColumns(Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible()).collect(Collectors.toList()).toArray());
 		itemTable.setValue(null);
 	}
-	
+
 
 	@PostConstruct
 	void init() {
