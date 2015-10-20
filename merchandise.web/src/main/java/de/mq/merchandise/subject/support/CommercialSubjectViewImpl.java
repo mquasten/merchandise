@@ -381,7 +381,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		
 		final VerticalLayout valueTableLayout = new VerticalLayout();
 
-	//	itemTableLayout.setVisible(false);
+		valueTableLayout.setVisible(false);
 		valueTableLayout.setMargin(new MarginInfo(false, false, false, false));
 		
 		final HorizontalLayout valueEditorLayout = new HorizontalLayout();
@@ -459,8 +459,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		itemTable.addValueChangeListener(e ->{ 
 			
 			commercialSubjectModel.setCommercialSubjectItemId(e.getProperty().getValue() != null ? (Long) itemTable.getItem(e.getProperty().getValue()).getItemProperty(CommercialSubjectItemCols.Id).getValue() : null);
-					
-					
+			
+			valueTableLayout.setVisible(e.getProperty().getValue() != null);		
 					
 			
 		}
@@ -475,7 +475,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 			itemFields.setItemDataSource(commercialSubjectItemConverter.convert(commercialSubjectModel.getCommercialSubjectItem().get()));
 			
-
+			
 			if (commercialSubjectModel.getCommercialSubjectItem().get().id().isPresent()) {
 				saveItemButton.setIcon(editIcon);
 				newItemButton.setEnabled(true);
