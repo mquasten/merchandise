@@ -112,6 +112,16 @@ class CommercialSubjectModels {
 		return new DomainToItemConverterImpl<>(CommercialSubjectCols.class);
 	}
 	
+	
+	
+	@Bean
+	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemConditionToContainerConverter)
+	public Converter<CommercialSubjectItemConditionImpl, Item> commercialSubjectItemConditionToContainerConverter () {
+		return new DomainToItemConverterImpl<CommercialSubjectItemConditionImpl>(new ConditionValueCols[]{ConditionValueCols.Condition, ConditionValueCols.InputValue}).withChild(ConditionValueCols.Condition);
+		
+	}
+	
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Bean
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter)

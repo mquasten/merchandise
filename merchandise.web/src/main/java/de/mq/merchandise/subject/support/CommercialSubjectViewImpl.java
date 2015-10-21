@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
@@ -24,6 +25,7 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -91,7 +93,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	 private  final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter;
 	 private final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter; 
 	 private final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter;
-	
+	 final Converter<CommercialSubjectItemConditionImpl, Item>  commercialSubjectItemCondition;
 	private final MessageSource messageSource; 
 
 	final ThemeResource editIcon = new ThemeResource("edit-icon.png");
@@ -111,7 +113,10 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.EntriesToConatainerConverter) Converter<Collection<Subject>, Container> entriesToConatainerConverter, 
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter) final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter, 
 			final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter,
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToContainerConverter) final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToContainerConverter) final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter,
+			
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemConditionToContainerConverter)  final Converter<CommercialSubjectItemConditionImpl, Item>  commercialSubjectItemCondition
+			
 			) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;
@@ -127,6 +132,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		this.commercialSubjectItemConverter=commercialSubjectItemConverter;
 		this.itemToCommercialSubjectItemConverter=itemToCommercialSubjectItemConverter;
 		this.commercialSubjectItemToContainerConverter=commercialSubjectItemToContainerConverter;
+		this.commercialSubjectItemCondition=commercialSubjectItemCondition;
 	}
 
 	/*
@@ -392,13 +398,25 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		valueTableLayout.addComponent(valueEditorLayout);
 
 		final FieldGroup valueFields = new FieldGroup();
-		valueFields.setItemDataSource(commercialSubjectItemConverter.convert(commercialSubjectModel.getCommercialSubjectItem().get()));
+		valueFields.setItemDataSource( commercialSubjectItemCondition.convert(BeanUtils.instantiateClass(CommercialSubjectItemConditionImpl.class)));
 		
 		
-		valueCols.addComponent(new TextField("Wert"));
+		
+		Arrays.asList(ConditionValueCols.values()).stream().filter( v -> v.visible()).forEach(v -> {
+			final Field<?> field = v.newField();
+			field.setCaption(v.name());
+			valueCols.addComponent(field);
+			valueFields.bind(field, v);
+		});
+		
+	
+		
+		
+		
+		final ComboBox conditionBox = (ComboBox) valueFields.getField(ConditionValueCols.Condition);
+		conditionBox.setItemCaptionPropertyId(ConditionCols.ConditionType);
 
-		
-		
+		//conditionBox.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
 		
 		final Button saveValueButton = new Button("speichern");
 		final Table valueTable = new Table();
@@ -417,7 +435,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		valueTable.setSelectable(true);
 
 		valueTable.setWidth("100%");
-		valueTable.setPageLength(3);
+		valueTable.setPageLength(2);
 
 		valueTableLayout.addComponent(valueTable);
 		
