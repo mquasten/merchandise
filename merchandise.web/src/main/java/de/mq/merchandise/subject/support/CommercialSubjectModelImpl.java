@@ -7,7 +7,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
 
+
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.support.ObservableImpl;
@@ -98,6 +100,10 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		notifyObservers(EventType.CommericalSubjectItemChanged);
 	
 		
+	}
+	@Override
+	public final Collection<Condition> getConditions() {
+		return commercialSubjectItem.subject().conditions();
 	}
 	
 	

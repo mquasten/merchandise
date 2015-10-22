@@ -35,6 +35,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.util.ValidationUtil;
 import de.mq.merchandise.util.support.RefreshableContainer;
@@ -93,7 +94,9 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	 private  final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter;
 	 private final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter; 
 	 private final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter;
-	 final Converter<CommercialSubjectItemConditionImpl, Item>  commercialSubjectItemCondition;
+	 private final Converter<CommercialSubjectItemConditionImpl, Item>  commercialSubjectItemCondition;
+	 
+	private  final   Converter<Collection<Condition>, Container> conditionToContainerConverter;
 	private final MessageSource messageSource; 
 
 	final ThemeResource editIcon = new ThemeResource("edit-icon.png");
@@ -115,7 +118,9 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter,
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToContainerConverter) final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter,
 			
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemConditionToContainerConverter)  final Converter<CommercialSubjectItemConditionImpl, Item>  commercialSubjectItemCondition
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemConditionToContainerConverter)  final Converter<CommercialSubjectItemConditionImpl, Item>  commercialSubjectItemCondition,
+			
+			@SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter)final   Converter<Collection<Condition>, Container> conditionToContainerConverter
 			
 			) {
 		this.mainMenuBarView = mainMenuBarView;
@@ -133,6 +138,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		this.itemToCommercialSubjectItemConverter=itemToCommercialSubjectItemConverter;
 		this.commercialSubjectItemToContainerConverter=commercialSubjectItemToContainerConverter;
 		this.commercialSubjectItemCondition=commercialSubjectItemCondition;
+		this.conditionToContainerConverter=conditionToContainerConverter;
 	}
 
 	/*
@@ -400,8 +406,6 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		final FieldGroup valueFields = new FieldGroup();
 		valueFields.setItemDataSource( commercialSubjectItemCondition.convert(BeanUtils.instantiateClass(CommercialSubjectItemConditionImpl.class)));
 		
-		
-		
 		Arrays.asList(ConditionValueCols.values()).stream().filter( v -> v.visible()).forEach(v -> {
 			final Field<?> field = v.newField();
 			field.setCaption(v.name());
@@ -410,12 +414,11 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		});
 		
 	
+		getConditionBox(valueFields).setItemCaptionPropertyId(ConditionCols.ConditionType);
 		
 		
 		
-		final ComboBox conditionBox = (ComboBox) valueFields.getField(ConditionValueCols.Condition);
-		conditionBox.setItemCaptionPropertyId(ConditionCols.ConditionType);
-
+		
 		//conditionBox.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
 		
 		final Button saveValueButton = new Button("speichern");
@@ -479,7 +482,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			commercialSubjectModel.setCommercialSubjectItemId(e.getProperty().getValue() != null ? (Long) itemTable.getItem(e.getProperty().getValue()).getItemProperty(CommercialSubjectItemCols.Id).getValue() : null);
 			
 			valueTableLayout.setVisible(e.getProperty().getValue() != null);		
-					
+			
 			
 		}
 		);
@@ -493,11 +496,16 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 			itemFields.setItemDataSource(commercialSubjectItemConverter.convert(commercialSubjectModel.getCommercialSubjectItem().get()));
 			
-			
+			getConditionBox(valueFields).setContainerDataSource(null);
 			if (commercialSubjectModel.getCommercialSubjectItem().get().id().isPresent()) {
 				saveItemButton.setIcon(editIcon);
 				newItemButton.setEnabled(true);
 				deleteItemButton.setEnabled(true);
+				
+				
+
+				getConditionBox(valueFields).setContainerDataSource(conditionToContainerConverter.convert(commercialSubjectModel.getConditions()));
+				
 				return;
 			}
 			
@@ -534,6 +542,10 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			
 		}, UserModel.EventType.LocaleChanged);
 
+	}
+
+	private ComboBox getConditionBox(final FieldGroup valueFields) {
+		return (ComboBox) valueFields.getField(ConditionValueCols.Condition);
 	}
 
 	private void commitSearch(final FieldGroup fieldGroup) {
