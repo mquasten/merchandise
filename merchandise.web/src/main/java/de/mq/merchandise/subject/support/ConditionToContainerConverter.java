@@ -34,7 +34,11 @@ public class ConditionToContainerConverter implements Converter<Collection<Condi
 
 	@SuppressWarnings("unchecked")
 	private void assign(Container container, final Condition condition) {
-		final Object id = container.addItem();
+		final Object id =  condition.id().isPresent() ? condition.id().get() : container.addItem();
+		condition.id().ifPresent(v -> container.addItem(v));
+		
+
+		
 		Arrays.asList(ConditionCols.values()).stream().filter(col -> fieldValue(condition, col) != null).forEach(col -> container.getContainerProperty(id, col).setValue(fieldValue(condition, col)));
 
 	}

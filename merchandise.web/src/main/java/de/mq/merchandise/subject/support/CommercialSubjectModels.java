@@ -117,7 +117,7 @@ class CommercialSubjectModels {
 	@Bean
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemConditionToContainerConverter)
 	public Converter<CommercialSubjectItemConditionImpl, Item> commercialSubjectItemConditionToContainerConverter () {
-		return new DomainToItemConverterImpl<CommercialSubjectItemConditionImpl>(new ConditionValueCols[]{ConditionValueCols.Condition, ConditionValueCols.InputValue}).withChild(ConditionValueCols.Condition);
+		return new DomainToItemConverterImpl<CommercialSubjectItemConditionImpl>(new ConditionValueCols[]{ConditionValueCols.Condition, ConditionValueCols.InputValue});
 		
 	}
 	

@@ -426,6 +426,13 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		valueTable.setCaption("Werteauswahl");
 		
 		saveValueButton.setIcon(newIcon);
+		
+		saveValueButton.addClickListener(e -> {
+			System.out.println("*******");
+			System.out.println(getConditionBox(valueFields).getValue());
+			commit(valueFields);
+		});
+		
 		final Button newValueButton = new Button("neu");
 		
 		newValueButton.setEnabled(false);
