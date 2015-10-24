@@ -3,12 +3,17 @@ package de.mq.merchandise.subject.support;
 import java.util.Collection;
 import java.util.Optional;
 
+import javax.persistence.Id;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
 import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
@@ -117,6 +122,20 @@ class CommercialSubjectModelControllerImpl {
 		toBeChanged.remove(subject);
 		commercialSubjectService.save(toBeChanged);
 		return toBeChanged;
+		
+	}
+	
+	@CommercialSubjectEventQualifier(EventType.ConditionChanged)
+	CommercialSubjectItemConditionImpl  conditionChanged(final CommercialSubjectModel model, final Long conditionId) {
+		
+	
+		final Condition condition = BeanUtils.instantiateClass(ConditionImpl.class);
+		ReflectionUtils.doWithFields(condition.getClass(), field -> {field.setAccessible(true); ReflectionUtils.setField(field, condition, conditionId);}, field -> field.isAnnotationPresent(Id.class) );
+		
+		
+		final CommercialSubjectItemConditionImpl result =BeanUtils.instantiateClass(CommercialSubjectItemConditionImpl.class);
+		ReflectionUtils.doWithFields(CommercialSubjectItemConditionImpl.class, field ->  { field.setAccessible(true); ReflectionUtils.setField(field, result, condition);} , field -> field.getType().equals(Condition.class)); 
+		return result;
 		
 	}
 

@@ -51,6 +51,7 @@ interface   CommercialSubjectEventFascade {
 	@CommercialSubjectEventQualifier(EventType.CommericalSubjectItemDeleted)
 	abstract CommercialSubject delete(CommercialSubjectItem commercialSubjectItem, Long long1);
 
-	
+	@CommercialSubjectEventQualifier(EventType.ConditionChanged)
+	abstract CommercialSubjectItemConditionImpl  conditionChanged(final Long conditionId);
 	
 }

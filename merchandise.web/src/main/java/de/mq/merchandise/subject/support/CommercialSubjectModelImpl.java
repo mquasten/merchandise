@@ -5,8 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
-
-
+import org.springframework.util.ReflectionUtils;
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
@@ -27,6 +26,8 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	private final CommercialSubjectEventFascade commercialSubjectEventFascade;
 	
 	private final  Mapper<Customer,CommercialSubject> customerMapper; 
+	
+	CommercialSubjectItemConditionImpl commercialSubjectItemCondition;
 	 
 	
 	
@@ -151,4 +152,24 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		
 	}
 
+	@Override
+	public final void setCondition(final Condition condition) {
+		if( condition.id().orElse(-1L) <= 0 ) {
+			
+			commercialSubjectItemCondition=BeanUtils.instantiateClass(CommercialSubjectItemConditionImpl.class);
+			ReflectionUtils.doWithFields(CommercialSubjectItemConditionImpl.class, field ->  { field.setAccessible(true); ReflectionUtils.setField(field, commercialSubjectItemCondition, condition);} , field -> field.getType().equals(Condition.class)); 
+			notifyObservers(EventType.ConditionChanged);
+			return;
+		}
+		
+		commercialSubjectItemCondition=commercialSubjectEventFascade.conditionChanged(condition.id().get());
+		notifyObservers(EventType.ConditionChanged);
+	}
+	
+	@Override
+	public final boolean hasCondition() {
+		
+		return commercialSubjectItemCondition.condition().id().orElse(-1L) > 0;
+		
+	}
 }

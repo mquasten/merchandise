@@ -17,7 +17,7 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 		CommericalSubjectChanged, 
 		CommericalSubjectItemChanged,
 		CommercialSubjectSaved, 
-		CommercialSubjectDeleted, ListSubjects, ItemSaved, CommericalSubjectItemDeleted;
+		CommercialSubjectDeleted, ListSubjects, ItemSaved, CommericalSubjectItemDeleted, ConditionChanged;
 		
 	}
 
@@ -72,5 +72,13 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 	Collection<Condition> getConditions();
+
+
+
+	void setCondition(final Condition condition);
+
+
+
+	boolean hasCondition();
 
 }
