@@ -25,7 +25,6 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
-
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -99,7 +98,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	 
 	private  final   Converter<Collection<Condition>, Container> conditionToContainerConverter;
 	
-	private final Converter<Item, CommercialSubjectItemConditionImpl> containerToCommercialSubjectItemConditionConverter;
+	//private final Converter<Item, CommercialSubjectItemConditionImpl> containerToCommercialSubjectItemConditionConverter;
 	
 	private final MessageSource messageSource; 
 
@@ -124,9 +123,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemConditionToContainerConverter)  final Converter<CommercialSubjectItemConditionImpl, Item>  commercialSubjectItemCondition,
 			
-			@SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter)final   Converter<Collection<Condition>, Container> conditionToContainerConverter,
-			
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ContainerToCommercialSubjectItemConditionConverter) final Converter<Item, CommercialSubjectItemConditionImpl> containerToCommercialSubjectItemConditionConverter
+			@SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter)final   Converter<Collection<Condition>, Container> conditionToContainerConverter
 			
 			) {
 		this.mainMenuBarView = mainMenuBarView;
@@ -145,7 +142,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		this.commercialSubjectItemToContainerConverter=commercialSubjectItemToContainerConverter;
 		this.commercialSubjectItemCondition=commercialSubjectItemCondition;
 		this.conditionToContainerConverter=conditionToContainerConverter;
-		this.containerToCommercialSubjectItemConditionConverter=containerToCommercialSubjectItemConditionConverter;
+		//this.containerToCommercialSubjectItemConditionConverter=containerToCommercialSubjectItemConditionConverter;
 	}
 
 	/*
@@ -430,12 +427,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		valueField.setVisible(false);
 		
 		
-		conditionBox.addValueChangeListener(e -> { 
-		
-			commit(conditionFields);
-			commercialSubjectModel.setCondition(containerToCommercialSubjectItemConditionConverter.convert(conditionFields.getItemDataSource()).condition());	
-			
-		});
+		conditionBox.addValueChangeListener(e -> commercialSubjectModel.setCondition( e.getProperty().getValue() !=null ?(Long)  e.getProperty().getValue() : -1L));
 		
 		//conditionBox.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
 		

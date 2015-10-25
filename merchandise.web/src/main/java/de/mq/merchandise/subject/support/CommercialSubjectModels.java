@@ -121,11 +121,6 @@ class CommercialSubjectModels {
 		
 	}
 	
-	@Bean
-	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ContainerToCommercialSubjectItemConditionConverter)
-	public Converter<Item, CommercialSubjectItemConditionImpl> containerTOCommercialSubjectItemConditionConverter () {
-		return new ItemToDomainConverterImpl<>(CommercialSubjectItemConditionImpl.class, new ConditionValueCols[] { ConditionValueCols.Condition}).withChild(ConditionValueCols.Condition, ConditionImpl.class);
-	}
 	
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })

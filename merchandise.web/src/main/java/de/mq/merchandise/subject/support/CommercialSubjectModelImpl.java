@@ -3,6 +3,8 @@ package de.mq.merchandise.subject.support;
 import java.util.Collection;
 import java.util.Optional;
 
+import javax.persistence.Id;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -153,17 +155,27 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	}
 
 	@Override
-	public final void setCondition(final Condition condition) {
-		if( condition.id().orElse(-1L) <= 0 ) {
+	public final void setCondition(final Long conditionId) {
+		
+		
+		if(conditionId  < 0 ) {
 			
-			commercialSubjectItemCondition=BeanUtils.instantiateClass(CommercialSubjectItemConditionImpl.class);
-			ReflectionUtils.doWithFields(CommercialSubjectItemConditionImpl.class, field ->  { field.setAccessible(true); ReflectionUtils.setField(field, commercialSubjectItemCondition, condition);} , field -> field.getType().equals(Condition.class)); 
+			commercialSubjectItemCondition=newCommercialSubjectItemCondition(); 
 			notifyObservers(EventType.ConditionChanged);
 			return;
-		}
+		} 
 		
-		commercialSubjectItemCondition=commercialSubjectEventFascade.conditionChanged(condition.id().get());
+		commercialSubjectItemCondition=commercialSubjectEventFascade.conditionChanged(conditionId);
 		notifyObservers(EventType.ConditionChanged);
+	}
+
+
+	private CommercialSubjectItemConditionImpl newCommercialSubjectItemCondition() {
+		CommercialSubjectItemConditionImpl commercialSubjectItemCondition=BeanUtils.instantiateClass(CommercialSubjectItemConditionImpl.class);
+		final Condition condition = BeanUtils.instantiateClass(ConditionImpl.class);
+		ReflectionUtils.doWithFields(condition.getClass(), field -> {field.setAccessible(true); ReflectionUtils.setField(field, condition, -1L);} , field -> field.isAnnotationPresent(Id.class));
+		ReflectionUtils.doWithFields(CommercialSubjectItemConditionImpl.class, field ->  { field.setAccessible(true); ReflectionUtils.setField(field, commercialSubjectItemCondition, condition);} , field -> field.getType().equals(Condition.class));
+	   return commercialSubjectItemCondition;
 	}
 	
 	@Override

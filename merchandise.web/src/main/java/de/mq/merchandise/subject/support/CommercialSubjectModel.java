@@ -75,7 +75,7 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 
-	void setCondition(final Condition condition);
+	void setCondition(final Long  conditionId);
 
 
 

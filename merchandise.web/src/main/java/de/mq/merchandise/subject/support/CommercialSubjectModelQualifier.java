@@ -30,7 +30,7 @@ public @interface CommercialSubjectModelQualifier {
 		ItemToCommercialSubjectItemConverter,
 		CommercialSubjectItemToContainerConverter,
 		CommercialSubjectItemConditionToContainerConverter,
-		MenuBar, CommercialSubjectSearchItem, ContainerToCommercialSubjectItemConditionConverter;
+		MenuBar, CommercialSubjectSearchItem;
 
 		
 	}
