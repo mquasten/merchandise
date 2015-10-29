@@ -97,7 +97,13 @@ class CommercialSubjectModels {
 		return BeanUtils.instantiateClass(CommercialSubjectImpl.class);
 	}
 	
-	
+	@Bean()
+	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ConditionValueItem)
+	@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
+	Item conditionValueItem() {
+		return itemContainerFactory.create(ConditionValueCols.class);
+
+	}
 
 	
 	@Bean
@@ -105,6 +111,9 @@ class CommercialSubjectModels {
 	Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter() {
 		return new ItemToDomainConverterImpl<CommercialSubjectItem>(CommercialSubjectItemImpl.class, CommercialSubjectItemCols.class).withChild(CommercialSubjectItemCols.Subject, SubjectImpl.class);
 	}
+	
+	
+	
 	
 	@Bean
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter)
@@ -114,13 +123,7 @@ class CommercialSubjectModels {
 	
 	
 	
-	@Bean
-	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemConditionToContainerConverter)
-	public Converter<CommercialSubjectItemConditionImpl, Item> commercialSubjectItemConditionToContainerConverter () {
-		return new DomainToItemConverterImpl<CommercialSubjectItemConditionImpl>(new ConditionValueCols[]{ConditionValueCols.Condition, ConditionValueCols.InputValue});
-		
-	}
-	
+
 	
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })

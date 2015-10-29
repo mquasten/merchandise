@@ -81,4 +81,12 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 	boolean hasCondition();
 
+
+	
+	String getInputValue();
+
+
+
+	void setInputValue(String conditionValue);
+
 }

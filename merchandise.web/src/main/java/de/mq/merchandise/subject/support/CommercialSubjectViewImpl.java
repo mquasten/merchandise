@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
@@ -94,12 +93,13 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	 private  final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter;
 	 private final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter; 
 	 private final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter;
-	 private final Converter<CommercialSubjectItemConditionImpl, Item>  commercialSubjectItemCondition;
+
 	 
 	private  final   Converter<Collection<Condition>, Container> conditionToContainerConverter;
 	
-	//private final Converter<Item, CommercialSubjectItemConditionImpl> containerToCommercialSubjectItemConditionConverter;
 	
+	
+	private final Item conditionValueItem;
 	private final MessageSource messageSource; 
 
 	final ThemeResource editIcon = new ThemeResource("edit-icon.png");
@@ -120,11 +120,9 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter) final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter, 
 			final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter,
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToContainerConverter) final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter,
-			
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemConditionToContainerConverter)  final Converter<CommercialSubjectItemConditionImpl, Item>  commercialSubjectItemCondition,
-			
-			@SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter)final   Converter<Collection<Condition>, Container> conditionToContainerConverter
-			
+		
+		 @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter)final   Converter<Collection<Condition>, Container> conditionToContainerConverter,
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ConditionValueItem) final Item conditionValueItem
 			) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;
@@ -140,9 +138,10 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		this.commercialSubjectItemConverter=commercialSubjectItemConverter;
 		this.itemToCommercialSubjectItemConverter=itemToCommercialSubjectItemConverter;
 		this.commercialSubjectItemToContainerConverter=commercialSubjectItemToContainerConverter;
-		this.commercialSubjectItemCondition=commercialSubjectItemCondition;
+
 		this.conditionToContainerConverter=conditionToContainerConverter;
-		//this.containerToCommercialSubjectItemConditionConverter=containerToCommercialSubjectItemConditionConverter;
+		this.conditionValueItem=conditionValueItem;
+		
 	}
 
 	/*
@@ -408,24 +407,29 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		valueEditorLayout.addComponent(valueCols);
 		valueTableLayout.addComponent(valueEditorLayout);
 
-		final FieldGroup conditionFields = new FieldGroup();
-		conditionFields.setItemDataSource( commercialSubjectItemCondition.convert(BeanUtils.instantiateClass(CommercialSubjectItemConditionImpl.class)));
+	//	final FieldGroup conditionFields = new FieldGroup();
+//	conditionFields.setItemDataSource( commercialSubjectItemCondition.convert(BeanUtils.instantiateClass(CommercialSubjectItemConditionImpl.class)));
 		
 		final ComboBox conditionBox = new ComboBox("Condition");
 		conditionBox.setImmediate(true);
 		
-		
-		
+	
+	//	conditionValueFields.setItemDataSource(commercialSubjectModel);
 		
 		valueCols.addComponent(conditionBox);
 		conditionBox.setItemCaptionPropertyId(ConditionCols.ConditionType);
 		
-		conditionFields.bind(conditionBox, ConditionValueCols.Condition);
+	//	conditionFields.bind(conditionBox, ConditionValueCols.Condition);
+		
+		FieldGroup valueFields = new FieldGroup();
 		
 		final TextField valueField = new TextField("Wert");
+		valueFields.setItemDataSource(conditionValueItem);
+		valueField.setNullRepresentation("");
 		valueCols.addComponent(valueField);
 		valueField.setVisible(false);
 		
+		valueFields.bind(valueField, ConditionValueCols.InputValue);
 		
 		conditionBox.addValueChangeListener(e -> commercialSubjectModel.setCondition( e.getProperty().getValue() !=null ?(Long)  e.getProperty().getValue() : -1L));
 		
@@ -439,7 +443,12 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		saveValueButton.setIcon(newIcon);
 		
 		saveValueButton.addClickListener(e -> {
+		
+			commit(valueFields);
+			System.out.println(valueFields.getItemDataSource().getItemProperty(ConditionValueCols.InputValue).getValue());
+		//	commercialSubjectModel.setConditionValue(valueField.getValue());
 			
+		//	System.out.println(commercialSubjectModel.getConditionValue());
 			
 		});
 		
