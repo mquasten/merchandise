@@ -11,6 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
+
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
@@ -39,7 +41,6 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	
 	
 
-
 	CommercialSubjectModelImpl(final CommercialSubject search, final CommercialSubject commercialSubject, final CommercialSubjectEventFascade commercialSubjectEventFascade,  final  Mapper<Customer, CommercialSubject> customerIntoSubjectMapper) {
 		this.search = search;
 		this.commercialSubjectEventFascade=commercialSubjectEventFascade;
@@ -50,7 +51,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 
 
 	@Override
-	public final void setSearch(final CommercialSubject search) {
+	public  final  void setSearch(final CommercialSubject search) {
 		this.search=search;
 		customerMapper.mapInto(customer, this.search);
 		notifyObservers(EventType.SearchCriteriaChanged);
@@ -58,13 +59,13 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	
 	
 	@Override
-	public final CommercialSubject getSearch() {
+	public final  CommercialSubject getSearch() {
 		
 		return this.search;
 	}
 	
 	@Override
-	public void save(final CommercialSubject commercialSubject) {
+	public final void save(final CommercialSubject commercialSubject) {
 		customerMapper.mapInto(customer, commercialSubject);
 	   commercialSubjectEventFascade.save(this.commercialSubject.id().orElse(null), commercialSubject);
 		
@@ -74,7 +75,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 
 
 	@Override
-	public void setCustomer(Customer customer) {
+	public final void setCustomer(Customer customer) {
 		this.customer=customer;
 		setSearch(search);
 		
@@ -82,7 +83,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 
 
 	@Override
-	public void setCommercialSubjectId(final Long commercialSubjectId) {
+	public final void setCommercialSubjectId(final Long commercialSubjectId) {
 		if( commercialSubjectId==null){
 			commercialSubject= BeanUtils.instantiateClass(CommercialSubjectImpl.class);
 			notifyObservers(EventType.CommericalSubjectChanged);
@@ -96,7 +97,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	}
 	
 	@Override
-	public void setCommercialSubjectItemId(final Long itemId) {
+	public final  void setCommercialSubjectItemId(final Long itemId) {
 		if( itemId==null){
 			commercialSubjectItem= BeanUtils.instantiateClass(CommercialSubjectItemImpl.class);
 			notifyObservers(EventType.CommericalSubjectItemChanged);
@@ -112,37 +113,37 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		
 	}
 	@Override
-	public final Collection<Condition> getConditions() {
+	public final  Collection<Condition> getConditions() {
 		return commercialSubjectItem.subject().conditions();
 	}
 	
 	
 	@Override
-	public final Optional<CommercialSubject> getCommercialSubject() {
+	public final  Optional<CommercialSubject> getCommercialSubject() {
 		return Optional.ofNullable(commercialSubject);
 	}
 	
 	@Override
-	public final void delete(final CommercialSubject commercialSubject) {
+	public final  void delete(final CommercialSubject commercialSubject) {
 		commercialSubjectEventFascade.delete(commercialSubject);
 		setCommercialSubjectId(null);
 	}
 	
 	@Override
-	public final Collection<Subject> getSubjects() {
+	public final  Collection<Subject> getSubjects() {
 		
 		return commercialSubjectEventFascade.subjects(customer);
 		
 	}
 	
 	@Override
-	public final Optional<CommercialSubjectItem> getCommercialSubjectItem() {
+	public final   Optional<CommercialSubjectItem> getCommercialSubjectItem() {
 		return Optional.ofNullable(commercialSubjectItem);
 	}
 	
 	
 	@Override
-	public void save(final CommercialSubjectItem commercialSubjectItem) {
+	public final  void save(final CommercialSubjectItem commercialSubjectItem) {
 		
 		Assert.isTrue(commercialSubject.id().isPresent(), "commercialSubject should be persistent");
 	
@@ -154,7 +155,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 
 
 	@Override
-	public void delete(CommercialSubjectItem commercialSubjectItem) {
+	public final void delete(CommercialSubjectItem commercialSubjectItem) {
 		Assert.isTrue(commercialSubject.id().isPresent(), "CommercialSubject should be persistent");
 		commercialSubject=commercialSubjectEventFascade.delete(commercialSubjectItem, commercialSubject.id().get());
 		setCommercialSubjectItemId(null);
@@ -162,7 +163,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	}
 
 	@Override
-	public final void setCondition(final Long conditionId) {
+	public final   void setCondition(final Long conditionId) {
 		
 		
 		if(conditionId  < 0 ) {
@@ -186,7 +187,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	}
 	
 	@Override
-	public final boolean hasCondition() {
+	public final   boolean hasCondition() {
 		
 		return commercialSubjectItemCondition.condition().id().orElse(-1L) > 0;
 		
@@ -194,12 +195,12 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	@NotNull(message = "jsr303_mandatory")
 	@Size(min = 5, max = 30, message = "jsr303_commercial_subject_name_size")
 	@Override
-	public String getInputValue() {
+	public final String getInputValue() {
+	
 		return inputValue;
 	}
 
-	@Override
-	public void setInputValue(String inputValue) {
-		this.inputValue = inputValue;
-	}
+
+	
+	
 }

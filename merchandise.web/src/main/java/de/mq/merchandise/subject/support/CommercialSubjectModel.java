@@ -87,6 +87,4 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 
-	void setInputValue(String conditionValue);
-
 }

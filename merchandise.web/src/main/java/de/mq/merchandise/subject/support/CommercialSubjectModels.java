@@ -26,6 +26,7 @@ import de.mq.merchandise.util.support.RefreshableContainer;
 import de.mq.merchandise.util.support.ViewNav;
 
 @Configuration
+
 class CommercialSubjectModels {
 	
 	@Autowired
@@ -84,9 +85,10 @@ class CommercialSubjectModels {
 	}
 	
 	@Bean
-	@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
+	@Scope(value = "session")
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectModel)
-	CommercialSubjectModel commercialSubjectModel() {
+
+	public CommercialSubjectModel commercialSubjectModel() {
 
 		return new CommercialSubjectModelImpl( newCommercialSubject(), newCommercialSubject(), commercialSubjectEventFascade, customerIntoSubjectMapper);
 
@@ -121,8 +123,12 @@ class CommercialSubjectModels {
 		return new DomainToItemConverterImpl<>(CommercialSubjectCols.class);
 	}
 	
-	
-	
+	@Bean
+	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemIntoCommercialSubjectModel)
+	Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel() {
+		return new ItemToDomainConverterImpl<>(CommercialSubjectModelImpl.class, new Enum[]{ConditionValueCols.InputValue});
+		
+	}
 
 	
 	

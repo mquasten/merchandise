@@ -36,6 +36,7 @@ import com.vaadin.ui.VerticalLayout;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
+import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.ValidationUtil;
 import de.mq.merchandise.util.support.RefreshableContainer;
 import de.mq.merchandise.util.support.ViewNav;
@@ -97,7 +98,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	 
 	private  final   Converter<Collection<Condition>, Container> conditionToContainerConverter;
 	
-	
+	final Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel;
 	
 	private final Item conditionValueItem;
 	private final MessageSource messageSource; 
@@ -122,7 +123,11 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToContainerConverter) final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter,
 		
 		 @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter)final   Converter<Collection<Condition>, Container> conditionToContainerConverter,
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ConditionValueItem) final Item conditionValueItem
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ConditionValueItem) final Item conditionValueItem,
+			
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemIntoCommercialSubjectModel) final Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel
+			
+			
 			) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;
@@ -141,7 +146,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		this.conditionToContainerConverter=conditionToContainerConverter;
 		this.conditionValueItem=conditionValueItem;
-		
+		this.itemIntoCommercialSubjectModel=itemIntoCommercialSubjectModel;
 	}
 
 	/*
@@ -445,7 +450,11 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		saveValueButton.addClickListener(e -> {
 		
 			commit(valueFields);
-			System.out.println(valueFields.getItemDataSource().getItemProperty(ConditionValueCols.InputValue).getValue());
+			
+			
+			itemIntoCommercialSubjectModel.mapInto(valueFields.getItemDataSource(), commercialSubjectModel);
+			
+			System.out.println(commercialSubjectModel.getInputValue());
 		//	commercialSubjectModel.setConditionValue(valueField.getValue());
 			
 		//	System.out.println(commercialSubjectModel.getConditionValue());

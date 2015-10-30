@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.persistence.Id;
 
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.Assert;
@@ -16,7 +17,9 @@ import org.springframework.util.StringUtils;
 
 import com.vaadin.data.Item;
 
-public class ItemToDomainConverterImpl<T> implements Converter<Item, T> {
+import de.mq.merchandise.support.Mapper;
+
+public class ItemToDomainConverterImpl<T> implements Converter<Item, T>, Mapper<Item, T> {
 
 	private final Class<? extends T> clazz;
 	private final Enum<?>[] cols;
@@ -49,6 +52,11 @@ public class ItemToDomainConverterImpl<T> implements Converter<Item, T> {
 			return null;
 		}
 		final T domain = BeanUtils.instantiateClass(clazz);
+		return mapInto(item, domain);
+	}
+
+	@Override
+	public final T mapInto(final Item item, final T domain) {
 		Arrays.asList(cols).forEach(col -> {
 			handleItem(item, domain, col);
 
@@ -57,7 +65,7 @@ public class ItemToDomainConverterImpl<T> implements Converter<Item, T> {
 	}
 
 	private void handleItem(final Item item, final T domain, Enum<?> col) {
-		final Field field = ReflectionUtils.findField(domain.getClass(), StringUtils.uncapitalize(col.name()));
+		final Field field = ReflectionUtils.findField(AopUtils.getTargetClass(domain), StringUtils.uncapitalize(col.name()));
 		Assert.notNull(field, "Field not found in Type: " + domain.getClass());
 		field.setAccessible(true);
 		
@@ -76,7 +84,9 @@ public class ItemToDomainConverterImpl<T> implements Converter<Item, T> {
 			return;
 		}
 
+
 		ReflectionUtils.setField(field, domain, item.getItemProperty(col).getValue());
+	
 
 	}
 
