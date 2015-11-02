@@ -17,6 +17,7 @@ import org.springframework.util.ReflectionUtils;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
@@ -454,7 +455,9 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			
 			itemIntoCommercialSubjectModel.mapInto(valueFields.getItemDataSource(), commercialSubjectModel);
 			
-			System.out.println(commercialSubjectModel.getInputValue());
+			commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
+			
+			
 		//	commercialSubjectModel.setConditionValue(valueField.getValue());
 			
 		//	System.out.println(commercialSubjectModel.getConditionValue());
@@ -554,6 +557,19 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		}, CommercialSubjectModel.EventType.CommericalSubjectItemChanged);
 		
+		
+		commercialSubjectModel.register(e -> {
+			System.out.println("Condition Changed");
+			final IndexedContainer container = new IndexedContainer();
+			container.addContainerProperty(ConditionValueCols.InputValue, String.class, "");
+			
+			
+			// final Item newItem = container.getItem(container.addItem());
+			 
+			// final Collection<String> values =  (Collection<String>) commercialSubjectModel.getCommercialSubjectItem().get().conditionValues().stream().filter(entry -> entry.getKey().id().equals(conditionBox.getValue())).findFirst().get();
+		   
+			
+		}, EventType.ConditionChanged);
 		
 		userModel.register(e-> {
 			editorNameField.setCaption(message(I18N_COMMERCIAL_SUBJECT_NAME));

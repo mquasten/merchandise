@@ -17,7 +17,7 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 		CommericalSubjectChanged, 
 		CommericalSubjectItemChanged,
 		CommercialSubjectSaved, 
-		CommercialSubjectDeleted, ListSubjects, ItemSaved, CommericalSubjectItemDeleted, ConditionChanged;
+		CommercialSubjectDeleted, ListSubjects, ItemSaved, CommericalSubjectItemDeleted, ConditionChanged, AddInputValue;
 		
 	}
 
@@ -84,6 +84,10 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 	
 	String getInputValue();
+
+
+
+	void addInputValue(final Long  conditionId);
 
 
 

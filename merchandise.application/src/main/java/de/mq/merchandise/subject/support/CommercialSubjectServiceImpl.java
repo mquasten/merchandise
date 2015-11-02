@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -71,6 +72,10 @@ class CommercialSubjectServiceImpl implements CommercialSubjectService {
 	@Transactional(readOnly=true)
 	public final CommercialSubject  commercialSubject(final Long id){
 		final CommercialSubject result = commercialSubjectRepository.commercialSubject(id);
+		
+		
+		result.commercialSubjectItems().forEach(i -> Hibernate.initialize(i));
+		
 		Assert.notNull(result , "CommercialSubject not found");
 		return result;
 	}

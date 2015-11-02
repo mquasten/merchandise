@@ -223,7 +223,7 @@ class CommercialSubjectImpl implements CommercialSubject {
 		}
 
 		return customer.hashCode() + name.hashCode();
-	}
+	} 
 
 	private boolean valid(CommercialSubject subject) {
 		if (subject.customer() == null) {
@@ -252,6 +252,6 @@ class CommercialSubjectImpl implements CommercialSubject {
 		final CommercialSubject other = (CommercialSubject) obj;
 
 		return customer.equals(other.customer()) && name.equals(other.name());
-	}
+	}  
 
 }

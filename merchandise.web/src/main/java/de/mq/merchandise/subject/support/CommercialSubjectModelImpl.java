@@ -196,11 +196,13 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	@Size(min = 5, max = 30, message = "jsr303_commercial_subject_name_size")
 	@Override
 	public final String getInputValue() {
-	
 		return inputValue;
 	}
 
-
-	
+	@Override
+	public final void addInputValue(final Long conditionId) {
+		commercialSubjectItemCondition=commercialSubjectEventFascade.addInputValue(this, conditionId);
+		notifyObservers(EventType.ConditionChanged);
+	}
 	
 }

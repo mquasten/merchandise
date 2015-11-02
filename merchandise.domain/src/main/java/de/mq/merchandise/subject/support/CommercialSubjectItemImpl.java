@@ -22,6 +22,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+
 import org.springframework.util.Assert;
 
 import de.mq.merchandise.subject.Condition;
@@ -107,14 +108,14 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 			return super.hashCode();
 		}
 		return subject.hashCode() + commercialSubjet.hashCode();
-	}
+	}  
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	@Override
+
 	public boolean equals(Object obj) {
 		if (!valid(this)) {
 			return super.equals(obj);
@@ -128,7 +129,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 			return super.equals(obj);
 		}
 		return subject.equals(other.subject()) && commercialSubjet.equals(other.commercialSubject());
-	}
+	}  
 
 	private boolean valid(CommercialSubjectItem item) {
 		if (item.subject() == null) {
@@ -178,6 +179,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 		Assert.notNull(value);
 		final Optional<CommercialSubjectItemConditionImpl> result = commercialSubjectItemConditions.stream().filter(item -> item.condition().conditionType().equals(conditionType)).findFirst();
 		Assert.isTrue(result.isPresent(), "CommercialSubjectItemCondition not assigned");
+	
 		return result;
 	}
 

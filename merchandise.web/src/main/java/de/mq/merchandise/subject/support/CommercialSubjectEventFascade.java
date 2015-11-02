@@ -53,5 +53,9 @@ interface   CommercialSubjectEventFascade {
 
 	@CommercialSubjectEventQualifier(EventType.ConditionChanged)
 	abstract CommercialSubjectItemConditionImpl  conditionChanged(final Long conditionId);
+
+
+	@CommercialSubjectEventQualifier(EventType.AddInputValue)
+	abstract CommercialSubjectItemConditionImpl addInputValue(final CommercialSubjectModelImpl commercialSubjectModelImpl, final Long conditionId);
 	
 }

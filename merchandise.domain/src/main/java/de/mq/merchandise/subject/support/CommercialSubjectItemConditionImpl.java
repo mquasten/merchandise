@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -25,6 +26,7 @@ import de.mq.merchandise.support.BasicEntity;
 
 @Entity(name = "CommercialSubjectItemCondition")
 @Table(name = "commercial_subject_item_condition")
+@Cacheable(false)
 class CommercialSubjectItemConditionImpl implements BasicEntity {
 	@Id
 	private String id;
@@ -60,7 +62,7 @@ class CommercialSubjectItemConditionImpl implements BasicEntity {
 	}
 
 	@SuppressWarnings("unchecked")
-	final <T> Collection<T> values() {
+	<T> Collection<T> values() {
 		return Collections.unmodifiableCollection((Collection<T>) inputValues.stream().filter(iv -> iv.value().isPresent()).map(iv -> iv.value().get()).collect(Collectors.toList()));
 	}
 
@@ -83,7 +85,7 @@ class CommercialSubjectItemConditionImpl implements BasicEntity {
 		inputValues.remove(newInputValue(value));
 	}
 
-	Condition condition() {
+	 Condition condition() {
 		return condition;
 	}
 
@@ -97,7 +99,7 @@ class CommercialSubjectItemConditionImpl implements BasicEntity {
 			return super.hashCode();
 		}
 		return commercialSubjectItem.hashCode() + condition.hashCode();
-	}
+	} 
 
 	private boolean valid(CommercialSubjectItemConditionImpl commercialSubjectItemCondition) {
 		if (commercialSubjectItemCondition.commercialSubjectItem == null) {
@@ -109,6 +111,7 @@ class CommercialSubjectItemConditionImpl implements BasicEntity {
 		return true;
 	}
 
+	
 	@Override
 	public boolean equals(final Object obj) {
 		if (!valid(this)) {
@@ -123,6 +126,6 @@ class CommercialSubjectItemConditionImpl implements BasicEntity {
 		}
 
 		return commercialSubjectItem.equals(other.commercialSubjectItem) && condition.equals(other.condition);
-	}
+	} 
 
 }

@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,6 +23,7 @@ import de.mq.merchandise.subject.Subject;
 
 @Entity(name = "Condition")
 @Table(name = "condition")
+@Cacheable(false)
 class ConditionImpl implements Condition {
 
 	@GeneratedValue
@@ -45,8 +47,8 @@ class ConditionImpl implements Condition {
 	ConditionDataType dataType;
 
 
-	@SuppressWarnings("unused")
-	private ConditionImpl() {
+	
+	protected ConditionImpl() {
 
 	};
 
@@ -66,7 +68,7 @@ class ConditionImpl implements Condition {
 	}
 
 	@Override
-	public final ConditionDataType conditionDataType() {
+	public  ConditionDataType conditionDataType() {
 		return this.dataType;
 	}
 	
@@ -77,12 +79,12 @@ class ConditionImpl implements Condition {
 
 
 	@Override
-	public final int hashCode() {
+	public  int hashCode() {
 		if (!valid(this)) {
 			return super.hashCode();
 		}
 		return conditionType.hashCode() + subject.hashCode();
-	}
+	} 
 
 	private boolean valid(Condition condition) {
 		if (!StringUtils.hasText(condition.conditionType())) {
@@ -97,7 +99,7 @@ class ConditionImpl implements Condition {
 
 	
 	@Override
-	public final boolean equals(final Object obj) {
+	public  boolean equals(final Object obj) {
 		if (!valid(this)) {
 			return super.equals(obj);
 		}
@@ -113,5 +115,5 @@ class ConditionImpl implements Condition {
 
 		return conditionType().equals(other.conditionType()) && subject().equals(other.subject());
 
-	}
+	} 
 }

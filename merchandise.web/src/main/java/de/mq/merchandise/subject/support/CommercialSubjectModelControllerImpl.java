@@ -139,5 +139,12 @@ class CommercialSubjectModelControllerImpl {
 		
 	}
 	
+	@CommercialSubjectEventQualifier(EventType.AddInputValue)
+	CommercialSubjectItemConditionImpl addInputValue(CommercialSubjectModel model, final Long conditionId) {
+		final CommercialSubjectItemConditionImpl result = conditionChanged(model, conditionId);
+		result.assign(model.getInputValue());
+		System.out.println("addValue");
+		return result;
+	}
 	
 }
