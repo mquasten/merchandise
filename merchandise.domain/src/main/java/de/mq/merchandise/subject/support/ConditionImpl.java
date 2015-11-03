@@ -24,7 +24,7 @@ import de.mq.merchandise.subject.Subject;
 @Entity(name = "Condition")
 @Table(name = "condition")
 @Cacheable(false)
-class ConditionImpl implements Condition {
+public class ConditionImpl implements Condition {
 
 	@GeneratedValue
 	@Id

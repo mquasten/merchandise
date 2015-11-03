@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.hibernate.proxy.HibernateProxy;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -27,7 +29,7 @@ public class ConditionToContainerConverter implements Converter<Collection<Condi
 
 		Arrays.asList(ConditionCols.values()).forEach(col -> container.addContainerProperty(col, col.target(), col.nvl()));
 
-		source.forEach(condition -> assign(container, condition));
+		source.forEach(condition -> assign(container, unproxy(condition)));
 
 		return container;
 	}
@@ -40,14 +42,30 @@ public class ConditionToContainerConverter implements Converter<Collection<Condi
 
 		
 		Arrays.asList(ConditionCols.values()).stream().filter(col -> fieldValue(condition, col) != null).forEach(col -> container.getContainerProperty(id, col).setValue(fieldValue(condition, col)));
-
+		 
+		 
+		
+		
 	}
 
 	private Object fieldValue(final Condition condition, final ConditionCols col) {
-		final Field field = ReflectionUtils.findField(ConditionImpl.class, StringUtils.uncapitalize(col.name()));
+		
+		final Field field = ReflectionUtils.findField(AopUtils.getTargetClass(condition), StringUtils.uncapitalize(col.name()));
 		Assert.notNull(field, String.format("Field not found in Condition: %s ", StringUtils.uncapitalize(col.name())));
 		field.setAccessible(true);
-		return ReflectionUtils.getField(field, condition);
+	
+		return ReflectionUtils.getField(field,  condition);
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private <T> T  unproxy(T entity ) {
+		 if (!( entity instanceof HibernateProxy)) {
+			 return entity;
+		 }
+		return (T) ((HibernateProxy) entity).getHibernateLazyInitializer()
+      .getImplementation();
+		
 	}
 
 }

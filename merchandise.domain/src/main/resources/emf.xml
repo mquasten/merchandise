@@ -59,6 +59,9 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
          </bean>
          
       </property>
+      
+    
+      
 </bean>
 
 <bean id="transactionManager"   class="org.springframework.orm.jpa.JpaTransactionManager"> 
