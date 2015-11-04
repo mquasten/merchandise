@@ -201,7 +201,8 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 
 	@Override
 	public final void addInputValue(final Long conditionId) {
-		commercialSubjectItemCondition=commercialSubjectEventFascade.addInputValue(this, conditionId);
+		
+		commercialSubjectItem=commercialSubjectEventFascade.addInputValue(this, conditionId);
 		notifyObservers(EventType.ConditionChanged);
 	}
 	

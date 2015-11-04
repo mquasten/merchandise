@@ -455,6 +455,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			
 			itemIntoCommercialSubjectModel.mapInto(valueFields.getItemDataSource(), commercialSubjectModel);
 			
+			
 			commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
 			
 			
@@ -566,7 +567,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			
 			// final Item newItem = container.getItem(container.addItem());
 			 
-			// final Collection<String> values =  (Collection<String>) commercialSubjectModel.getCommercialSubjectItem().get().conditionValues().stream().filter(entry -> entry.getKey().id().equals(conditionBox.getValue())).findFirst().get();
+			System.out.println(commercialSubjectModel.getCommercialSubjectItem().get().conditionValues());
 		   
 			
 		}, EventType.ConditionChanged);

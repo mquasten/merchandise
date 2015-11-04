@@ -29,7 +29,7 @@ public class ConditionToContainerConverter implements Converter<Collection<Condi
 
 		Arrays.asList(ConditionCols.values()).forEach(col -> container.addContainerProperty(col, col.target(), col.nvl()));
 
-		source.forEach(condition -> assign(container, unproxy(condition)));
+		source.forEach(condition -> assign(container, deProxymize(condition)));
 
 		return container;
 	}
@@ -59,7 +59,7 @@ public class ConditionToContainerConverter implements Converter<Collection<Condi
 	
 	
 	@SuppressWarnings("unchecked")
-	private <T> T  unproxy(T entity ) {
+	private <T> T  deProxymize(T entity ) {
 		 if (!( entity instanceof HibernateProxy)) {
 			 return entity;
 		 }

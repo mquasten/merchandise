@@ -140,10 +140,13 @@ class CommercialSubjectModelControllerImpl {
 	}
 	
 	@CommercialSubjectEventQualifier(EventType.AddInputValue)
-	CommercialSubjectItemConditionImpl addInputValue(CommercialSubjectModel model, final Long conditionId) {
-		final CommercialSubjectItemConditionImpl result = conditionChanged(model, conditionId);
-		result.assign(model.getInputValue());
-		System.out.println("addValue");
+	CommercialSubjectItem addInputValue(final CommercialSubjectModel model, final Long conditionId) {
+		final CommercialSubjectItem result =  model.getCommercialSubjectItem().get();
+	
+		final Optional<String> conditionType = model.getConditions().stream().filter(condition -> condition.id().equals(Optional.of(conditionId))).map(condition-> condition.conditionType()).findAny();
+		result.assign(conditionType.get(), model.getInputValue());
+		
+		System.out.println("addValue: " + conditionType);
 		return result;
 	}
 	

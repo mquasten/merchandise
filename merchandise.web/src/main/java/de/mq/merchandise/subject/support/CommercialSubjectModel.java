@@ -87,7 +87,7 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 
-	void addInputValue(final Long  conditionId);
+	void addInputValue(final Long conditionId);
 
 
 
