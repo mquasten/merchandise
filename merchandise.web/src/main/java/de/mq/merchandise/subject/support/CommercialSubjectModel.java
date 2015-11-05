@@ -91,4 +91,8 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 
+	<T> Collection<T> inputValues(final Long conditionId);
+
+
+
 }

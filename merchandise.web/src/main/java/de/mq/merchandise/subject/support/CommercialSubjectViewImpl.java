@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -14,6 +15,8 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
+import com.vaadin.client.data.DataSource;
+import com.vaadin.client.widget.grid.datasources.ListDataSource;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -561,14 +564,17 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		
 		commercialSubjectModel.register(e -> {
 			System.out.println("Condition Changed");
-			final IndexedContainer container = new IndexedContainer();
-			container.addContainerProperty(ConditionValueCols.InputValue, String.class, "");
 			
 			
-			// final Item newItem = container.getItem(container.addItem());
-			 
-			System.out.println(commercialSubjectModel.getCommercialSubjectItem().get().conditionValues());
+			
+			
+			
+		
+			 final IndexedContainer container = new IndexedContainer();
+			 container.addContainerProperty(ConditionValueCols.InputValue, String.class, "");
+			 commercialSubjectModel.inputValues((Long) conditionBox.getValue()).forEach(v -> container.getItem(container.addItem()).getItemProperty(ConditionValueCols.InputValue).setValue(v)); 
 		   
+			valueTable.setContainerDataSource(container);
 			
 		}, EventType.ConditionChanged);
 		

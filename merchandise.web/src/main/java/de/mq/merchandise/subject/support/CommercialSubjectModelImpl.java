@@ -1,6 +1,8 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.persistence.Id;
@@ -10,6 +12,13 @@ import javax.validation.constraints.Size;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
+
+
+
+
+
+
+
 
 
 
@@ -205,5 +214,19 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		commercialSubjectItem=commercialSubjectEventFascade.addInputValue(this, conditionId);
 		notifyObservers(EventType.ConditionChanged);
 	}
+	
+
+	
+	
+	
+	 
+	@Override
+	@SuppressWarnings("unchecked")
+	public final <T> Collection<T> inputValues(Long conditionId) {
+		final Collection<T> values = new ArrayList<>();
+		commercialSubjectItem.conditionValues().stream().filter(entry -> entry.getKey().id().get().equals(conditionId)).forEach(entry -> values.addAll( (Collection<? extends T>) entry.getValue()));
+		return Collections.unmodifiableCollection(values);
+	 }
+	
 	
 }
