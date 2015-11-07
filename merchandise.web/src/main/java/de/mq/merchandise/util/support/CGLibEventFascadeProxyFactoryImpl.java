@@ -31,8 +31,7 @@ class CGLibEventFascadeProxyFactoryImpl extends AbstractEventFascadeProxyFactory
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * de.mq.merchandise.util.support.EventFascadeProxyFactory#createProxy(java
-	 * .lang.Class)
+	 * de.mq.merchandise.util.support.EventFascadeProxyFactory#createProxy(java.lang.Class)
 	 */
 	@Override
 	public final <T> T createProxy(Class<? extends T> targetClass) {

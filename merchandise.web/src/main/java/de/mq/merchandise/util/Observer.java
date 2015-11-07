@@ -1,10 +1,8 @@
 package de.mq.merchandise.util;
 
-
-
 @FunctionalInterface
-public interface Observer<EventType>  {
+public interface Observer<EventType> {
 
-	void  process(final EventType event);
-	
+	void process(final EventType event);
+
 }

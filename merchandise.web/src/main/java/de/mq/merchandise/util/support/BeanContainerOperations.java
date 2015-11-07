@@ -6,11 +6,9 @@ import java.util.Map;
 import org.springframework.context.ApplicationContext;
 
 public interface BeanContainerOperations {
-	
-	
-	
+
 	interface BeanFilter<T> {
-		 Collection<T> filter(final  ApplicationContext ctx);
+		Collection<T> filter(final ApplicationContext ctx);
 	}
 
 	Object[] resolveMandatoryBeansFromDefaultOrContainer(final Map<Class<?>, Object> defaults, final Class<?>[] targets);
@@ -19,10 +17,4 @@ public interface BeanContainerOperations {
 
 	<T> Collection<T> beansForFilter(final BeanFilter<T> filter);
 
-	
-	
-	
-	
-	
 }
-	 
