@@ -1,6 +1,5 @@
 package de.mq.merchandise.subject.support;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -15,12 +14,9 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import com.vaadin.client.data.DataSource;
-import com.vaadin.client.widget.grid.datasources.ListDataSource;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
@@ -102,7 +98,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	 
 	private  final   Converter<Collection<Condition>, Container> conditionToContainerConverter;
 	
-	final Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel;
+	private final Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel;
+	private final Converter<Collection<String>, Container> inputValuesConverter;
 	
 	private final Item conditionValueItem;
 	private final MessageSource messageSource; 
@@ -129,9 +126,9 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		 @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter)final   Converter<Collection<Condition>, Container> conditionToContainerConverter,
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ConditionValueItem) final Item conditionValueItem,
 			
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemIntoCommercialSubjectModel) final Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemIntoCommercialSubjectModel) final Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel,
 			
-			
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.InputValueToContainerConverter) Converter<Collection<String>, Container> inputValuesConverter
 			) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;
@@ -151,6 +148,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		this.conditionToContainerConverter=conditionToContainerConverter;
 		this.conditionValueItem=conditionValueItem;
 		this.itemIntoCommercialSubjectModel=itemIntoCommercialSubjectModel;
+		this.inputValuesConverter=inputValuesConverter;
 	}
 
 	/*
@@ -453,12 +451,14 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		
 		saveValueButton.addClickListener(e -> {
 		
+			validationUtil.reset(valueFields);
 			commit(valueFields);
 			
 			
 			itemIntoCommercialSubjectModel.mapInto(valueFields.getItemDataSource(), commercialSubjectModel);
 			
-			
+		
+			System.out.println(validationUtil.validate(commercialSubjectModel, valueFields, userModel.getLocale()));
 			commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
 			
 			
@@ -536,6 +536,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		);
 		
 		commercialSubjectModel.register(e -> {
+			
+		
 			validationUtil.reset(itemFields);
 		
 			itemFields.setItemDataSource(null);
@@ -562,21 +564,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		}, CommercialSubjectModel.EventType.CommericalSubjectItemChanged);
 		
 		
-		commercialSubjectModel.register(e -> {
-			System.out.println("Condition Changed");
-			
-			
-			
-			
-			
-		
-			 final IndexedContainer container = new IndexedContainer();
-			 container.addContainerProperty(ConditionValueCols.InputValue, String.class, "");
-			 commercialSubjectModel.inputValues((Long) conditionBox.getValue()).forEach(v -> container.getItem(container.addItem()).getItemProperty(ConditionValueCols.InputValue).setValue(v)); 
-		   
-			valueTable.setContainerDataSource(container);
-			
-		}, EventType.ConditionChanged);
+		commercialSubjectModel.register(e -> valueTable.setContainerDataSource(inputValuesConverter.convert(commercialSubjectModel.inputValues((Long) conditionBox.getValue()))) , EventType.ConditionChanged);
 		
 		userModel.register(e-> {
 			editorNameField.setCaption(message(I18N_COMMERCIAL_SUBJECT_NAME));

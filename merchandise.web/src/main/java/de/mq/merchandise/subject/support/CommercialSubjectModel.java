@@ -3,6 +3,9 @@ package de.mq.merchandise.subject.support;
 import java.util.Collection;
 import java.util.Optional;
 
+import javax.validation.constraints.Pattern;
+
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
@@ -83,6 +86,7 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 	
+	@Pattern(regexp= "\\S{1,50}" , message = "jsr303_input_value")
 	String getInputValue();
 
 

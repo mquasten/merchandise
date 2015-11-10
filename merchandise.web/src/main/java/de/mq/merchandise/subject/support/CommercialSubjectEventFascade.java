@@ -17,8 +17,6 @@ interface   CommercialSubjectEventFascade {
 	@CommercialSubjectEventQualifier(EventType.CountPaging)
 	abstract Number countSubjects();
 	
-
-
 	@CommercialSubjectEventQualifier(EventType.ListPaging)
 	abstract Collection<CommercialSubject> subjects(final ResultNavigation paging);
 
@@ -41,7 +39,6 @@ interface   CommercialSubjectEventFascade {
 
 	@CommercialSubjectEventQualifier(EventType.ItemSaved)
 	abstract CommercialSubject save(final CommercialSubjectItem commercialSubjectItem, final Long id);
-
 
 
 	@CommercialSubjectEventQualifier(EventType.CommericalSubjectItemChanged)

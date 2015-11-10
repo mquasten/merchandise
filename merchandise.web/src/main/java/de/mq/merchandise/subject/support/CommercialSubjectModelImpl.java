@@ -6,21 +6,10 @@ import java.util.Collections;
 import java.util.Optional;
 
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
-
-
-
-
-
-
-
-
-
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
@@ -201,8 +190,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		return commercialSubjectItemCondition.condition().id().orElse(-1L) > 0;
 		
 	}
-	@NotNull(message = "jsr303_mandatory")
-	@Size(min = 5, max = 30, message = "jsr303_commercial_subject_name_size")
+	
 	@Override
 	public final String getInputValue() {
 		return inputValue;
@@ -214,9 +202,6 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		commercialSubjectItem=commercialSubjectEventFascade.addInputValue(this, conditionId);
 		notifyObservers(EventType.ConditionChanged);
 	}
-	
-
-	
 	
 	
 	 
