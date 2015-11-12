@@ -1,6 +1,7 @@
 package de.mq.merchandise.util.support;
 
 import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -19,6 +20,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.AbstractComponent;
 
+import de.mq.merchandise.util.TableContainerColumns;
 import de.mq.merchandise.util.ValidationUtil;
 
 
@@ -52,10 +54,22 @@ class SimpleValidationUtilImpl implements ValidationUtil {
 		return errors.isEmpty();
 		
 	}
-	
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.util.ValidationUtil#reset(com.vaadin.data.fieldgroup.FieldGroup)
+	 */
 	@Override
 	public final void reset(final FieldGroup fieldGroup) {
 		fieldGroup.getBoundPropertyIds().forEach(p -> ((AbstractComponent) fieldGroup.getField(p)).setComponentError(null) );
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see de.mq.merchandise.util.ValidationUtil#cleanValues(com.vaadin.data.fieldgroup.FieldGroup, de.mq.merchandise.util.TableContainerColumns[])
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public final void cleanValues(final FieldGroup fieldGroup,final TableContainerColumns[] cols) {
+		Arrays.asList(cols).forEach(col -> fieldGroup.getItemDataSource().getItemProperty(col).setValue(col.nvl()));
 	}
 
 }

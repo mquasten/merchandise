@@ -10,4 +10,6 @@ public interface ValidationUtil {
 
 	void reset(FieldGroup fieldGroup);
 
+	void cleanValues(FieldGroup fieldGroup, TableContainerColumns[] cols);
+
 }

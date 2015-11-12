@@ -141,12 +141,18 @@ class CommercialSubjectModelControllerImpl {
 	
 	@CommercialSubjectEventQualifier(EventType.AddInputValue)
 	CommercialSubjectItem addInputValue(final CommercialSubjectModel model, final Long conditionId) {
-		CommercialSubject commercialSubject = commercialSubjectService.commercialSubject(model.getCommercialSubject().get().id().get());
+		Assert.isTrue(model.getCommercialSubject().isPresent(), "commercialSubject is manatory");
+		Assert.isTrue(model.getCommercialSubject().get().id().isPresent(), "commercialSubject should be persistent");
+		Assert.notNull(model.getCommercialSubjectItem().get().subject(), "Subject is mandatory");
+		final CommercialSubject commercialSubject = commercialSubjectService.commercialSubject(model.getCommercialSubject().get().id().get());
 		
-		final CommercialSubjectItem item = commercialSubject.commercialSubjectItem(model.getCommercialSubjectItem().get().subject()).get();
+		final Optional<CommercialSubjectItem> commercialSubjectItem = commercialSubject.commercialSubjectItem(model.getCommercialSubjectItem().get().subject());
+		Assert.isTrue(commercialSubjectItem.isPresent() ,"CommercialSubjectItem must be present for for subject: " + model.getCommercialSubjectItem().get().subject());
+		final CommercialSubjectItem item = commercialSubjectItem.get();
 	
 	
 		final Optional<String> conditionType = model.getConditions().stream().filter(condition -> condition.id().equals(Optional.of(conditionId))).map(condition-> condition.conditionType()).findAny();
+		Assert.isTrue(conditionType.isPresent(), "Condition is mandatory");
 		item.assign(conditionType.get(), model.getInputValue());
 		
 		System.out.println("addValue: " + conditionType);

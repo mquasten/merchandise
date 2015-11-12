@@ -30,6 +30,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnHeaderMode;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -446,8 +447,10 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		final Table valueTable = new Table();
 		valueTable.setVisible(false);
 		valueTable.setCaption("Werteauswahl");
+		valueTable.setColumnHeaderMode(ColumnHeaderMode.HIDDEN);
 		
 		saveValueButton.setIcon(newIcon);
+		saveValueButton.setEnabled(false);
 		
 		saveValueButton.addClickListener(e -> {
 		
@@ -458,28 +461,28 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			itemIntoCommercialSubjectModel.mapInto(valueFields.getItemDataSource(), commercialSubjectModel);
 			
 		
-			System.out.println(validationUtil.validate(commercialSubjectModel, valueFields, userModel.getLocale()));
-			commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
+			if( validationUtil.validate(commercialSubjectModel, valueFields, userModel.getLocale())) {
+				commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
+			}
 			
-			
-		//	commercialSubjectModel.setConditionValue(valueField.getValue());
-			
-		//	System.out.println(commercialSubjectModel.getConditionValue());
+	
 			
 		});
 		
 		commercialSubjectModel.register( o -> {
-			
+			saveValueButton.setEnabled(commercialSubjectModel.hasCondition());
 			valueTable.setVisible(commercialSubjectModel.hasCondition());
 			valueField.setVisible(commercialSubjectModel.hasCondition());
+			validationUtil.cleanValues(valueFields, ConditionValueCols.values());
+			valueFields.setItemDataSource(conditionValueItem);
 		}, EventType.ConditionChanged);
 		
-		final Button newValueButton = new Button("neu");
+		final Button deleteValueButton = new Button("löschen");
 		
-		newValueButton.setEnabled(false);
+		deleteValueButton.setEnabled(false);
 
 		buttonValueLayout.addComponent(saveValueButton);
-		buttonValueLayout.addComponent(newValueButton);
+		buttonValueLayout.addComponent(deleteValueButton);
 		
 		valueTableLayout.addComponent(buttonValueLayout);
 
