@@ -160,4 +160,22 @@ class CommercialSubjectModelControllerImpl {
 		return item;
 	}
 	
+	@CommercialSubjectEventQualifier(EventType.DeleteInputValue)
+	CommercialSubjectItem addInputValue(final CommercialSubjectModel model, final Long conditionId, final String currentValue) {
+		
+	
+		final CommercialSubject commercialSubject = commercialSubjectService.commercialSubject(model.getCommercialSubject().get().id().get());
+		
+		
+		final Optional<CommercialSubjectItem> commercialSubjectItem = commercialSubject.commercialSubjectItem(model.getCommercialSubjectItem().get().subject());
+		Assert.isTrue(commercialSubjectItem.isPresent() ,"CommercialSubjectItem must be present for for subject: " + model.getCommercialSubjectItem().get().subject());
+		final CommercialSubjectItem item = commercialSubjectItem.get();
+		
+		final Optional<String> conditionType = model.getConditions().stream().filter(condition -> condition.id().equals(Optional.of(conditionId))).map(condition-> condition.conditionType()).findAny();
+		Assert.isTrue(conditionType.isPresent(), "Condition is mandatory");
+		item.remove(conditionType.get(), currentValue);
+		commercialSubjectService.save(commercialSubject);
+		return item;
+	}
+	
 }

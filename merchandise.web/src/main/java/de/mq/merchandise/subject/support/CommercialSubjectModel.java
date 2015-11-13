@@ -6,6 +6,9 @@ import java.util.Optional;
 import javax.validation.constraints.Pattern;
 
 
+
+
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
@@ -20,7 +23,7 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 		CommericalSubjectChanged, 
 		CommericalSubjectItemChanged,
 		CommercialSubjectSaved, 
-		CommercialSubjectDeleted, ListSubjects, ItemSaved, CommericalSubjectItemDeleted, ConditionChanged, AddInputValue;
+		CommercialSubjectDeleted, ListSubjects, ItemSaved, CommericalSubjectItemDeleted, ConditionChanged, AddInputValue, InputValueChanged, DeleteInputValue;
 		
 	}
 
@@ -97,6 +100,17 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 	<T> Collection<T> inputValues(final Long conditionId);
 
+
+
+	void setCurrentInputValue(String value);
+
+
+
+	boolean hasCurrentInputValue();
+
+
+
+	void deleteInputValue();
 
 
 }

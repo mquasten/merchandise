@@ -449,6 +449,16 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		valueTable.setCaption("Werteauswahl");
 		valueTable.setColumnHeaderMode(ColumnHeaderMode.HIDDEN);
 		
+		valueTable.addValueChangeListener(e -> {
+			final String value = (e.getProperty().getValue() != null) ? (String)  valueTable.getItem(e.getProperty().getValue()).getItemProperty(ConditionValueCols.InputValue).getValue():null;;
+			
+			commercialSubjectModel.setCurrentInputValue(value);
+			
+			
+		});
+		
+	
+		
 		saveValueButton.setIcon(newIcon);
 		saveValueButton.setEnabled(false);
 		
@@ -478,7 +488,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		}, EventType.ConditionChanged);
 		
 		final Button deleteValueButton = new Button("löschen");
-		
+		commercialSubjectModel.register(e -> deleteValueButton.setEnabled(commercialSubjectModel.hasCurrentInputValue()), EventType.InputValueChanged);
+		deleteValueButton.addClickListener(e -> commercialSubjectModel.deleteInputValue());
 		deleteValueButton.setEnabled(false);
 
 		buttonValueLayout.addComponent(saveValueButton);

@@ -74,7 +74,7 @@ class CommercialSubjectServiceImpl implements CommercialSubjectService {
 		final CommercialSubject result = commercialSubjectRepository.commercialSubject(id);
 		
 		
-		result.commercialSubjectItems().forEach(i -> {Hibernate.initialize(i); Hibernate.initialize(i.subject());Hibernate.initialize((i.subject().conditions()));  i.conditionValues().stream().map(e -> e.getKey()).forEach(c -> Hibernate.initialize(c));} );
+		result.commercialSubjectItems().forEach(i -> {Hibernate.initialize(i); Hibernate.initialize(i.subject());Hibernate.initialize(i.subject().customer());Hibernate.initialize((i.subject().conditions()));  i.conditionValues().stream().map(e -> e.getKey()).forEach(c -> Hibernate.initialize(c));} );
 		
 		Assert.notNull(result , "CommercialSubject not found");
 		return result;

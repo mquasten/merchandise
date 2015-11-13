@@ -3,6 +3,7 @@ package de.mq.merchandise.subject.support;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -43,9 +46,11 @@ class CommercialSubjectItemConditionImpl implements BasicEntity {
 	@Valid
 	private Condition condition;
 
-	@CollectionTable(name = "input_values", joinColumns = @JoinColumn(name = "commercial_subject_item_Condition_id"))
-	@ElementCollection(targetClass = InputValueImpl.class, fetch = FetchType.LAZY)
-	private Collection<InputValueImpl> inputValues = new ArrayList<>();
+	
+	@CollectionTable(name = "input_values", joinColumns = @JoinColumn(name = "commercial_subject_item_Condition_id" ) )
+	@ElementCollection(targetClass = InputValueImpl.class , fetch = FetchType.LAZY )
+	@OrderColumn(name="index_id")
+	private List<InputValueImpl> inputValues = new ArrayList<>();
 
 	@SuppressWarnings("unused")
 	private CommercialSubjectItemConditionImpl() {

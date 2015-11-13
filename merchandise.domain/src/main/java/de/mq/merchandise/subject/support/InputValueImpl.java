@@ -6,14 +6,18 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
+
 class InputValueImpl  {
-	@Column(length = 50, name = "string_value")
+
+	
+	
+	@Column(length = 50, name = "string_value", nullable=false)
 	private String stringValue;
 
-	@Column(name = "long_value")
+	@Column(name = "long_value", nullable=false)
 	private Long longValue;
 
-	@Column(name = "double_value")
+   @Column(name = "double_value", nullable=false)
 	private Double doubleValue;
 	
 	@SuppressWarnings("unused")

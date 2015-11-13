@@ -37,7 +37,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	private String inputValue;
 	
 	
-	
+	private Optional<String> currentInputValue = Optional.empty();
 
 	CommercialSubjectModelImpl(final CommercialSubject search, final CommercialSubject commercialSubject, final CommercialSubjectEventFascade commercialSubjectEventFascade,  final  Mapper<Customer, CommercialSubject> customerIntoSubjectMapper) {
 		this.search = search;
@@ -213,5 +213,26 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		return Collections.unmodifiableCollection(values);
 	 }
 	
+	@Override
+	public final void setCurrentInputValue(final String value) {
+		currentInputValue=Optional.ofNullable(value);
+		notifyObservers(EventType.InputValueChanged);
+	}
 	
+	@Override
+	public final boolean hasCurrentInputValue() {
+		return currentInputValue.isPresent();
+	}
+
+
+	@Override
+	public void deleteInputValue() {
+		
+		Assert.isTrue(currentInputValue.isPresent());
+		Assert.notNull(commercialSubjectItemCondition.condition());
+		Assert.isTrue(commercialSubjectItemCondition.condition().id().isPresent());
+		
+		commercialSubjectItem=commercialSubjectEventFascade.deleteInputValue(commercialSubjectItemCondition.condition().id().get(), currentInputValue.get());
+		notifyObservers(EventType.ConditionChanged);
+	}
 }
