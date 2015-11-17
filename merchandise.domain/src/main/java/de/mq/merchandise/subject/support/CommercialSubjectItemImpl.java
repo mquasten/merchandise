@@ -55,7 +55,7 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	@Valid
 	private CommercialSubject commercialSubjet;
 
-	@OneToMany(mappedBy = "commercialSubjectItem", targetEntity = CommercialSubjectItemConditionImpl.class, fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	@OneToMany(mappedBy = "commercialSubjectItem", targetEntity = CommercialSubjectItemConditionImpl.class, fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true )
 	private Collection<CommercialSubjectItemConditionImpl> commercialSubjectItemConditions = new HashSet<>();
 
 	@SuppressWarnings("unused")

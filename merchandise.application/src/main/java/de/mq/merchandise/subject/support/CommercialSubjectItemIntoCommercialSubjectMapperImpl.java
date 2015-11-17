@@ -1,11 +1,13 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.support.Mapper;
@@ -40,16 +42,28 @@ class CommercialSubjectItemIntoCommercialSubjectMapperImpl extends ReflectionBas
 		
 
 		Optional<CommercialSubjectItem> item =  target.commercialSubjectItems().stream().filter(currentItem -> currentItem.id().equals(source.id())).findFirst();
+	
 		
 		Assert.isTrue(item.isPresent(), "Item not assigned for subject");
+		
+		
+		
 		final CommercialSubjectItem toBeUpdated = item.get();
-				
+		
+		if( ! item.get().subject().id().equals(source.subject().id()))  {
+			toBeUpdated.conditionValues().forEach(e -> remove(toBeUpdated, e.getKey(), e.getValue()));
+			System.out.println("*** cleanup ****");
+		}
+		
 		assign("name", toBeUpdated, source.name());
 		assign("mandatory", toBeUpdated, source.mandatory());
 		assign("subject", toBeUpdated, subject);
 		return target;
 	}
 
-	
+	private <T> void remove(final CommercialSubjectItem item, final Condition condition, final Collection<T> values) {
+		values.forEach(v -> item.remove(condition.conditionType(), v));
+		
+	}
 	
 }

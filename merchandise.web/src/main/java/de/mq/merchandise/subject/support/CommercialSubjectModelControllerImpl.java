@@ -153,6 +153,8 @@ class CommercialSubjectModelControllerImpl {
 	
 		final Optional<String> conditionType = model.getConditions().stream().filter(condition -> condition.id().equals(Optional.of(conditionId))).map(condition-> condition.conditionType()).findAny();
 		Assert.isTrue(conditionType.isPresent(), "Condition is mandatory");
+		
+		
 		item.assign(conditionType.get(), model.getInputValue());
 		
 		System.out.println("addValue: " + conditionType);
