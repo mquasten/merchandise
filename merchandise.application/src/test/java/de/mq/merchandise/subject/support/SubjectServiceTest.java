@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import de.mq.merchandise.ResultNavigation;
+import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Subject;
 
 
@@ -68,5 +69,19 @@ public class SubjectServiceTest {
 		Assert.assertEquals(subject, subjectService.subject(19680528L));
 	}
 	
+	
+	@Test
+	public final void  subjects4Customer() {
+		final Customer customer = Mockito.mock(Customer.class);
+		final Collection<Subject> subjects = new ArrayList<>();
+		subjects.add(subject);
+		Mockito.when(subjectRepository.subjectsForCustomer(customer)).thenReturn(subjects);
+		
+		final Collection<Subject> results = subjectService.subjects(customer);
+		Assert.assertEquals(1, results.size());
+		
+		Assert.assertTrue(results.stream().findAny().isPresent());
+		Assert.assertEquals(subject, results.stream().findAny().get());
+	}
 
 }

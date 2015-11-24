@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,12 +22,21 @@ import java.util.Map;
 
 
 
+
+import java.util.Map.Entry;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 
+
+
+
+
 import de.mq.merchandise.ResultNavigation;
+import de.mq.merchandise.subject.Condition;
+import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.support.Mapper;
 
 public class CommercialSubjectServiceTest {
@@ -84,8 +94,23 @@ public class CommercialSubjectServiceTest {
 	
 	@Test
 	public final void commercialSubject() {
+		final Subject subject = Mockito.mock(Subject.class);
+		final CommercialSubjectItem item = Mockito.mock(CommercialSubjectItem.class);
+		final Collection<Entry<Condition, Collection<Object>>> entries = new ArrayList<>();
+		final Condition condition = Mockito.mock(Condition.class);
+		entries.add(new AbstractMap.SimpleEntry<>(condition,new ArrayList<>()));
+		Mockito.when(item.conditionValues()).thenReturn(entries);
+		Mockito.when(item.subject()).thenReturn(subject);
+		Collection<CommercialSubjectItem> items = new ArrayList<>();
+		items.add(item);
+		Mockito.when(commercialSubject.commercialSubjectItems()).thenReturn(items);
 		Mockito.when(commercialSubjectRepository.commercialSubject(ID)).thenReturn(commercialSubject);
 		Assert.assertEquals(commercialSubject, commercialSubjectService.commercialSubject(ID));
+		
+		Mockito.verify(item, Mockito.atLeast(1)).subject();
+		Mockito.verify(subject).customer();
+		Mockito.verify(subject).conditions();
+		Mockito.verify(item).conditionValues();
 	
 	}
 	

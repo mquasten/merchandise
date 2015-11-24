@@ -241,5 +241,22 @@ public class SubjectRepositoryTest {
 		Assert.assertEquals(subject, subjectRepository.subject(ID));
 	}
 	
+	@Test
+	public final void subjects() {
+		Mockito.when(customer.id()).thenReturn(Optional.of(ID));
+		Mockito.when(entityManager.createNamedQuery(SubjectRepositoryImpl.SUBJECTS_MAP_FOR_CUSTOMER_QUERY,Subject.class)).thenReturn(typedQuery);
+		final List<Subject> subjects = new ArrayList<>();
+		subjects.add(subject);
+		Mockito.when(typedQuery.getResultList()).thenReturn(subjects);
+		
+		final Collection<Subject> results = subjectRepository.subjectsForCustomer(customer);
+		Assert.assertEquals(1, results.size());
+		Assert.assertTrue(results.stream().findAny().isPresent());
+		Assert.assertEquals(subject, results.stream().findAny().get());
+		Mockito.verify(entityManager).createNamedQuery(SubjectRepositoryImpl.SUBJECTS_MAP_FOR_CUSTOMER_QUERY,Subject.class);
+		Mockito.verify(typedQuery).setParameter(SubjectRepository.ID_PARAM_NAME, ID);
+		Mockito.verify(typedQuery).getResultList();
+	}
+	
 
 }
