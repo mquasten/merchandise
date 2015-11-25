@@ -50,7 +50,7 @@ class CommercialSubjectItemIntoCommercialSubjectMapperImpl extends ReflectionBas
 		
 		final CommercialSubjectItem toBeUpdated = item.get();
 		
-		if( ! item.get().subject().id().equals(source.subject().id()))  {
+		if( ! toBeUpdated.subject().id().equals(source.subject().id()))  {
 			toBeUpdated.conditionValues().forEach(e -> remove(toBeUpdated, e.getKey(), e.getValue()));
 			System.out.println("*** cleanup ****");
 		}
