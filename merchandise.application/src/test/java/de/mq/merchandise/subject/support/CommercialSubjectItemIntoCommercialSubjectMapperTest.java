@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -15,11 +16,14 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.ReflectionUtils;
 
+import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.support.Mapper;
 
 public class CommercialSubjectItemIntoCommercialSubjectMapperTest {
 
+	private static final String VALUE = "value";
+	private static final String CONDITION_TYPE = "type";
 	private static final String ITEM_NAME = "Kylie";
 	private static final long ID = 19680528L;
 	private final SubjectService subjectService = Mockito.mock(SubjectService.class);
@@ -64,7 +68,8 @@ public class CommercialSubjectItemIntoCommercialSubjectMapperTest {
 		final CommercialSubject target = BeanUtils.instantiateClass(CommercialSubjectImpl.class);
 		ReflectionUtils.doWithFields(target.getClass(), field -> ((Collection<CommercialSubjectItem>)ReflectionTestUtils.getField(target, field.getName())).add(toBeUpdated),field -> field.isAnnotationPresent(OneToMany.class)&&field.getAnnotation(OneToMany.class).targetEntity().equals(CommercialSubjectItemImpl.class));
 		
-	
+		
+		
 		mapper.mapInto(source, target);
 		
 		Assert.assertEquals(1, target.commercialSubjectItems().size());
@@ -73,6 +78,31 @@ public class CommercialSubjectItemIntoCommercialSubjectMapperTest {
 		Assert.assertEquals(ITEM_NAME, target.commercialSubjectItems().stream().findFirst().get().name());
 		Assert.assertTrue(target.commercialSubjectItems().stream().findFirst().get().mandatory());
 		Assert.assertEquals(subject, target.commercialSubjectItems().stream().findFirst().get().subject());
+		
+		final CommercialSubjectItemConditionImpl commercialSubjectItemCondition = Mockito.mock(CommercialSubjectItemConditionImpl.class);
+		final Condition condition = Mockito.mock(Condition.class);
+		Mockito.when(commercialSubjectItemCondition.condition()).thenReturn(condition);
+		Mockito.when(condition.conditionType()).thenReturn(CONDITION_TYPE);
+		Mockito.when(commercialSubjectItemCondition.values()).thenReturn(Arrays.asList(VALUE));
+		final Subject otherSubject = Mockito.mock(Subject.class);
+		Mockito.when(otherSubject.id()).thenReturn(Optional.of(ID + ID));
+		ReflectionUtils.doWithFields(toBeUpdated.getClass(), field ->  {field.setAccessible(true);((Collection<CommercialSubjectItemConditionImpl>) ReflectionUtils.getField(field, toBeUpdated)).add(commercialSubjectItemCondition);}, field -> field.isAnnotationPresent(OneToMany.class)&&field.getAnnotation(OneToMany.class).targetEntity().equals(CommercialSubjectItemConditionImpl.class));
+		ReflectionUtils.doWithFields(toBeUpdated.getClass(), field -> ReflectionTestUtils.setField(toBeUpdated, field.getName(), otherSubject) , field ->  field.getType().equals(Subject.class));
+		//toBeUpdated
+		
+		mapper.mapInto(source, target);
+		
+		
+		Mockito.verify(commercialSubjectItemCondition).remove(VALUE);
+		
+		Assert.assertEquals(1, target.commercialSubjectItems().size());
+		Assert.assertTrue(target.commercialSubjectItems().stream().findAny().isPresent());
+		
+		Assert.assertEquals(ITEM_NAME, target.commercialSubjectItems().stream().findFirst().get().name());
+		Assert.assertTrue(target.commercialSubjectItems().stream().findFirst().get().mandatory());
+		Assert.assertEquals(subject, target.commercialSubjectItems().stream().findFirst().get().subject());
+		
+	
 		
 	}
 }

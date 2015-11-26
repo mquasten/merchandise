@@ -17,6 +17,9 @@ import de.mq.merchandise.support.ReflectionBasedFieldMapperImpl;
 @MapperQualifier(MapperType.CommercialSubjectItemIntoCommercialSubject)
 class CommercialSubjectItemIntoCommercialSubjectMapperImpl extends ReflectionBasedFieldMapperImpl implements Mapper<CommercialSubjectItem,CommercialSubject>{
 
+	private static final String SUBJECT_FIELD = "subject";
+	private static final String MANDATORY_FIELD = "mandatory";
+	private static final String NAME_FIELD = "name";
 	private final SubjectService subjectService; 
 	
 	@Autowired
@@ -41,7 +44,7 @@ class CommercialSubjectItemIntoCommercialSubjectMapperImpl extends ReflectionBas
 		}
 		
 
-		Optional<CommercialSubjectItem> item =  target.commercialSubjectItems().stream().filter(currentItem -> currentItem.id().equals(source.id())).findFirst();
+		final Optional<CommercialSubjectItem> item =  target.commercialSubjectItems().stream().filter(currentItem -> currentItem.id().equals(source.id())).findFirst();
 	
 		
 		Assert.isTrue(item.isPresent(), "Item not assigned for subject");
@@ -50,20 +53,19 @@ class CommercialSubjectItemIntoCommercialSubjectMapperImpl extends ReflectionBas
 		
 		final CommercialSubjectItem toBeUpdated = item.get();
 		
+		
 		if( ! toBeUpdated.subject().id().equals(source.subject().id()))  {
 			toBeUpdated.conditionValues().forEach(e -> remove(toBeUpdated, e.getKey(), e.getValue()));
-			System.out.println("*** cleanup ****");
 		}
 		
-		assign("name", toBeUpdated, source.name());
-		assign("mandatory", toBeUpdated, source.mandatory());
-		assign("subject", toBeUpdated, subject);
+		assign(NAME_FIELD, toBeUpdated, source.name());
+		assign(MANDATORY_FIELD, toBeUpdated, source.mandatory());
+		assign(SUBJECT_FIELD, toBeUpdated, subject);
 		return target;
 	}
 
 	private <T> void remove(final CommercialSubjectItem item, final Condition condition, final Collection<T> values) {
-		values.forEach(v -> item.remove(condition.conditionType(), v));
-		
+		values.forEach(v -> item.remove(condition.conditionType(), v));	
 	}
 	
 }
