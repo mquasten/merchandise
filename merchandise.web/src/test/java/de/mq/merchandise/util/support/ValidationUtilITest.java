@@ -18,6 +18,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.AbstractComponent;
@@ -26,9 +28,12 @@ import com.vaadin.ui.TextField;
 
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectImpl;
+import de.mq.merchandise.util.TableContainerColumns;
 import de.mq.merchandise.util.ValidationUtil;
 
 public class ValidationUtilITest {
+
+	private static final long ID = 19680528L;
 
 	private static final String ERROR_VALUE = "Mußfeld";
 
@@ -101,6 +106,21 @@ public class ValidationUtilITest {
 
 		validationUtil.reset(fieldGroup);
 		properties.values().forEach(field -> Mockito.verify(field).setComponentError(null));
+	}
+	
+	@Test
+	public final void cleanup() {
+		final TableContainerColumns col = Mockito.mock(TableContainerColumns.class);
+		Mockito.when(col.nvl()).thenReturn(ID);
+		final Item item = Mockito.mock(Item.class);
+		Mockito.when(fieldGroup.getItemDataSource()).thenReturn(item);
+		@SuppressWarnings("unchecked")
+		final Property<Long> property = Mockito.mock(Property.class);
+		Mockito.when(item.getItemProperty(col)).thenReturn(property);
+		
+		validationUtil.cleanValues(fieldGroup, new TableContainerColumns[] {col});
+		
+		Mockito.verify(property).setValue(ID);
 	}
 
 }
