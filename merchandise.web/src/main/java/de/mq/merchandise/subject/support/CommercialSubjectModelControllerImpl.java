@@ -157,7 +157,6 @@ class CommercialSubjectModelControllerImpl {
 		
 		item.assign(conditionType.get(), model.getInputValue());
 		
-		System.out.println("addValue: " + conditionType);
 		commercialSubjectService.save(commercialSubject);
 		return item;
 	}

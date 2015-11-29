@@ -18,7 +18,8 @@ import de.mq.merchandise.customer.support.CustomerImpl;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.support.Mapper;
-import de.mq.merchandise.util.support.ObservableImpl;
+import de.mq.util.event.support.ObservableImpl;
+
 
 
 class SubjectModelImpl extends ObservableImpl<SubjectModel.EventType> implements SubjectModel {

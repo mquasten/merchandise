@@ -25,6 +25,7 @@ import org.springframework.util.StringUtils;
 
 
 
+
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -32,7 +33,6 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.IndexedContainer;
-
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
@@ -50,9 +50,9 @@ import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
 import de.mq.merchandise.util.ComponentTestHelper;
-import de.mq.merchandise.util.Observer;
 import de.mq.merchandise.util.ValidationUtil;
 import de.mq.merchandise.util.support.RefreshableContainer;
+import de.mq.util.event.Observer;
 
 public class SubjectViewTest {
 

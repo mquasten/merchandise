@@ -7,8 +7,11 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import de.mq.merchandise.util.Observable;
-import de.mq.merchandise.util.Observer;
+import de.mq.util.event.Observable;
+import de.mq.util.event.Observer;
+import de.mq.util.event.support.ObservableImpl;
+
+
 
 public class ObservableTest {
 	

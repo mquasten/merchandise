@@ -15,7 +15,8 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.support.Mapper;
-import de.mq.merchandise.util.support.ObservableImpl;
+import de.mq.util.event.support.ObservableImpl;
+
 
 class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.EventType>  implements CommercialSubjectModel   {
 	

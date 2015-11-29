@@ -3,7 +3,8 @@ package de.mq.merchandise.subject.support;
 import java.util.Locale;
 
 import de.mq.merchandise.customer.Customer;
-import de.mq.merchandise.util.support.ObservableImpl;
+import de.mq.util.event.support.ObservableImpl;
+
 
 class UserModelImpl extends ObservableImpl<UserModel.EventType> implements UserModel {
 	

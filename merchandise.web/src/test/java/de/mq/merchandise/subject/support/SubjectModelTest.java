@@ -21,7 +21,8 @@ import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
 import de.mq.merchandise.support.Mapper;
-import de.mq.merchandise.util.Observer;
+import de.mq.util.event.Observer;
+
 
 public class SubjectModelTest {
 

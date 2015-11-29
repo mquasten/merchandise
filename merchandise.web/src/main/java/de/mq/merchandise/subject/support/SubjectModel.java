@@ -7,7 +7,8 @@ import java.util.Optional;
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
-import de.mq.merchandise.util.Observable;
+import de.mq.util.event.Observable;
+
 
 public interface SubjectModel extends Observable<SubjectModel.EventType> {
 	

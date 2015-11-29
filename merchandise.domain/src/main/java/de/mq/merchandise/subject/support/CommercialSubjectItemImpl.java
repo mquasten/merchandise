@@ -192,7 +192,6 @@ class CommercialSubjectItemImpl implements CommercialSubjectItem {
 	 */
 	@Override
 	public  <T> void remove(final String conditionType, final T value) {
-		System.out.println("???"+commercialSubjectItemCondition(conditionType, value).get());
 		commercialSubjectItemCondition(conditionType, value).get().remove(value);
 	}
 
