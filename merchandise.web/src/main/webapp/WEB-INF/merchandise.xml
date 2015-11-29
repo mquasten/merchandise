@@ -14,7 +14,7 @@
 	
 	
 	
-	<context:component-scan base-package="de.mq.merchandise" />
+	<context:component-scan base-package="de.mq.merchandise,de.mq.util.event.support" />
 	
 	
    
@@ -31,10 +31,16 @@
  
  
 
-  
+  <bean class="de.mq.util.event.support.EventAnnotationTempalte" >
+        <constructor-arg>
+        <list>
+        	<value>de.mq.merchandise.subject.support.SubjectEventQualifier</value>
+        	<value>de.mq.merchandise.subject.support.CommercialSubjectEventQualifier</value>
+        </list>
+        </constructor-arg>
+ </bean>
         
-
-        
+   
         
    </beans>
    

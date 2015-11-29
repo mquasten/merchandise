@@ -16,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.vaadin.navigator.View;
 
 import de.mq.merchandise.subject.support.UserModel;
+import de.mq.util.event.support.BeanContainerOperations;
 
 @Component("languageFilter")
 public class LanguageFilterImpl  extends OncePerRequestFilter {

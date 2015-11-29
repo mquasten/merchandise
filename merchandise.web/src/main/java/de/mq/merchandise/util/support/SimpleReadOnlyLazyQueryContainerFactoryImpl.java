@@ -28,6 +28,8 @@ import com.vaadin.data.util.PropertysetItem;
 import de.mq.merchandise.ResultNavigation;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.TableContainerColumns;
+import de.mq.util.event.support.BeanContainerOperations;
+import de.mq.util.event.support.EventAnnotationOperations;
 
 @Component
 class SimpleReadOnlyLazyQueryContainerFactoryImpl implements LazyQueryContainerFactory   {

@@ -21,13 +21,13 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
 import de.mq.merchandise.subject.support.MapperQualifier.MapperType;
 import de.mq.merchandise.support.Mapper;
-import de.mq.merchandise.util.EventFascadeProxyFactory;
 import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.support.DomainToItemConverterImpl;
 import de.mq.merchandise.util.support.ItemToDomainConverterImpl;
 import de.mq.merchandise.util.support.RefreshableContainer;
 import de.mq.merchandise.util.support.ViewNav;
+import de.mq.util.event.EventFascadeProxyFactory;
 
 @Configuration
 class CommercialSubjectModels {

@@ -22,7 +22,9 @@ import org.springframework.context.ApplicationContext;
 import com.vaadin.navigator.View;
 
 import de.mq.merchandise.subject.support.UserModel;
-import de.mq.merchandise.util.support.BeanContainerOperations.BeanFilter;
+import de.mq.util.event.support.BeanContainerOperations;
+import de.mq.util.event.support.BeanContainerOperations.BeanFilter;
+
 
 
 public class LanguageFilterTest {

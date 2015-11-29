@@ -19,11 +19,11 @@ import de.mq.merchandise.customer.CustomerService;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.SubjectModel.EventType;
-import de.mq.merchandise.util.EventFascadeProxyFactory;
 import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.support.ItemToDomainConverterImpl;
 import de.mq.merchandise.util.support.RefreshableContainer;
+import de.mq.util.event.EventFascadeProxyFactory;
 
 public class SubjectModelsTest {
 	
