@@ -40,7 +40,7 @@
 		
 		<maven-jetty-plugin.version>7.6.13.v20130916</maven-jetty-plugin.version>
 		
-		
+		<util.application.version>0.0.1-SNAPSHOT</util.application.version>
 		<merchandise.version>0.0.1-SNAPSHOT</merchandise.version>
 
 		
