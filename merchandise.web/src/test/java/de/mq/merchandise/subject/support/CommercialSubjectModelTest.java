@@ -3,7 +3,14 @@ package de.mq.merchandise.subject.support;
 
 
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
+
+
+
+
+
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,7 +20,15 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.ReflectionUtils;
 
 
+
+
+
+
+
+
 import de.mq.merchandise.customer.Customer;
+import de.mq.merchandise.subject.Condition;
+import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
 import de.mq.merchandise.support.Mapper;
 import de.mq.util.event.Observer;
@@ -112,6 +127,86 @@ public class CommercialSubjectModelTest {
 		Assert.assertEquals(commercialSubject, ReflectionTestUtils.getField(model, COMMERCIAL_SUBJECT_FIELD));
 		Mockito.verify(observer).process(EventType.CommericalSubjectChanged);
 		
+	}
+	
+	
+	@Test
+	public final void setCommercialSubjectItemId() {
+		model.register(observer, EventType.CommericalSubjectItemChanged);
+		final CommercialSubjectItem item = Mockito.mock(CommercialSubjectItem.class);
+		Mockito.when(commercialSubjectEventFascade.commericalSubjectItemChanged(ID)).thenReturn(item);
+		model.setCommercialSubjectItemId(ID);
+		
+		Mockito.verify(observer).process(EventType.CommericalSubjectItemChanged);
+		
+		
+		ReflectionUtils.doWithFields(model.getClass(), field -> {field.setAccessible(true); Assert.assertEquals(item, ReflectionUtils.getField(field, model));} , field -> field.getType().equals(CommercialSubjectItem.class));
+		
+		
+	}
+	
+	@Test
+	public final void setCommercialSubjectItemIdNull() {
+		model.register(observer, EventType.CommericalSubjectItemChanged);
+		model.setCommercialSubjectItemId(null);
+		
+		Mockito.verify(observer).process(EventType.CommericalSubjectItemChanged);
+		ReflectionUtils.doWithFields(model.getClass(), field -> {field.setAccessible(true); Assert.assertEquals(CommercialSubjectItemImpl.class, ReflectionUtils.getField(field, model).getClass());} , field -> field.getType().equals(CommercialSubjectItem.class));
+		
+	}
+	
+	@Test
+	public final void getConditions() {
+		final CommercialSubjectItem item = Mockito.mock(CommercialSubjectItem.class);
+		final Subject subject = Mockito.mock(Subject.class);
+		final Collection<Condition> conditions = new ArrayList<>();
+		final Condition condition = Mockito.mock(Condition.class);
+		conditions.add(condition);
+		Mockito.when(subject.conditions()).thenReturn(conditions);
+		Mockito.when(item.subject()).thenReturn(subject);
+		
+		ReflectionUtils.doWithFields(model.getClass(), field -> {field.setAccessible(true); ReflectionUtils.setField(field, model, item);} , field -> field.getType().equals(CommercialSubjectItem.class));
+		
+		Assert.assertEquals(conditions, model.getConditions());
+	}
+	
+	@Test
+	public final void getCommercialSubject() {
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		ReflectionTestUtils.setField(model, COMMERCIAL_SUBJECT_FIELD, commercialSubject);
+		
+		Assert.assertEquals(commercialSubject, model.getCommercialSubject().get());
+	}
+	
+	@Test
+	public final void getSubjects() {
+		final Collection<Subject> subjects = new ArrayList<>();
+		final Subject subject = Mockito.mock(Subject.class);
+		subjects.add(subject);
+		Mockito.when(commercialSubjectEventFascade.subjects(customer)).thenReturn(subjects);
+		
+		Assert.assertEquals(subjects, model.getSubjects());
+	}
+	
+	
+	@Test
+	public final void  getCommercialSubjectItem() {
+		final CommercialSubjectItem item = Mockito.mock(CommercialSubjectItem.class);
+		ReflectionUtils.doWithFields(model.getClass(), field -> {field.setAccessible(true); ReflectionUtils.setField(field, model, item);} , field -> field.getType().equals(CommercialSubjectItem.class));
+		Assert.assertEquals(item, model.getCommercialSubjectItem().get());
+	}
+	
+	@Test
+	public final void   delete() {
+		model.register(observer, EventType.CommericalSubjectChanged);
+		final CommercialSubject commercialSubject = Mockito.mock(CommercialSubject.class);
+		
+		model.delete(commercialSubject);
+		
+		Mockito.verify(commercialSubjectEventFascade).delete(commercialSubject);
+		Mockito.verify(observer).process(EventType.CommericalSubjectChanged);
+		
+		Assert.assertEquals(CommercialSubjectImpl.class, ReflectionTestUtils.getField(model, COMMERCIAL_SUBJECT_FIELD).getClass());
 	}
 
 }
