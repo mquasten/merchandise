@@ -143,7 +143,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	
 	@Override
 	public final  void save(final CommercialSubjectItem commercialSubjectItem) {
-		
+	
 		Assert.isTrue(commercialSubject.id().isPresent(), "commercialSubject should be persistent");
 	
 		commercialSubject= commercialSubjectEventFascade.save(commercialSubjectItem, commercialSubject.id().get() );

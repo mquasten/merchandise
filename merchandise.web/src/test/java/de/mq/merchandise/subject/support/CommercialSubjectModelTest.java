@@ -12,12 +12,16 @@ import java.util.Optional;
 
 
 
+
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.ReflectionUtils;
+
+
 
 
 
@@ -35,6 +39,8 @@ import de.mq.util.event.Observer;
 
 public class CommercialSubjectModelTest {
 	
+	private static final long NOT_PERSISTENT_ID = -1L;
+
 	private static final String SEARCH_FIELD = "search";
 
 	private static final String COMMERCIAL_SUBJECT_FIELD = "commercialSubject";
@@ -207,6 +213,61 @@ public class CommercialSubjectModelTest {
 		Mockito.verify(observer).process(EventType.CommericalSubjectChanged);
 		
 		Assert.assertEquals(CommercialSubjectImpl.class, ReflectionTestUtils.getField(model, COMMERCIAL_SUBJECT_FIELD).getClass());
+	}
+	
+	@Test
+	public final void saveItem(){
+		model.register(observer,  EventType.CommericalSubjectItemChanged);
+		final CommercialSubjectItem commercialSubjectItem = Mockito.mock(CommercialSubjectItem.class);
+		Mockito.when(commercialSubject.id()).thenReturn(Optional.of(ID));
+		Mockito.when(commercialSubjectEventFascade.save(commercialSubjectItem, ID )).thenReturn(commercialSubject);
+		model.save(commercialSubjectItem);
+		
+		Assert.assertEquals(commercialSubject, ReflectionTestUtils.getField(model, COMMERCIAL_SUBJECT_FIELD));
+		Mockito.verify(observer).process(EventType.CommericalSubjectItemChanged);
+		
+		
+		
+	}
+	
+	@Test
+	public final void deleteItem() {
+		model.register(observer,  EventType.CommericalSubjectItemChanged);
+		final CommercialSubjectItem commercialSubjectItem = Mockito.mock(CommercialSubjectItem.class);
+		Mockito.when(commercialSubject.id()).thenReturn(Optional.of(ID));
+		Mockito.when(commercialSubjectEventFascade.delete(commercialSubjectItem, ID )).thenReturn(commercialSubject);
+		model.delete(commercialSubjectItem);
+		
+		Assert.assertEquals(commercialSubject, ReflectionTestUtils.getField(model, COMMERCIAL_SUBJECT_FIELD));
+		Mockito.verify(observer).process(EventType.CommericalSubjectItemChanged);
+	}
+	
+	@Test
+	public final void  setCondition() {
+		model.register(observer, EventType.ConditionChanged);
+		final CommercialSubjectItemConditionImpl   commercialSubjectItemCondition = Mockito.mock(CommercialSubjectItemConditionImpl.class);
+		
+		Mockito.when(commercialSubjectEventFascade.conditionChanged(ID)).thenReturn(commercialSubjectItemCondition);
+		
+		model.setCondition(ID);
+		
+		ReflectionUtils.doWithFields(model.getClass(), field -> {field.setAccessible(true); Assert.assertEquals(commercialSubjectItemCondition, field.get(model)); }, field -> field.getType().equals(CommercialSubjectItemConditionImpl.class));
+		
+		
+		Mockito.verify(observer).process(EventType.ConditionChanged);
+	}
+	
+	@Test
+	public final void  setConditionNotPersustent() {
+		final CommercialSubjectItemConditionImpl[]   commercialSubjectItemCondition =  new CommercialSubjectItemConditionImpl[]{null};
+		model.register(observer, EventType.ConditionChanged);
+		model.setCondition(NOT_PERSISTENT_ID);
+		
+		ReflectionUtils.doWithFields(model.getClass(), field -> {field.setAccessible(true); commercialSubjectItemCondition[0]= (CommercialSubjectItemConditionImpl) field.get(model); }, field -> field.getType().equals(CommercialSubjectItemConditionImpl.class));
+		
+		Assert.assertEquals(ConditionImpl.class, commercialSubjectItemCondition[0].condition().getClass());
+		Assert.assertEquals(NOT_PERSISTENT_ID, (long) commercialSubjectItemCondition[0].condition().id().get());
+		Mockito.verify(observer).process(EventType.ConditionChanged);
 	}
 
 }
