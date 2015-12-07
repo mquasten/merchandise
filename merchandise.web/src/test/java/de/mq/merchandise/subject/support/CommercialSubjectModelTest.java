@@ -1,11 +1,18 @@
 package de.mq.merchandise.subject.support;
 
 
-
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map.Entry;
 import java.util.Optional;
+
+
+
+
+
+
+
 
 
 
@@ -30,6 +37,13 @@ import org.springframework.util.ReflectionUtils;
 
 
 
+
+
+
+
+
+
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
@@ -39,6 +53,12 @@ import de.mq.util.event.Observer;
 
 public class CommercialSubjectModelTest {
 	
+	private static final String CURRENT_INPUT_VALUE_FIELD = "currentInputValue";
+
+	private static final String INPUT_VALUE = "hotScore";
+
+	private static final String INPUT_VALUE_FIELD = "inputValue";
+
 	private static final long NOT_PERSISTENT_ID = -1L;
 
 	private static final String SEARCH_FIELD = "search";
@@ -267,6 +287,109 @@ public class CommercialSubjectModelTest {
 		
 		Assert.assertEquals(ConditionImpl.class, commercialSubjectItemCondition[0].condition().getClass());
 		Assert.assertEquals(NOT_PERSISTENT_ID, (long) commercialSubjectItemCondition[0].condition().id().get());
+		Mockito.verify(observer).process(EventType.ConditionChanged);
+	}
+	
+	@Test
+	public final void hasCondition() {
+		final CommercialSubjectItemConditionImpl   commercialSubjectItemCondition = Mockito.mock(CommercialSubjectItemConditionImpl.class);
+		final Condition condition = Mockito.mock(Condition.class);
+		Mockito.when(condition.id()).thenReturn(Optional.of(ID));
+		Mockito.when(commercialSubjectItemCondition.condition()).thenReturn(condition);
+		ReflectionUtils.doWithFields(model.getClass(), field -> {
+			field.setAccessible(true);
+			field.set(model, commercialSubjectItemCondition);
+		} ,field -> field.getType().equals(CommercialSubjectItemConditionImpl.class)); 
+		
+		Assert.assertTrue(model.hasCondition());
+		Mockito.when(condition.id()).thenReturn(Optional.empty());
+		Assert.assertFalse(model.hasCondition());
+	}
+	
+	@Test
+	public final void addInputValue() {
+		final CommercialSubjectItem commercialSubjectItem = Mockito.mock(CommercialSubjectItem.class);
+		Mockito.when(commercialSubjectEventFascade.addInputValue(model, ID)).thenReturn(commercialSubjectItem);
+		
+		model.register(observer, EventType.ConditionChanged);
+		
+		model.addInputValue(ID);
+		
+		Assert.assertTrue(model.getCommercialSubjectItem().isPresent());
+		Assert.assertEquals(commercialSubjectItem, model.getCommercialSubjectItem().get());
+		
+		observer.process(EventType.ConditionChanged);
+	}
+	
+	@Test
+	public final void getInputValue() {
+		Assert.assertNull(model.getInputValue());
+		ReflectionTestUtils.setField(model, INPUT_VALUE_FIELD, INPUT_VALUE);
+		Assert.assertEquals(INPUT_VALUE, model.getInputValue());
+	}
+	
+	@Test
+	public final void inputValues() {
+		final CommercialSubjectItem commercialSubjectItem = Mockito.mock(CommercialSubjectItem.class);
+		final Collection<Entry<Condition, Collection<Object>>> conditions = new ArrayList<>();
+		@SuppressWarnings("unchecked")
+		final Entry<Condition, Collection<Object>> entry = Mockito.mock(Entry.class);
+		final Condition condition = Mockito.mock(Condition.class);
+		Mockito.when(condition.id()).thenReturn(Optional.of(ID));
+		Mockito.when(entry.getValue()).thenReturn(Arrays.asList(INPUT_VALUE));
+		Mockito.when(entry.getKey()).thenReturn(condition);
+		conditions.add(entry);
+		
+		Mockito.when(commercialSubjectItem.conditionValues()).thenReturn(conditions);
+		
+		ReflectionUtils.doWithFields(model.getClass(), field -> {
+			field.setAccessible(true);
+			field.set(model, commercialSubjectItem);
+		} ,field -> field.getType().equals(CommercialSubjectItem.class)); 
+		
+		
+		final Collection<String> results = model.inputValues(ID);
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(INPUT_VALUE, results.stream().findAny().get());
+	}
+	
+	@Test
+	public final void setCurrentInputValue() {
+		model.register(observer, EventType.InputValueChanged);
+		
+		Assert.assertFalse(model.hasCurrentInputValue());
+		
+		model.setCurrentInputValue(INPUT_VALUE);
+		Assert.assertTrue(model.hasCurrentInputValue());
+		
+		Assert.assertEquals(Optional.of(INPUT_VALUE), ReflectionTestUtils.getField(model, CURRENT_INPUT_VALUE_FIELD));
+		
+		Mockito.verify(observer).process(EventType.InputValueChanged);
+	}
+	
+	@Test
+	public final void deleteInputValue() {
+		final Condition condition = Mockito.mock(Condition.class);
+		CommercialSubjectItemConditionImpl commercialSubjectItemCondition = Mockito.mock(CommercialSubjectItemConditionImpl.class);
+		Mockito.when(commercialSubjectItemCondition.condition()).thenReturn(condition);
+		Mockito.when(condition.id()).thenReturn(Optional.of(ID));
+	
+		ReflectionTestUtils.setField(model, CURRENT_INPUT_VALUE_FIELD, Optional.of(INPUT_VALUE));
+		
+		final CommercialSubjectItem  item = Mockito.mock(CommercialSubjectItem.class);
+		
+		Mockito.when(commercialSubjectEventFascade.deleteInputValue(ID, INPUT_VALUE)).thenReturn(item);
+		
+		ReflectionUtils.doWithFields(model.getClass(), field -> {
+			field.setAccessible(true);
+			field.set(model, commercialSubjectItemCondition);
+		} ,field -> field.getType().equals(CommercialSubjectItemConditionImpl.class)); 
+		
+		model.register(observer, EventType.ConditionChanged);
+		model.deleteInputValue();
+		
+		Assert.assertEquals(Optional.of(item), model.getCommercialSubjectItem());
+		
 		Mockito.verify(observer).process(EventType.ConditionChanged);
 	}
 

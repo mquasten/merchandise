@@ -187,7 +187,6 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	
 	@Override
 	public final   boolean hasCondition() {
-		
 		return commercialSubjectItemCondition.condition().id().orElse(-1L) > 0;
 		
 	}
@@ -208,7 +207,7 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	 
 	@Override
 	@SuppressWarnings("unchecked")
-	public final <T> Collection<T> inputValues(Long conditionId) {
+	public final <T> Collection<T> inputValues(final Long conditionId) {
 		final Collection<T> values = new ArrayList<>();
 		commercialSubjectItem.conditionValues().stream().filter(entry -> entry.getKey().id().get().equals(conditionId)).forEach(entry -> values.addAll( (Collection<? extends T>) entry.getValue()));
 		return Collections.unmodifiableCollection(values);
@@ -228,7 +227,6 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 
 	@Override
 	public void deleteInputValue() {
-		
 		Assert.isTrue(currentInputValue.isPresent());
 		Assert.notNull(commercialSubjectItemCondition.condition());
 		Assert.isTrue(commercialSubjectItemCondition.condition().id().isPresent());
