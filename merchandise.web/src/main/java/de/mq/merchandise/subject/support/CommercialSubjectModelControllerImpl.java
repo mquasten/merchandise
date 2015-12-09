@@ -105,7 +105,6 @@ class CommercialSubjectModelControllerImpl {
 		Assert.notNull(commercialSubject, "CommercialSubject not found");
 		Optional<CommercialSubjectItem> result = commercialSubject.commercialSubjectItems().stream().filter(i -> i.id().get().equals(itemId)).findAny();
 		Assert.isTrue(result.isPresent(), "Item not found");
-		
 		return result.get();
 		
 	}
@@ -117,8 +116,10 @@ class CommercialSubjectModelControllerImpl {
 		Assert.notNull(commercialSubjectItem, "Parent is mandatory");
 		Assert.notNull(commercialSubjectItem.subject(), "Subject is mandatory");
 		Assert.isTrue(commercialSubjectItem.subject().id().isPresent(), "Subject should be persistent");
+		
 		final Subject subject = subjectService.subject(commercialSubjectItem.subject().id().get());
 		final CommercialSubject toBeChanged = commercialSubjectService.commercialSubject(subjectId);
+	
 		toBeChanged.remove(subject);
 		commercialSubjectService.save(toBeChanged);
 		return toBeChanged;
@@ -153,7 +154,6 @@ class CommercialSubjectModelControllerImpl {
 	
 		final Optional<String> conditionType = model.getConditions().stream().filter(condition -> condition.id().equals(Optional.of(conditionId))).map(condition-> condition.conditionType()).findAny();
 		Assert.isTrue(conditionType.isPresent(), "Condition is mandatory");
-		
 		
 		item.assign(conditionType.get(), model.getInputValue());
 		
