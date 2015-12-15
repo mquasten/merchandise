@@ -16,7 +16,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
-public class ItemToCommercialSubjectConverter {
+public class ItemToCommercialSubjectConverterTest {
 
 	private static final Long ID = 19680528L;
 
