@@ -29,7 +29,11 @@ public @interface CommercialSubjectModelQualifier {
 		CommercialSubjectItemToItemConverter,
 		ItemToCommercialSubjectItemConverter,
 		CommercialSubjectItemToContainerConverter,
-		MenuBar, CommercialSubjectSearchItem, ConditionValueItem, ItemIntoCommercialSubjectModel, InputValueToContainerConverter;
+		MenuBar, 
+		CommercialSubjectSearchItem, 
+		ConditionValueItem, 
+		ItemIntoCommercialSubjectModel, 
+		InputValueToContainerConverter;
 
 		
 	}
