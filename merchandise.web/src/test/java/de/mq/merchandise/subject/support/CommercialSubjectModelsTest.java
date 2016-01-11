@@ -1,7 +1,9 @@
 package de.mq.merchandise.subject.support;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -15,13 +17,16 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.ReflectionUtils;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+
 
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
 import de.mq.merchandise.support.Mapper;
 import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
+import de.mq.merchandise.util.TableContainerColumns;
 import de.mq.merchandise.util.support.RefreshableContainer;
 import de.mq.merchandise.util.support.ViewNav;
 import de.mq.util.event.EventFascadeProxyFactory;
@@ -29,6 +34,12 @@ import de.mq.util.event.EventFascadeProxyFactory;
 public class CommercialSubjectModelsTest {
 	
 	
+	private static final String VALUE = "value";
+
+
+	private static final String COLS_FIELDS = "cols";
+
+
 	private final MessageSource messageSource = Mockito.mock(MessageSource.class);
 
 	
@@ -139,6 +150,62 @@ public class CommercialSubjectModelsTest {
 		final Item item = Mockito.mock(Item.class);
 		Mockito.when(itemContainerFactory.create(ConditionValueCols.class)).thenReturn(item);
 		Assert.assertEquals(item, commercialSubjectModels.conditionValueItem());
+	}
+	
+	@Test
+	public final void  itemToCommercialSubjectItemConverter() {
+		Converter<Item, CommercialSubjectItem> converter = commercialSubjectModels.itemToCommercialSubjectItemConverter();
+		
+		
+		
+		Assert.assertEquals(CommercialSubjectItemImpl.class, value(converter, Class.class));
+		Assert.assertArrayEquals(CommercialSubjectItemCols.values(), value(converter, Enum[].class));
+		@SuppressWarnings("unchecked")
+		final Map<Enum<?>, Class<?>> childs = value(converter, Map.class);
+		Assert.assertEquals(SubjectImpl.class, childs.get(CommercialSubjectItemCols.Subject));
+		
+	}
+	
+	
+	@Test
+	public final void commercialSubjectConverter() {
+		final Converter<CommercialSubject, Item> converter = commercialSubjectModels.commercialSubjectConverter();
+		Assert.assertEquals(Arrays.asList(CommercialSubjectCols.values()),  ReflectionTestUtils.getField(converter, COLS_FIELDS));
+	}
+	
+	@Test
+	public final void  itemIntoCommercialSubjectModel() {
+		final Mapper<Item, CommercialSubjectModel> mapper = commercialSubjectModels.itemIntoCommercialSubjectModel();
+		
+		Assert.assertEquals(CommercialSubjectModelImpl.class, value(mapper, Class.class));
+		Assert.assertArrayEquals(new Enum[] { ConditionValueCols.InputValue } , value(mapper, Enum[].class));
+	}
+	
+	@Test
+	public final void commercialSubjectItemConverter() {
+		final Converter<CommercialSubjectItem, Item> converter = commercialSubjectModels.commercialSubjectItemConverter();
+		Assert.assertEquals(Arrays.asList(CommercialSubjectItemCols.values()),  ReflectionTestUtils.getField(converter, COLS_FIELDS));
+		
+	@SuppressWarnings("unchecked")
+	final Collection<Enum<? extends TableContainerColumns>> childs = (Collection<Enum<? extends TableContainerColumns>>) ReflectionTestUtils.getField(converter, "childs");
+	
+	Assert.assertEquals(1, childs.size());
+	Assert.assertEquals(CommercialSubjectItemCols.Subject, childs.stream().findAny().get());
+	}
+	
+	@Test
+	public final void  inputValueConverter() {
+		Converter<Collection<String>, Container> converter = commercialSubjectModels.inputValueConverter();
+		final Collection<String> values = new ArrayList<>();
+		values.add(VALUE);
+		
+		final Container container = converter.convert(values);
+		Assert.assertEquals(1, container.getItemIds().size());
+		final Item item = 	container.getItem(container.getItemIds().stream().findAny().get());
+		Assert.assertEquals(1, item.getItemPropertyIds().size());
+		Assert.assertEquals(ConditionValueCols.InputValue, item.getItemPropertyIds().stream().findAny().get());
+		Assert.assertEquals(VALUE, item.getItemProperty(ConditionValueCols.InputValue).getValue());
+		Assert.assertEquals(String.class, item.getItemProperty(ConditionValueCols.InputValue).getType());
 	}
 
 }
