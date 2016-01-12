@@ -392,5 +392,10 @@ public class CommercialSubjectModelTest {
 		
 		Mockito.verify(observer).process(EventType.ConditionChanged);
 	}
+	
+	@Test
+	public final void events() {
+		Arrays.asList(CommercialSubjectModel.EventType.values()).stream().forEach(eventType -> Assert.assertEquals(eventType, CommercialSubjectModel.EventType.valueOf(eventType.name())));
+	}
 
 }
