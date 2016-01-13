@@ -5,12 +5,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.LazyInitializer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
-
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.vaadin.data.Container;
@@ -59,5 +60,35 @@ public class ConditionToContainerConverterTest {
 
 		Arrays.asList(ConditionCols.values()).stream().forEach(col -> Assert.assertEquals(col.nvl(), item.getItemProperty(col).getValue()));
 	}
+	
+	
 
+	@SuppressWarnings("unchecked")
+	@Test
+	public final void convertHibernateProxy() {
+		final HibernateProxy proxy = Mockito.mock(HibernateProxy.class);
+		final LazyInitializer lazyInitializer = Mockito.mock(LazyInitializer.class);
+		final Condition condition =  new ConditionImpl(Mockito.mock(SubjectImpl.class), CONDITION_QUALITY, ConditionDataType.String);
+		ReflectionTestUtils.setField(condition, "id", ID);
+		Mockito.when(lazyInitializer.getImplementation()).thenReturn(condition);
+		
+		Mockito.when(proxy.getHibernateLazyInitializer()).thenReturn(lazyInitializer);
+		
+		@SuppressWarnings("rawtypes")
+		final Collection conditions = new ArrayList<>();
+		conditions.add( proxy);
+		
+		final Container results = converter.convert(conditions);
+		Assert.assertEquals(1, results.getItemIds().size());
+		final Optional<?> id = (Optional<?>) results.getItemIds().stream().findFirst();
+		Assert.assertTrue(id.isPresent());
+
+		final Item item = results.getItem(id.get());
+		Assert.assertEquals(condition.id().get(), item.getItemProperty(ConditionCols.Id).getValue());
+		Assert.assertEquals(condition.conditionDataType(), item.getItemProperty(ConditionCols.DataType).getValue());
+		Assert.assertEquals(condition.conditionType(), item.getItemProperty(ConditionCols.ConditionType).getValue());
+		
+		Mockito.verify(proxy).getHibernateLazyInitializer();
+		Mockito.verify(lazyInitializer).getImplementation();
+	}
 }

@@ -3,14 +3,18 @@ package de.mq.merchandise.subject.support;
 
 
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.ReflectionUtils;
 
 import com.vaadin.data.Item;
 
@@ -23,10 +27,12 @@ import de.mq.merchandise.util.ItemContainerFactory;
 import de.mq.merchandise.util.LazyQueryContainerFactory;
 import de.mq.merchandise.util.support.ItemToDomainConverterImpl;
 import de.mq.merchandise.util.support.RefreshableContainer;
+import de.mq.merchandise.util.support.ViewNav;
 import de.mq.util.event.EventFascadeProxyFactory;
 
 public class SubjectModelsTest {
 	
+	private static final String MESSAGE_SOURCE_FIELD = "messageSource";
 	private static final String EVENT_FASCADE_PROXY_FACTORY_FIELD = "eventFascadeProxyFactory";
 	private static final String SUBJECT_TO_ITEM_CONVERTER_FIELD = "subjectToItemConverter";
 	private static final String ITEM_CONTAINER_FACTORY_FIELD = "itemContainerFactory";
@@ -40,7 +46,7 @@ public class SubjectModelsTest {
 	private final RefreshableContainer refreshableContainer = Mockito.mock(RefreshableContainer.class);
 	private final ItemContainerFactory itemContainerFactory = Mockito.mock(ItemContainerFactory.class);
 	private final Item item = Mockito.mock(Item.class);
-
+	private final MessageSource messageSource = Mockito.mock(MessageSource.class);
 	
 	@SuppressWarnings("unchecked")
 	private final  Converter<Subject, Item> converter = Mockito.mock(Converter.class);
@@ -61,7 +67,7 @@ public class SubjectModelsTest {
 		ReflectionTestUtils.setField(subjectModels, ITEM_CONTAINER_FACTORY_FIELD, itemContainerFactory);
 		ReflectionTestUtils.setField(subjectModels, SUBJECT_TO_ITEM_CONVERTER_FIELD, converter);
 		ReflectionTestUtils.setField(subjectModels, EVENT_FASCADE_PROXY_FACTORY_FIELD, eventFascadeProxyFactory);
-		
+		ReflectionTestUtils.setField(subjectModels, MESSAGE_SOURCE_FIELD, messageSource);
 		subjectModels.init();
 	}
 	
@@ -107,6 +113,26 @@ public class SubjectModelsTest {
 	public final void  itemToConditionConverter() {
 		final Converter<Item, Condition>  result = subjectModels.itemToConditionConverter();
 		Assert.assertTrue(result instanceof ItemToDomainConverterImpl);
+	}
+	@Test
+	public final void mainMenuBarViewSubject(){
+		final UserModel userModel = Mockito.mock(UserModel.class);
+		final ViewNav viewNav = Mockito.mock(ViewNav.class);
+		final MainMenuBarView mainMenuBarView = subjectModels.mainMenuBarViewSubject(userModel, viewNav);
+		Assert.assertEquals(messageSource, valueFromField(mainMenuBarView, MessageSource.class));
+		Assert.assertEquals(userModel, valueFromField(mainMenuBarView, UserModel.class));
+		Assert.assertEquals(viewNav, valueFromField(mainMenuBarView, ViewNav.class));
+
+	}
+
+
+	@SuppressWarnings("unchecked")
+	private <T> T valueFromField(final Object target, Class<T> clazz) {
+		Collection<T> values= new HashSet<>();
+		
+		ReflectionUtils.doWithFields(target.getClass(), field -> values.add((T)ReflectionTestUtils.getField(target, field.getName())), field-> field.getType().equals(clazz));
+		Assert.assertEquals(1, values.size());
+		return values.stream().findAny().get();
 	}
 
 }
