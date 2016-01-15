@@ -100,7 +100,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	private  final   Converter<Collection<Condition>, Container> conditionToContainerConverter;
 	
 	private final Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel;
-	private final Converter<Collection<String>, Container> inputValuesConverter;
+	private final Converter<Collection<?>, Container> inputValuesConverter;
 	
 	private final Item conditionValueItem;
 	private final MessageSource messageSource; 
@@ -129,7 +129,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			
 			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemIntoCommercialSubjectModel) final Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel,
 			
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.InputValueToContainerConverter) Converter<Collection<String>, Container> inputValuesConverter
+			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.InputValueToContainerConverter) Converter<Collection<?>, Container> inputValuesConverter
 			) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;

@@ -133,14 +133,17 @@ class CommercialSubjectModels {
 	@SuppressWarnings("unchecked")
 	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.InputValueToContainerConverter)
 	@Bean
-	Converter<Collection<String>, Container> inputValueConverter() {
-
+	Converter<Collection<?>, Container> inputValueConverter() {
+		
 		return inputValues -> {
 			final IndexedContainer container = new IndexedContainer();
 			container.addContainerProperty(ConditionValueCols.InputValue, String.class, "");
-			inputValues.forEach(v -> container.getItem(container.addItem()).getItemProperty(ConditionValueCols.InputValue).setValue(v));
+			inputValues.stream().map(v -> (v instanceof String) ? v : String.valueOf(v)).forEach(v -> container.getItem(container.addItem()).getItemProperty(ConditionValueCols.InputValue).setValue(v));
 			return container;
 		};
 
+		
+		
+		
 	}
 }

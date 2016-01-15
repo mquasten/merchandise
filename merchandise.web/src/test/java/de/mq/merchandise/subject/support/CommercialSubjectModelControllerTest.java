@@ -164,6 +164,9 @@ public class CommercialSubjectModelControllerTest {
 
 	@Test
 	public final void addInputValue() {
+		Mockito.when(condition.conditionDataType()).thenReturn(ConditionDataType.String);
+		
+		
 		Assert.assertEquals(commercialSubjectItem, controller.addInputValue(commercialSubjectModel, ID));
 		Mockito.verify(commercialSubjectItem).assign(CONDITION_TYPE, INPUT_VALUE);
 		Mockito.verify(commercialSubjectService).save(commercialSubject);
@@ -171,6 +174,7 @@ public class CommercialSubjectModelControllerTest {
 
 	@Test
 	public final void removeInputValue() {
+		Mockito.when(condition.conditionDataType()).thenReturn(ConditionDataType.String);
 		Assert.assertEquals(commercialSubjectItem, controller.addInputValue(commercialSubjectModel, ID, INPUT_VALUE));
 
 		Mockito.verify(commercialSubjectItem).remove(CONDITION_TYPE, INPUT_VALUE);

@@ -195,8 +195,8 @@ public class CommercialSubjectModelsTest {
 	
 	@Test
 	public final void  inputValueConverter() {
-		Converter<Collection<String>, Container> converter = commercialSubjectModels.inputValueConverter();
-		final Collection<String> values = new ArrayList<>();
+		Converter<Collection<?>, Container> converter = commercialSubjectModels.inputValueConverter();
+		final Collection<Object> values = new ArrayList<>();
 		values.add(VALUE);
 		
 		final Container container = converter.convert(values);
