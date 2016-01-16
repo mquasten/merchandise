@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,6 +8,7 @@ import java.util.Optional;
 
 import javax.persistence.Id;
 
+import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -15,6 +17,8 @@ import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
 import de.mq.merchandise.support.Mapper;
+import de.mq.util.application.et.ExceptionTranslatorOperations;
+import de.mq.util.application.et.ExceptionTranslatorOperations.ET;
 import de.mq.util.event.support.ObservableImpl;
 
 
@@ -34,18 +38,18 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 	
 	private CommercialSubjectItemConditionImpl commercialSubjectItemCondition;
 	
-	
+	private ExceptionTranslatorOperations exceptionTranslatorOperations;
 	private String inputValue;
 	
 	
 	private Optional<String> currentInputValue = Optional.empty();
 
-	CommercialSubjectModelImpl(final CommercialSubject search, final CommercialSubject commercialSubject, final CommercialSubjectEventFascade commercialSubjectEventFascade,  final  Mapper<Customer, CommercialSubject> customerIntoSubjectMapper) {
+	CommercialSubjectModelImpl(final CommercialSubject search, final CommercialSubject commercialSubject, final CommercialSubjectEventFascade commercialSubjectEventFascade,  final  Mapper<Customer, CommercialSubject> customerIntoSubjectMapper, final ExceptionTranslatorOperations exceptionTranslatorOperations) {
 		this.search = search;
 		this.commercialSubjectEventFascade=commercialSubjectEventFascade;
 		this.commercialSubject= commercialSubject;
 		this.customerMapper=customerIntoSubjectMapper;
-	
+		this.exceptionTranslatorOperations=exceptionTranslatorOperations;
 	}
 
 
@@ -234,4 +238,26 @@ class CommercialSubjectModelImpl extends ObservableImpl<CommercialSubjectModel.E
 		commercialSubjectItem=commercialSubjectEventFascade.deleteInputValue(commercialSubjectItemCondition.condition().id().get(), currentInputValue.get());
 		notifyObservers(EventType.ConditionChanged);
 	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T convertConditionValue(final String value, final Long conditionId)   {
+	
+		final Optional<Condition> condition = getConditions().stream().filter(c -> c.id().get().equals(conditionId)).findAny();
+		Assert.isTrue(condition.isPresent(), "Condition not exists.");
+		
+		return  exceptionTranslatorOperations.doInTranslationWithResult(ET.newConfiguration().translate(NoSuchMethodException.class).to(IllegalStateException.class).translate(BeanInstantiationException.class).using((m,s) -> (s.getCause() instanceof NumberFormatException) ? (NumberFormatException) s.getCause() : (BeanInstantiationException) s ).done(), () -> BeanUtils.instantiateClass((Constructor<T>) condition.get().conditionDataType().targetClass.getConstructor(String.class), value));
+		
+	}
+
+	@Override
+	public boolean canConvertConditionValue(final String value, final Long conditionId) {
+		try {
+			convertConditionValue(value, conditionId);
+			return true;
+		} catch ( final NumberFormatException nf) {
+			return false;
+		}
+	}
+	
 }

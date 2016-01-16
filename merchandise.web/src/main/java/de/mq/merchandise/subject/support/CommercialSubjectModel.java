@@ -10,6 +10,8 @@ import javax.validation.constraints.Pattern;
 
 
 
+
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
@@ -113,6 +115,14 @@ public interface CommercialSubjectModel extends Observable<CommercialSubjectMode
 
 
 	void deleteInputValue();
+
+
+
+	<T> T convertConditionValue(final String value, final Long conditionId);
+
+
+
+	boolean canConvertConditionValue(final String value, final Long conditionId);
 
 
 }

@@ -75,7 +75,7 @@ public class CommercialSubjectModelTest {
 	@SuppressWarnings("unchecked")
 	private final  Mapper<Customer, CommercialSubject> customerIntoSubjectMapper = Mockito.mock(Mapper.class);
 	
-	private final CommercialSubjectModel model = new CommercialSubjectModelImpl(search, commercialSubject, commercialSubjectEventFascade, customerIntoSubjectMapper);
+	private final CommercialSubjectModel model = new CommercialSubjectModelImpl(search, commercialSubject, commercialSubjectEventFascade, customerIntoSubjectMapper, null);
 	
 	private final Customer customer = Mockito.mock(Customer.class);
 	

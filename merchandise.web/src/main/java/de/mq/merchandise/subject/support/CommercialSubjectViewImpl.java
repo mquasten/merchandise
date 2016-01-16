@@ -472,7 +472,14 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			
 		
 			if( validationUtil.validate(commercialSubjectModel, valueFields, userModel.getLocale())) {
-				commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
+				
+				if( commercialSubjectModel.canConvertConditionValue(commercialSubjectModel.getInputValue(), (Long) conditionBox.getValue()) ) {
+				
+				  commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
+				  
+				} else {
+					System.out.println("Conversion sucks!!!");
+				}
 			}
 			
 	
