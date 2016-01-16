@@ -20,6 +20,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.UserError;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -70,6 +71,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	private static final String I18N_COMMERCIAL_SUBJECT_NAME = "commercial_subject_name";
 	
 	private static final String I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX  = "commercial_subject_item_";
+	
+	private static final String I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR  = "commercial_subject_conversion_error";
 
 	private static final long serialVersionUID = 1L;
 
@@ -473,13 +476,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		
 			if( validationUtil.validate(commercialSubjectModel, valueFields, userModel.getLocale())) {
 				
-				if( commercialSubjectModel.canConvertConditionValue(commercialSubjectModel.getInputValue(), (Long) conditionBox.getValue()) ) {
-				
-				  commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
-				  
-				} else {
-					System.out.println("Conversion sucks!!!");
-				}
+				addValue(conditionBox, valueField);
 			}
 			
 	
@@ -617,14 +614,25 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 	}
 
+	private void addValue(final ComboBox conditionBox, final TextField valueField) {
+		if( commercialSubjectModel.canConvertConditionValue(commercialSubjectModel.getInputValue(), (Long) conditionBox.getValue()) ) {
+		
+		  commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
+		  
+		} else {
+			valueField.setComponentError(new UserError(message(I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR, commercialSubjectModel.getCondition((Long) conditionBox.getValue()).conditionDataType().name())));
+			
+		}
+	}
+
 
 
 	private void commitSearch(final FieldGroup fieldGroup) {
 		commit(fieldGroup); 
 		commercialSubjectModel.setSearch(itemToCommercialSubjectConverter.convert(commercialSubjectSearchItem));
 	}
-	private String message(final String key ) {
-	 return messageSource.getMessage(key, null, userModel.getLocale());
+	private String message(final String key, Object ... values ) {
+	 return messageSource.getMessage(key, values, userModel.getLocale());
 	}
 
 	private void commit(final FieldGroup fieldGroup) {
