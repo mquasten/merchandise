@@ -72,6 +72,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	
 	private static final String I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX  = "commercial_subject_item_";
 	
+	private static final String I18N_COMMERCIAL_SUBJECT_VALUE_TABLE  = "commercial_subject_value_table";
+	
 	private static final String I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR  = "commercial_subject_conversion_error";
 
 	private static final long serialVersionUID = 1L;
@@ -442,14 +444,14 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		
 		valueFields.bind(valueField, ConditionValueCols.InputValue);
 		
-		conditionBox.addValueChangeListener(e -> commercialSubjectModel.setCondition( e.getProperty().getValue() !=null ?(Long)  e.getProperty().getValue() : -1L));
+		conditionBox.addValueChangeListener(e ->  commercialSubjectModel.setCondition( e.getProperty().getValue() !=null ?(Long)  e.getProperty().getValue() : -1L));
 		
 		//conditionBox.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
 		
 		final Button saveValueButton = new Button("speichern");
 		final Table valueTable = new Table();
 		valueTable.setVisible(false);
-		valueTable.setCaption("Werteauswahl");
+	//	valueTable.setCaption("Werteauswahl");
 		valueTable.setColumnHeaderMode(ColumnHeaderMode.HIDDEN);
 		
 		valueTable.addValueChangeListener(e -> {
@@ -489,6 +491,11 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			valueField.setVisible(commercialSubjectModel.hasCondition());
 			validationUtil.cleanValues(valueFields, ConditionValueCols.values());
 			valueFields.setItemDataSource(conditionValueItem);
+			
+		   if( commercialSubjectModel.hasCondition()){
+		   	valueTable.setCaption(message(I18N_COMMERCIAL_SUBJECT_VALUE_TABLE, commercialSubjectModel.getCondition((Long) conditionBox.getValue()).conditionDataType().name()));
+		   
+		   }
 		}, EventType.ConditionChanged);
 		
 		final Button deleteValueButton = new Button("löschen");

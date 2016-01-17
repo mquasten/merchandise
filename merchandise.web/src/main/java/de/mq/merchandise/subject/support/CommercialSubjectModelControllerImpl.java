@@ -1,6 +1,5 @@
 package de.mq.merchandise.subject.support;
 
-import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -152,31 +151,16 @@ class CommercialSubjectModelControllerImpl {
 		Assert.isTrue(commercialSubjectItem.isPresent() ,"CommercialSubjectItem must be present for for subject: " + model.getCommercialSubjectItem().get().subject());
 		final CommercialSubjectItem item = commercialSubjectItem.get();
 	
-	
-		final Optional<Condition> cond = model.getConditions().stream().filter(condition -> condition.id().equals(Optional.of(conditionId))).findAny();
-				
-		//		.map(condition-> condition.conditionType()).findAny();
-		Assert.isTrue(cond.isPresent(), "Condition is mandatory");
-		
-	
-		
-		
-		item.assign(cond.get().conditionType(), BeanUtils.instantiateClass(constructor(cond),model.getInputValue()));
+		item.assign(model.getCondition(conditionId).conditionType(), model.convertConditionValue(model.getInputValue(), conditionId));
 		
 		commercialSubjectService.save(commercialSubject);
 		return item;
 	}
 
-	private Constructor<?> constructor(final Optional<Condition> cond)  {
-		try {
-			return cond.get().conditionDataType().targetClass().getConstructor(String.class);
-		} catch (final Exception  ex) {
-		 throw new IllegalArgumentException();
-		}
-	}
+
 	
 	@CommercialSubjectEventQualifier(EventType.DeleteInputValue)
-	CommercialSubjectItem addInputValue(final CommercialSubjectModel model, final Long conditionId, final String currentValue) {
+	CommercialSubjectItem deleteInputValue(final CommercialSubjectModel model, final Long conditionId, final String currentValue) {
 		
 	
 		final CommercialSubject commercialSubject = commercialSubjectService.commercialSubject(model.getCommercialSubject().get().id().get());
@@ -186,12 +170,7 @@ class CommercialSubjectModelControllerImpl {
 		Assert.isTrue(commercialSubjectItem.isPresent() ,"CommercialSubjectItem must be present for for subject: " + model.getCommercialSubjectItem().get().subject());
 		final CommercialSubjectItem item = commercialSubjectItem.get();
 		
-		final Optional<Condition> cond = model.getConditions().stream().filter(condition -> condition.id().equals(Optional.of(conditionId))).findAny();
-		
-		Assert.isTrue(cond.isPresent(), "Condition is mandatory");
-		
-		;
-		item.remove(cond.get().conditionType(), BeanUtils.instantiateClass(constructor(cond),currentValue));
+		item.remove(model.getCondition(conditionId).conditionType(), model.convertConditionValue(currentValue, conditionId));
 		commercialSubjectService.save(commercialSubject);
 		return item;
 	}
