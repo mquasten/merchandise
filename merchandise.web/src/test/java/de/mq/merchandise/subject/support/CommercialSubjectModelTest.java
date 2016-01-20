@@ -27,6 +27,10 @@ import de.mq.util.event.Observer;
 
 public class CommercialSubjectModelTest {
 
+	private static final String BAD_INT_VALUE = "dontLetMEGetMe";
+
+	private static final String INT_VALUE = "123";
+
 	private static final String CURRENT_INPUT_VALUE_FIELD = "currentInputValue";
 
 	private static final String INPUT_VALUE = "hotScore";
@@ -417,14 +421,13 @@ public class CommercialSubjectModelTest {
 	public final void convertConditionValue() {
 		prepareIntegerCondition();
 
-		String value = "123";
-		Assert.assertEquals(Long.valueOf(value), model.convertConditionValue(value, ID));
+		Assert.assertEquals(Long.valueOf(INT_VALUE), model.convertConditionValue(INT_VALUE, ID));
 	}
 	
 	@Test(expected=NumberFormatException.class)
 	public final void convertConditionValueNumberformat() {
 		prepareIntegerCondition();
-		model.convertConditionValue("dontLetMEGetMe", ID);
+		model.convertConditionValue(BAD_INT_VALUE, ID);
 	}
 	
 	@Test(expected=BeanInstantiationException.class)
@@ -445,6 +448,14 @@ public class CommercialSubjectModelTest {
 
 		prepareConditions(condition);
 		return condition;
+	}
+	
+	@Test
+	public final void canConvertConditionValue() {
+		prepareIntegerCondition();
+		Assert.assertTrue(model.canConvertConditionValue(INT_VALUE, ID));
+		Assert.assertFalse(model.canConvertConditionValue(BAD_INT_VALUE, ID));
+		
 	}
 
 }

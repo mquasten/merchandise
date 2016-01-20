@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 
 
+
 import de.mq.merchandise.customer.Customer;
 import de.mq.merchandise.subject.support.CommercialSubjectModel.EventType;
 import de.mq.merchandise.support.Mapper;
@@ -34,6 +36,9 @@ import de.mq.util.event.EventFascadeProxyFactory;
 public class CommercialSubjectModelsTest {
 	
 	
+	private static final long LONG_VALUE = 19680528L;
+
+
 	private static final String VALUE = "value";
 
 
@@ -196,16 +201,26 @@ public class CommercialSubjectModelsTest {
 	@Test
 	public final void  inputValueConverter() {
 		Converter<Collection<?>, Container> converter = commercialSubjectModels.inputValueConverter();
-		final Collection<Object> values = new ArrayList<>();
+		final List<Object> values = new ArrayList<>();
 		values.add(VALUE);
+		values.add(LONG_VALUE);
 		
 		final Container container = converter.convert(values);
-		Assert.assertEquals(1, container.getItemIds().size());
-		final Item item = 	container.getItem(container.getItemIds().stream().findAny().get());
-		Assert.assertEquals(1, item.getItemPropertyIds().size());
-		Assert.assertEquals(ConditionValueCols.InputValue, item.getItemPropertyIds().stream().findAny().get());
-		Assert.assertEquals(VALUE, item.getItemProperty(ConditionValueCols.InputValue).getValue());
-		Assert.assertEquals(String.class, item.getItemProperty(ConditionValueCols.InputValue).getType());
+		Assert.assertEquals(2, container.getItemIds().size());
+		
+		
+		container.getItemIds().forEach(id -> {
+			final Item item = 	container.getItem(id);
+			Assert.assertEquals(1, item.getItemPropertyIds().size());
+			Assert.assertEquals(ConditionValueCols.InputValue, item.getItemPropertyIds().stream().findAny().get());
+		  
+			Assert.assertEquals(String.class, item.getItemProperty(ConditionValueCols.InputValue).getType()); 
+			Assert.assertEquals(String.valueOf(values.get((int) id -1)), item.getItemProperty(ConditionValueCols.InputValue).getValue());
+		 
+		});
+		
+		
+		
 	}
 
 }
