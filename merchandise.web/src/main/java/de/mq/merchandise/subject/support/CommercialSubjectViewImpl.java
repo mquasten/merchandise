@@ -178,6 +178,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		searchPanel.setContent(searchBox);
 
 		final FieldGroup fieldGroup = new FieldGroup();
+		//System.out.println(commercialSubjectSearchItem.getItemProperty(CommercialSubjectCols.Name));
 		fieldGroup.setItemDataSource(commercialSubjectSearchItem);
 		fieldGroup.setBuffered(true);
 		final FormLayout col1Layout = new FormLayout();
