@@ -47,34 +47,34 @@ import de.mq.merchandise.util.support.ViewNav;
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
-	private static final String I18N_ITEM_TABLE_CAPTION = "commercial_subject_item_table_name";
-	private static final String I18N_DELETE_ITEM_BUTTON = "commercial_subject_delete_item_button";
-	private static final String I18N_NEW_ITEM_BUTTON = "commercial_subject_new_item_button";
-	private static final String I18N_SAVE_ITEM_BUTTON = "commercial_subject_save_item_button";
-	private static final String I18N_MANDATORY_BOX_TRUE = "commercial_subject_mandatoryBox_true";
-	private static final String I18N_MANDATORY_BOX_FALSE = "commercial_subject_mandatoryBox_false";
+	static final String I18N_ITEM_TABLE_CAPTION = "commercial_subject_item_table_name";
+	static final String I18N_DELETE_ITEM_BUTTON = "commercial_subject_delete_item_button";
+	static final String I18N_NEW_ITEM_BUTTON = "commercial_subject_new_item_button";
+	static final String I18N_SAVE_ITEM_BUTTON = "commercial_subject_save_item_button";
+	static final String I18N_MANDATORY_BOX_TRUE = "commercial_subject_mandatoryBox_true";
+	static final String I18N_MANDATORY_BOX_FALSE = "commercial_subject_mandatoryBox_false";
 
-	private static final String I18N_COMMERCIAL_SUBJECT_DELETE = "commercial_subject_delete";
+	static final String I18N_COMMERCIAL_SUBJECT_DELETE = "commercial_subject_delete";
 
-	private static final String I18N_COMMERCIAL_SUBJECT_NEW = "commercial_subject_new";
+	static final String I18N_COMMERCIAL_SUBJECT_NEW = "commercial_subject_new";
 
-	private static final String I18N_COMMERCIAL_SUBJECT_SAVE = "commercial_subject_save";
+	static final String I18N_COMMERCIAL_SUBJECT_SAVE = "commercial_subject_save";
 
-	private static final String I18N_COMMERCIAL_SUBJECT_TABLE_NAME = "commercial_subject_table_name";
+	static final String I18N_COMMERCIAL_SUBJECT_TABLE_NAME = "commercial_subject_table_name";
 
-	private static final String I18N_COMMERCIAL_SUBJECT_SEARCH = "commercial_subject_search";
+	static final String I18N_COMMERCIAL_SUBJECT_SEARCH = "commercial_subject_search";
 
-	private static final String I18N_COMMERCIAL_SUBJECT_SEARCH_ITEM_NAME = "commercial_subject_search_item_name";
+	static final String I18N_COMMERCIAL_SUBJECT_SEARCH_ITEM_NAME = "commercial_subject_search_item_name";
 
-	private static final String I18_COMMERCIAL_SUBJECT_SEARCH_NAME = "commercial_subject_search_name";
+	static final String I18_COMMERCIAL_SUBJECT_SEARCH_NAME = "commercial_subject_search_name";
 
-	private static final String I18N_COMMERCIAL_SUBJECT_NAME = "commercial_subject_name";
-	
-	private static final String I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX  = "commercial_subject_item_";
-	
-	private static final String I18N_COMMERCIAL_SUBJECT_VALUE_TABLE  = "commercial_subject_value_table";
-	
-	private static final String I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR  = "commercial_subject_conversion_error";
+	static final String I18N_COMMERCIAL_SUBJECT_NAME = "commercial_subject_name";
+
+	static final String I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX = "commercial_subject_item_";
+
+	static final String I18N_COMMERCIAL_SUBJECT_VALUE_TABLE = "commercial_subject_value_table";
+
+	static final String I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR = "commercial_subject_conversion_error";
 
 	private static final long serialVersionUID = 1L;
 
@@ -93,49 +93,32 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	private final ValidationUtil validationUtil;
 
 	private final Converter<CommercialSubject, Item> commercialSubjectToItemConverter;
-	
-	
-	private  final Converter<Collection<Subject>, Container> entriesToConatainerConverter;
-	 
-	 private  final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter;
-	 private final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter; 
-	 private final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter;
 
-	 
-	private  final   Converter<Collection<Condition>, Container> conditionToContainerConverter;
-	
+	private final Converter<Collection<Subject>, Container> entriesToConatainerConverter;
+
+	private final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter;
+	private final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter;
+	private final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter;
+
+	private final Converter<Collection<Condition>, Container> conditionToContainerConverter;
+
 	private final Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel;
 	private final Converter<Collection<?>, Container> inputValuesConverter;
-	
+
 	private final Item conditionValueItem;
-	private final MessageSource messageSource; 
+	private final MessageSource messageSource;
 
 	final ThemeResource editIcon = new ThemeResource("edit-icon.png");
 	final ThemeResource newIcon = new ThemeResource("new-icon.png");
 
 	@Autowired
-	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, 
-			final UserModel userModel, 
-			final MessageSource messageSource, 
-			ViewNav viewNav, 
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView,
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, 
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, 
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter, 
-			final ValidationUtil validationUtil, 
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter, 
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.EntriesToConatainerConverter) Converter<Collection<Subject>, Container> entriesToConatainerConverter, 
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter) final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter, 
-			final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter,
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToContainerConverter) final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter,
-		
-		 @SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter)final   Converter<Collection<Condition>, Container> conditionToContainerConverter,
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ConditionValueItem) final Item conditionValueItem,
-			
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemIntoCommercialSubjectModel) final Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel,
-			
-			@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.InputValueToContainerConverter) Converter<Collection<?>, Container> inputValuesConverter
-			) {
+	CommercialSubjectViewImpl(final CommercialSubjectModel commercialSubjectModel, final UserModel userModel, final MessageSource messageSource, ViewNav viewNav, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.MenuBar) final MainMenuBarView mainMenuBarView, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.LazyQueryContainer) final RefreshableContainer lazyQueryContainer, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectSearchItem) final Item commercialSubjectSearchItem, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemToCommercialSubjectConverter) Converter<Item, CommercialSubject> itemToCommercialSubjectConverter, final ValidationUtil validationUtil, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectToItemConverter) final Converter<CommercialSubject, Item> commercialSubjectToItemConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.EntriesToConatainerConverter) Converter<Collection<Subject>, Container> entriesToConatainerConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToItemConverter) final Converter<CommercialSubjectItem, Item> commercialSubjectItemConverter, final Converter<Item, CommercialSubjectItem> itemToCommercialSubjectItemConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.CommercialSubjectItemToContainerConverter) final Converter<Collection<CommercialSubjectItem>, Container> commercialSubjectItemToContainerConverter,
+
+	@SubjectModelQualifier(SubjectModelQualifier.Type.ConditionToContainerConverter) final Converter<Collection<Condition>, Container> conditionToContainerConverter, @CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ConditionValueItem) final Item conditionValueItem,
+
+	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.ItemIntoCommercialSubjectModel) final Mapper<Item, CommercialSubjectModel> itemIntoCommercialSubjectModel,
+
+	@CommercialSubjectModelQualifier(CommercialSubjectModelQualifier.Type.InputValueToContainerConverter) Converter<Collection<?>, Container> inputValuesConverter) {
 		this.mainMenuBarView = mainMenuBarView;
 		this.lazyQueryContainer = lazyQueryContainer;
 		this.commercialSubjectSearchItem = commercialSubjectSearchItem;
@@ -143,18 +126,18 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		this.commercialSubjectModel = commercialSubjectModel;
 		this.userModel = userModel;
 		this.validationUtil = validationUtil;
-		this.messageSource=messageSource;
+		this.messageSource = messageSource;
 		this.commercialSubjectToItemConverter = commercialSubjectToItemConverter;
-		
-		this.entriesToConatainerConverter=entriesToConatainerConverter;
-		this.commercialSubjectItemConverter=commercialSubjectItemConverter;
-		this.itemToCommercialSubjectItemConverter=itemToCommercialSubjectItemConverter;
-		this.commercialSubjectItemToContainerConverter=commercialSubjectItemToContainerConverter;
 
-		this.conditionToContainerConverter=conditionToContainerConverter;
-		this.conditionValueItem=conditionValueItem;
-		this.itemIntoCommercialSubjectModel=itemIntoCommercialSubjectModel;
-		this.inputValuesConverter=inputValuesConverter;
+		this.entriesToConatainerConverter = entriesToConatainerConverter;
+		this.commercialSubjectItemConverter = commercialSubjectItemConverter;
+		this.itemToCommercialSubjectItemConverter = itemToCommercialSubjectItemConverter;
+		this.commercialSubjectItemToContainerConverter = commercialSubjectItemToContainerConverter;
+
+		this.conditionToContainerConverter = conditionToContainerConverter;
+		this.conditionValueItem = conditionValueItem;
+		this.itemIntoCommercialSubjectModel = itemIntoCommercialSubjectModel;
+		this.inputValuesConverter = inputValuesConverter;
 	}
 
 	/*
@@ -178,7 +161,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		searchPanel.setContent(searchBox);
 
 		final FieldGroup fieldGroup = new FieldGroup();
-		//System.out.println(commercialSubjectSearchItem.getItemProperty(CommercialSubjectCols.Name));
+		// System.out.println(commercialSubjectSearchItem.getItemProperty(CommercialSubjectCols.Name));
 		fieldGroup.setItemDataSource(commercialSubjectSearchItem);
 		fieldGroup.setBuffered(true);
 		final FormLayout col1Layout = new FormLayout();
@@ -257,12 +240,11 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		editorFields.setItemDataSource(commercialSubjectToItemConverter.convert(commercialSubjectModel.getCommercialSubject().get()));
 
 		final Button saveButton = new Button();
-		
-		
+
 		saveButton.addClickListener(e -> {
-		
+
 			commit(editorFields);
-			
+
 			final CommercialSubject commercialSubject = itemToCommercialSubjectConverter.convert(editorFields.getItemDataSource());
 
 			if (!validationUtil.validate(commercialSubject, editorFields, userModel.getLocale())) {
@@ -273,21 +255,20 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			subjectList.setValue(null);
 
 		});
-		
+
 		final Button newButton = new Button();
 		final Button deleteButton = new Button();
 		newButton.setEnabled(false);
 		deleteButton.setEnabled(false);
 		saveButton.setIcon(newIcon);
 
-		deleteButton.addClickListener(e -> {			
+		deleteButton.addClickListener(e -> {
 			commercialSubjectModel.delete(itemToCommercialSubjectConverter.convert(editorFields.getItemDataSource()));
 			lazyQueryContainer.refresh();
 			subjectList.setValue(null);
-			
+
 		});
-		
-		
+
 		editorLayout.addComponent(col1);
 		editorLayout.setWidth("100%");
 
@@ -302,11 +283,6 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		newButton.addClickListener(event -> subjectList.setValue(null));
 
-		
-		
-		
-		
-		
 		final VerticalLayout itemTableLayout = new VerticalLayout();
 
 		itemTableLayout.setVisible(false);
@@ -326,7 +302,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		final FieldGroup itemFields = new FieldGroup();
 		itemFields.setItemDataSource(commercialSubjectItemConverter.convert(commercialSubjectModel.getCommercialSubjectItem().get()));
-		Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible()||CommercialSubjectItemCols.Subject == col ).forEach(col -> {
+		Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible() || CommercialSubjectItemCols.Subject == col).forEach(col -> {
 
 			final com.vaadin.ui.Field<?> field = col.newField();
 
@@ -334,47 +310,41 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			itemCols.addComponent(field);
 
 		});
-		
-		
 
-		
 		final ComboBox subjectBox = (ComboBox) itemFields.getField(CommercialSubjectItemCols.Subject);
 		subjectBox.setItemCaptionPropertyId(SubjectCols.Name);
 
 		subjectBox.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
-		
+
 		final ComboBox mandatoryBox = (ComboBox) itemFields.getField(CommercialSubjectItemCols.Mandatory);
 		mandatoryBox.addItems(Boolean.TRUE, Boolean.FALSE);
-	
-		
-		
+
 		mandatoryBox.setNullSelectionAllowed(false);
-		
+
 		final Button saveItemButton = new Button();
 		final Table itemTable = new Table();
-		
+
 		saveItemButton.addClickListener(event -> {
-			
+
 			commit(itemFields);
 			final CommercialSubjectItem item = itemToCommercialSubjectItemConverter.convert(itemFields.getItemDataSource());
-			
-			if( item.subject().id().orElse(-1L) <=0 ) {
+
+			if (item.subject().id().orElse(-1L) <= 0) {
 				ReflectionUtils.doWithFields(item.getClass(), f -> f.set(item, null), f -> f.getType().equals(Subject.class));
-				
+
 			}
-			
-			
-			if( ! validationUtil.validate(item, itemFields, userModel.getLocale()) ) {
+
+			if (!validationUtil.validate(item, itemFields, userModel.getLocale())) {
 				return;
 			}
 			commercialSubjectModel.save(item);
-			
+
 			refresh(itemTable);
-			
+
 		});
 		saveItemButton.setIcon(newIcon);
 		final Button newItemButton = new Button();
-		
+
 		newItemButton.addClickListener(e -> itemTable.setValue(null));
 		newItemButton.setEnabled(false);
 
@@ -390,30 +360,24 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			refresh(itemTable);
 		});
 
-		
-		
 		itemTable.setSelectable(true);
-		
-	
 
 		itemTable.setWidth("100%");
 		itemTable.setPageLength(2);
 
 		itemTableLayout.addComponent(itemTable);
 		editor.addComponent(itemTableLayout);
-		
-		
+
 		final HorizontalLayout buttonValueLayout = new HorizontalLayout();
 
 		buttonValueLayout.setMargin(new MarginInfo(false, false, true, false));
 		buttonValueLayout.setSpacing(true);
-		
+
 		final VerticalLayout valueTableLayout = new VerticalLayout();
-		
 
 		valueTableLayout.setVisible(false);
 		valueTableLayout.setMargin(new MarginInfo(false, false, false, false));
-		
+
 		final HorizontalLayout valueEditorLayout = new HorizontalLayout();
 		valueEditorLayout.setWidth("100%");
 		final FormLayout valueCols = new FormLayout();
@@ -421,84 +385,78 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		valueEditorLayout.addComponent(valueCols);
 		valueTableLayout.addComponent(valueEditorLayout);
 
-	//	final FieldGroup conditionFields = new FieldGroup();
-//	conditionFields.setItemDataSource( commercialSubjectItemCondition.convert(BeanUtils.instantiateClass(CommercialSubjectItemConditionImpl.class)));
-		
+		// final FieldGroup conditionFields = new FieldGroup();
+		// conditionFields.setItemDataSource(
+		// commercialSubjectItemCondition.convert(BeanUtils.instantiateClass(CommercialSubjectItemConditionImpl.class)));
+
 		final ComboBox conditionBox = new ComboBox("Condition");
 		conditionBox.setImmediate(true);
-		
-	
-	//	conditionValueFields.setItemDataSource(commercialSubjectModel);
-		
+
+		// conditionValueFields.setItemDataSource(commercialSubjectModel);
+
 		valueCols.addComponent(conditionBox);
 		conditionBox.setItemCaptionPropertyId(ConditionCols.ConditionType);
-		
-	//	conditionFields.bind(conditionBox, ConditionValueCols.Condition);
-		
+
+		// conditionFields.bind(conditionBox, ConditionValueCols.Condition);
+
 		FieldGroup valueFields = new FieldGroup();
-		
+
 		final TextField valueField = new TextField("Wert");
 		valueFields.setItemDataSource(conditionValueItem);
 		valueField.setNullRepresentation("");
 		valueCols.addComponent(valueField);
 		valueField.setVisible(false);
-		
+
 		valueFields.bind(valueField, ConditionValueCols.InputValue);
-		
-		conditionBox.addValueChangeListener(e ->  commercialSubjectModel.setCondition( e.getProperty().getValue() !=null ?(Long)  e.getProperty().getValue() : -1L));
-		
-		//conditionBox.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
-		
+
+		conditionBox.addValueChangeListener(e -> commercialSubjectModel.setCondition(e.getProperty().getValue() != null ? (Long) e.getProperty().getValue() : -1L));
+
+		// conditionBox.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
+
 		final Button saveValueButton = new Button("speichern");
 		final Table valueTable = new Table();
 		valueTable.setVisible(false);
-	//	valueTable.setCaption("Werteauswahl");
+		// valueTable.setCaption("Werteauswahl");
 		valueTable.setColumnHeaderMode(ColumnHeaderMode.HIDDEN);
-		
+
 		valueTable.addValueChangeListener(e -> {
-			final String value = (e.getProperty().getValue() != null) ? (String)  valueTable.getItem(e.getProperty().getValue()).getItemProperty(ConditionValueCols.InputValue).getValue():null;;
-			
+			final String value = (e.getProperty().getValue() != null) ? (String) valueTable.getItem(e.getProperty().getValue()).getItemProperty(ConditionValueCols.InputValue).getValue() : null;
+			;
+
 			commercialSubjectModel.setCurrentInputValue(value);
-			
-			
+
 		});
-		
-	
-		
+
 		saveValueButton.setIcon(newIcon);
 		saveValueButton.setEnabled(false);
-		
+
 		saveValueButton.addClickListener(e -> {
-		
+
 			validationUtil.reset(valueFields);
 			commit(valueFields);
-			
-			
+
 			itemIntoCommercialSubjectModel.mapInto(valueFields.getItemDataSource(), commercialSubjectModel);
-			
-		
-			if( validationUtil.validate(commercialSubjectModel, valueFields, userModel.getLocale())) {
-				
+
+			if (validationUtil.validate(commercialSubjectModel, valueFields, userModel.getLocale())) {
+
 				addValue(conditionBox, valueField);
 			}
-			
-	
-			
+
 		});
-		
-		commercialSubjectModel.register( o -> {
+
+		commercialSubjectModel.register(o -> {
 			saveValueButton.setEnabled(commercialSubjectModel.hasCondition());
 			valueTable.setVisible(commercialSubjectModel.hasCondition());
 			valueField.setVisible(commercialSubjectModel.hasCondition());
 			validationUtil.cleanValues(valueFields, ConditionValueCols.values());
 			valueFields.setItemDataSource(conditionValueItem);
-			
-		   if( commercialSubjectModel.hasCondition()){
-		   	valueTable.setCaption(message(I18N_COMMERCIAL_SUBJECT_VALUE_TABLE, commercialSubjectModel.getCondition((Long) conditionBox.getValue()).conditionDataType().name()));
-		   
-		   }
+
+			if (commercialSubjectModel.hasCondition()) {
+				valueTable.setCaption(message(I18N_COMMERCIAL_SUBJECT_VALUE_TABLE, commercialSubjectModel.getCondition((Long) conditionBox.getValue()).conditionDataType().name()));
+
+			}
 		}, EventType.ConditionChanged);
-		
+
 		final Button deleteValueButton = new Button("löschen");
 		commercialSubjectModel.register(e -> deleteValueButton.setEnabled(commercialSubjectModel.hasCurrentInputValue()), EventType.InputValueChanged);
 		deleteValueButton.addClickListener(e -> commercialSubjectModel.deleteInputValue());
@@ -506,7 +464,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		buttonValueLayout.addComponent(saveValueButton);
 		buttonValueLayout.addComponent(deleteValueButton);
-		
+
 		valueTableLayout.addComponent(buttonValueLayout);
 
 		valueTable.setSelectable(true);
@@ -515,11 +473,9 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		valueTable.setPageLength(2);
 
 		valueTableLayout.addComponent(valueTable);
-		
-		
+
 		editor.addComponent(valueTableLayout);
-		
-		
+
 		splitPanel.addComponent(editor);
 
 		commercialSubjectModel.register(e -> {
@@ -537,62 +493,51 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 				saveButton.setIcon(editIcon);
 				newButton.setEnabled(true);
 				deleteButton.setEnabled(true);
-				
+
 				return;
 			}
 
-			
-			
 			saveButton.setIcon(newIcon);
 
-			
-			
 		}, CommercialSubjectModel.EventType.CommericalSubjectChanged);
-		
-		
-		
-		itemTable.addValueChangeListener(e ->{ 
-			
+
+		itemTable.addValueChangeListener(e -> {
+
 			commercialSubjectModel.setCommercialSubjectItemId(e.getProperty().getValue() != null ? (Long) itemTable.getItem(e.getProperty().getValue()).getItemProperty(CommercialSubjectItemCols.Id).getValue() : null);
-			
-			valueTableLayout.setVisible(e.getProperty().getValue() != null);		
-			
-			
-		}
-		);
-		
+
+			valueTableLayout.setVisible(e.getProperty().getValue() != null);
+
+		});
+
 		commercialSubjectModel.register(e -> {
-			
-		
+
 			validationUtil.reset(itemFields);
-		
+
 			itemFields.setItemDataSource(null);
 			newItemButton.setEnabled(false);
 			deleteItemButton.setEnabled(false);
 
 			itemFields.setItemDataSource(commercialSubjectItemConverter.convert(commercialSubjectModel.getCommercialSubjectItem().get()));
-			
+
 			conditionBox.setContainerDataSource(null);
 			if (commercialSubjectModel.getCommercialSubjectItem().get().id().isPresent()) {
 				saveItemButton.setIcon(editIcon);
 				newItemButton.setEnabled(true);
 				deleteItemButton.setEnabled(true);
-				
-				
 
 				conditionBox.setContainerDataSource(conditionToContainerConverter.convert(commercialSubjectModel.getConditions()));
-				
+
 				return;
 			}
-			
+
 			saveItemButton.setIcon(newIcon);
 
 		}, CommercialSubjectModel.EventType.CommericalSubjectItemChanged);
-		
-		
-		commercialSubjectModel.register(e -> valueTable.setContainerDataSource(inputValuesConverter.convert(commercialSubjectModel.inputValues((Long) conditionBox.getValue()))) , EventType.ConditionChanged);
-		
-		userModel.register(e-> {
+
+		commercialSubjectModel.register(e -> valueTable.setContainerDataSource(inputValuesConverter.convert(commercialSubjectModel.inputValues((Long) conditionBox.getValue()))), EventType.ConditionChanged);
+
+		userModel.register(e -> {
+
 			editorNameField.setCaption(message(I18N_COMMERCIAL_SUBJECT_NAME));
 			searchNameField.setCaption(message(I18_COMMERCIAL_SUBJECT_SEARCH_NAME));
 			searchItemNameField.setCaption(message(I18N_COMMERCIAL_SUBJECT_SEARCH_ITEM_NAME));
@@ -604,61 +549,57 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			saveItemButton.setCaption(message(I18N_SAVE_ITEM_BUTTON));
 			mandatoryBox.setItemCaption(Boolean.TRUE, message(I18N_MANDATORY_BOX_TRUE));
 			mandatoryBox.setItemCaption(Boolean.FALSE, message(I18N_MANDATORY_BOX_FALSE));
-			
-			
+
 			newItemButton.setCaption(message(I18N_NEW_ITEM_BUTTON));
-			
+
 			deleteItemButton.setCaption(message(I18N_DELETE_ITEM_BUTTON));
-			
+
 			itemTable.setCaption(message(I18N_ITEM_TABLE_CAPTION));
-			
-			
-			Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible()||CommercialSubjectItemCols.Subject == col ).forEach(col -> {
+
+			Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible() || CommercialSubjectItemCols.Subject == col).forEach(col -> {
 				itemFields.getField(col).setCaption(message(I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX + col.name().toLowerCase()));
 			});
-			
-			
+
 		}, UserModel.EventType.LocaleChanged);
 
 	}
 
 	private void addValue(final ComboBox conditionBox, final TextField valueField) {
-		if( commercialSubjectModel.canConvertConditionValue(commercialSubjectModel.getInputValue(), (Long) conditionBox.getValue()) ) {
-		
-		  commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
-		  
+		if (commercialSubjectModel.canConvertConditionValue(commercialSubjectModel.getInputValue(), (Long) conditionBox.getValue())) {
+
+			commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
+
 		} else {
 			valueField.setComponentError(new UserError(message(I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR, commercialSubjectModel.getCondition((Long) conditionBox.getValue()).conditionDataType().name())));
-			
+
 		}
 	}
 
-
-
 	private void commitSearch(final FieldGroup fieldGroup) {
-		commit(fieldGroup); 
+		commit(fieldGroup);
 		commercialSubjectModel.setSearch(itemToCommercialSubjectConverter.convert(commercialSubjectSearchItem));
 	}
-	private String message(final String key, Object ... values ) {
-	 return messageSource.getMessage(key, values, userModel.getLocale());
+
+	private String message(final String key, Object... values) {
+
+		return messageSource.getMessage(key, values, userModel.getLocale());
 	}
 
 	private void commit(final FieldGroup fieldGroup) {
 		try {
 
 			fieldGroup.commit();
-			
+
 		} catch (final Exception ex) {
 			throw new IllegalStateException(ex);
 		}
 	}
-	
+
 	private void refresh(final Table itemTable) {
 		itemTable.setContainerDataSource(commercialSubjectItemToContainerConverter.convert(commercialSubjectModel.getCommercialSubject().get().commercialSubjectItems()));
 		itemTable.setVisibleColumns(Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible()).collect(Collectors.toList()).toArray());
 		itemTable.setValue(null);
 	}
-
 
 	@PostConstruct
 	void init() {
