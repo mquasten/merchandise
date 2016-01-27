@@ -61,6 +61,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 	static final String I18N_COMMERCIAL_SUBJECT_SAVE = "commercial_subject_save";
 
 	static final String I18N_COMMERCIAL_SUBJECT_TABLE_NAME = "commercial_subject_table_name";
+	static final String I18N_COMMERCIAL_SUBJECT_TABLE_COL_NAME = "commercial_subject_table_col_name";
 
 	static final String I18N_COMMERCIAL_SUBJECT_SEARCH = "commercial_subject_search";
 
@@ -76,6 +77,11 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 	static final String I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR = "commercial_subject_conversion_error";
 
+	static final String I18N_COMMERCIAL_SUBJECT_CONDITION = "commercial_subject_condition";
+
+	static final String I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE = "commercial_subject_condition_value";
+	static final String I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_SAVE = "commercial_subject_condition_value_save";
+	static final String I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_DELETE = "commercial_subject_condition_value_delete";
 	private static final long serialVersionUID = 1L;
 
 	private final RefreshableContainer lazyQueryContainer;
@@ -389,7 +395,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		// conditionFields.setItemDataSource(
 		// commercialSubjectItemCondition.convert(BeanUtils.instantiateClass(CommercialSubjectItemConditionImpl.class)));
 
-		final ComboBox conditionBox = new ComboBox("Condition");
+		final ComboBox conditionBox = new ComboBox();
 		conditionBox.setImmediate(true);
 
 		// conditionValueFields.setItemDataSource(commercialSubjectModel);
@@ -401,7 +407,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		FieldGroup valueFields = new FieldGroup();
 
-		final TextField valueField = new TextField("Wert");
+		final TextField valueField = new TextField();
 		valueFields.setItemDataSource(conditionValueItem);
 		valueField.setNullRepresentation("");
 		valueCols.addComponent(valueField);
@@ -413,7 +419,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		// conditionBox.setContainerDataSource(entriesToConatainerConverter.convert(commercialSubjectModel.getSubjects()));
 
-		final Button saveValueButton = new Button("speichern");
+		final Button saveValueButton = new Button();
 		final Table valueTable = new Table();
 		valueTable.setVisible(false);
 		// valueTable.setCaption("Werteauswahl");
@@ -457,7 +463,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			}
 		}, EventType.ConditionChanged);
 
-		final Button deleteValueButton = new Button("löschen");
+		final Button deleteValueButton = new Button();
 		commercialSubjectModel.register(e -> deleteValueButton.setEnabled(commercialSubjectModel.hasCurrentInputValue()), EventType.InputValueChanged);
 		deleteValueButton.addClickListener(e -> commercialSubjectModel.deleteInputValue());
 		deleteValueButton.setEnabled(false);
@@ -542,7 +548,8 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			searchNameField.setCaption(message(I18_COMMERCIAL_SUBJECT_SEARCH_NAME));
 			searchItemNameField.setCaption(message(I18N_COMMERCIAL_SUBJECT_SEARCH_ITEM_NAME));
 			searchButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_SEARCH));
-			subjectList.setColumnHeader(CommercialSubjectCols.Name, message(I18N_COMMERCIAL_SUBJECT_TABLE_NAME));
+			subjectList.setCaption(message(I18N_COMMERCIAL_SUBJECT_TABLE_NAME));
+			subjectList.setColumnHeader(CommercialSubjectCols.Name, message(I18N_COMMERCIAL_SUBJECT_TABLE_COL_NAME));
 			saveButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_SAVE));
 			newButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_NEW));
 			deleteButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_DELETE));
@@ -555,10 +562,13 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			deleteItemButton.setCaption(message(I18N_DELETE_ITEM_BUTTON));
 
 			itemTable.setCaption(message(I18N_ITEM_TABLE_CAPTION));
+			conditionBox.setCaption(message(I18N_COMMERCIAL_SUBJECT_CONDITION));
+			valueField.setCaption(message(I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE));
 
-			Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible() || CommercialSubjectItemCols.Subject == col).forEach(col -> {
-				itemFields.getField(col).setCaption(message(I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX + col.name().toLowerCase()));
-			});
+			saveValueButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_SAVE));
+			deleteValueButton.setCaption(message(I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_DELETE));
+			valueTable.setCaption(message(I18N_COMMERCIAL_SUBJECT_VALUE_TABLE, ConditionDataType.String.name()));
+			Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible() || CommercialSubjectItemCols.Subject == col).forEach(col -> itemFields.getField(col).setCaption(message(I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX + col.name().toLowerCase())));
 
 		}, UserModel.EventType.LocaleChanged);
 

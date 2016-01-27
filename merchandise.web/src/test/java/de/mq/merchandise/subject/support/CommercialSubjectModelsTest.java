@@ -213,9 +213,10 @@ public class CommercialSubjectModelsTest {
 			final Item item = 	container.getItem(id);
 			Assert.assertEquals(1, item.getItemPropertyIds().size());
 			Assert.assertEquals(ConditionValueCols.InputValue, item.getItemPropertyIds().stream().findAny().get());
-		  
+		
 			Assert.assertEquals(String.class, item.getItemProperty(ConditionValueCols.InputValue).getType()); 
-			Assert.assertEquals(String.valueOf(values.get((int) id -1)), item.getItemProperty(ConditionValueCols.InputValue).getValue());
+		
+			Assert.assertEquals(String.valueOf(values.get( Integer.parseInt(id.toString())-1)), item.getItemProperty(ConditionValueCols.InputValue).getValue());
 		 
 		});
 		
