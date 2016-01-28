@@ -18,11 +18,17 @@ import org.springframework.core.convert.converter.Converter;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.event.Action.Listener;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
@@ -35,6 +41,8 @@ import de.mq.merchandise.util.support.ViewNav;
 import de.mq.util.event.Observer;
 
 public class CommercialSubjectViewTest {
+
+	private static final String COMMERCIAL_SUBJECT_NAME = "PetsStore";
 
 	private final CommercialSubjectModel commercialSubjectModel = Mockito.mock(CommercialSubjectModel.class);
 
@@ -80,12 +88,18 @@ public class CommercialSubjectViewTest {
 	private final CommercialSubjectItem commercialSubjectItem = Mockito.mock(CommercialSubjectItem.class);
 
 	private final Map<EventType, Observer<EventType>> observers = new HashMap<>();
+	final Item itemToCommercialSubjectDatasource = Mockito.mock(Item.class);
+
+	private final ArgumentCaptor<CommercialSubject> commercialSubjectCaptor = ArgumentCaptor.forClass(CommercialSubject.class);
+	private final ArgumentCaptor<Locale> localeCaptor = ArgumentCaptor.forClass(Locale.class);
+	private final ArgumentCaptor<FieldGroup> fieldGroupCaptor = ArgumentCaptor.forClass(FieldGroup.class);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private final ArgumentCaptor<Observer<UserModel.EventType>> localChangedObserverCapture = (ArgumentCaptor) ArgumentCaptor.forClass(Observer.class);
 
 	private final ArgumentCaptor<UserModel.EventType> localChangedTypeCapture = ArgumentCaptor.forClass(UserModel.EventType.class);
 
+	private final ClickEvent clickEvent = Mockito.mock(ClickEvent.class);
 	final Map<String, Component> components = new HashMap<>();
 	private final CommercialSubjectViewImpl view = new CommercialSubjectViewImpl(commercialSubjectModel, userModel, messageSource, viewNav, mainMenuBarView, lazyQueryContainer, commercialSubjectSearchItem, itemToCommercialSubjectConverter, validationUtil, commercialSubjectToItemConverter, entriesToConatainerConverter, commercialSubjectItemConverter, itemToCommercialSubjectItemConverter, commercialSubjectItemToContainerConverter,
 
@@ -151,6 +165,14 @@ public class CommercialSubjectViewTest {
 			observers.put((EventType) i.getArguments()[1], (Observer<EventType>) i.getArguments()[0]);
 			return null;
 		}).when(commercialSubjectModel).register(Mockito.any(Observer.class), Mockito.any(CommercialSubjectModel.EventType.class));
+
+		final Property commercialSubjectNameProperty = Mockito.mock(Property.class);
+
+		Mockito.when(commercialSubjectNameProperty.getValue()).thenReturn(COMMERCIAL_SUBJECT_NAME);
+		Mockito.when(commercialSubjectNameProperty.getType()).thenReturn(String.class);
+		Mockito.when(itemToCommercialSubjectDatasource.getItemProperty(CommercialSubjectCols.Name)).thenReturn(commercialSubjectNameProperty);
+
+		Mockito.when(commercialSubjectToItemConverter.convert(Mockito.any())).thenReturn(itemToCommercialSubjectDatasource);
 
 		view.init();
 
@@ -269,6 +291,81 @@ public class CommercialSubjectViewTest {
 
 		return visible(parent.getParent());
 
+	}
+
+	@Test
+	public final void saveButton() {
+
+		Mockito.when(itemToCommercialSubjectConverter.convert(itemToCommercialSubjectDatasource)).thenReturn(commercialSubject);
+		Mockito.when(validationUtil.validate(commercialSubjectCaptor.capture(), fieldGroupCaptor.capture(), localeCaptor.capture())).thenReturn(true);
+
+		final Button saveButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_SAVE);
+
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) saveButton.getListeners(ClickEvent.class).stream().findAny();
+		Assert.assertTrue(listener.isPresent());
+		listener.get().buttonClick(clickEvent);
+
+		Mockito.verify(validationUtil).validate(Mockito.any(), Mockito.any(), Mockito.any());
+
+		Assert.assertEquals(commercialSubject, commercialSubjectCaptor.getValue());
+		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
+		Mockito.verify(commercialSubjectModel).save(commercialSubject);
+		Mockito.verify(lazyQueryContainer).refresh();
+
+	}
+
+	@Test
+	public final void saveButtonInvalid() {
+
+		Mockito.when(itemToCommercialSubjectConverter.convert(itemToCommercialSubjectDatasource)).thenReturn(commercialSubject);
+		Mockito.when(validationUtil.validate(commercialSubjectCaptor.capture(), fieldGroupCaptor.capture(), localeCaptor.capture())).thenReturn(false);
+
+		final Button saveButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_SAVE);
+
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) saveButton.getListeners(ClickEvent.class).stream().findAny();
+		Assert.assertTrue(listener.isPresent());
+		listener.get().buttonClick(clickEvent);
+
+		Mockito.verify(validationUtil).validate(Mockito.any(), Mockito.any(), Mockito.any());
+
+		Assert.assertEquals(commercialSubject, commercialSubjectCaptor.getValue());
+		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
+		Mockito.verify(commercialSubjectModel, Mockito.never()).save(commercialSubject);
+		Mockito.verify(lazyQueryContainer, Mockito.never()).refresh();
+
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public final void saveButtonCommitSucks() {
+
+		final TextField editorNameField = (TextField) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_NAME);
+		editorNameField.setValue(null);
+		editorNameField.setRequired(true);
+
+		final Button saveButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_SAVE);
+
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) saveButton.getListeners(ClickEvent.class).stream().findAny();
+		Assert.assertTrue(listener.isPresent());
+		listener.get().buttonClick(clickEvent);
+
+	}
+	
+	@Test
+	public final void  deleteButton() {
+		Mockito.when(itemToCommercialSubjectConverter.convert(itemToCommercialSubjectDatasource)).thenReturn(commercialSubject);
+		Mockito.when(validationUtil.validate(commercialSubjectCaptor.capture(), fieldGroupCaptor.capture(), localeCaptor.capture())).thenReturn(true);
+
+		final Button deleteButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_DELETE);
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) deleteButton.getListeners(ClickEvent.class).stream().findAny();
+		Assert.assertTrue(listener.isPresent());
+		listener.get().buttonClick(clickEvent);
+		
+		Mockito.verify(commercialSubjectModel).delete(commercialSubject);
+		Mockito.verify(lazyQueryContainer).refresh();
 	}
 
 }
