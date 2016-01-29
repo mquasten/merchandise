@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.converter.Converter;
 
@@ -19,8 +20,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.event.Action.Listener;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -28,7 +28,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+
 
 import de.mq.merchandise.subject.Condition;
 import de.mq.merchandise.subject.Subject;
@@ -55,6 +55,7 @@ public class CommercialSubjectViewTest {
 	private final MainMenuBarView mainMenuBarView = Mockito.mock(MainMenuBarView.class);
 
 	private final RefreshableContainer lazyQueryContainer = Mockito.mock(RefreshableContainer.class);
+	private Subject subject = Mockito.mock(Subject.class);
 
 	private final Item commercialSubjectSearchItem = Mockito.mock(Item.class);
 	private final ValidationUtil validationUtil = Mockito.mock(ValidationUtil.class);
@@ -89,10 +90,14 @@ public class CommercialSubjectViewTest {
 
 	private final Map<EventType, Observer<EventType>> observers = new HashMap<>();
 	final Item itemToCommercialSubjectDatasource = Mockito.mock(Item.class);
+	
+	final Item itemFieldsDatasource = Mockito.mock(Item.class);
 
 	private final ArgumentCaptor<CommercialSubject> commercialSubjectCaptor = ArgumentCaptor.forClass(CommercialSubject.class);
 	private final ArgumentCaptor<Locale> localeCaptor = ArgumentCaptor.forClass(Locale.class);
 	private final ArgumentCaptor<FieldGroup> fieldGroupCaptor = ArgumentCaptor.forClass(FieldGroup.class);
+	
+	private final ArgumentCaptor<CommercialSubjectItem> commercialSubjectItemCaptor = ArgumentCaptor.forClass(CommercialSubjectItem.class);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private final ArgumentCaptor<Observer<UserModel.EventType>> localChangedObserverCapture = (ArgumentCaptor) ArgumentCaptor.forClass(Observer.class);
@@ -173,6 +178,20 @@ public class CommercialSubjectViewTest {
 		Mockito.when(itemToCommercialSubjectDatasource.getItemProperty(CommercialSubjectCols.Name)).thenReturn(commercialSubjectNameProperty);
 
 		Mockito.when(commercialSubjectToItemConverter.convert(Mockito.any())).thenReturn(itemToCommercialSubjectDatasource);
+		
+		
+		final Property itemFieldsNameProperty = Mockito.mock(Property.class);
+		final Property itemFieldsMandatoryProperty = Mockito.mock(Property.class);
+		final Property itemFieldsSubjectProperty = Mockito.mock(Property.class);
+		
+		Mockito.when(itemFieldsDatasource.getItemProperty(CommercialSubjectItemCols.Name)).thenReturn(itemFieldsNameProperty);
+		Mockito.when(itemFieldsDatasource.getItemProperty(CommercialSubjectItemCols.Mandatory)).thenReturn(itemFieldsMandatoryProperty);
+		Mockito.when(itemFieldsDatasource.getItemProperty(CommercialSubjectItemCols.Subject)).thenReturn(itemFieldsSubjectProperty);
+	
+		
+		Mockito.when(commercialSubjectItemConverter.convert(commercialSubjectItem)).thenReturn(itemFieldsDatasource);
+		
+	
 
 		view.init();
 
@@ -366,6 +385,45 @@ public class CommercialSubjectViewTest {
 		
 		Mockito.verify(commercialSubjectModel).delete(commercialSubject);
 		Mockito.verify(lazyQueryContainer).refresh();
+	}
+	
+	
+
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Test
+	public final void  saveItemButton() {
+		final Container container = Mockito.mock(Container.class);
+		Mockito.when(container.getContainerPropertyIds()).thenReturn((Collection) Arrays.asList(CommercialSubjectItemCols.values())); 
+		Mockito.when(commercialSubjectItemToContainerConverter.convert(Mockito.any())).thenReturn(container);
+		final Table itemTable =(Table) components.get(CommercialSubjectViewImpl.I18N_ITEM_TABLE_CAPTION);
+	
+		 Mockito.when(itemToCommercialSubjectItemConverter.convert(itemFieldsDatasource)).thenReturn(commercialSubjectItem);
+		 Mockito.when(subject.id()).thenReturn(Optional.of(19680528L));
+		 Mockito.when(commercialSubjectItem.subject()).thenReturn(subject);
+		 Mockito.when(validationUtil.validate(commercialSubjectItemCaptor.capture(), fieldGroupCaptor.capture(),localeCaptor.capture())).thenReturn(true);
+		final Button saveItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_SAVE_ITEM_BUTTON);
+		
+	
+		final Optional<ClickListener> listener = (Optional<ClickListener>) saveItemButton.getListeners(ClickEvent.class).stream().findAny();
+		Assert.assertTrue(listener.isPresent());
+		
+		Assert.assertEquals(0, itemTable.getVisibleColumns().length);
+		listener.get().buttonClick(clickEvent);
+
+		
+		
+		final TextField nameField = (TextField) components.get(CommercialSubjectItemCols.Name.name());
+	
+		
+		Assert.assertEquals(commercialSubjectItem, commercialSubjectItemCaptor.getValue());
+		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
+		Assert.assertEquals(nameField, fieldGroupCaptor.getValue().getField(CommercialSubjectItemCols.Name));
+		Assert.assertEquals(nameField.getCaption(), fieldGroupCaptor.getValue().getField(CommercialSubjectItemCols.Name).getCaption());
+		
+		Mockito.verify(commercialSubjectModel).save(commercialSubjectItem);
+		Assert.assertEquals( Arrays.asList(CommercialSubjectItemCols.Name, CommercialSubjectItemCols.Mandatory), Arrays.asList(itemTable.getVisibleColumns()));
+		
 	}
 
 }

@@ -307,6 +307,9 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		itemTableLayout.addComponent(itemEditorLayout);
 
 		final FieldGroup itemFields = new FieldGroup();
+		
+	
+		
 		itemFields.setItemDataSource(commercialSubjectItemConverter.convert(commercialSubjectModel.getCommercialSubjectItem().get()));
 		Arrays.asList(CommercialSubjectItemCols.values()).stream().filter(col -> col.visible() || CommercialSubjectItemCols.Subject == col).forEach(col -> {
 
@@ -329,12 +332,13 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		final Button saveItemButton = new Button();
 		final Table itemTable = new Table();
-
+		
 		saveItemButton.addClickListener(event -> {
 
 			commit(itemFields);
+			
 			final CommercialSubjectItem item = itemToCommercialSubjectItemConverter.convert(itemFields.getItemDataSource());
-
+			
 			if (item.subject().id().orElse(-1L) <= 0) {
 				ReflectionUtils.doWithFields(item.getClass(), f -> f.set(item, null), f -> f.getType().equals(Subject.class));
 
