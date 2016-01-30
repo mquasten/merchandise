@@ -455,5 +455,25 @@ public class CommercialSubjectViewTest {
 		}
 
 	}
+	
+	
+	@Test
+	public final void deleteItemButton() {
+		final Table itemTable = prepareSaveItem();
+		final Button saveItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_DELETE_ITEM_BUTTON);
+		
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) saveItemButton.getListeners(ClickEvent.class).stream().findAny();
+		Assert.assertTrue(listener.isPresent());
+		Assert.assertEquals(0, itemTable.getVisibleColumns().length);
+		listener.get().buttonClick(clickEvent);
+		
+		
+		Mockito.verify(commercialSubjectModel).delete(commercialSubjectItem);
+		
+		Assert.assertEquals(Arrays.asList(CommercialSubjectItemCols.Name, CommercialSubjectItemCols.Mandatory), Arrays.asList(itemTable.getVisibleColumns()));
+		
+		
+	}
 
 }
