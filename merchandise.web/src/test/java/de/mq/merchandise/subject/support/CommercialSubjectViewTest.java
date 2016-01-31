@@ -15,7 +15,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.converter.Converter;
-
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -23,6 +22,9 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.server.CompositeErrorMessage;
+import com.vaadin.server.ErrorMessage.ErrorLevel;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -43,6 +45,8 @@ import de.mq.util.event.Observer;
 
 public class CommercialSubjectViewTest {
 
+	private static final long CONDITION_ID = 19680528L;
+
 	private static final String COMMERCIAL_SUBJECT_NAME = "PetsStore";
 
 	private final CommercialSubjectModel commercialSubjectModel = Mockito.mock(CommercialSubjectModel.class);
@@ -57,6 +61,8 @@ public class CommercialSubjectViewTest {
 
 	private final RefreshableContainer lazyQueryContainer = Mockito.mock(RefreshableContainer.class);
 	private Subject subject = Mockito.mock(Subject.class);
+	
+	private Condition condition = Mockito.mock(Condition.class);
 
 	private final Item commercialSubjectSearchItem = Mockito.mock(Item.class);
 	private final ValidationUtil validationUtil = Mockito.mock(ValidationUtil.class);
@@ -154,7 +160,7 @@ public class CommercialSubjectViewTest {
 		// new Object[] {},
 		// Locale.GERMAN)).thenReturn(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX);
 		Mockito.when(messageSource.getMessage(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE, new Object[] {}, Locale.GERMAN)).thenReturn(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
-		Mockito.when(messageSource.getMessage(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR, new Object[] {}, Locale.GERMAN)).thenReturn(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR);
+		Mockito.when(messageSource.getMessage(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR, new Object[] {ConditionDataType.IntegralNumber.name()}, Locale.GERMAN)).thenReturn(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR);
 
 		Mockito.when(messageSource.getMessage(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX + CommercialSubjectItemCols.Name.name().toLowerCase(), new Object[] {}, Locale.GERMAN)).thenReturn(CommercialSubjectItemCols.Name.name());
 		Mockito.when(messageSource.getMessage(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX + CommercialSubjectItemCols.Mandatory.name().toLowerCase(), new Object[] {}, Locale.GERMAN)).thenReturn(CommercialSubjectItemCols.Mandatory.name());
@@ -472,6 +478,116 @@ public class CommercialSubjectViewTest {
 		Mockito.verify(commercialSubjectModel).delete(commercialSubjectItem);
 		
 		Assert.assertEquals(Arrays.asList(CommercialSubjectItemCols.Name, CommercialSubjectItemCols.Mandatory), Arrays.asList(itemTable.getVisibleColumns()));
+		
+		
+	}
+	
+	
+	
+	@Test
+	public final void saveValueButton() throws CommitException {
+		
+		Mockito.when(validationUtil.validate(commercialSubjectCaptor.capture(), fieldGroupCaptor.capture(), localeCaptor.capture())).thenReturn(true);
+		Mockito.when(commercialSubjectModel.getInputValue()).thenReturn(String.valueOf(CONDITION_ID));
+		Mockito.when(commercialSubjectModel.canConvertConditionValue(String.valueOf(CONDITION_ID),CONDITION_ID)).thenReturn(true);
+		final Button saveItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_SAVE);
+		
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) saveItemButton.getListeners(ClickEvent.class).stream().findAny();
+		
+		
+		final ComboBox conditionBox =  (ComboBox) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION);
+	
+		conditionBox.addItem(CONDITION_ID);
+
+		conditionBox.setValue(CONDITION_ID);
+	
+		
+		Assert.assertTrue(listener.isPresent());
+		
+		listener.get().buttonClick(clickEvent);
+		
+		Assert.assertEquals(commercialSubjectModel, commercialSubjectCaptor.getValue());
+		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
+		
+		Mockito.verify(validationUtil).reset(fieldGroupCaptor.getValue());
+		
+		Assert.assertEquals(conditionValueItem, fieldGroupCaptor.getValue().getItemDataSource());
+		
+		Mockito.verify(itemIntoCommercialSubjectModel, Mockito.times(1)).mapInto(conditionValueItem, commercialSubjectModel);
+	
+		Mockito.verify(commercialSubjectModel).addInputValue(CONDITION_ID);
+		
+	}
+	
+	
+	
+	@Test
+	public final void saveValueButtonValidationSucks() throws CommitException {
+		
+		Mockito.when(validationUtil.validate(commercialSubjectCaptor.capture(), fieldGroupCaptor.capture(), localeCaptor.capture())).thenReturn(false);
+	
+		final Button saveItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_SAVE);
+		
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) saveItemButton.getListeners(ClickEvent.class).stream().findAny();
+		
+		Assert.assertTrue(listener.isPresent());
+		
+		listener.get().buttonClick(clickEvent);
+		
+		Assert.assertEquals(commercialSubjectModel, commercialSubjectCaptor.getValue());
+		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
+		
+		Mockito.verify(validationUtil).reset(fieldGroupCaptor.getValue());
+		
+		Assert.assertEquals(conditionValueItem, fieldGroupCaptor.getValue().getItemDataSource());
+		
+		Mockito.verify(itemIntoCommercialSubjectModel, Mockito.times(1)).mapInto(conditionValueItem, commercialSubjectModel);
+	
+		Mockito.verify(commercialSubjectModel, Mockito.never()).addInputValue(CONDITION_ID);
+		
+	}
+	
+	
+	@Test
+	public final void saveValueButtonConversionSucks() throws CommitException {
+		Mockito.when(condition.conditionDataType()).thenReturn(ConditionDataType.IntegralNumber);
+		Mockito.when(validationUtil.validate(commercialSubjectCaptor.capture(), fieldGroupCaptor.capture(), localeCaptor.capture())).thenReturn(true);
+		Mockito.when(commercialSubjectModel.getInputValue()).thenReturn(String.valueOf(CONDITION_ID));
+		Mockito.when(commercialSubjectModel.canConvertConditionValue(String.valueOf(CONDITION_ID),CONDITION_ID)).thenReturn(false);
+		
+		Mockito.when(commercialSubjectModel.getCondition(CONDITION_ID)).thenReturn(condition);
+		
+		final Button saveItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_SAVE);
+		
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) saveItemButton.getListeners(ClickEvent.class).stream().findAny();
+		
+		
+		final ComboBox conditionBox =  (ComboBox) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION);
+	
+		conditionBox.addItem(CONDITION_ID);
+
+		conditionBox.setValue(CONDITION_ID);
+		final TextField valueInputField =  (TextField) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE);
+		Assert.assertNull(valueInputField.getErrorMessage());
+		
+		Assert.assertTrue(listener.isPresent());
+		
+		listener.get().buttonClick(clickEvent);
+		
+		Assert.assertEquals(commercialSubjectModel, commercialSubjectCaptor.getValue());
+		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
+		
+		Mockito.verify(validationUtil).reset(fieldGroupCaptor.getValue());
+		
+		Assert.assertEquals(conditionValueItem, fieldGroupCaptor.getValue().getItemDataSource());
+		
+		Mockito.verify(itemIntoCommercialSubjectModel, Mockito.times(1)).mapInto(conditionValueItem, commercialSubjectModel);
+	
+		Assert.assertEquals(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR, ((CompositeErrorMessage)valueInputField.getErrorMessage()).iterator().next().toString());
+		Assert.assertEquals(ErrorLevel.ERROR, ((CompositeErrorMessage)valueInputField.getErrorMessage()).iterator().next().getErrorLevel());
 		
 		
 	}

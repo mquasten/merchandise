@@ -443,6 +443,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		saveValueButton.addClickListener(e -> {
 
 			validationUtil.reset(valueFields);
+		
 			commit(valueFields);
 
 			itemIntoCommercialSubjectModel.mapInto(valueFields.getItemDataSource(), commercialSubjectModel);
@@ -580,12 +581,9 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 	private void addValue(final ComboBox conditionBox, final TextField valueField) {
 		if (commercialSubjectModel.canConvertConditionValue(commercialSubjectModel.getInputValue(), (Long) conditionBox.getValue())) {
-
 			commercialSubjectModel.addInputValue((Long) conditionBox.getValue());
-
 		} else {
 			valueField.setComponentError(new UserError(message(I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR, commercialSubjectModel.getCondition((Long) conditionBox.getValue()).conditionDataType().name())));
-
 		}
 	}
 
