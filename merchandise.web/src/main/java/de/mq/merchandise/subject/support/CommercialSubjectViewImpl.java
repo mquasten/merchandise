@@ -431,10 +431,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 
 		valueTable.addValueChangeListener(e -> {
 			final String value = (e.getProperty().getValue() != null) ? (String) valueTable.getItem(e.getProperty().getValue()).getItemProperty(ConditionValueCols.InputValue).getValue() : null;
-			;
-
 			commercialSubjectModel.setCurrentInputValue(value);
-
 		});
 
 		saveValueButton.setIcon(newIcon);
@@ -513,9 +510,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 		}, CommercialSubjectModel.EventType.CommericalSubjectChanged);
 
 		itemTable.addValueChangeListener(e -> {
-
 			commercialSubjectModel.setCommercialSubjectItemId(e.getProperty().getValue() != null ? (Long) itemTable.getItem(e.getProperty().getValue()).getItemProperty(CommercialSubjectItemCols.Id).getValue() : null);
-
 			valueTableLayout.setVisible(e.getProperty().getValue() != null);
 
 		});

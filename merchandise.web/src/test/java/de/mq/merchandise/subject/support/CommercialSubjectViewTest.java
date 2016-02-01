@@ -21,8 +21,11 @@ import org.springframework.util.ReflectionUtils;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.ErrorMessage.ErrorLevel;
 import com.vaadin.ui.Button;
@@ -44,6 +47,8 @@ import de.mq.merchandise.util.support.ViewNav;
 import de.mq.util.event.Observer;
 
 public class CommercialSubjectViewTest {
+
+	private static final String CONDITION_VALUE = "HotScore";
 
 	private static final long CONDITION_ID = 19680528L;
 
@@ -112,7 +117,8 @@ public class CommercialSubjectViewTest {
 	private final ArgumentCaptor<UserModel.EventType> localChangedTypeCapture = ArgumentCaptor.forClass(UserModel.EventType.class);
 
 	private final ClickEvent clickEvent = Mockito.mock(ClickEvent.class);
-	final Map<String, Component> components = new HashMap<>();
+	private final ValueChangeEvent valueChangeEvent = Mockito.mock(ValueChangeEvent.class);
+	private final Map<String, Component> components = new HashMap<>();
 	private final CommercialSubjectViewImpl view = new CommercialSubjectViewImpl(commercialSubjectModel, userModel, messageSource, viewNav, mainMenuBarView, lazyQueryContainer, commercialSubjectSearchItem, itemToCommercialSubjectConverter, validationUtil, commercialSubjectToItemConverter, entriesToConatainerConverter, commercialSubjectItemConverter, itemToCommercialSubjectItemConverter, commercialSubjectItemToContainerConverter,
 
 	conditionToContainerConverter, conditionValueItem,
@@ -591,5 +597,96 @@ public class CommercialSubjectViewTest {
 		
 		
 	}
+	
+	
+	@Test
+	public final void valueTableValueChangeListener() {
+		
+		final Table valueTable =  (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
+		prepareValueTable(valueTable, ConditionValueCols.InputValue, CONDITION_VALUE);
+		
+		@SuppressWarnings("unchecked")
+		final Optional<ValueChangeListener> valueChangeListener =  (Optional<ValueChangeListener>) valueTable.getListeners(ValueChangeEvent.class).stream().findAny();
+		Assert.assertTrue(valueChangeListener.isPresent());
+	
+		
+		valueChangeListener.get().valueChange(valueChangeEvent);
+		
+		Mockito.verify(commercialSubjectModel).setCurrentInputValue(CONDITION_VALUE);
+		
+		
+	
+	}
+
+	private void  prepareValueTable(final Table valueTable, final Object col, final Object value) {
+		valueTable.addContainerProperty(col, Object.class, "");
+			
+		final Object index = valueTable.addItem();
+	
+		final Item item = valueTable.getItem(index);
+		@SuppressWarnings("unchecked")
+		final Property<Object> property = item.getItemProperty(col);
+		property.setValue(value);
+		Mockito.when(valueChangeEvent.getProperty()).thenReturn(new ObjectProperty<>(index));
+		
+	}
+	
+	@Test
+	public final void valueTableValueChangeListenerNullValue() {
+		
+		final Table valueTable =  (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
+		prepareValueTable(valueTable, ConditionValueCols.InputValue, CONDITION_VALUE);
+		@SuppressWarnings("rawtypes")
+		final ObjectProperty mock = Mockito.mock(ObjectProperty.class);
+		Mockito.when(valueChangeEvent.getProperty()).thenReturn(mock);
+		@SuppressWarnings("unchecked")
+		final Optional<ValueChangeListener> valueChangeListener =  (Optional<ValueChangeListener>) valueTable.getListeners(ValueChangeEvent.class).stream().findAny();
+		Assert.assertTrue(valueChangeListener.isPresent());
+	
+		
+		valueChangeListener.get().valueChange(valueChangeEvent);
+		
+		Mockito.verify(commercialSubjectModel).setCurrentInputValue(null);
+		
+		
+		
+	}
+	
+	@Test
+	public final void itemTableValueChangeListener() {
+		final Table itemTable = (Table) components.get(CommercialSubjectViewImpl.I18N_ITEM_TABLE_CAPTION);
+		final Table valueTable =  (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
+		prepareValueTable(itemTable,CommercialSubjectItemCols.Id,  CONDITION_ID);
+		@SuppressWarnings("unchecked")
+		final Optional<ValueChangeListener> valueChangeListener =  (Optional<ValueChangeListener>) itemTable.getListeners(ValueChangeEvent.class).stream().findAny();
+		Assert.assertTrue(valueChangeListener.isPresent());
+		Assert.assertFalse(valueTable.getParent().isVisible());
+		valueChangeListener.get().valueChange(valueChangeEvent);
+		
+		Mockito.verify(commercialSubjectModel).setCommercialSubjectItemId(CONDITION_ID);
+		Assert.assertTrue(valueTable.getParent().isVisible());
+		
+	}
+	
+	@Test
+	public final void itemTableValueChangeListenerNull() {
+		final Table itemTable = (Table) components.get(CommercialSubjectViewImpl.I18N_ITEM_TABLE_CAPTION);
+		final Table valueTable =  (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
+		prepareValueTable(itemTable,CommercialSubjectItemCols.Id,  CONDITION_ID);
+		
+		@SuppressWarnings("rawtypes")
+		final ObjectProperty mock = Mockito.mock(ObjectProperty.class);
+		Mockito.when(valueChangeEvent.getProperty()).thenReturn(mock);
+		@SuppressWarnings("unchecked")
+		final Optional<ValueChangeListener> valueChangeListener =  (Optional<ValueChangeListener>) itemTable.getListeners(ValueChangeEvent.class).stream().findAny();
+		Assert.assertTrue(valueChangeListener.isPresent());
+		Assert.assertFalse(valueTable.getParent().isVisible());
+		valueChangeListener.get().valueChange(valueChangeEvent);
+		
+		Mockito.verify(commercialSubjectModel).setCommercialSubjectItemId(null);
+		Assert.assertFalse(valueTable.getParent().isVisible());
+		
+	}
+
 
 }
