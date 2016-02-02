@@ -460,6 +460,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			valueFields.setItemDataSource(conditionValueItem);
 
 			if (commercialSubjectModel.hasCondition()) {
+			
 				valueTable.setCaption(message(I18N_COMMERCIAL_SUBJECT_VALUE_TABLE, commercialSubjectModel.getCondition((Long) conditionBox.getValue()).conditionDataType().name()));
 
 			}

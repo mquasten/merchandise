@@ -1,8 +1,11 @@
 package de.mq.merchandise.subject.support;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -66,7 +69,7 @@ public class CommercialSubjectViewTest {
 
 	private final RefreshableContainer lazyQueryContainer = Mockito.mock(RefreshableContainer.class);
 	private Subject subject = Mockito.mock(Subject.class);
-	
+
 	private Condition condition = Mockito.mock(Condition.class);
 
 	private final Item commercialSubjectSearchItem = Mockito.mock(Item.class);
@@ -100,7 +103,7 @@ public class CommercialSubjectViewTest {
 
 	private final CommercialSubjectItem commercialSubjectItem = Mockito.mock(CommercialSubjectItem.class);
 
-	private final Map<EventType, Observer<EventType>> observers = new HashMap<>();
+	private final Map<EventType, List<Observer<EventType>>> observers = new HashMap<>();
 	final Item itemToCommercialSubjectDatasource = Mockito.mock(Item.class);
 
 	final Item itemFieldsDatasource = Mockito.mock(Item.class);
@@ -166,7 +169,7 @@ public class CommercialSubjectViewTest {
 		// new Object[] {},
 		// Locale.GERMAN)).thenReturn(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX);
 		Mockito.when(messageSource.getMessage(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE, new Object[] {}, Locale.GERMAN)).thenReturn(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
-		Mockito.when(messageSource.getMessage(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR, new Object[] {ConditionDataType.IntegralNumber.name()}, Locale.GERMAN)).thenReturn(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR);
+		Mockito.when(messageSource.getMessage(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR, new Object[] { ConditionDataType.IntegralNumber.name() }, Locale.GERMAN)).thenReturn(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR);
 
 		Mockito.when(messageSource.getMessage(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX + CommercialSubjectItemCols.Name.name().toLowerCase(), new Object[] {}, Locale.GERMAN)).thenReturn(CommercialSubjectItemCols.Name.name());
 		Mockito.when(messageSource.getMessage(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_ITEM_PREFIX + CommercialSubjectItemCols.Mandatory.name().toLowerCase(), new Object[] {}, Locale.GERMAN)).thenReturn(CommercialSubjectItemCols.Mandatory.name());
@@ -180,7 +183,12 @@ public class CommercialSubjectViewTest {
 		Mockito.when(messageSource.getMessage(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE, new Object[] { ConditionDataType.String.name() }, Locale.GERMAN)).thenReturn(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
 
 		Mockito.doAnswer(i -> {
-			observers.put((EventType) i.getArguments()[1], (Observer<EventType>) i.getArguments()[0]);
+
+			if (!observers.containsKey((EventType) i.getArguments()[1])) {
+				observers.put((EventType) i.getArguments()[1], new ArrayList<>());
+			}
+			observers.get((EventType) i.getArguments()[1]).add((Observer<EventType>) i.getArguments()[0]);
+
 			return null;
 		}).when(commercialSubjectModel).register(Mockito.any(Observer.class), Mockito.any(CommercialSubjectModel.EventType.class));
 
@@ -467,226 +475,277 @@ public class CommercialSubjectViewTest {
 		}
 
 	}
-	
-	
+
 	@Test
 	public final void deleteItemButton() {
 		final Table itemTable = prepareSaveItem();
 		final Button saveItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_DELETE_ITEM_BUTTON);
-		
+
 		@SuppressWarnings("unchecked")
 		final Optional<ClickListener> listener = (Optional<ClickListener>) saveItemButton.getListeners(ClickEvent.class).stream().findAny();
 		Assert.assertTrue(listener.isPresent());
 		Assert.assertEquals(0, itemTable.getVisibleColumns().length);
 		listener.get().buttonClick(clickEvent);
-		
-		
+
 		Mockito.verify(commercialSubjectModel).delete(commercialSubjectItem);
-		
+
 		Assert.assertEquals(Arrays.asList(CommercialSubjectItemCols.Name, CommercialSubjectItemCols.Mandatory), Arrays.asList(itemTable.getVisibleColumns()));
-		
-		
+
 	}
-	
-	
-	
+
 	@Test
 	public final void saveValueButton() throws CommitException {
-		
+
 		Mockito.when(validationUtil.validate(commercialSubjectCaptor.capture(), fieldGroupCaptor.capture(), localeCaptor.capture())).thenReturn(true);
 		Mockito.when(commercialSubjectModel.getInputValue()).thenReturn(String.valueOf(CONDITION_ID));
-		Mockito.when(commercialSubjectModel.canConvertConditionValue(String.valueOf(CONDITION_ID),CONDITION_ID)).thenReturn(true);
+		Mockito.when(commercialSubjectModel.canConvertConditionValue(String.valueOf(CONDITION_ID), CONDITION_ID)).thenReturn(true);
 		final Button saveItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_SAVE);
-		
+
 		@SuppressWarnings("unchecked")
 		final Optional<ClickListener> listener = (Optional<ClickListener>) saveItemButton.getListeners(ClickEvent.class).stream().findAny();
-		
-		
-		final ComboBox conditionBox =  (ComboBox) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION);
-	
+
+		final ComboBox conditionBox = (ComboBox) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION);
+
 		conditionBox.addItem(CONDITION_ID);
 
 		conditionBox.setValue(CONDITION_ID);
-	
-		
+
 		Assert.assertTrue(listener.isPresent());
-		
+
 		listener.get().buttonClick(clickEvent);
-		
+
 		Assert.assertEquals(commercialSubjectModel, commercialSubjectCaptor.getValue());
 		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
-		
+
 		Mockito.verify(validationUtil).reset(fieldGroupCaptor.getValue());
-		
+
 		Assert.assertEquals(conditionValueItem, fieldGroupCaptor.getValue().getItemDataSource());
-		
+
 		Mockito.verify(itemIntoCommercialSubjectModel, Mockito.times(1)).mapInto(conditionValueItem, commercialSubjectModel);
-	
+
 		Mockito.verify(commercialSubjectModel).addInputValue(CONDITION_ID);
-		
+
 	}
-	
-	
-	
+
 	@Test
 	public final void saveValueButtonValidationSucks() throws CommitException {
-		
+
 		Mockito.when(validationUtil.validate(commercialSubjectCaptor.capture(), fieldGroupCaptor.capture(), localeCaptor.capture())).thenReturn(false);
-	
+
 		final Button saveItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_SAVE);
-		
+
 		@SuppressWarnings("unchecked")
 		final Optional<ClickListener> listener = (Optional<ClickListener>) saveItemButton.getListeners(ClickEvent.class).stream().findAny();
-		
+
 		Assert.assertTrue(listener.isPresent());
-		
+
 		listener.get().buttonClick(clickEvent);
-		
+
 		Assert.assertEquals(commercialSubjectModel, commercialSubjectCaptor.getValue());
 		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
-		
+
 		Mockito.verify(validationUtil).reset(fieldGroupCaptor.getValue());
-		
+
 		Assert.assertEquals(conditionValueItem, fieldGroupCaptor.getValue().getItemDataSource());
-		
+
 		Mockito.verify(itemIntoCommercialSubjectModel, Mockito.times(1)).mapInto(conditionValueItem, commercialSubjectModel);
-	
+
 		Mockito.verify(commercialSubjectModel, Mockito.never()).addInputValue(CONDITION_ID);
-		
+
 	}
-	
-	
+
 	@Test
 	public final void saveValueButtonConversionSucks() throws CommitException {
 		Mockito.when(condition.conditionDataType()).thenReturn(ConditionDataType.IntegralNumber);
 		Mockito.when(validationUtil.validate(commercialSubjectCaptor.capture(), fieldGroupCaptor.capture(), localeCaptor.capture())).thenReturn(true);
 		Mockito.when(commercialSubjectModel.getInputValue()).thenReturn(String.valueOf(CONDITION_ID));
-		Mockito.when(commercialSubjectModel.canConvertConditionValue(String.valueOf(CONDITION_ID),CONDITION_ID)).thenReturn(false);
-		
+		Mockito.when(commercialSubjectModel.canConvertConditionValue(String.valueOf(CONDITION_ID), CONDITION_ID)).thenReturn(false);
+
 		Mockito.when(commercialSubjectModel.getCondition(CONDITION_ID)).thenReturn(condition);
-		
+
 		final Button saveItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_SAVE);
-		
+
 		@SuppressWarnings("unchecked")
 		final Optional<ClickListener> listener = (Optional<ClickListener>) saveItemButton.getListeners(ClickEvent.class).stream().findAny();
-		
-		
-		final ComboBox conditionBox =  (ComboBox) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION);
-	
+
+		final ComboBox conditionBox = (ComboBox) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION);
+
 		conditionBox.addItem(CONDITION_ID);
 
 		conditionBox.setValue(CONDITION_ID);
-		final TextField valueInputField =  (TextField) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE);
+		final TextField valueInputField = (TextField) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE);
 		Assert.assertNull(valueInputField.getErrorMessage());
-		
+
 		Assert.assertTrue(listener.isPresent());
-		
+
 		listener.get().buttonClick(clickEvent);
-		
+
 		Assert.assertEquals(commercialSubjectModel, commercialSubjectCaptor.getValue());
 		Assert.assertEquals(userModel.getLocale(), localeCaptor.getValue());
-		
+
 		Mockito.verify(validationUtil).reset(fieldGroupCaptor.getValue());
-		
+
 		Assert.assertEquals(conditionValueItem, fieldGroupCaptor.getValue().getItemDataSource());
-		
+
 		Mockito.verify(itemIntoCommercialSubjectModel, Mockito.times(1)).mapInto(conditionValueItem, commercialSubjectModel);
-	
-		Assert.assertEquals(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR, ((CompositeErrorMessage)valueInputField.getErrorMessage()).iterator().next().toString());
-		Assert.assertEquals(ErrorLevel.ERROR, ((CompositeErrorMessage)valueInputField.getErrorMessage()).iterator().next().getErrorLevel());
-		
-		
-	}
-	
-	
-	@Test
-	public final void valueTableValueChangeListener() {
-		
-		final Table valueTable =  (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
-		prepareValueTable(valueTable, ConditionValueCols.InputValue, CONDITION_VALUE);
-		
-		@SuppressWarnings("unchecked")
-		final Optional<ValueChangeListener> valueChangeListener =  (Optional<ValueChangeListener>) valueTable.getListeners(ValueChangeEvent.class).stream().findAny();
-		Assert.assertTrue(valueChangeListener.isPresent());
-	
-		
-		valueChangeListener.get().valueChange(valueChangeEvent);
-		
-		Mockito.verify(commercialSubjectModel).setCurrentInputValue(CONDITION_VALUE);
-		
-		
-	
+
+		Assert.assertEquals(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONVERSION_ERROR, ((CompositeErrorMessage) valueInputField.getErrorMessage()).iterator().next().toString());
+		Assert.assertEquals(ErrorLevel.ERROR, ((CompositeErrorMessage) valueInputField.getErrorMessage()).iterator().next().getErrorLevel());
+
 	}
 
-	private void  prepareValueTable(final Table valueTable, final Object col, final Object value) {
+	@Test
+	public final void valueTableValueChangeListener() {
+
+		final Table valueTable = (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
+		prepareValueTable(valueTable, ConditionValueCols.InputValue, CONDITION_VALUE);
+
+		@SuppressWarnings("unchecked")
+		final Optional<ValueChangeListener> valueChangeListener = (Optional<ValueChangeListener>) valueTable.getListeners(ValueChangeEvent.class).stream().findAny();
+		Assert.assertTrue(valueChangeListener.isPresent());
+
+		valueChangeListener.get().valueChange(valueChangeEvent);
+
+		Mockito.verify(commercialSubjectModel).setCurrentInputValue(CONDITION_VALUE);
+
+	}
+
+	private void prepareValueTable(final Table valueTable, final Object col, final Object value) {
 		valueTable.addContainerProperty(col, Object.class, "");
-			
+
 		final Object index = valueTable.addItem();
-	
+
 		final Item item = valueTable.getItem(index);
 		@SuppressWarnings("unchecked")
 		final Property<Object> property = item.getItemProperty(col);
 		property.setValue(value);
 		Mockito.when(valueChangeEvent.getProperty()).thenReturn(new ObjectProperty<>(index));
-		
+
 	}
-	
+
 	@Test
 	public final void valueTableValueChangeListenerNullValue() {
-		
-		final Table valueTable =  (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
+
+		final Table valueTable = (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
 		prepareValueTable(valueTable, ConditionValueCols.InputValue, CONDITION_VALUE);
 		@SuppressWarnings("rawtypes")
 		final ObjectProperty mock = Mockito.mock(ObjectProperty.class);
 		Mockito.when(valueChangeEvent.getProperty()).thenReturn(mock);
 		@SuppressWarnings("unchecked")
-		final Optional<ValueChangeListener> valueChangeListener =  (Optional<ValueChangeListener>) valueTable.getListeners(ValueChangeEvent.class).stream().findAny();
+		final Optional<ValueChangeListener> valueChangeListener = (Optional<ValueChangeListener>) valueTable.getListeners(ValueChangeEvent.class).stream().findAny();
 		Assert.assertTrue(valueChangeListener.isPresent());
-	
-		
+
 		valueChangeListener.get().valueChange(valueChangeEvent);
-		
+
 		Mockito.verify(commercialSubjectModel).setCurrentInputValue(null);
-		
-		
-		
+
 	}
-	
+
 	@Test
 	public final void itemTableValueChangeListener() {
 		final Table itemTable = (Table) components.get(CommercialSubjectViewImpl.I18N_ITEM_TABLE_CAPTION);
-		final Table valueTable =  (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
-		prepareValueTable(itemTable,CommercialSubjectItemCols.Id,  CONDITION_ID);
+		final Table valueTable = (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
+		prepareValueTable(itemTable, CommercialSubjectItemCols.Id, CONDITION_ID);
 		@SuppressWarnings("unchecked")
-		final Optional<ValueChangeListener> valueChangeListener =  (Optional<ValueChangeListener>) itemTable.getListeners(ValueChangeEvent.class).stream().findAny();
+		final Optional<ValueChangeListener> valueChangeListener = (Optional<ValueChangeListener>) itemTable.getListeners(ValueChangeEvent.class).stream().findAny();
 		Assert.assertTrue(valueChangeListener.isPresent());
 		Assert.assertFalse(valueTable.getParent().isVisible());
 		valueChangeListener.get().valueChange(valueChangeEvent);
-		
+
 		Mockito.verify(commercialSubjectModel).setCommercialSubjectItemId(CONDITION_ID);
 		Assert.assertTrue(valueTable.getParent().isVisible());
-		
+
 	}
-	
+
 	@Test
 	public final void itemTableValueChangeListenerNull() {
 		final Table itemTable = (Table) components.get(CommercialSubjectViewImpl.I18N_ITEM_TABLE_CAPTION);
-		final Table valueTable =  (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
-		prepareValueTable(itemTable,CommercialSubjectItemCols.Id,  CONDITION_ID);
-		
+		final Table valueTable = (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
+		prepareValueTable(itemTable, CommercialSubjectItemCols.Id, CONDITION_ID);
+
 		@SuppressWarnings("rawtypes")
 		final ObjectProperty mock = Mockito.mock(ObjectProperty.class);
 		Mockito.when(valueChangeEvent.getProperty()).thenReturn(mock);
 		@SuppressWarnings("unchecked")
-		final Optional<ValueChangeListener> valueChangeListener =  (Optional<ValueChangeListener>) itemTable.getListeners(ValueChangeEvent.class).stream().findAny();
+		final Optional<ValueChangeListener> valueChangeListener = (Optional<ValueChangeListener>) itemTable.getListeners(ValueChangeEvent.class).stream().findAny();
 		Assert.assertTrue(valueChangeListener.isPresent());
 		Assert.assertFalse(valueTable.getParent().isVisible());
 		valueChangeListener.get().valueChange(valueChangeEvent);
-		
+
 		Mockito.verify(commercialSubjectModel).setCommercialSubjectItemId(null);
 		Assert.assertFalse(valueTable.getParent().isVisible());
-		
+
 	}
 
+	@Test
+	public final void conditionChanged1() {
+
+		final ComboBox conditionBox = (ComboBox) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION);
+
+		conditionBox.addItem(CONDITION_ID);
+
+		conditionBox.setValue(CONDITION_ID);
+
+		Mockito.when(commercialSubjectModel.getCondition(CONDITION_ID)).thenReturn(condition);
+		Mockito.when(condition.conditionDataType()).thenReturn(ConditionDataType.String);
+		final Button saveValueButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_SAVE);
+
+		final Table valueTable = (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
+
+		valueTable.setCaption(null);
+		Assert.assertNull(valueTable.getCaption());
+
+		final TextField valueField = (TextField) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE);
+		Assert.assertFalse(saveValueButton.isEnabled());
+		Assert.assertFalse(valueTable.isVisible());
+		Assert.assertFalse(valueField.isVisible());
+		Mockito.when(commercialSubjectModel.hasCondition()).thenReturn(true);
+		Assert.assertEquals(2, observers.get(EventType.ConditionChanged).stream().count());
+
+		observers.get(EventType.ConditionChanged).get(0).process(EventType.ConditionChanged);
+		ArgumentCaptor<ConditionValueCols[]> colsCaptor = ArgumentCaptor.forClass(ConditionValueCols[].class);
+		Mockito.verify(validationUtil).cleanValues(fieldGroupCaptor.capture(), colsCaptor.capture());
+
+		Assert.assertArrayEquals(ConditionValueCols.values(), colsCaptor.getValue());
+		Assert.assertEquals(conditionValueItem, fieldGroupCaptor.getValue().getItemDataSource());
+
+		Assert.assertTrue(saveValueButton.isEnabled());
+		Assert.assertTrue(valueTable.isVisible());
+		Assert.assertTrue(valueField.isVisible());
+		Assert.assertEquals(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE, valueTable.getCaption());
+
+		Mockito.when(commercialSubjectModel.hasCondition()).thenReturn(false);
+		valueTable.setCaption(null);
+		observers.get(EventType.ConditionChanged).get(0).process(EventType.ConditionChanged);
+
+		Assert.assertFalse(saveValueButton.isEnabled());
+		Assert.assertFalse(valueTable.isVisible());
+		Assert.assertFalse(valueField.isVisible());
+		Assert.assertNull(valueTable.getCaption());
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Test
+	public final void conditionChanged2() {
+		final ComboBox conditionBox = (ComboBox) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION);
+		final Table valueTable = (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_VALUE_TABLE);
+
+		Assert.assertTrue(valueTable.getContainerDataSource().getContainerPropertyIds().isEmpty());
+		conditionBox.addItem(CONDITION_ID);
+
+		conditionBox.setValue(CONDITION_ID);
+
+		Assert.assertEquals(2, observers.get(EventType.ConditionChanged).stream().count());
+
+		final List<Object> values = Arrays.asList(CONDITION_VALUE);
+		Mockito.when(commercialSubjectModel.inputValues(CONDITION_ID)).thenReturn(values);
+		final Container container = Mockito.mock(Container.class);
+		Mockito.when(container.getContainerPropertyIds()).thenReturn((Collection) Arrays.asList(ConditionCols.values()));
+		Mockito.when(inputValuesConverter.convert(values)).thenReturn(container);
+
+		observers.get(EventType.ConditionChanged).get(1).process(EventType.ConditionChanged);
+
+		Assert.assertArrayEquals(ConditionCols.values(), valueTable.getContainerDataSource().getContainerPropertyIds().toArray());
+	}
 
 }
