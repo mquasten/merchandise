@@ -497,6 +497,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			editorFields.setItemDataSource(commercialSubjectToItemConverter.convert(commercialSubjectModel.getCommercialSubject().get()));
 			itemTableLayout.setVisible(false);
 			refresh(itemTable);
+			
 			if (commercialSubjectModel.getCommercialSubject().get().id().isPresent()) {
 				itemTableLayout.setVisible(true);
 				saveButton.setIcon(editIcon);

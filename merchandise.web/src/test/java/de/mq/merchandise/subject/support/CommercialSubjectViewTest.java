@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -746,6 +745,57 @@ public class CommercialSubjectViewTest {
 		observers.get(EventType.ConditionChanged).get(1).process(EventType.ConditionChanged);
 
 		Assert.assertArrayEquals(ConditionCols.values(), valueTable.getContainerDataSource().getContainerPropertyIds().toArray());
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Test
+	public final void commericalSubjectChanged() {
+		final Button newButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_NEW);
+		final Button deleteButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_DELETE);
+		final Button saveButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_SAVE);
+		Assert.assertFalse(newButton.isEnabled());
+		Assert.assertFalse(deleteButton.isEnabled());
+		final Table table = (Table) components.get(CommercialSubjectViewImpl.I18N_ITEM_TABLE_CAPTION);
+		Assert.assertFalse(table.getParent().isVisible());
+		Assert.assertTrue(table.getVisibleColumns().length == 0);
+		final Collection<CommercialSubjectItem> items = new ArrayList<>();
+		items.add(commercialSubjectItem);
+		Mockito.when(commercialSubject.commercialSubjectItems()).thenReturn(items);
+		final Container container = Mockito.mock(Container.class);
+		Assert.assertTrue(table.getContainerDataSource().getContainerPropertyIds().isEmpty());
+
+		Mockito.when(container.getContainerPropertyIds()).thenReturn((Collection) Arrays.asList(CommercialSubjectItemCols.values()));
+
+		Mockito.when(commercialSubjectItemToContainerConverter.convert(items)).thenReturn(container);
+
+		Assert.assertEquals(1, observers.get(EventType.CommericalSubjectChanged).stream().count());
+		Mockito.when(commercialSubject.id()).thenReturn(Optional.of(CONDITION_ID));
+
+		observers.get(EventType.CommericalSubjectChanged).stream().findFirst().get().process(EventType.CommericalSubjectChanged);
+
+		Mockito.verify(commercialSubjectItemToContainerConverter).convert(items);
+
+		Mockito.verify(validationUtil).reset(fieldGroupCaptor.capture());
+
+		Assert.assertEquals(itemToCommercialSubjectDatasource, fieldGroupCaptor.getValue().getItemDataSource());
+
+		Assert.assertTrue(table.getVisibleColumns().length > 0);
+		Assert.assertEquals(Arrays.asList(CommercialSubjectItemCols.values()), table.getContainerDataSource().getContainerPropertyIds());
+
+		Assert.assertTrue(newButton.isEnabled());
+		Assert.assertTrue(deleteButton.isEnabled());
+		Assert.assertTrue(table.getParent().isVisible());
+		Assert.assertEquals(view.editIcon, saveButton.getIcon());
+
+		Mockito.when(commercialSubject.id()).thenReturn(Optional.empty());
+
+		observers.get(EventType.CommericalSubjectChanged).stream().findFirst().get().process(EventType.CommericalSubjectChanged);
+
+		Assert.assertFalse(newButton.isEnabled());
+		Assert.assertFalse(deleteButton.isEnabled());
+		Assert.assertFalse(table.getParent().isVisible());
+		Assert.assertEquals(view.newIcon, saveButton.getIcon());
+
 	}
 
 }
