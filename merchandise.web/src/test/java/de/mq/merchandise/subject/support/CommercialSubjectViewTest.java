@@ -1,5 +1,6 @@
 package de.mq.merchandise.subject.support;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -798,4 +799,80 @@ public class CommercialSubjectViewTest {
 
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Test
+	public final void commericalSubjectItemChanged() {
+		final Button newItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_NEW_ITEM_BUTTON);
+		final Button deleteItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_DELETE_ITEM_BUTTON);
+		final Button saveItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_SAVE_ITEM_BUTTON);
+
+		Assert.assertEquals(view.newIcon, saveItemButton.getIcon());
+
+		Assert.assertFalse(newItemButton.isEnabled());
+		Assert.assertFalse(deleteItemButton.isEnabled());
+		final ComboBox conditionBox = (ComboBox) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION);
+
+		Assert.assertTrue(conditionBox.getContainerDataSource().getContainerPropertyIds().isEmpty());
+
+		Mockito.when(commercialSubjectModel.getCommercialSubjectItem()).thenReturn(Optional.of(commercialSubjectItem));
+		Mockito.when(commercialSubjectItem.id()).thenReturn(Optional.of(CONDITION_ID));
+		Assert.assertEquals(1, observers.get(EventType.CommericalSubjectItemChanged).stream().count());
+		final Item item = Mockito.mock(Item.class);
+
+		final Property<Object> property = Mockito.mock(Property.class);
+		Mockito.when(item.getItemProperty(CommercialSubjectItemCols.Name)).thenReturn(property);
+		Mockito.when(item.getItemProperty(CommercialSubjectItemCols.Mandatory)).thenReturn(property);
+		Mockito.when(item.getItemProperty(CommercialSubjectItemCols.Subject)).thenReturn(property);
+
+		Mockito.when(commercialSubjectItemConverter.convert(commercialSubjectItem)).thenReturn(item);
+		final Collection<Condition> conditions = new ArrayList<>();
+		conditions.add(condition);
+		Mockito.when(commercialSubjectModel.getConditions()).thenReturn(conditions);
+		final Container container = Mockito.mock(Container.class);
+		Mockito.when(container.getContainerPropertyIds()).thenReturn((Collection) Arrays.asList(ConditionCols.values()));
+		Mockito.when(conditionToContainerConverter.convert(conditions)).thenReturn(container);
+
+		observers.get(EventType.CommericalSubjectItemChanged).stream().findFirst().get().process(EventType.CommericalSubjectItemChanged);
+
+		Assert.assertEquals(Arrays.asList(ConditionCols.values()), conditionBox.getContainerDataSource().getContainerPropertyIds());
+		Mockito.verify(validationUtil).reset(fieldGroupCaptor.capture());
+
+		Assert.assertEquals(item, fieldGroupCaptor.getValue().getItemDataSource());
+
+		Assert.assertTrue(newItemButton.isEnabled());
+		Assert.assertTrue(deleteItemButton.isEnabled());
+
+		Assert.assertEquals(view.editIcon, saveItemButton.getIcon());
+
+		Mockito.when(commercialSubjectItem.id()).thenReturn(Optional.empty());
+
+		observers.get(EventType.CommericalSubjectItemChanged).stream().findFirst().get().process(EventType.CommericalSubjectItemChanged);
+
+		Assert.assertFalse(newItemButton.isEnabled());
+		Assert.assertFalse(deleteItemButton.isEnabled());
+
+		Assert.assertEquals(view.newIcon, saveItemButton.getIcon());
+
+		Assert.assertTrue(conditionBox.getContainerDataSource().getContainerPropertyIds().isEmpty());
+
+	}
+	
+	@Test
+	public final void newItemButton() {
+		final Button newItemButton = (Button) components.get(CommercialSubjectViewImpl.I18N_NEW_ITEM_BUTTON);
+		
+		final Table itemTable = (Table) components.get(CommercialSubjectViewImpl.I18N_ITEM_TABLE_CAPTION);
+		itemTable.addItem(CONDITION_ID);
+		itemTable.setValue(CONDITION_ID);
+		
+		Assert.assertEquals(CONDITION_ID, itemTable.getValue());
+		
+		
+		Assert.assertEquals(1, newItemButton.getListeners(ClickEvent.class).stream().count());
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) newItemButton.getListeners(ClickEvent.class).stream().findAny();
+		listener.get().buttonClick(clickEvent);
+		Assert.assertNull(itemTable.getValue());
+		
+	}
 }

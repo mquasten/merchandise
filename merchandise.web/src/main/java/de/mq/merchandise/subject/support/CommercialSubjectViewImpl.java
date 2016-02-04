@@ -528,6 +528,7 @@ public class CommercialSubjectViewImpl extends CustomComponent implements View {
 			itemFields.setItemDataSource(commercialSubjectItemConverter.convert(commercialSubjectModel.getCommercialSubjectItem().get()));
 
 			conditionBox.setContainerDataSource(null);
+			
 			if (commercialSubjectModel.getCommercialSubjectItem().get().id().isPresent()) {
 				saveItemButton.setIcon(editIcon);
 				newItemButton.setEnabled(true);
