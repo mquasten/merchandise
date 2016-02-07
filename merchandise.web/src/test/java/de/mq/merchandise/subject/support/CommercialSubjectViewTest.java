@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,7 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.TransactionalPropertyWrapper;
 import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.ErrorMessage.ErrorLevel;
 import com.vaadin.ui.Button;
@@ -36,6 +38,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 
@@ -873,6 +876,29 @@ public class CommercialSubjectViewTest {
 		final Optional<ClickListener> listener = (Optional<ClickListener>) newItemButton.getListeners(ClickEvent.class).stream().findAny();
 		listener.get().buttonClick(clickEvent);
 		Assert.assertNull(itemTable.getValue());
+		
+	}
+	
+	@Test
+	public final void searchButton() {
+		final Button searchButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_SEARCH);
+		
+		final TextField searchField = (TextField) components.get(CommercialSubjectViewImpl.I18_COMMERCIAL_SUBJECT_SEARCH_NAME);
+		final TransactionalPropertyWrapper<?> ds = Mockito.mock(TransactionalPropertyWrapper.class);
+		
+		
+		
+		Mockito.when(itemToCommercialSubjectConverter.convert(commercialSubjectSearchItem)).thenReturn(commercialSubject); 
+
+		searchField.setPropertyDataSource(ds);
+		Assert.assertEquals(1, searchButton.getListeners(ClickEvent.class).stream().count());
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) searchButton.getListeners(ClickEvent.class).stream().findAny();
+		listener.get().buttonClick(clickEvent);
+		
+		Mockito.verify(ds).commit();
+	
+		Mockito.verify(commercialSubjectModel).setSearch(commercialSubject);
 		
 	}
 }
