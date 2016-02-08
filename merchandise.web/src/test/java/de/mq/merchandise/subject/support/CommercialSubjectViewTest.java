@@ -11,6 +11,12 @@ import java.util.Map;
 import java.util.Optional;
 
 
+
+
+
+
+
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +35,10 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.TransactionalPropertyWrapper;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.ErrorMessage.ErrorLevel;
 import com.vaadin.ui.Button;
@@ -38,7 +46,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 
@@ -901,4 +908,96 @@ public class CommercialSubjectViewTest {
 		Mockito.verify(commercialSubjectModel).setSearch(commercialSubject);
 		
 	}
+	
+	@Test
+	public final void newButton() {
+		final Button newButton =  (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_NEW);
+		final Table subjectList = (Table) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_TABLE_NAME);
+		subjectList.setContainerDataSource(new IndexedContainer());
+	
+		subjectList.addItem(CONDITION_ID);
+		subjectList.setValue(CONDITION_ID);
+	
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) newButton.getListeners(ClickEvent.class).stream().findAny();
+		listener.get().buttonClick(clickEvent);
+		
+		Assert.assertNull(subjectList.getValue());
+	
+	}
+	
+	@Test
+	public final void  deleteValueButton() {
+		final Button deleteValueButton =  (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_DELETE);
+		@SuppressWarnings("unchecked")
+		final Optional<ClickListener> listener = (Optional<ClickListener>) deleteValueButton.getListeners(ClickEvent.class).stream().findAny();
+		listener.get().buttonClick(clickEvent);
+		
+		Mockito.verify(commercialSubjectModel).deleteInputValue();
+	}
+	
+	@Test
+	public final void conditionBox() {
+		final ComboBox conditionBox =  (ComboBox) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION);
+	
+	   Assert.assertEquals(1, conditionBox.getListeners(ValueChangeEvent.class).stream().count());
+	   
+	   @SuppressWarnings("unchecked")
+		final Optional<ValueChangeListener> listener = (Optional<ValueChangeListener>) conditionBox.getListeners(ValueChangeEvent.class).stream().findAny();
+	   
+	   Mockito.when(prepareProperty().getValue()).thenReturn(CONDITION_ID);
+	   listener.get().valueChange( valueChangeEvent);
+	   
+	   Mockito.verify(commercialSubjectModel).setCondition(CONDITION_ID);
+	}
+
+	private Property<Long> prepareProperty() {
+		@SuppressWarnings("unchecked")
+		final Property<Long> property = Mockito.mock(Property.class);
+	   
+	   Mockito.when(valueChangeEvent.getProperty()).thenReturn(property);
+	   return property;
+	}
+	
+	@Test
+	public final void conditionBoxNull() {
+		final ComboBox conditionBox =  (ComboBox) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION);
+	
+	   Assert.assertEquals(1, conditionBox.getListeners(ValueChangeEvent.class).stream().count());
+	   
+	   @SuppressWarnings("unchecked")
+		final Optional<ValueChangeListener> listener = (Optional<ValueChangeListener>) conditionBox.getListeners(ValueChangeEvent.class).stream().findAny();
+	   
+	   prepareProperty();
+	   listener.get().valueChange( valueChangeEvent);
+	   
+	   Mockito.verify(commercialSubjectModel).setCondition(-1L);
+	}
+	
+	@Test
+	public final void searchCriteriaChanged() {
+		Assert.assertEquals(1, observers.get(CommercialSubjectModel.EventType.SearchCriteriaChanged).stream().count());
+		
+		observers.get(CommercialSubjectModel.EventType.SearchCriteriaChanged).stream().findAny().get().process(CommercialSubjectModel.EventType.SearchCriteriaChanged);
+	   Mockito.verify(lazyQueryContainer).refresh();
+	}
+	
+	
+	@Test
+	public final void inputValueChanged() {
+		Button deleteValueButton = (Button) components.get(CommercialSubjectViewImpl.I18N_COMMERCIAL_SUBJECT_CONDITION_VALUE_DELETE);
+		Assert.assertEquals(1, observers.get(CommercialSubjectModel.EventType.InputValueChanged).stream().count());
+		Assert.assertFalse(deleteValueButton.isEnabled());
+		
+		Mockito.when(commercialSubjectModel.hasCurrentInputValue()).thenReturn(true);
+		observers.get(CommercialSubjectModel.EventType.InputValueChanged).stream().findAny().get().process(CommercialSubjectModel.EventType.InputValueChanged);
+		Assert.assertTrue(deleteValueButton.isEnabled());
+	}
+	
+	@Test
+	public final void enter() {
+		final ViewChangeEvent event = Mockito.mock(ViewChangeEvent.class);
+		view.enter(event);
+	}
+
 }
