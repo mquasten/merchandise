@@ -32,12 +32,12 @@
 			<version>${postgresql.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
+		<!--  dependency>
 			<groupId>com.orcale.jdbc</groupId>
 			<artifactId>ojdbc6</artifactId>
 			<version>${ojdbc6.version}</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency-->
 		<dependency>
     		<groupId>org.hsqldb</groupId>
     		<artifactId>hsqldb</artifactId>
